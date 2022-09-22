@@ -12,4 +12,6 @@ ReferenceDateType = Enum(
     "ReferenceDateType", "any_test_confirmation laboratory_confirmation"
 )
 
-Outcome = Enum("Outcome", "Death Recovered")
+VisitDuration = Enum("VisitDuration", "before_admission admission post_admission")
+
+Outcome = Enum("Outcome", "death recovered")
