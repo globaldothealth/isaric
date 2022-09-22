@@ -8,6 +8,9 @@ from pydantic import BaseModel
 
 class Subject(BaseModel):
 
+    id: int
+    study_id: int
+
     # site details
     country_iso3: str
     date: datetime.date
@@ -29,6 +32,11 @@ class Subject(BaseModel):
     pregnancy: bool = None
     pregnancy_date_of_delivery: datetime.date
     pregnancy_birth_weight_kg: float
+    pregnancy_outcome: str = None  # TODO
+    pregnancy_gestational_outcome: str = None  # TODO
+    pregnancy_breastfeeding_details: str = None  # TODO
+    pregnancy_post_partum: str = None  # TODO
+    pregnancy_gestational_weeks_assessment: str = None  # TODO
 
     # Co-morbidities
     has_chronic_hematologic_disease: bool = None
@@ -54,6 +62,10 @@ class Subject(BaseModel):
     has_tuberculosis_past: bool = None
     has_hiv_art: bool = None
     has_immunosuppression_therapy_treatment: bool = None
+    has_comorbidity_other: list[str] = []
+
+    hiv_latest_cd4: str = None  # TODO
+    hiv_latest_vl: str = None  # TODO
 
     # Outcome
     date_death: datetime.date = None
