@@ -1,4 +1,5 @@
 from enum import Enum
+from pathlib import Path
 
 from .opencodelists import OpenCodeListsEnum
 
@@ -15,3 +16,7 @@ ReferenceDateType = Enum(
 VisitDuration = Enum("VisitDuration", "before_admission admission post_admission")
 
 Outcome = Enum("Outcome", "death recovered")
+
+Observation = Enum(
+    "Observation", (Path(__file__).parent / "observations.txt").read_text()
+)
