@@ -22,3 +22,7 @@ Outcome = Enum("Outcome", ["death", "recovered"])
 Observation = Enum(
     "Observation", (Path(__file__).parent / "observations.txt").read_text()
 )
+
+PregnancyGestationalOutcome = Enum(
+    "PregnancyGestationalOutcome", ["term_birth", "preterm_birth"]
+)
