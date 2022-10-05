@@ -1,9 +1,17 @@
 import datetime
 from enum import Enum
 
-from ...taxonomy import Sex, Pathogen, ReferenceDateType, Ethnicity, Outcome
+from ...taxonomy import (
+    Sex,
+    Pathogen,
+    ReferenceDateType,
+    Ethnicity,
+    Outcome,
+    PregnancyGestationalOutcome,
+)
 
-from pydantic import BaseModel
+
+from pydantic import BaseModel, validator
 
 
 class Subject(BaseModel):
@@ -32,11 +40,11 @@ class Subject(BaseModel):
     pregnancy: bool = None
     pregnancy_date_of_delivery: datetime.date
     pregnancy_birth_weight_kg: float
-    pregnancy_outcome: str = None  # TODO
-    pregnancy_gestational_outcome: str = None  # TODO
-    pregnancy_breastfeeding_details: str = None  # TODO
-    pregnancy_post_partum: str = None  # TODO
-    pregnancy_gestational_weeks_assessment: str = None  # TODO
+    pregnancy_outcome: str = None
+    pregnancy_gestational_outcome: PregnancyGestationalOutcome = None
+    pregnancy_whether_breastfed: bool = None
+    pregnancy_post_partum: bool = None
+    pregnancy_gestational_assessment_days: int = None
 
     # Co-morbidities
     has_chronic_hematologic_disease: bool = None
@@ -64,8 +72,13 @@ class Subject(BaseModel):
     has_immunosuppression_therapy_treatment: bool = None
     has_comorbidity_other: list[str] = []
 
-    hiv_latest_cd4: str = None  # TODO
-    hiv_latest_vl: str = None  # TODO
+    hiv_latest_cd4: tuple[int, int]
+    hiv_latest_viral_load_copies_per_ml: int = None
+
+    @validator("hiv_latest_cd4")
+    def is_valid_range(cls, v):
+        assert v[0] > 0 and v[1] > 0 and v[0] <= v[1]
+        return v
 
     # Outcome
     date_death: datetime.date = None
