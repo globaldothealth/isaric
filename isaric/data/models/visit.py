@@ -60,7 +60,7 @@ class Visit(BaseModel):
     treatment_other: list[str] = []
 
     treatment_oxygen_mechanical_support: bool = None
-    treatment_oxygen_therapy: str  # TODO
-    treatment_pacing: str  # TODO
+    treatment_oxygen_therapy: bool = None
+    treatment_pacing: bool = None
 
     treatment_o2_flow_vol_max: int = None
