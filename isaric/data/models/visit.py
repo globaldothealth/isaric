@@ -34,11 +34,11 @@ class Visit(BaseModel):
     treatment_anticoagulation: bool = None
     treatment_experimental_agent: bool = None
     treatment_inhaled_nitric_oxide: bool = None
-    treatment_non_invasive_ventilation: bool = None
+    treatment_noninvasive_ventilation: bool = None
     treatment_ace_inhibitors: bool = None
     treatment_arb: bool = None
     treatment_antimalarial: bool = None
-    treatment_dexmethasone: bool = None
+    treatment_dexamethasone: bool = None
     treatment_nonsteroidal: bool = None
     treatment_high_flow_nasal_cannula: bool = None
     treatment_steroids: bool = None
