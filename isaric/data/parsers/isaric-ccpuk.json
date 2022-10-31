@@ -1,0 +1,220 @@
+{
+  "name": "isaric-ccpuk",
+  "description": "ISARIC CCPUK study",
+  "study": {
+      "id": "isaric-ccpuk",
+      "date": "2021-01-01",
+      "country_iso3": "GBR"
+  },
+  "subject": {
+    "sex_at_birth": {
+      "field": "sex",
+      "values": {
+        "1": "male",
+        "2": "female",
+        "3": "non_binary"
+      }
+    },
+    "id": {
+      "field": "subjid",
+      "sensitive": true
+    },
+    "study_id": "isaric-ccpuk",
+    "country_iso3": "GBR",
+    "date": {
+      "combinedType": "firstNonNull",
+      "fields": [
+        "flw_date_adm",
+        "flw_date_symptoms",
+        "flw_survey_date"
+      ]
+    },
+    "ethnicity": {
+      "field": "ethnic",
+      "values": {
+        "1": "Arab",
+        "2": "Black",
+        "3": "East Asian",
+        "4": "South Asian",
+        "5": "West Asian",
+        "6": "Latin American",
+        "7": "White",
+        "8": "Aboriginal/First Nations",
+        "9": "Other",
+        "10": "N/A"
+      }
+    },
+    "age": {
+      "field": "age_estimateyears"
+    },
+    "pathogen": "COVID-19",
+    "has_chronic_hematologic_disease": {
+      "field": "chronichaemo_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_dementia": {
+      "field": "chronichaemo_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_obesity": {
+      "field": "chronichaemo_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_rheumatologic_disorder": {
+      "field": "chronichaemo_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_hiv": {
+      "field": "chronichaemo_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_hypertension": {
+      "field": "hypertension_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_malignant_neoplasm": {
+      "field": "hypertension_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_smoking": {
+      "field": "smoking_mhyn",
+      "values": {
+        "1": "Yes",
+        "2": "Never Smoked",
+        "3": "Former Smoker",
+        "4": "N/K"
+      }
+    },
+    "has_asthma": {
+      "field": "asthma_mhyn",
+      "values": {
+        "1": "YES",
+        "0": "NO",
+        "2": "Unknown"
+      }
+    },
+    "has_chronic_cardiac_disease": {
+      "field": "chrincard",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_chronic_kidney_disease": {
+      "field": "renal_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "has_diabetes": {
+      "field": "diabetes_mhyn",
+      "values": {
+        "1": "YES",
+        "2": "NO",
+        "3": "Unknown"
+      }
+    },
+    "diabetes_type": {
+      "field": "diabetes_type_mhyn",
+      "values": {
+        "0": "NO",
+        "1": "1",
+        "2": "2",
+        "3": "N/K"
+      }
+    },
+    "has_liver_disease": {
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "modliv",
+          "values": {
+            "1": "YES",
+            "0": "NO",
+            "2": "Unknown"
+          }
+        },
+        {
+          "field": "mildliver",
+          "values": {
+            "1": "YES",
+            "0": "NO",
+            "2": "Unknown"
+          }
+        }
+      ]
+    },
+    "has_rare_disease_inborn_metabolism_error": {
+      "field": "vulnerable_scid",
+      "mapping": {
+        "1": "Yes",
+        "2": "No",
+        "3": "N/K"
+      }
+    },
+    "has_immunosuppression_therapy_treatment": {
+      "field": "vulnerable_immuno",
+      "values": {
+        "1": "Yes",
+        "2": "No",
+        "3": "N/K"
+      }
+    },
+    "has_comorbidity_other": {
+      "otherField": true,
+      "fieldSet": {
+        "formName": "comorbidities"
+      }
+    },
+    "date_death": {
+      "field": "flw_date_death",
+      "description": "Date of death"
+    },
+    "outcome": {
+      "field": "dsterm",
+      "values": {
+        "1": "Discharged alive",
+        "2": "Hospitalisation (Remains in Hospital &geq; Day 28 after symptom onset)",
+        "3": "Transfer to other facility",
+        "4": "Death",
+        "5": "Palliative discharge",
+        "6": "Unknown"
+      }
+    },
+    "date_outcome": {
+      "field": "dsstdtc",
+      "description": "Outcome date"
+    }
+  }
+}
