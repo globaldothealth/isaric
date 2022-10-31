@@ -26,3 +26,7 @@ Observation = Enum(
 PregnancyGestationalOutcome = Enum(
     "PregnancyGestationalOutcome", ["term_birth", "preterm_birth"]
 )
+
+Diabetes = Enum("Diabetes", ["type_1", "type_2"])
+
+Smoker = Enum("Smoker", ["yes", "never", "former"])

@@ -3,6 +3,8 @@ from enum import Enum
 
 from ...taxonomy import (
     Sex,
+    Smoker,
+    Diabetes,
     Pathogen,
     ReferenceDateType,
     Ethnicity,
@@ -56,11 +58,12 @@ class Subject(BaseModel):
     has_hiv: bool = None
     has_hypertension: bool = None
     has_malignant_neoplasm: bool = None
-    has_smoking: bool = None
+    has_smoking: Smoker = None
     has_asthma: bool = None
     has_chronic_cardiac_disease: bool = None
     has_chronic_kidney_disease: bool = None
-    has_diabetes_melitus: bool = None
+    has_diabetes: bool = None
+    diabetes_type: Diabetes = None
     has_liver_disease: bool = None
     has_apnoea: bool = None
     has_hiv_viral_suppression: bool = None
