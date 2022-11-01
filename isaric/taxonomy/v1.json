@@ -1,0 +1,122 @@
+{
+  "version": "1",
+  "types": {
+    "Sex": [
+      "male",
+      "female",
+      "non_binary"
+    ],
+    "Pathogen": [
+      "COVID19",
+      "MPXV"
+    ],
+    "Ethnicity": [
+      "Arab",
+      "Black",
+      "East_Asian",
+      "South_Asian",
+      "West_Asian",
+      "Latin_American",
+      "White",
+      "Aboriginal_First_Nations",
+      "Other"
+    ],
+    "ReferenceDate": [
+      "confirmation",
+      "confirmation/laboratory",
+      "admission"
+    ],
+    "VisitDuration": [
+      "before_admission",
+      "admission",
+      "post_admission"
+    ],
+    "Outcome": [
+      "death",
+      "recovered",
+      "discharged"
+    ],
+    "Diabetes": [
+      "type_1",
+      "type_2"
+    ],
+    "PregnancyGestationalOutcome": [
+      "term_birth",
+      "preterm_birth"
+    ],
+    "Smoker": [
+      "yes",
+      "never",
+      "former"
+    ],
+    "Observation": [
+      "avpu",
+      "clinical_classification_critical_illness_scale_",
+      "clinical_classification_pneumonia_needing_oxygen",
+      "clinical_frailty_score",
+      "diastolic_blood_pressure_mmHg",
+      "from_same_blood_gas_record_as_pao2",
+      "glasgow_coma_score",
+      "has_abdominal_pain",
+      "has_adenopathy",
+      "has_altered_consciousness_confusion",
+      "has_anorexia",
+      "has_base_excess",
+      "has_bleeding_haemorrhage",
+      "has_chest_pain",
+      "has_confusion",
+      "has_conjunctivitis",
+      "has_cough",
+      "has_cough_with_haemoptysis",
+      "has_cough_with_sputum_production",
+      "has_cyanosis",
+      "has_diarrhoea",
+      "has_ear_pain",
+      "has_fatigue_malaise",
+      "has_feeding_intolerance_peadiatrics",
+      "has_headache",
+      "has_hepatomegaly",
+      "has_history_of_fever",
+      "has_inability_to_walk",
+      "has_irritability_peadiatrics",
+      "has_joint_pain",
+      "has_loss_of_smell",
+      "has_loss_of_taste",
+      "has_lower_chest_wall_indrawing",
+      "has_lung_sounds",
+      "has_lymphadenopathy",
+      "has_malnutrition",
+      "has_muscle_aches",
+      "has_neuromuscular_blocking_agents",
+      "has_renal_replacement_therapy_dialysis",
+      "has_runny_nose",
+      "has_seizures",
+      "has_severe_dehydration",
+      "has_shortness_of_breath",
+      "has_skin_rash",
+      "has_skin_ulcers",
+      "has_sore_throat",
+      "has_sternal_capillary_refill_time_greater_2s",
+      "has_time_of_admission",
+      "has_vomiting_nausea",
+      "has_wheezing",
+      "heart_rate_bpm",
+      "heart_sounds",
+      "mean_arterial_blood_pressure_mmHg",
+      "mid_upper_arm_circumference_cm",
+      "other_symptom",
+      "oxygen_o2hb",
+      "oxygen_saturation_percent",
+      "pao2",
+      "pao2_sample_type",
+      "pH",
+      "respiratory_rate",
+      "richmond_agitation-sedation_scale",
+      "riker_sedation-agitation_scale",
+      "systolic_blood_pressure_mmHg",
+      "temperature_celsius",
+      "total_fluid_output_ml",
+      "transfer_from_other_facility"
+    ]
+  }
+}

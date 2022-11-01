@@ -1,32 +1,31 @@
+import json
 from enum import Enum
 from pathlib import Path
+from functools import cache
 
-from .opencodelists import OpenCodeListsEnum
+TAXONOMY_VERSION = "1"
 
-Sex = Enum("Sex", ["male", "female", "non_binary"])
 
-Pathogen = Enum("Pathogen", ["COVID_19", "MPXV"])
+@cache
+def load_taxonomy(kind: str, version: str):
+    taxonomy_file = Path(__file__).parent / f"v{version}.json"
+    with open(taxonomy_file) as fp:
+        taxonomy = json.load(fp)
+        assert taxonomy["version"] == version
+        types = taxonomy["types"]
+        if kind in types:
+            return Enum(kind, types[kind])
 
-Ethnicity = OpenCodeListsEnum("opensafely/ethnicity-snomed", "2020-04-27")
 
-ReferenceDateType = Enum(
-    "ReferenceDateType", ["any_test_confirmation", "laboratory_confirmation"]
+Diabetes = load_taxonomy("Diabetes", TAXONOMY_VERSION)
+Ethnicity = load_taxonomy("Ethnicity", TAXONOMY_VERSION)
+Observation = load_taxonomy("Observation", TAXONOMY_VERSION)
+Outcome = load_taxonomy("Outcome", TAXONOMY_VERSION)
+Pathogen = load_taxonomy("Pathogen", TAXONOMY_VERSION)
+PregnancyGestationalOutcome = load_taxonomy(
+    "PregnancyGestationalOutcome", TAXONOMY_VERSION
 )
-
-VisitDuration = Enum(
-    "VisitDuration", ["before_admission", "admission", "post_admission"]
-)
-
-Outcome = Enum("Outcome", ["death", "recovered"])
-
-Observation = Enum(
-    "Observation", (Path(__file__).parent / "observations.txt").read_text()
-)
-
-PregnancyGestationalOutcome = Enum(
-    "PregnancyGestationalOutcome", ["term_birth", "preterm_birth"]
-)
-
-Diabetes = Enum("Diabetes", ["type_1", "type_2"])
-
-Smoker = Enum("Smoker", ["yes", "never", "former"])
+ReferenceDate = load_taxonomy("ReferenceDate", TAXONOMY_VERSION)
+Sex = load_taxonomy("Sex", TAXONOMY_VERSION)
+Smoker = load_taxonomy("Smoker", TAXONOMY_VERSION)
+VisitDuration = load_taxonomy("VisitDuration", TAXONOMY_VERSION)
