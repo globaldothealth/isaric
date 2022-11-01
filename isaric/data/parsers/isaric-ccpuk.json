@@ -2,9 +2,9 @@
   "name": "isaric-ccpuk",
   "description": "ISARIC CCPUK study",
   "study": {
-      "id": "isaric-ccpuk",
-      "date": "2021-01-01",
-      "country_iso3": "GBR"
+    "id": "isaric-ccpuk",
+    "date": "2021-01-01",
+    "country_iso3": "GBR"
   },
   "subject": {
     "sex_at_birth": {
@@ -13,20 +13,31 @@
         "1": "male",
         "2": "female",
         "3": "non_binary"
-      }
+      },
+      "description": "Sex at Birth"
     },
     "id": {
       "field": "subjid",
-      "sensitive": true
+      "sensitive": true,
+      "description": "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
     },
     "study_id": "isaric-ccpuk",
     "country_iso3": "GBR",
     "date": {
       "combinedType": "firstNonNull",
       "fields": [
-        "flw_date_adm",
-        "flw_date_symptoms",
-        "flw_survey_date"
+        {
+          "field": "flw_date_adm",
+          "description": "Roughly at what date were you first admitted to hospital?"
+        },
+        {
+          "field": "flw_date_symptoms",
+          "description": "Roughly what day did you first experience symptoms of COVID-19?"
+        },
+        {
+          "field": "flw_survey_date",
+          "description": "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)"
+        }
       ]
     },
     "ethnicity": {
@@ -34,18 +45,20 @@
       "values": {
         "1": "Arab",
         "2": "Black",
-        "3": "East Asian",
-        "4": "South Asian",
-        "5": "West Asian",
-        "6": "Latin American",
+        "3": "East_Asian",
+        "4": "South_Asian",
+        "5": "West_Asian",
+        "6": "Latin_American",
         "7": "White",
-        "8": "Aboriginal/First Nations",
+        "8": "Aboriginal_First_Nations",
         "9": "Other",
         "10": "N/A"
-      }
+      },
+      "description": "Ethnic group (check all that apply)"
     },
     "age": {
-      "field": "age_estimateyears"
+      "field": "age_estimateyears",
+      "description": "Age/Estimated age"
     },
     "pathogen": "COVID-19",
     "has_chronic_hematologic_disease": {
@@ -54,39 +67,44 @@
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Chronic hematologic disease"
     },
     "has_dementia": {
-      "field": "chronichaemo_mhyn",
+      "field": "dementia_mhyn",
       "values": {
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Dementia"
     },
     "has_obesity": {
-      "field": "chronichaemo_mhyn",
+      "field": "obesity_mhyn",
       "values": {
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Obesity (as defined by clinical staff)"
     },
     "has_rheumatologic_disorder": {
-      "field": "chronichaemo_mhyn",
+      "field": "rheumatologic_mhyn",
       "values": {
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Rheumatologic disorder"
     },
     "has_hiv": {
-      "field": "chronichaemo_mhyn",
+      "field": "aidshiv_mhyn",
       "values": {
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "AIDS/HIV"
     },
     "has_hypertension": {
       "field": "hypertension_mhyn",
@@ -94,22 +112,24 @@
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Hypertension (physician diagnosed)"
     },
     "has_malignant_neoplasm": {
-      "field": "hypertension_mhyn",
+      "field": "malignantneo_mhyn",
       "values": {
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Malignant neoplasm"
     },
     "has_smoking": {
       "field": "smoking_mhyn",
       "values": {
         "1": "Yes",
-        "2": "Never Smoked",
-        "3": "Former Smoker",
+        "2": "Never",
+        "3": "Former",
         "4": "N/K"
       }
     },
@@ -119,7 +139,8 @@
         "1": "YES",
         "0": "NO",
         "2": "Unknown"
-      }
+      },
+      "description": "Asthma (physician diagnosed)"
     },
     "has_chronic_cardiac_disease": {
       "field": "chrincard",
@@ -127,7 +148,8 @@
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Chronic cardiac disease, including congenital heart disease (not hypertension)"
     },
     "has_chronic_kidney_disease": {
       "field": "renal_mhyn",
@@ -135,7 +157,8 @@
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Chronic kidney disease"
     },
     "has_diabetes": {
       "field": "diabetes_mhyn",
@@ -143,7 +166,8 @@
         "1": "YES",
         "2": "NO",
         "3": "Unknown"
-      }
+      },
+      "description": "Diabetes without complications"
     },
     "diabetes_type": {
       "field": "diabetes_type_mhyn",
@@ -152,7 +176,8 @@
         "1": "1",
         "2": "2",
         "3": "N/K"
-      }
+      },
+      "description": "Diabetes and Type"
     },
     "has_liver_disease": {
       "combinedType": "any",
@@ -163,7 +188,8 @@
             "1": "YES",
             "0": "NO",
             "2": "Unknown"
-          }
+          },
+          "description": "Moderate liver disease"
         },
         {
           "field": "mildliver",
@@ -171,7 +197,8 @@
             "1": "YES",
             "0": "NO",
             "2": "Unknown"
-          }
+          },
+          "description": "Mild liver disease"
         }
       ]
     },
@@ -181,7 +208,8 @@
         "1": "Yes",
         "2": "No",
         "3": "N/K"
-      }
+      },
+      "description": "People with rare diseases and inborn errors of metabolism that significantly increase the risk of infections (such as Severe combined immunodeficiency (SCID), homozygous sickle cell)"
     },
     "has_immunosuppression_therapy_treatment": {
       "field": "vulnerable_immuno",
@@ -189,7 +217,8 @@
         "1": "Yes",
         "2": "No",
         "3": "N/K"
-      }
+      },
+      "description": "People on immunosuppression therapies sufficient to significantly increase risk of infection"
     },
     "has_comorbidity_other": {
       "otherField": true,
