@@ -6,6 +6,9 @@
     "date": "2021-01-01",
     "country_iso3": "GBR"
   },
+  "primaryKey": {
+      "subject": "id"
+  },
   "subject": {
     "sex_at_birth": {
       "field": "sex",
@@ -17,7 +20,7 @@
       "description": "Sex at Birth"
     },
     "id": {
-      "field": "subjid",
+      "field": "\ufeffsubjid",
       "sensitive": true,
       "description": "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
     },
@@ -41,7 +44,8 @@
       ]
     },
     "ethnicity": {
-      "field": "ethnic",
+      "field": "ethnic___1",
+      "comment": "Only gets the first ethnicity, should be changed to combinedType: list",
       "values": {
         "1": "Arab",
         "2": "Black",
@@ -52,7 +56,7 @@
         "7": "White",
         "8": "Aboriginal_First_Nations",
         "9": "Other",
-        "10": "N/A"
+        "10": null
       },
       "description": "Ethnic group (check all that apply)"
     },
@@ -64,118 +68,118 @@
     "has_chronic_hematologic_disease": {
       "field": "chronichaemo_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Chronic hematologic disease"
     },
     "has_dementia": {
       "field": "dementia_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Dementia"
     },
     "has_obesity": {
       "field": "obesity_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Obesity (as defined by clinical staff)"
     },
     "has_rheumatologic_disorder": {
       "field": "rheumatologic_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Rheumatologic disorder"
     },
     "has_hiv": {
       "field": "aidshiv_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "AIDS/HIV"
     },
     "has_hypertension": {
       "field": "hypertension_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Hypertension (physician diagnosed)"
     },
     "has_malignant_neoplasm": {
       "field": "malignantneo_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Malignant neoplasm"
     },
     "has_smoking": {
       "field": "smoking_mhyn",
       "values": {
-        "1": "Yes",
+        "1": true,
         "2": "Never",
         "3": "Former",
-        "4": "N/K"
+        "4": null
       }
     },
     "has_asthma": {
       "field": "asthma_mhyn",
       "values": {
-        "1": "YES",
-        "0": "NO",
-        "2": "Unknown"
+        "1": true,
+        "0": false,
+        "2": null
       },
       "description": "Asthma (physician diagnosed)"
     },
     "has_chronic_cardiac_disease": {
       "field": "chrincard",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Chronic cardiac disease, including congenital heart disease (not hypertension)"
     },
     "has_chronic_kidney_disease": {
       "field": "renal_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Chronic kidney disease"
     },
     "has_diabetes": {
       "field": "diabetes_mhyn",
       "values": {
-        "1": "YES",
-        "2": "NO",
-        "3": "Unknown"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "Diabetes without complications"
     },
     "diabetes_type": {
       "field": "diabetes_type_mhyn",
       "values": {
-        "0": "NO",
+        "0": false,
         "1": "1",
         "2": "2",
-        "3": "N/K"
+        "3": null
       },
       "description": "Diabetes and Type"
     },
@@ -185,18 +189,18 @@
         {
           "field": "modliv",
           "values": {
-            "1": "YES",
-            "0": "NO",
-            "2": "Unknown"
+            "1": true,
+            "0": false,
+            "2": null
           },
           "description": "Moderate liver disease"
         },
         {
           "field": "mildliver",
           "values": {
-            "1": "YES",
-            "0": "NO",
-            "2": "Unknown"
+            "1": true,
+            "0": false,
+            "2": null
           },
           "description": "Mild liver disease"
         }
@@ -205,18 +209,18 @@
     "has_rare_disease_inborn_metabolism_error": {
       "field": "vulnerable_scid",
       "mapping": {
-        "1": "Yes",
-        "2": "No",
-        "3": "N/K"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "People with rare diseases and inborn errors of metabolism that significantly increase the risk of infections (such as Severe combined immunodeficiency (SCID), homozygous sickle cell)"
     },
     "has_immunosuppression_therapy_treatment": {
       "field": "vulnerable_immuno",
       "values": {
-        "1": "Yes",
-        "2": "No",
-        "3": "N/K"
+        "1": true,
+        "2": false,
+        "3": null
       },
       "description": "People on immunosuppression therapies sufficient to significantly increase risk of infection"
     },
@@ -238,7 +242,7 @@
         "3": "Transfer to other facility",
         "4": "Death",
         "5": "Palliative discharge",
-        "6": "Unknown"
+        "6": null
       }
     },
     "date_outcome": {
