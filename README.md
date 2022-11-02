@@ -19,14 +19,22 @@ Run `poetry install` to install the dependencies.
 ## Structure
 
 ```shell
-isaric
-├── parser.py
-├── parsers  # contains specification files used by parser.py
-│   └── isaric-ccpuk.json
-├── schemas.py  # pydantic schemas
-└── taxonomy
-    ├── __init__.py  # categorical classifications
-    └── v1.json
+.
+├── docs
+│   └── spec-format.md
+├── isaric  # Python module
+│   ├── parser.py             # main program
+│   ├── parsers               # specification files used by parser.py
+│   │   └── isaric-ccpuk.json
+│   ├── schemas.py            # pydantic schemas
+│   └── taxonomy              # categorical classifications
+│       └── v1.json
+├── notebooks                 # Jupyter notebooks
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+└── tests                     # unit tests
+    └── test_example.py
 ```
 
 The primary entry point of the application is
