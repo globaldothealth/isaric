@@ -2,14 +2,14 @@ import datetime
 
 from pydantic import BaseModel, validator
 
-from ..taxonomy import (
+from .taxonomy import (
     Diabetes,
     Ethnicity,
     Observation,
     Outcome,
     Pathogen,
     PregnancyGestationalOutcome,
-    ReferenceDateType,
+    ReferenceDate,
     Sex,
     Smoker,
     VisitDuration,
@@ -35,7 +35,7 @@ class Subject(BaseModel):
     # site details
     country_iso3: str
     date: datetime.date
-    type_date: ReferenceDateType
+    type_date: ReferenceDate
 
     date_hospital_admission: datetime.date
 
