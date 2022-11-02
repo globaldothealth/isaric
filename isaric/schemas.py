@@ -22,7 +22,7 @@ class Study(BaseModel):
     name: str
     date: datetime.datetime
     end_date: datetime.datetime = None
-    location: dict[str]  # GeoJSON
+    location: dict  # GeoJSON
     country_iso3: str
     description: str
 
