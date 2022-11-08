@@ -33,7 +33,9 @@ that describe the mapping from the source data format. There are several valid
 rule patterns, listed below. Each rule will either have a `field` attribute
 that is the corresponding field in the source format, or a `combinedField`
 attribute which links multiple fields in the source format, and specifies how
-the fields should be combined.
+the fields should be combined. Fields can be marked as privacy sensitive using
+`sensitive: true`, which can be used by the parser to take additional steps,
+such as hashing the field.
 
 * **Constant**: Every value in the table is the same constant value
   ```json
