@@ -5,9 +5,15 @@ name: tests
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ main ]
+    paths:
+    - '**.py'
+    - '.github/workflows/tests.yml'
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ main ]
+    paths:
+    - '**.py'
+    - '.github/workflows/tests.yml'
   workflow_dispatch:
 
 jobs:
