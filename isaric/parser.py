@@ -1,5 +1,4 @@
 import io
-import sys
 import csv
 import json
 import logging
@@ -13,7 +12,12 @@ from tqdm import tqdm
 
 
 def get_value(row: dict[str, Any], rule: Union[str, dict[str, Any]]) -> Any:
-    "Same as get_value_unhashed(), except it hashes if sensitive = True in rule"
+    """Gets value from row using rule
+
+    Same as get_value_unhashed(), except it hashes if sensitive = True in rule.
+    This function should be used instead of get_value_unhashed() for
+    application code.
+    """
     value = get_value_unhashed(row, rule)
     if isinstance(rule, dict) and rule.get("sensitive") and value is not None:
         return hash_sensitive(value)
@@ -22,6 +26,12 @@ def get_value(row: dict[str, Any], rule: Union[str, dict[str, Any]]) -> Any:
 
 
 def get_value_unhashed(row: dict[str, Any], rule: Union[str, dict[str, Any]]) -> Any:
+    """Gets value from row using rule (unhashed)
+
+    Unlike get_value() this function does NOT hash sensitive data
+    and should not be called directly, except for debugging. Use
+    get_value() instead.
+    """
     if isinstance(rule, str):  # constant
         return rule
     if "field" in rule:
@@ -39,7 +49,30 @@ def get_value_unhashed(row: dict[str, Any], rule: Union[str, dict[str, Any]]) ->
         raise ValueError(f"Could not return value for {rule}")
 
 
-def get_combined_type(row, rule):
+def get_combined_type(row: dict[str, Any], rule: dict[str, Any]):
+    """Gets value from row for a combinedType rule.
+
+    A rule with the combinedType key combines multiple fields in the row
+    to get the value. Thus this rule assumes that the combinedType fields
+    do NOT have repeated (possibly different) values across the dataset.
+
+    Example of dataset that will be handled correctly, with modliv and
+    mildliver being the categorical indicators for moderate and mild
+    liver disease respectively:
+
+        subjid,modliv,mildliver,otherfield
+        1,0,1,NA
+        1,,,
+
+    Example of dataset that will not be handled correctly:
+
+        subjid,modliv,mildliver,otherfield
+        1,0,,
+        1,,1,
+
+    For a combinedType rule to successfully run, all the field values should
+    be present in the same row.
+    """
     assert "combinedType" in rule
     combined_type = rule["combinedType"]
     rules = rule["fields"]
@@ -104,9 +137,11 @@ class Parser:
         return self
 
     def validate(self):
+        "Use schemas to validate data"
         pass
 
     def clear(self):
+        "Clears parser state"
         self.subject = defaultdict(dict)
 
     def to_csv(self, output: str = None):
