@@ -1,6 +1,8 @@
 import datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
+
+from .pydantic_types import IntegerRange, DateRange
 
 from .taxonomy import (
     Diabetes,
@@ -86,13 +88,8 @@ class Subject(BaseModel):
     has_immunosuppression_therapy_treatment: bool = None
     has_comorbidity_other: list[str] = []
 
-    hiv_latest_cd4: tuple[int, int]
+    hiv_latest_cd4: IntegerRange
     hiv_latest_viral_load_copies_per_ml: int = None
-
-    @validator("hiv_latest_cd4")
-    def is_valid_range(cls, v):
-        assert v[0] > 0 and v[1] > 0 and v[0] <= v[1]
-        return v
 
     # Outcome
     date_death: datetime.date = None
@@ -110,12 +107,13 @@ class Visit(BaseModel):
     study_id: int
     start_date: datetime.date
     end_date: datetime.date
-    duration_type: VisitDuration
+    duration_type: VisitDuration = VisitDuration.admission
 
     pathogen_test_date: datetime.date = None
     icu_admission: bool = None
-    icu_discharge_date: datetime.date = None
-    icu_admission_date: datetime.date = None
+
+    # Multiple ICU admissions are possible
+    icu_admission_dates: list[DateRange] = None
 
     treatment_dialysis: bool = None
     treatment_inotropes_vasopressors: bool = None
