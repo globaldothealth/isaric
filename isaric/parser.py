@@ -98,7 +98,12 @@ def hash_sensitive(value: str) -> str:
 
 class Parser:
 
+    # We don't have unique subject ID, as the same subject could be
+    # re-admitted and get a different subjid:
+    # https://github.com/globaldothealth/isaric/issues/12
+
     subject = defaultdict(dict)
+    visit = defaultdict(dict)
     fieldnames = {}
 
     def __init__(self, spec: str):
@@ -123,6 +128,13 @@ class Parser:
         for attr in self.spec["subject"]:
             if (value := get_value(row, self.spec["subject"][attr])) is not None:
                 self.subject[primary_key][attr] = value
+
+    def update_visits(self, row):
+        primary_key_field = self.spec["primaryKey"]["visit"]
+        primary_key = row[self.spec["visit"][primary_key_field]["field"]]
+        for attr in self.spec["visit"]:
+            if (value := get_value(row, self.spec["visit"][attr])) is not None:
+                self.visit[primary_key][attr] = value
 
     def parse(self, file: str):
         self.clear()
