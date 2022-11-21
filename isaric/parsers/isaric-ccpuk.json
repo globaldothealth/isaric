@@ -7,7 +7,8 @@
     "country_iso3": "GBR"
   },
   "primaryKey": {
-      "subject": "id"
+    "subject": "id",
+    "visit": "id"
   },
   "subject": {
     "sex_at_birth": {
@@ -20,7 +21,7 @@
       "description": "Sex at Birth"
     },
     "id": {
-      "field": "\ufeffsubjid",
+      "field": "﻿subjid",
       "sensitive": true,
       "description": "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
     },
@@ -248,6 +249,242 @@
     "date_outcome": {
       "field": "dsstdtc",
       "description": "Outcome date"
+    }
+  },
+  "visit": {
+    "country_iso3": "GBR",
+    "id": {
+      "comment": "This is the same as visit id!",
+      "field": "﻿subjid",
+      "sensitive": true
+    },
+    "subject_id": {
+      "comment": "This is the same as visit id!",
+      "field": "﻿subjid",
+      "sensitive": true
+    },
+    "start_date": {
+      "comment": "Alternative dates should be considered as well",
+      "field": "hostdat"
+    },
+    "icu_admission": {
+      "field": "icu_hostdat",
+      "mappingType": "exists"
+    },
+    "treatment_ace_inhibitors": {
+      "description": "Angiotensin converting enzyme inhibitors (ACEI)?",
+      "field": "chronic_ace_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_antibiotics": {
+      "description": "Antibiotic agent?",
+      "field": "antibiotic_cmyn",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_antifungal_agent": {
+      "description": "Antifungal agent?",
+      "field": "antifung_cmyn",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_antivirals": {
+      "description": "Antiviral agent?",
+      "field": "antiviral_cmyn",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_arb": {
+      "description": "Angiotensin II receptor blockers (ARBs)?",
+      "field": "chronic_arb_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_corticosteroid": {
+      "description": "Corticosteroid agent?",
+      "field": "corticost_cmyn",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_dexamethasone": {
+      "description": "If Yes to Dexamethasone, specify Route:",
+      "field": "dexamethasone_route",
+      "values": {
+        "1": true,
+        "2": true
+      }
+    },
+    "treatment_dialysis": {
+      "description": "Renal replacement therapy (RRT) or dialysis",
+      "field": "rrt_prtrt",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_ecmo": {
+      "description": "Extracorporeal (ECMO) support",
+      "field": "extracorp_prtrt",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_high_flow_nasal_cannula": {
+      "description": "High-flow nasal canula?",
+      "field": "oxygenhf_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_immunosuppressant": {
+      "description": "Treated with immunosuppressants, including oral (not inhaled) corticosteroids prior to admission / Immunosuppressant e.g. oral (not inhaled) corticosteroids (not low dose hydrocortisone)",
+      "field": "immno_cmtrt",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_inhaled_nitric_oxide": {
+      "description": "Inhaled Nitric Oxide",
+      "field": "inhalednit_cmtrt",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_inotropes_vasopressors": {
+      "description": "Inotropes / vasopressors",
+      "field": "inotrop_cmtrt",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_invasive_ventilation": {
+      "description": "Invasive ventilation (Any intubation) ?",
+      "field": "invasive_proccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_monoclonal_antibody": {
+      "description": "Tocilizumab",
+      "field": "reinf_pre_tociliz",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_noninvasive_ventilation": {
+      "description": "Non-invasive ventilation ? (e.g. BIPAP, CPAP)",
+      "field": "noninvasive_proccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_nsaid": {
+      "description": "Non-steroidal anti-inflammatory (NSAID)?",
+      "field": "chronic_nsaid_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_offlabel": {
+      "description": "Off-label / Compassionate Use medications?",
+      "field": "offlabel_cmyn",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_other": {
+      "description": "OTHER intervention or procedure",
+      "field": "other_cmyn",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_oxygen_interface": {
+      "description": "Oxygen therapy",
+      "field": "oxygen_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_oxygen_mechanical_support": {
+      "description": "Oxygen therapy",
+      "field": "oxygen_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_oxygen_therapy": {
+      "description": "Oxygen therapy",
+      "field": "oxygen_cmoccur",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_prone_position": {
+      "description": "Prone ventilation",
+      "field": "pronevent_prtrt",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    },
+    "treatment_tocilizumab": {
+      "description": "Tocilizumab",
+      "field": "reinf_pre_tociliz",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
     }
   }
 }
