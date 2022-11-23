@@ -4,11 +4,19 @@ import json
 import logging
 import hashlib
 import argparse
-from typing import Any, Union
+from typing import Optional, Any, Union
 from collections import defaultdict
 from pathlib import Path
 
 from tqdm import tqdm
+from typing import Literal
+from enum import Enum
+
+
+class Table(str, Enum):  # will be StrEnum from Python 3.11
+    subject = "subject"
+    visit = "visit"
+    # observation = "observation"  # uncomment when observation is enabled
 
 
 def get_value(row: dict[str, Any], rule: Union[str, dict[str, Any]]) -> Any:
@@ -102,16 +110,16 @@ class Parser:
     # re-admitted and get a different subjid:
     # https://github.com/globaldothealth/isaric/issues/12
 
-    subject = defaultdict(dict)
-    visit = defaultdict(dict)
-    fieldnames = {}
+    subject: dict[str, Any] = defaultdict(dict)
+    visit: dict[str, Any] = defaultdict(dict)
+    fieldnames: dict[str, list[str]] = {}
 
     def __init__(self, spec: str):
         if ".json" not in spec:  # look in relative path
             if (
                 possible_spec := Path(__file__).parent / "parsers" / f"{spec}.json"
             ).exists():
-                spec = possible_spec
+                spec = str(possible_spec)
         with open(spec) as fp:
             self.spec = json.load(fp)
         if "study" not in self.spec:
@@ -120,7 +128,8 @@ class Parser:
             raise ValueError("Parser specification missing required 'subject' element")
         # visits and observations not implemented yet
         self.study = self.spec.get("study")
-        self.fieldnames["subject"] = list(self.spec["subject"].keys())
+        for table in Table:
+            self.fieldnames[table.value] = list(self.spec[table.value].keys())
 
     def update_subjects(self, row):
         primary_key_field = self.spec["primaryKey"]["subject"]
@@ -145,6 +154,7 @@ class Parser:
                 desc=f"[{self.spec['name']}] parsing {Path(file).name}",
             ):
                 self.update_subjects(row)
+                self.update_visits(row)
         self.validate()
         return self
 
@@ -156,24 +166,33 @@ class Parser:
         "Clears parser state"
         self.subject = defaultdict(dict)
 
-    def to_csv(self, output: str = None):
-        "Writes data to CSV(s), or returns as string"
+    def write_csv(
+        self,
+        table: Table,
+        output: Optional[str] = None,
+    ) -> str | None:
+        "Writes to output as CSV a particular table"
+
+        def writerows(fp, table):
+            writer = csv.DictWriter(fp, fieldnames=self.fieldnames[table])
+            writer.writeheader()
+            for i in getattr(self, table):
+                writer.writerow(getattr(self, table)[i])
+            return fp
 
         if output:
             with open(output, "w") as fp:
-                writer = csv.DictWriter(fp, fieldnames=self.fieldnames["subject"])
-                writer.writeheader()
-                for i in self.subject:
-                    writer.writerow(self.subject[i])
-                if not output:
-                    return fp.getvalue()
+                writerows(fp, table)
+            return None
         else:
             buf = io.StringIO()
-            writer = csv.DictWriter(buf, fieldnames=self.fieldnames["subject"])
-            writer.writeheader()
-            for i in self.subject:
-                writer.writerow(self.subject[i])
-            return buf.getvalue()
+            return writerows(buf, table).getvalue()
+
+    def save(self, output: Optional[str] = None):
+        "Saves all tables to CSV"
+
+        for table in Table:
+            self.write_csv(table, f"{output}-{table.value}.csv")
 
 
 def main():
@@ -190,7 +209,7 @@ def main():
         "-o", "--output", help="Output file, if blank, writes to standard output"
     )
     args = cmd.parse_args()
-    if output := Parser(args.spec).parse(args.file).to_csv(args.output):
+    if output := Parser(args.spec).parse(args.file).save(args.output):
         print(output)
 
 
