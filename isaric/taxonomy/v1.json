@@ -49,7 +49,7 @@
       "never",
       "former"
     ],
-    "Observation": [
+    "ObservationName": [
       "avpu",
       "clinical_classification_critical_illness_scale_",
       "clinical_classification_pneumonia_needing_oxygen",
