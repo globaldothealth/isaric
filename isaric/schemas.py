@@ -1,8 +1,9 @@
 import datetime
+from typing import Any
 
 from pydantic import BaseModel
 
-from .pydantic_types import IntegerRange, DateRange
+from .pydantic_types import IntegerRange, DateRange, PositiveInt
 
 from .taxonomy import (
     Diabetes,
@@ -20,29 +21,32 @@ from .taxonomy import (
 
 class Study(BaseModel):
 
-    id: int
+    study_id: str
+    study_version: PositiveInt
     name: str
     date: datetime.datetime
     end_date: datetime.datetime | None = None
-    location: dict  # GeoJSON
+    location: dict[str, Any] | None = None  # GeoJSON
     country_iso3: str
     description: str
 
 
 class Subject(BaseModel):
 
-    id: int
-    study_id: int
+    subject_id: str
+    study_id: str
+    study_version: PositiveInt
 
     # site details
     country_iso3: str
     date: datetime.date
     type_date: ReferenceDate
+    enrolment_date: datetime.date
 
-    date_hospital_admission: datetime.date
+    date_hospital_admission: datetime.date | None = None
 
     # demographics
-    age: int
+    age_years: PositiveInt
     sex_at_birth: Sex
     ethnicity: Ethnicity
     works_microbiology_lab: bool | None = None
@@ -53,7 +57,7 @@ class Subject(BaseModel):
 
     # Pregnancy
     pregnancy: bool | None = None
-    pregnancy_date_of_delivery: datetime.date
+    pregnancy_date_of_delivery: datetime.date | None = None
     pregnancy_birth_weight_kg: float
     pregnancy_outcome: str | None = None
     pregnancy_gestational_outcome: PregnancyGestationalOutcome = None
@@ -71,7 +75,7 @@ class Subject(BaseModel):
     has_hiv: bool | None = None
     has_hypertension: bool | None = None
     has_malignant_neoplasm: bool | None = None
-    has_smoking: Smoker = None
+    has_smoking: Smoker | None = None
     has_asthma: bool | None = None
     has_chronic_cardiac_disease: bool | None = None
     has_chronic_kidney_disease: bool | None = None
@@ -91,20 +95,19 @@ class Subject(BaseModel):
     hiv_latest_cd4: IntegerRange
     hiv_latest_viral_load_copies_per_ml: int | None = None
 
-    # Outcome
+    has_died: bool | None = None
     date_death: datetime.date | None = None
-    outcome: Outcome
     icu_admitted: bool | None = None
-    date_outcome: datetime.date
 
 
 class Visit(BaseModel):
 
-    id: int
+    visit_id: str
     # site details
     country_iso3: str
     subject_id: int
-    study_id: int
+    study_id: str
+    study_version: PositiveInt
     start_date: datetime.date
     end_date: datetime.date
     duration_type: VisitDuration = VisitDuration.admission
@@ -158,13 +161,17 @@ class Visit(BaseModel):
 
     treatment_o2_flow_vol_max: int | None = None
 
+    outcome: Outcome
+    date_outcome: datetime.date
+
 
 class Observation(BaseModel):
 
-    id: int
-    visit_id: int
-    subject_id: int
-    study_id: int
+    observation_id: int
+    visit_id: str
+    subject_id: str
+    study_id: str
+    study_version: PositiveInt
 
     date: datetime.datetime
     end_date: datetime.datetime | None = None

@@ -7,8 +7,8 @@
     "country_iso3": "GBR"
   },
   "primaryKey": {
-    "subject": "id",
-    "visit": "id"
+    "subject": "subject_id",
+    "visit": "visit_id"
   },
   "subject": {
     "sex_at_birth": {
@@ -20,7 +20,7 @@
       },
       "description": "Sex at Birth"
     },
-    "id": {
+    "subject_id": {
       "field": "﻿subjid",
       "sensitive": true,
       "description": "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
@@ -253,7 +253,7 @@
   },
   "visit": {
     "country_iso3": "GBR",
-    "id": {
+    "visit_id": {
       "comment": "This is the same as visit id!",
       "field": "﻿subjid",
       "sensitive": true
