@@ -1,4 +1,5 @@
 import io
+import re
 import csv
 import json
 import logging
@@ -9,7 +10,6 @@ from collections import defaultdict
 from pathlib import Path
 
 from tqdm import tqdm
-from typing import Literal
 from enum import Enum
 
 
@@ -57,6 +57,29 @@ def get_value_unhashed(row: dict[str, Any], rule: Union[str, dict[str, Any]]) ->
         raise ValueError(f"Could not return value for {rule}")
 
 
+def matching_fields(fields: list[str], pattern: str) -> list[str]:
+    "Returns fields matching pattern"
+    compiled_pattern = re.compile(pattern)
+    return [f for f in fields if compiled_pattern.match(f)]
+
+
+def get_list(row: dict[str, Any], rule: dict[str, Any]) -> list[Any]:
+    """Gets values from row for a combinedType: list rule"""
+
+    assert "fields" in rule
+    assert len(rule["fields"]) >= 1
+    rules = []
+
+    # expand fieldPattern rules
+    for r in rule["fields"]:
+        if "fieldPattern" in r:
+            for match in matching_fields(list(row.keys()), r.get("fieldPattern")):
+                rules.append({"field": match, **r})
+        else:
+            rules.append(r)
+    return [get_value(row, r) for r in rules]
+
+
 def get_combined_type(row: dict[str, Any], rule: dict[str, Any]):
     """Gets value from row for a combinedType rule.
 
@@ -93,6 +116,8 @@ def get_combined_type(row: dict[str, Any], rule: dict[str, Any]):
             return next(filter(None, [get_value(row, r) for r in rules]))
         except StopIteration:
             return None
+    elif combined_type == "list":
+        return get_list(row, rule)
     else:
         raise ValueError(f"Unknown {combined_type} in {rule}")
 
