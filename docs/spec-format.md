@@ -26,7 +26,7 @@ Each table within the ISARIC schema has its associated field mappings.
 
 Key value pairs describing the study table
 
-### subject
+### subject / visit
 
 Keys are **fields / attributes** in the ISARIC schema. Values are **rules**
 that describe the mapping from the source data format. There are several valid
@@ -86,9 +86,11 @@ such as hashing the field.
   a `combinedType` attribute specifying the combination criteria, and
   a `fields` attribute which a list of fields that will be combined.
   Accepted values for `combinedType` are:
-  (i) *any* - Whether any of the fields are non-null (truthy)
-  (i) *all* - Whether all of the fields are non-null (truthy)
-  (i) *firstNonNull* - First in the list of fields that has a non-null value
+
+  * *any* - Whether any of the fields are non-null (truthy)
+  * *all* - Whether all of the fields are non-null (truthy)
+  * *firstNonNull* - First in the list of fields that has a non-null value
+  * *list* - List of various fields
 
   ```json
   {
@@ -118,7 +120,29 @@ such as hashing the field.
   }
   ```
 
+  A list type can have multiple fields within a `fields` key, or can specify
+  multiple fields with a fieldPattern which is a regex that is matched to the
+  list of fields
 
-### visit
+  ```json
+  {
+    "liver_disease": {
+       "combinedType": "list",
+       "fields": [
+          {
+            "fieldPattern": ".*liv.*",
+            "values": {
+              "1": true,
+              "0": false,
+              "2": null
+            }
+          }
+        ]
+     }
+  }
+  ```
+
 
 ### observation
+
+Support for parsing observations has not been added yet

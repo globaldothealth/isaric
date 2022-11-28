@@ -28,6 +28,13 @@ RULE_COMBINED_FIRST_NON_NULL = {
     "combinedType": "firstNonNull",
     "fields": [{"field": "first"}, {"field": "second"}],
 }
+RULE_COMBINED_TYPE_LIST = {"combinedType": "list", "fields": LIVER_DISEASE}
+RULE_COMBINED_TYPE_LIST_PATTERN = {
+    "combinedType": "list",
+    "fields": [
+        {"fieldPattern": ".*liv.*", "values": {"1": True, "0": False, "2": None}}
+    ],
+}
 
 RULE_NON_SENSITIVE = {"field": "id"}
 RULE_SENSITIVE = {"field": "id", "sensitive": True}
@@ -41,6 +48,11 @@ RULE_SENSITIVE = {"field": "id", "sensitive": True}
         (({}, "CONST"), "CONST"),
         (({"modliv": "1", "mildliver": "0"}, RULE_COMBINED_TYPE_ANY), True),
         (({"modliv": "1", "mildliver": "0"}, RULE_COMBINED_TYPE_ALL), False),
+        (({"modliv": "1", "mildliver": "0"}, RULE_COMBINED_TYPE_LIST), [True, False]),
+        (
+            ({"modliv": "1", "mildliver": "0"}, RULE_COMBINED_TYPE_LIST_PATTERN),
+            [True, False],
+        ),
         (({"id": "1"}, RULE_NON_SENSITIVE), "1"),
         (
             ({"id": "1"}, RULE_SENSITIVE),
