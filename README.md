@@ -8,13 +8,25 @@ Clone the repository
 
     git clone git@github.com:globaldothealth/isaric.git
 
+You'll need Python>=3.10 installed to run this application. Switch to the
+cloned repository folder before the following steps.
 
-**Requirements**: Python >= 3.10, you will need to install
-[poetry](https://python-poetry.org). If you are on macOS with
-[`brew`](https://brew.sh) installed, you can `brew install poetry`. Or, using
-the official installer: `curl -sSL https://install.python-poetry.org | python3 -`.
+### Method 1: Using Poetry
 
-Run `poetry install` to install the dependencies.
+We use [poetry](https://python-poetry.org) to manage package dependencies
+
+1. If you are on macOS with [`brew`](https://brew.sh) installed, you can
+   `brew install poetry`. Or, using the official installer: `curl -sSL
+   https://install.python-poetry.org | python3 -`.
+2. Run `poetry install` to install the dependencies.
+
+If this does not work, try using requirements.txt
+
+### Method 2: Using requirements.txt
+
+1. Create a virtual environment: `python3 -m venv`
+2. Switch to the virtual environment: `source venv/bin/activate`
+3. Install from requirements.txt: `pip install -r requirements.txt`
 
 ## Structure
 
@@ -83,6 +95,11 @@ Currently there is only one specification written, with the Subject schema.
 $ poetry run isaric-parser isaric-ccpuk data.csv --output output-ccpuk-subject.csv
 [isaric-ccpuk] parsing CCPUK.csv: 14572it [00:01, 13092.82it/s]
 ```
+
+**Note**: If you used the requirements.txt method for installation, then the
+above will not work. Replace `poetry run isaric-parser` with `python3 -m
+isaric.parser` in the instructions. This will run the `__main__` component of
+the [isaric.parser](isaric/parser.py) module.
 
 ### Development
 
