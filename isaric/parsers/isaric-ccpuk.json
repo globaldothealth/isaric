@@ -334,31 +334,73 @@
       }
     },
     "treatment_dialysis": {
-      "description": "Renal replacement therapy (RRT) or dialysis",
-      "field": "rrt_prtrt",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "rrt_prtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Renal replacement therapy (RRT) or dialysis"
+        },
+        {
+          "field": "daily_rrt_cmtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Dialysis / Hemofiltration?"
+        }
+      ]
     },
     "treatment_ecmo": {
-      "description": "Extracorporeal (ECMO) support",
-      "field": "extracorp_prtrt",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "extracorp_prtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Extracorporeal (ECMO) support"
+        },
+        {
+          "field": "daily_ecmo_prtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "ECLS/ECMO"
+        }
+      ]
     },
     "treatment_high_flow_nasal_cannula": {
-      "description": "High-flow nasal canula?",
-      "field": "oxygenhf_cmoccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "oxygenhf_cmoccur",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "High-flow nasal canula?"
+        },
+        {
+          "field": "daily_nasaloxy_cmtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "High-flow nasal canula?"
+        }
+      ]
     },
     "treatment_immunosuppressant": {
       "description": "Treated with immunosuppressants, including oral (not inhaled) corticosteroids prior to admission / Immunosuppressant e.g. oral (not inhaled) corticosteroids (not low dose hydrocortisone)",
@@ -370,31 +412,73 @@
       }
     },
     "treatment_inhaled_nitric_oxide": {
-      "description": "Inhaled Nitric Oxide",
-      "field": "inhalednit_cmtrt",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "inhalednit_cmtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Inhaled Nitric Oxide"
+        },
+        {
+          "field": "daily_nitritc_cmtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Inhaled Nitric Oxide"
+        }
+      ]
     },
     "treatment_inotropes_vasopressors": {
-      "description": "Inotropes / vasopressors",
-      "field": "inotrop_cmtrt",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "inotrop_cmtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Inotropes / vasopressors"
+        },
+        {
+          "field": "daily_inotrope_cmyn",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Any vasopressor / inotropic support?"
+        }
+      ]
     },
     "treatment_invasive_ventilation": {
-      "description": "Invasive ventilation (Any intubation) ?",
-      "field": "invasive_proccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "invasive_proccur",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Invasive ventilation (Any intubation) ?"
+        },
+        {
+          "field": "daily_invasive_prtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Invasive ventilation?"
+        }
+      ]
     },
     "treatment_monoclonal_antibody": {
       "description": "Tocilizumab",
@@ -406,13 +490,27 @@
       }
     },
     "treatment_noninvasive_ventilation": {
-      "description": "Non-invasive ventilation ? (e.g. BIPAP, CPAP)",
-      "field": "noninvasive_proccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "noninvasive_proccur",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Non-invasive ventilation ? (e.g. BIPAP, CPAP)"
+        },
+        {
+          "field": "daily_noninvasive_prtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Non-invasive ventilation (e.g. NIV (if shorter CRF), BIPAP, CPAP)?"
+        }
+      ]
     },
     "treatment_nsaid": {
       "description": "Non-steroidal anti-inflammatory (NSAID)?",
@@ -469,13 +567,27 @@
       }
     },
     "treatment_prone_position": {
-      "description": "Prone ventilation",
-      "field": "pronevent_prtrt",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "pronevent_prtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Prone ventilation"
+        },
+        {
+          "field": "daily_prone_cmtrt",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "Prone Positioning"
+        }
+      ]  
     },
     "treatment_tocilizumab": {
       "description": "Tocilizumab",
