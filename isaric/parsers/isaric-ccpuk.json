@@ -21,7 +21,7 @@
       "description": "Sex at Birth"
     },
     "subject_id": {
-      "field": "﻿subjid",
+      "field": "subjid",
       "sensitive": true,
       "description": "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
     },
@@ -29,14 +29,31 @@
     "country_iso3": "GBR",
     "date": {
       "combinedType": "firstNonNull",
+      "comment": "using the proposed hierarchy of dates",
       "fields": [
+        {
+          "field": "hostdat",
+          "description": "Admission date at this facility"
+        },
         {
           "field": "flw_date_adm",
           "description": "Roughly at what date were you first admitted to hospital?"
         },
         {
+          "field": "cestdat",
+          "description": "Onset date of first/earliest symptom"
+        },
+        {
           "field": "flw_date_symptoms",
           "description": "Roughly what day did you first experience symptoms of COVID-19?"
+        },
+        {
+          "field": "dsstdat",
+          "description": "Date of Enrolment"
+        },
+        {
+          "field": "daily_dsstdat",
+          "description": "DATE OF ASSESSMENT"
         },
         {
           "field": "flw_survey_date",
@@ -62,8 +79,17 @@
       "description": "Ethnic group (check all that apply)"
     },
     "age": {
-      "field": "age_estimateyears",
-      "description": "Age/Estimated age"
+      "combinedType": "firstNonNull",
+      "fields": [
+        {
+          "field": "age_estimateyearsu",
+          "description": "Age/Estimated age Unit"
+        },
+        {
+          "field": "age_estimateyears",
+          "description": "Age/Estimated age"
+        }
+      ]
     },
     "pathogen": "COVID-19",
     "has_chronic_hematologic_disease": {
@@ -232,8 +258,18 @@
       }
     },
     "date_death": {
-      "field": "flw_date_death",
-      "description": "Date of death"
+      "combinedType": "firstNonNull",
+      "comment": "using the proposed hierarchy of dates - check if dsstdtc dsterm == 4",
+      "fields": [
+        {
+          "field": "dsstdtc",
+          "description": "Outcome date"
+        },
+        {
+          "field": "flw_date_death",
+          "description": "Date of death"
+        }
+      ]
     },
     "outcome": {
       "field": "dsterm",
@@ -433,13 +469,27 @@
       }
     },
     "treatment_other": {
-      "description": "OTHER intervention or procedure",
-      "field": "other_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "daily_prperf",
+          "values": {
+            "1": true,
+            "0": false,
+            "2": null
+          },
+          "description": "Other intervention or procedure?"
+        },
+        {
+          "field": "other_cmyn",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "OTHER intervention or procedure"
+        }
+      ]
     },
     "treatment_oxygen_interface": {
       "description": "Oxygen therapy",
