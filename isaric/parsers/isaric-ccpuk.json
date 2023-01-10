@@ -334,6 +334,7 @@
       }
     },
     "treatment_dialysis": {
+      "description": "Renal replacement therapy (RRT) or dialysis",
       "combinedType": "any",
       "fields": [
         {
@@ -343,7 +344,7 @@
             "2": false,
             "3": null
           },
-          "description": "Renal replacement therapy (RRT) or dialysis"
+          "description": "Renal replacement therapy (RRT)"
         },
         {
           "field": "daily_rrt_cmtrt",
@@ -357,6 +358,7 @@
       ]
     },
     "treatment_ecmo": {
+      "description": "Extracorporeal (ECMO) support",
       "combinedType": "any",
       "fields": [
         {
@@ -380,6 +382,7 @@
       ]
     },
     "treatment_high_flow_nasal_cannula": {
+      "description": "High-flow nasal canula?",
       "combinedType": "any",
       "fields": [
         {
@@ -388,8 +391,7 @@
             "1": true,
             "2": false,
             "3": null
-          },
-          "description": "High-flow nasal canula?"
+          }
         },
         {
           "field": "daily_nasaloxy_cmtrt",
@@ -397,8 +399,7 @@
             "1": true,
             "2": false,
             "3": null
-          },
-          "description": "High-flow nasal canula?"
+          }
         }
       ]
     },
@@ -412,6 +413,7 @@
       }
     },
     "treatment_inhaled_nitric_oxide": {
+      "description": "Inhaled Nitric Oxide",
       "combinedType": "any",
       "fields": [
         {
@@ -420,8 +422,7 @@
             "1": true,
             "2": false,
             "3": null
-          },
-          "description": "Inhaled Nitric Oxide"
+          }
         },
         {
           "field": "daily_nitritc_cmtrt",
@@ -429,12 +430,12 @@
             "1": true,
             "2": false,
             "3": null
-          },
-          "description": "Inhaled Nitric Oxide"
+          }
         }
       ]
     },
     "treatment_inotropes_vasopressors": {
+      "description": "Inotropes / vasopressors",
       "combinedType": "any",
       "fields": [
         {
@@ -458,6 +459,7 @@
       ]
     },
     "treatment_invasive_ventilation": {
+      "description": "Invasive ventilation?",
       "combinedType": "any",
       "fields": [
         {
@@ -490,6 +492,7 @@
       }
     },
     "treatment_noninvasive_ventilation": {
+      "description": "Non-invasive ventilation",
       "combinedType": "any",
       "fields": [
         {
@@ -567,6 +570,7 @@
       }
     },
     "treatment_prone_position": {
+      "description": "Prone Positioning",
       "combinedType": "any",
       "fields": [
         {
@@ -587,7 +591,7 @@
           },
           "description": "Prone Positioning"
         }
-      ]  
+      ]
     },
     "treatment_tocilizumab": {
       "description": "Tocilizumab",
