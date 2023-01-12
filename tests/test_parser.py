@@ -22,6 +22,10 @@ LIVER_DISEASE = [
 ]
 
 
+ROW_CONDITIONAL = {"outcome_date": "2022-01-01", "outcome_type": 4}
+RULE_CONDITIONAL_OK = {"field": "outcome_date", "if": {"outcome_type": 4}}
+RULE_CONDITIONAL_FAIL = {"field": "outcome_date", "if": {"outcome_type": {"<": 4}}}
+
 RULE_COMBINED_TYPE_ANY = {"combinedType": "any", "fields": LIVER_DISEASE}
 RULE_COMBINED_TYPE_ALL = {"combinedType": "all", "fields": LIVER_DISEASE}
 RULE_COMBINED_FIRST_NON_NULL = {
@@ -62,8 +66,38 @@ RULE_SENSITIVE = {"field": "id", "sensitive": True}
         (({"first": "1", "second": "2"}, RULE_COMBINED_FIRST_NON_NULL), "1"),
         (({"first": "2", "second": "1"}, RULE_COMBINED_FIRST_NON_NULL), "2"),
         (({"first": "", "second": "3"}, RULE_COMBINED_FIRST_NON_NULL), "3"),
+        ((ROW_CONDITIONAL, RULE_CONDITIONAL_OK), "2022-01-01"),
+        ((ROW_CONDITIONAL, RULE_CONDITIONAL_FAIL), None),
     ],
 )
 def test_get_value(row_rule, expected):
     row, rule = row_rule
     assert parser.get_value(row, rule) == expected
+
+
+@pytest.mark.parametrize(
+    "row_rule,expected",
+    [
+        ((ROW_CONDITIONAL, {"outcome_type": 4}), True),
+        ((ROW_CONDITIONAL, {"outcome_type": 3}), False),
+        ((ROW_CONDITIONAL, {"outcome_type": {">": 2}}), True),
+        ((ROW_CONDITIONAL, {"outcome_type": {"<": 10}}), True),
+        ((ROW_CONDITIONAL, {"outcome_type": {"!=": 4}}), False),
+        (
+            (
+                ROW_CONDITIONAL,
+                {"any": [{"outcome_type": {">": 2}}, {"outcome_date": {"<", "2022"}}]},
+            ),
+            True,
+        ),
+        (
+            (
+                ROW_CONDITIONAL,
+                {"all": [{"outcome_type": {">": 2}}, {"outcome_date": {"<", "2022"}}]},
+            ),
+            False,
+        ),
+    ],
+)
+def test_parse_if(row_rule, expected):
+    assert parser.parse_if(*row_rule) == expected
