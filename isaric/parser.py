@@ -43,6 +43,9 @@ def get_value_unhashed(row: dict[str, Any], rule: Union[str, dict[str, Any]]) ->
     if isinstance(rule, str):  # constant
         return rule
     if "field" in rule:
+        # do not parse field if condition is not met
+        if "if" in rule and not parse_if(row, rule["if"]):
+            return None
         value = row[rule["field"]]
         if "values" in rule:
             return rule["values"].get(value)
@@ -61,6 +64,39 @@ def matching_fields(fields: list[str], pattern: str) -> list[str]:
     "Returns fields matching pattern"
     compiled_pattern = re.compile(pattern)
     return [f for f in fields if compiled_pattern.match(f)]
+
+
+def parse_if(row: dict[str, Any], rule: dict[str, Any]) -> bool:
+    "Parse conditional statements and return a boolean"
+
+    n_keys = len(rule.keys())
+    assert n_keys == 1
+    key = next(iter(rule.keys()))
+    if key == "any" and isinstance(rule[key], list):
+        return any(parse_if(row, r) for r in rule[key])
+    elif key == "all" and isinstance(rule[key], list):
+        return all(parse_if(row, r) for r in rule[key])
+    attr_value = row[key]
+    if isinstance(rule[key], dict):
+        cmp = next(iter(rule[key]))
+        value = rule[key][cmp]
+        if cmp == ">":
+            return attr_value > value
+        elif cmp == ">=":
+            return attr_value >= value
+        elif cmp == "<":
+            return attr_value < value
+        elif cmp == "<=":
+            return attr_value <= value
+        elif cmp == "!=":
+            return attr_value != value
+        elif cmp in ["=", "=="]:
+            return attr_value == value
+        else:
+            raise ValueError(f"Unrecognized operand: {cmp}")
+    else:
+        value = rule[key]
+        return attr_value == value
 
 
 def get_list(row: dict[str, Any], rule: dict[str, Any]) -> list[Any]:
