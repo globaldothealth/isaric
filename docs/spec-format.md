@@ -51,6 +51,54 @@ such as hashing the field.
      }
   }
 
+* **Single field with conditional**: Maps to a single field from the source format
+  only if condition(s) are met. The value is set to *null* if the condition fails.
+
+  ```json
+  {
+   "field": "foobar",
+   "if": {"foobar_type": 4}
+  }
+  ```
+
+  Operations other than equals can be specified as `{"field_name": {op: value}}`
+  where *op* is one of `< | > | <= | >= | !=`. Logical operations (and, or) are
+  supported with `"any": [ condition-list ]` (or) and `"all": [ condition-list ]` (and).
+  In the above example, if we wanted to set from field *foobar* only if
+  *foobar_type* is 4 and *bazbar* < 5:
+
+  ```json
+    {
+    "field": "foobar",
+    "if": {"all": [
+      {"foobar_type": 4},
+      {"bazbar": {"<": 5}}
+    ]}
+    }
+  ```
+
+* **Single field with unit**: Often values need to be normalised to a particular unit.
+  This can be done by setting `source_unit` and `unit` attributes on a field. The
+  [pint](https://pint.readthedocs.io) library is used, so the units should be in a format
+  that pint understands. Generally pint works well with
+  [most common units](https://github.com/hgrecco/pint/blob/master/pint/default_en.txt).
+  The `source_unit` field can also be a rule, but `unit` must be a string. For example,
+  to set the age based on a field called `age_unit` which can be months or years:
+
+  ```json
+  {
+  "field": "age_estimate",
+  "source_unit": {
+    "field": "age_estimateunit",
+    "values": {
+       "1": "months",
+       "2": "years"
+    },
+    "unit": "years"
+    }
+  }
+  ```
+
 * **Single field with mapping**: Same as **Single field**, but with an extra
   `values` key that describes the mapping from the values to the ones in the
   schema. This covers boolean fields, with the mappings being to `true` | `false` | `null`.
