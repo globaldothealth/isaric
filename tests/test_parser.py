@@ -65,6 +65,17 @@ RULE_SENSITIVE = {"field": "id", "sensitive": True}
             ({"modliv": "1", "mildliver": "0"}, RULE_COMBINED_TYPE_LIST_PATTERN),
             [True, False],
         ),
+        (
+            (
+                {"modliv": "1", "mildliver": "3"},
+                RULE_COMBINED_TYPE_LIST_PATTERN | {"exclude": "null"},
+            ),
+            [True],
+        ),
+        (
+            ({"modliv": "1", "mildliver": "3"}, RULE_COMBINED_TYPE_LIST_PATTERN),
+            [True, None],
+        ),
         (({"id": "1"}, RULE_NON_SENSITIVE), "1"),
         (
             ({"id": "1"}, RULE_SENSITIVE),

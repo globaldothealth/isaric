@@ -190,6 +190,11 @@ such as hashing the field.
   }
   ```
 
+  List fields can have an optional *exclude* key which can either be a list or values
+  or the strings `null | falsy`. The exclude key can be `null` in which cases we drop the null values (None in Python) or it can be `falsy`in which case falsy values are excluded (empty lists, boolean False, 0). Alternatively a list of values to be excluded can be provided.
+
+  If the exclude attribute is not set, no exclusions take place and all values are returned as-is.
+
 
 ### observation
 
