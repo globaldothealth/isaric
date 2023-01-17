@@ -8,9 +8,10 @@ import argparse
 from typing import Optional, Any, Union
 from collections import defaultdict
 from pathlib import Path
-
-from tqdm import tqdm
 from enum import Enum
+
+import pint
+from tqdm import tqdm
 
 
 class Table(str, Enum):  # will be StrEnum from Python 3.11
@@ -48,9 +49,17 @@ def get_value_unhashed(row: dict[str, Any], rule: Union[str, dict[str, Any]]) ->
             return None
         value = row[rule["field"]]
         if "values" in rule:
-            return rule["values"].get(value)
-        else:
-            return value
+            value = rule["values"].get(value)
+        if "source_unit" in rule and "unit" in rule:  # perform unit conversion
+            source_unit = get_value(row, rule["source_unit"])
+            unit = rule["unit"]
+            print(f"Will convert from {source_unit} to {unit}")
+            try:
+                value = pint.Quantity(float(value), source_unit).to(unit).m
+            except ValueError:
+                logging.error(f"Could not convert {value} to a floating point")
+                raise
+        return value
     elif "combinedType" in rule:
         return get_combined_type(row, rule)
     elif "otherField" in rule:

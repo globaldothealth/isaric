@@ -26,6 +26,14 @@ ROW_CONDITIONAL = {"outcome_date": "2022-01-01", "outcome_type": 4}
 RULE_CONDITIONAL_OK = {"field": "outcome_date", "if": {"outcome_type": 4}}
 RULE_CONDITIONAL_FAIL = {"field": "outcome_date", "if": {"outcome_type": {"<": 4}}}
 
+ROW_UNIT_MONTH = {"age": 18, "age_unit": "1"}
+ROW_UNIT_YEAR = {"age": 18, "age_unit": "2"}
+RULE_UNIT = {
+    "field": "age",
+    "unit": "years",
+    "source_unit": {"field": "age_unit", "values": {"1": "months", "2": "years"}},
+}
+
 RULE_COMBINED_TYPE_ANY = {"combinedType": "any", "fields": LIVER_DISEASE}
 RULE_COMBINED_TYPE_ALL = {"combinedType": "all", "fields": LIVER_DISEASE}
 RULE_COMBINED_FIRST_NON_NULL = {
@@ -68,6 +76,8 @@ RULE_SENSITIVE = {"field": "id", "sensitive": True}
         (({"first": "", "second": "3"}, RULE_COMBINED_FIRST_NON_NULL), "3"),
         ((ROW_CONDITIONAL, RULE_CONDITIONAL_OK), "2022-01-01"),
         ((ROW_CONDITIONAL, RULE_CONDITIONAL_FAIL), None),
+        ((ROW_UNIT_MONTH, RULE_UNIT), 1.5),
+        ((ROW_UNIT_YEAR, RULE_UNIT), 18),
     ],
 )
 def test_get_value(row_rule, expected):
