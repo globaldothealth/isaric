@@ -2,12 +2,16 @@
   "name": "isaric-ccpuk",
   "description": "ISARIC CCPUK study",
   "tables": {
-    "study": {},
+    "study": {
+      "kind": "constant"
+    },
     "subject": {
+      "kind": "groupBy",
       "groupBy": "subject_id",
       "aggregation": "lastNotNull"
     },
     "visit": {
+      "kind": "groupBy",
       "groupBy": "visit_id",
       "aggregation": "lastNotNull"
     }
