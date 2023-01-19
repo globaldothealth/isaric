@@ -14,12 +14,6 @@ import pint
 from tqdm import tqdm
 
 
-class Table(str, Enum):  # will be StrEnum from Python 3.11
-    subject = "subject"
-    visit = "visit"
-    # observation = "observation"  # uncomment when observation is enabled
-
-
 def get_value(row: dict[str, Any], rule: Union[str, dict[str, Any]]) -> Any:
     """Gets value from row using rule
 
@@ -191,12 +185,7 @@ def hash_sensitive(value: str) -> str:
 
 class Parser:
 
-    # We don't have unique subject ID, as the same subject could be
-    # re-admitted and get a different subjid:
-    # https://github.com/globaldothealth/isaric/issues/12
-
-    subject: dict[str, Any] = defaultdict(dict)
-    visit: dict[str, Any] = defaultdict(dict)
+    data: dict[str, Any] = {}
     fieldnames: dict[str, list[str]] = {}
 
     def __init__(self, spec: str):
@@ -207,28 +196,47 @@ class Parser:
                 spec = str(possible_spec)
         with open(spec) as fp:
             self.spec = json.load(fp)
-        if "study" not in self.spec:
-            raise ValueError("Parser specification missing required 'study' element")
-        if "subject" not in self.spec:
-            raise ValueError("Parser specification missing required 'subject' element")
-        # visits and observations not implemented yet
-        self.study = self.spec.get("study")
-        for table in Table:
-            self.fieldnames[table.value] = list(self.spec[table.value].keys())
+        self.tables = self.spec["tables"]
+        for table in self.tables:
+            if table not in self.spec:
+                raise ValueError(
+                    f"Parser specification missing required '{table}' element"
+                )
+            self.fieldnames[table] = list(self.spec[table].keys())
 
-    def update_subjects(self, row):
-        primary_key_field = self.spec["primaryKey"]["subject"]
-        primary_key = row[self.spec["subject"][primary_key_field]["field"]]
-        for attr in self.spec["subject"]:
-            if (value := get_value(row, self.spec["subject"][attr])) is not None:
-                self.subject[primary_key][attr] = value
+    def update_table(self, table: str, row: dict[str, Any]):
+        # Currently only aggregations are supported
 
-    def update_visits(self, row):
-        primary_key_field = self.spec["primaryKey"]["visit"]
-        primary_key = row[self.spec["visit"][primary_key_field]["field"]]
-        for attr in self.spec["visit"]:
-            if (value := get_value(row, self.spec["visit"][attr])) is not None:
-                self.visit[primary_key][attr] = value
+        aggregation = self.tables[table].get("aggregation")
+        group_field = self.tables[table].get("groupBy")
+        kind = self.tables[table].get("kind")
+        if kind is None:
+            raise ValueError(
+                f"Required 'kind' attribute within 'tables' not present for {table}"
+            )
+        if group_field is not None and aggregation != "lastNotNull":
+            raise ValueError(
+                f"groupBy needs aggregation=lastNotNull to be set for table: {table}"
+            )
+        if group_field:
+            if table not in self.data:
+                self.data[table] = defaultdict(dict)
+            group_key = row[self.spec[table][group_field]["field"]]
+            for attr in self.spec[table]:
+                if (value := get_value(row, self.spec[table][attr])) is not None:
+                    self.data[table][group_key][attr] = value
+        elif kind == "constant":  # only one row
+            self.data[table] = [self.spec[table]]
+        else:
+            # no grouping, one-to-one mapping
+            if table not in self.data:
+                self.data[table] = []
+            self.data[table].append(
+                {
+                    attr: get_value(row, self.spec[table][attr])
+                    for attr in self.spec[table]
+                }
+            )
 
     def parse(self, file: str):
         self.clear()
@@ -238,8 +246,8 @@ class Parser:
                 reader,
                 desc=f"[{self.spec['name']}] parsing {Path(file).name}",
             ):
-                self.update_subjects(row)
-                self.update_visits(row)
+                for table in self.tables:
+                    self.update_table(table, row)
         self.validate()
         return self
 
@@ -249,20 +257,26 @@ class Parser:
 
     def clear(self):
         "Clears parser state"
-        self.subject = defaultdict(dict)
+        self.data = {}
 
     def write_csv(
         self,
-        table: Table,
+        table: str,
         output: Optional[str] = None,
     ) -> str | None:
         "Writes to output as CSV a particular table"
 
         def writerows(fp, table):
+            print(f"Writing {table}")
             writer = csv.DictWriter(fp, fieldnames=self.fieldnames[table])
             writer.writeheader()
-            for i in getattr(self, table):
-                writer.writerow(getattr(self, table)[i])
+            if "groupBy" in self.tables[table]:
+                for i in self.data[table]:
+                    writer.writerow(self.data[table][i])
+            else:
+                print(f"groupBy not in table {table}")
+                for row in self.data[table]:
+                    writer.writerow(row)
             return fp
 
         if output:
@@ -276,8 +290,8 @@ class Parser:
     def save(self, output: Optional[str] = None):
         "Saves all tables to CSV"
 
-        for table in Table:
-            self.write_csv(table, f"{output}-{table.value}.csv")
+        for table in self.tables:
+            self.write_csv(table, f"{output}-{table}.csv")
 
 
 def main():
