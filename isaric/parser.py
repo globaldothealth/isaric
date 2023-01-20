@@ -5,7 +5,7 @@ import json
 import logging
 import hashlib
 import argparse
-from typing import Optional, Any, Union
+from typing import Optional, Any, Union, Iterable
 from collections import defaultdict
 from pathlib import Path
 from enum import Enum
@@ -259,6 +259,17 @@ class Parser:
         "Clears parser state"
         self.data = {}
 
+    def read_table(self, table: str) -> Iterable[dict[str, Any]]:
+        if table not in self.tables:
+            raise ValueError(f"Invalid table: {table}")
+        if "groupBy" in self.tables[table]:
+            for i in self.data[table]:
+                yield self.data[table][i]
+        else:
+            print(f"groupBy not in table {table}")
+            for row in self.data[table]:
+                yield row
+
     def write_csv(
         self,
         table: str,
@@ -270,13 +281,8 @@ class Parser:
             print(f"Writing {table}")
             writer = csv.DictWriter(fp, fieldnames=self.fieldnames[table])
             writer.writeheader()
-            if "groupBy" in self.tables[table]:
-                for i in self.data[table]:
-                    writer.writerow(self.data[table][i])
-            else:
-                print(f"groupBy not in table {table}")
-                for row in self.data[table]:
-                    writer.writerow(row)
+            for row in self.read_table(table):
+                writer.writerow(row)
             return fp
 
         if output:
