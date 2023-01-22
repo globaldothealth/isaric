@@ -60,21 +60,82 @@
       ]
     },
     "ethnicity": {
-      "field": "ethnic___1",
-      "comment": "Only gets the first ethnicity, should be changed to combinedType: list",
-      "values": {
-        "1": "Arab",
-        "2": "Black",
-        "3": "East_Asian",
-        "4": "South_Asian",
-        "5": "West_Asian",
-        "6": "Latin_American",
-        "7": "White",
-        "8": "Aboriginal_First_Nations",
-        "9": "Other",
-        "10": null
-      },
-      "description": "Ethnic group (check all that apply)"
+      "description": "Ethnic group (check all that apply)",
+      "combinedType": "list",
+      "fields": [
+        {
+          "field": "ethnic___1",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "Arab"
+        },
+        {
+          "field": "ethnic___2",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "Black"
+        },
+        {
+          "field": "ethnic___3",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "East_Asian"
+        },
+        {
+          "field": "ethnic___4",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "South_Asian"
+        },
+        {
+          "field": "ethnic___5",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "West_Asian"
+        },
+        {
+          "field": "ethnic___6",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "Latin_American"
+        },
+        {
+          "field": "ethnic___7",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "White"
+        },
+        {
+          "field": "ethnic___8",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "Aboriginal_First_Nations"
+        },
+        {
+          "field": "ethnic___9",
+          "values": {
+            "1": true,
+            "0": false,
+          },
+          "description": "Other"
+        }
+      ]
     },
     "age": {
       "field": "age_estimateyears",
