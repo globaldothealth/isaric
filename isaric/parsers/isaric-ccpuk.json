@@ -286,15 +286,6 @@
       "field": "icu_hostdat",
       "mappingType": "exists"
     },
-    "treatment_ace_inhibitors": {
-      "description": "Angiotensin converting enzyme inhibitors (ACEI)?",
-      "field": "chronic_ace_cmoccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
-    },
     "treatment_antibiotics": {
       "description": "Antibiotic agent?",
       "field": "antibiotic_cmyn",
@@ -316,15 +307,6 @@
     "treatment_antivirals": {
       "description": "Antiviral agent?",
       "field": "antiviral_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
-    },
-    "treatment_arb": {
-      "description": "Angiotensin II receptor blockers (ARBs)?",
-      "field": "chronic_arb_cmoccur",
       "values": {
         "1": true,
         "2": false,
@@ -529,15 +511,6 @@
           "description": "Non-invasive ventilation (e.g. NIV (if shorter CRF), BIPAP, CPAP)?"
         }
       ]
-    },
-    "treatment_nsaid": {
-      "description": "Non-steroidal anti-inflammatory (NSAID)?",
-      "field": "chronic_nsaid_cmoccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
     },
     "treatment_offlabel": {
       "description": "Off-label / Compassionate Use medications?",
