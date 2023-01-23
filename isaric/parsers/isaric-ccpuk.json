@@ -44,14 +44,31 @@
     "country_iso3": "GBR",
     "date": {
       "combinedType": "firstNonNull",
+      "comment": "using the proposed hierarchy of dates",
       "fields": [
+        {
+          "field": "hostdat",
+          "description": "Admission date at this facility"
+        },
         {
           "field": "flw_date_adm",
           "description": "Roughly at what date were you first admitted to hospital?"
         },
         {
+          "field": "cestdat",
+          "description": "Onset date of first/earliest symptom"
+        },
+        {
           "field": "flw_date_symptoms",
           "description": "Roughly what day did you first experience symptoms of COVID-19?"
+        },
+        {
+          "field": "dsstdat",
+          "description": "Date of enrolment"
+        },
+        {
+          "field": "daily_dsstdat",
+          "description": "Date of assessment"
         },
         {
           "field": "flw_survey_date",
@@ -332,8 +349,21 @@
       }
     },
     "date_death": {
-      "field": "flw_date_death",
-      "description": "Date of death"
+      "combinedType": "firstNonNull",
+      "comment": "using the proposed hierarchy of dates - check if dsstdtc dsterm == 4",
+      "fields": [
+        {
+          "field": "dsstdtc",
+          "description": "Outcome date",
+          "if": {
+            "dsterm": 4
+          }
+        },
+        {
+          "field": "flw_date_death",
+          "description": "Date of death"
+        }
+      ]
     },
     "outcome": {
       "field": "dsterm",
@@ -607,13 +637,27 @@
       }
     },
     "treatment_other": {
-      "description": "OTHER intervention or procedure",
-      "field": "other_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "daily_prperf",
+          "values": {
+            "1": true,
+            "0": false,
+            "2": null
+          },
+          "description": "Other intervention or procedure?"
+        },
+        {
+          "field": "other_cmyn",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          },
+          "description": "OTHER intervention or procedure"
+        }
+      ]
     },
     "treatment_oxygen_interface": {
       "description": "Oxygen therapy",
