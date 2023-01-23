@@ -21,7 +21,7 @@
       "description": "Sex at Birth"
     },
     "subject_id": {
-      "field": "subjid",
+      "field": "﻿subjid",
       "sensitive": true,
       "description": "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
     },
@@ -49,11 +49,11 @@
         },
         {
           "field": "dsstdat",
-          "description": "Date of Enrolment"
+          "description": "Date of enrolment"
         },
         {
           "field": "daily_dsstdat",
-          "description": "DATE OF ASSESSMENT"
+          "description": "Date of assessment"
         },
         {
           "field": "flw_survey_date",
@@ -263,7 +263,10 @@
       "fields": [
         {
           "field": "dsstdtc",
-          "description": "Outcome date"
+          "description": "Outcome date",
+          "if": {
+            "dsterm": 4
+          }
         },
         {
           "field": "flw_date_death",
