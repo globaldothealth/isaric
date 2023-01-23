@@ -32,10 +32,7 @@ If this does not work, try using requirements.txt
 
 ```shell
 .
-├── docs
-│   └── spec-format.md
 ├── isaric  # Python module
-│   ├── parser.py             # main program
 │   ├── parsers               # specification files used by parser.py
 │   │   └── isaric-ccpuk.json
 │   ├── schemas.py            # pydantic schemas
@@ -49,12 +46,6 @@ If this does not work, try using requirements.txt
     └── test_example.py
 ```
 
-The primary entry point of the application is
-[isaric/parser.py](isaric/parser.py) which reads in data using a specified
-*taxonomy* and *specification file* that describes the field mappings from the
-source file to the ISARIC schemas defined in
-[isaric/schemas.py](isaric/schemas.py).
-
 **Taxonomy**: Taxonomy files, such as
 [isaric/taxonomy/v1.json](isaric/taxonomy/v1.json) contain categorisations and
 the canonical name used by the ISARIC schema for a particular category.
@@ -63,43 +54,20 @@ file to enable future extensibility.
 
 **Specifications**: Specification files, such as
 [isaric-ccpuk](isaric/parsers/isaric-ccpuk.json) under `parsers` describe the
-field mappings. The full description of the specification file format is at
-[docs/spec-format](docs/spec-format.md). The format is under development and
-expected to change.
+field mappings that are parsed by [adtl](https://github.com/globaldothealth/adtl).
+The parser JSON file follows the adtl
+[specification](https://github.com/globaldothealth/adtl/blob/main/docs/specification.md).
 
 ## Run
 
-The parser is installed as the `isaric-parser` script within the poetry virtual
-environment, and can be invoked by using `poetry run isaric-parser`.
-
-```
-$ poetry run isaric-parser --help
-
-usage: isaric-parser [-h] [-o OUTPUT] spec file
-
-Parses clinical data into ISARIC schema as CSV given a specification
-
-positional arguments:
-  spec                  Specification file to use, can also take a parser name located in isaric/parsers
-  file                  File to read in
-
-options:
-  -h, --help            show this help message and exit
-  -o OUTPUT, --output OUTPUT
-                        Output file, if blank, writes to standard output
-```
-
-Currently there is only one specification written, with the Subject schema.
+To transform the input files (usually database snapshots from REDCap), install
+[adtl](https://github.com/globaldothealth/adtl). Use `adtl --help` to look at
+the options. As an example, to transform the REDCap data to the ISARIC schema
+for the CCPUK study:
 
 ```shell
-$ poetry run isaric-parser isaric-ccpuk data.csv --output output-ccpuk-subject.csv
-[isaric-ccpuk] parsing CCPUK.csv: 14572it [00:01, 13092.82it/s]
+adtl isaric/parsers/isaric-ccpuk.json data.csv -o output
 ```
-
-**Note**: If you used the requirements.txt method for installation, then the
-above will not work. Replace `poetry run isaric-parser` with `python3 -m
-isaric.parser` in the instructions. This will run the `__main__` component of
-the [isaric.parser](isaric/parser.py) module.
 
 ### Development
 
