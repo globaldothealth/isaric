@@ -91,7 +91,6 @@
       "description": "Pregnant ?"
     },
     "pregnancy_date_of_delivery": {
-<<<<<<< HEAD
       "comment": "considers delivery before and after admission",
       "combinedType": "any",
       "fields":[
@@ -104,11 +103,6 @@
           "description": "Delivery date"
         }
       ]
-=======
-      "comment": "should outcome form 'dlvrdtc_rptestcd_out' be considered?"
-      "field": "dlvrdtc_rptestcd",
-      "description": "Delivery date"
->>>>>>> b5ca3fdd0bdcbaf687491098ed86226417362d1e
     },
     "pregnancy_birth_weight_kg": {
       "field": "apvs_weight",
@@ -123,7 +117,6 @@
       "description": "Birth weight"
     },
     "pregnancy_outcome": {
-<<<<<<< HEAD
       "comment": "considers outcome before and after admission",
       "combinedType": "any",
       "fields":[
@@ -145,25 +138,13 @@
         }
         
       ]
-=======
-      "field": "pregout_rptestcd",
-      "values": {
-        "1": "Live birth",
-        "2": "Still birth"
-      },
-      "description": "Pregnancy Outcome"
->>>>>>> b5ca3fdd0bdcbaf687491098ed86226417362d1e
     },
     "pregnancy_gestational_outcome": {
       "field": "apsc_gestout",
       "values": {
         "1": "Term birth",
-<<<<<<< HEAD
         "2": "Preterm birth",
         "3": null
-=======
-        "2": "Preterm birth"
->>>>>>> b5ca3fdd0bdcbaf687491098ed86226417362d1e
       },
       "description": "Gestational outcome"
     },
@@ -177,7 +158,6 @@
       "description": "Breastfed"
     },
     "pregnancy_post_partum": {
-<<<<<<< HEAD
       "comment": "considers status before and after admission",
       "combinedType": "any",
       "fields":[
@@ -200,15 +180,6 @@
           "description": "Post Partum (within six weeks of delivery)"  
         }
       ]
-=======
-      "field": "postpart_rptestcd",
-      "values": {
-        "1": true,
-        "0": false,
-        "3": null
-      },
-      "description": "Post Partum (within six weeks of delivery)"
->>>>>>> b5ca3fdd0bdcbaf687491098ed86226417362d1e
     },
     "pregnancy_gestational_assessment_days": {
       "field": "egestage_rptestcd",
