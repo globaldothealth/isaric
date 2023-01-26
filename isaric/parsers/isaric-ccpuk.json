@@ -134,6 +134,110 @@
       "description": "Age/Estimated age"
     },
     "pathogen": "COVID-19",
+    "pregnancy": {
+      "field": "pregyn_rptestcd",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      },
+      "description": "Pregnant ?"
+    },
+    "pregnancy_date_of_delivery": {
+      "comment": "considers delivery before and after admission",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "dlvrdtc_rptestcd",
+          "description": "Delivery date"
+        },
+        {
+          "field": "dlvrdtc_rptestcd_out",
+          "description": "Delivery date"
+        }
+      ]
+    },
+    "pregnancy_birth_weight_kg": {
+      "field": "apvs_weight",
+      "source_unit": {
+        "field": "apvs_weightu",
+        "values": {
+          "1": "kg",
+          "2": "lbs"
+        },
+        "unit": "kg"
+      },
+      "description": "Birth weight"
+    },
+    "pregnancy_outcome": {
+      "comment": "considers outcome before and after admission",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "pregout_rptestcd",
+          "values": {
+            "1": "Live birth",
+            "2": "Still birth"
+          },
+          "description": "Pregnancy Outcome"
+        },
+        {
+          "field": "pregout_rptestcd_out",
+          "values": {
+            "1": "Live birth",
+            "2": "Still birth"
+          },
+          "description": "Pregnancy Outcome"
+        }
+      ]
+    },
+    "pregnancy_gestational_outcome": {
+      "field": "apsc_gestout",
+      "values": {
+        "1": "Term birth",
+        "2": "Preterm birth",
+        "3": null
+      },
+      "description": "Gestational outcome"
+    },
+    "pregnancy_whether_breastfed": {
+      "field": "apsc_brfedind",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      },
+      "description": "Breastfed"
+    },
+    "pregnancy_post_partum": {
+      "comment": "considers status before and after admission",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "postpart_rptestcd",
+          "values": {
+            "1": true,
+            "0": false,
+            "3": null
+          },
+          "description": "Post Partum (within six weeks of delivery)"
+        },
+        {
+          "field": "postpart_rptestcd_out",
+          "values": {
+            "1": true,
+            "0": false,
+            "3": null
+          },
+          "description": "Post Partum (within six weeks of delivery)"
+        }
+      ]
+    },
+    "pregnancy_gestational_assessment_days": {
+      "field": "egestage_rptestcd",
+      "description": "If YES: Gestational weeks assessment:",
+      "comment": "the mapped field 'egestage_rptestcd' has data in weeks not days? there is no related source unit field in the data"
+    },
     "has_chronic_hematologic_disease": {
       "field": "chronichaemo_mhyn",
       "values": {
