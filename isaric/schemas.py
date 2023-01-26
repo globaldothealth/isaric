@@ -39,11 +39,8 @@ class Subject(BaseModel):
 
     # site details
     country_iso3: str
-    date: datetime.date
-    type_date: ReferenceDate
     enrolment_date: datetime.date
-
-    date_hospital_admission: datetime.date | None = None
+    admission_date: datetime.date | None = None
 
     # demographics
     age_years: PositiveInt
