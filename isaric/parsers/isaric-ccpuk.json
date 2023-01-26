@@ -42,39 +42,13 @@
     },
     "study_id": "isaric-ccpuk",
     "country_iso3": "GBR",
-    "date": {
-      "combinedType": "firstNonNull",
-      "comment": "using the proposed hierarchy of dates",
-      "fields": [
-        {
-          "field": "hostdat",
-          "description": "Admission date at this facility"
-        },
-        {
-          "field": "flw_date_adm",
-          "description": "Roughly at what date were you first admitted to hospital?"
-        },
-        {
-          "field": "cestdat",
-          "description": "Onset date of first/earliest symptom"
-        },
-        {
-          "field": "flw_date_symptoms",
-          "description": "Roughly what day did you first experience symptoms of COVID-19?"
-        },
-        {
-          "field": "dsstdat",
-          "description": "Date of enrolment"
-        },
-        {
-          "field": "daily_dsstdat",
-          "description": "Date of assessment"
-        },
-        {
-          "field": "flw_survey_date",
-          "description": "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)"
-        }
-      ]
+    "enrolment_date": {
+      "field": "dsstdat",
+      "description": "Date of Enrolment"
+    },
+    "admission_date": {
+      "field": "hostdat",
+      "description": "Admission date at this facility"
     },
     "ethnicity": {
       "description": "Ethnic groups",
@@ -331,7 +305,7 @@
           },
           "description": "Treated with immunosuppressants, including oral (not inhaled) corticosteroids prior to admission / Immunosuppressant e.g. oral (not inhaled) corticosteroids (not low dose hydrocortisone)"
         }
-      ]      
+      ]
     },
     "has_solid_organ_transplant": {
       "field": "vulnerable_transplant",
@@ -341,7 +315,7 @@
         "3": null
       },
       "description": "Solid organ transplant recipients:"
-    },    
+    },
     "has_comorbidity_other": {
       "otherField": true,
       "fieldSet": {
@@ -394,8 +368,38 @@
       "sensitive": true
     },
     "start_date": {
-      "comment": "Alternative dates should be considered as well",
-      "field": "hostdat"
+      "comment": "using the proposed hierarchy of dates",
+      "combinedType": "firstNonNull",
+      "fields": [
+        {
+          "field": "hostdat",
+          "description": "Admission date at this facility"
+        },
+        {
+          "field": "flw_date_adm",
+          "description": "Roughly at what date were you first admitted to hospital?"
+        },
+        {
+          "field": "cestdat",
+          "description": "Onset date of first/earliest symptom"
+        },
+        {
+          "field": "flw_date_symptoms",
+          "description": "Roughly what day did you first experience symptoms of COVID-19?"
+        },
+        {
+          "field": "dsstdat",
+          "description": "Date of enrolment"
+        },
+        {
+          "field": "daily_dsstdat",
+          "description": "Date of assessment"
+        },
+        {
+          "field": "flw_survey_date",
+          "description": "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)"
+        }
+      ]
     },
     "icu_admission": {
       "field": "icu_hostdat",
@@ -438,11 +442,16 @@
       }
     },
     "treatment_dexamethasone": {
-      "description": "If Yes to Dexamethasone, specify Route:",
-      "field": "dexamethasone_route",
+      "description": "Treatment with Dexamethasone",
+      "field": "corticost_cmtrt_type",
       "values": {
-        "1": true,
-        "2": true
+        "1": false,
+        "2": false,
+        "3": true,
+        "88": false
+      },
+      "if": {
+        "corticost_cmyn": 1
       }
     },
     "treatment_dialysis": {
@@ -515,15 +524,6 @@
         }
       ]
     },
-    "treatment_immunosuppressant": {
-      "description": "Treated with immunosuppressants, including oral (not inhaled) corticosteroids prior to admission / Immunosuppressant e.g. oral (not inhaled) corticosteroids (not low dose hydrocortisone)",
-      "field": "immno_cmtrt",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
-    },
     "treatment_inhaled_nitric_oxide": {
       "description": "Inhaled Nitric Oxide",
       "combinedType": "any",
@@ -593,15 +593,6 @@
           "description": "Invasive ventilation?"
         }
       ]
-    },
-    "treatment_monoclonal_antibody": {
-      "description": "Tocilizumab",
-      "field": "reinf_pre_tociliz",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
     },
     "treatment_noninvasive_ventilation": {
       "description": "Non-invasive ventilation",
@@ -711,12 +702,37 @@
       ]
     },
     "treatment_tocilizumab": {
-      "description": "Tocilizumab",
-      "field": "reinf_pre_tociliz",
+      "description": "Treatment with Tocilizumab",
+      "field": "antiviral_cmtrt",
       "values": {
         "1": true,
         "2": false,
-        "3": null
+        "3": false,
+        "10": false
+      },
+      "if": {
+        "antiviral_cmtrt": 9
+      }
+    },
+    "treatment_neuraminidase": {
+      "description": "Treatment with neuraminidase",
+      "field": "antiviral_cmtrt",
+      "values": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": true,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false
+      },
+      "if": {
+        "antiviral_cmyn": 1
       }
     }
   }
