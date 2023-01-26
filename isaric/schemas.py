@@ -60,7 +60,7 @@ class Subject(BaseModel):
     pregnancy_gestational_outcome: PregnancyGestationalOutcome = None
     pregnancy_whether_breastfed: bool | None = None
     pregnancy_post_partum: bool | None = None
-    pregnancy_gestational_assessment_days: int | None = None
+    pregnancy_gestational_assessment_weeks: float | None = None
 
     # Co-morbidities
     has_chronic_hematologic_disease: bool | None = None

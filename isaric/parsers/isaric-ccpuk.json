@@ -233,10 +233,9 @@
         }
       ]
     },
-    "pregnancy_gestational_assessment_days": {
+    "pregnancy_gestational_assessment_weeks": {
       "field": "egestage_rptestcd",
-      "description": "If YES: Gestational weeks assessment:",
-      "comment": "the mapped field 'egestage_rptestcd' has data in weeks not days? there is no related source unit field in the data"
+      "description": "Gestational weeks assessment",
     },
     "has_chronic_hematologic_disease": {
       "field": "chronichaemo_mhyn",
