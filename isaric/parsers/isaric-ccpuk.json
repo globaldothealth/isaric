@@ -460,6 +460,10 @@
         }
       ]
     },
+    "icu_admitted": {
+      "field": "icu_hostdat",
+      "mappingType": "exists"
+    },
     "outcome": {
       "field": "dsterm",
       "values": {
