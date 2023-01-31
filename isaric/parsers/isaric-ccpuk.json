@@ -121,6 +121,24 @@
         }
       ]
     },
+    "works_microbiology_lab": {
+      "field": "labwork_erterm",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      },
+      "description": "Employed in a microbiology laboratory?"
+    },
+    "works_healthcare": {
+      "field": "healthwork_erterm",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      },
+      "description": "Employed as a healthcare worker?"
+    },
     "age": {
       "field": "age_estimateyears",
       "source_unit": {
