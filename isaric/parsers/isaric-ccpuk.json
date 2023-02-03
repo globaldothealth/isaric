@@ -455,25 +455,57 @@
           }
         },
         {
+          "field": "dsstdtc_v2",
+          "description": "Outcome date",
+          "if": {
+            "dsterm_v2": 4
+          }
+        },
+        {
           "field": "flw_date_death",
           "description": "Date of death"
         }
       ]
     },
     "outcome": {
-      "field": "dsterm",
-      "values": {
-        "1": "Discharged alive",
-        "2": "Hospitalisation (Remains in Hospital &geq; Day 28 after symptom onset)",
-        "3": "Transfer to other facility",
-        "4": "Death",
-        "5": "Palliative discharge",
-        "6": null
-      }
+      "combinedType": "firstNonNull",
+      "comment": "some patients have information in either outcome variables",
+      "fields": [
+        {
+          "field": "dsterm",
+          "values": {
+            "1": "Discharged alive",
+            "2": "Hospitalisation (Remains in Hospital &geq; Day 28 after symptom onset)",
+            "3": "Transfer to other facility",
+            "4": "Death",
+            "5": "Palliative discharge",
+            "6": null
+          }
+        },
+        {
+          "field": "dsterm_v2",
+          "values": {
+            "1": "Discharged alive expected to survive",
+            "3": "Transfer to other facility",
+            "4": "Death",
+            "5": "Palliative discharge",
+            "6": null
+          }
+        }
+      ]
     },
     "date_outcome": {
-      "field": "dsstdtc",
-      "description": "Outcome date"
+      "combinedType": "firstNonNull",
+      "fields": [
+        {
+          "field": "dsstdtc",
+          "description": "Outcome date"
+        },
+        {
+          "field": "dsstdtc_v2",
+          "description": "Outcome date"
+        }
+      ]
     }
   },
   "visit": {
