@@ -856,7 +856,7 @@
     },
     "treatment_tocilizumab": {
       "description": "Treatment with Tocilizumab",
-      "field": "antiviral_cmtrt",
+      "field": "il6_cmtrt",
       "values": {
         "1": true,
         "2": false,
