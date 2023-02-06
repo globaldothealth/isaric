@@ -140,16 +140,26 @@
       "description": "Employed as a healthcare worker?"
     },
     "age": {
-      "field": "age_estimateyears",
-      "source_unit": {
-        "field": "age_estimateyearsu",
-        "values": {
-          "1": "months",
-          "2": "years"
+      "combinedType": "firstNonNull",
+      "fields": [
+        {
+          "field": "calc_age",
+          "unit": "years",
+          "description": "Calculated age in years"
         },
-        "unit": "years"
-      },
-      "description": "Age/Estimated age"
+        {
+          "field": "age_estimateyears",
+          "source_unit": {
+            "field": "age_estimateyearsu",
+            "values": {
+              "1": "months",
+              "2": "years"
+            },
+            "unit": "years"
+          },
+          "description": "Age/Estimated age"
+        }
+      ]
     },
     "pathogen": "COVID-19",
     "pregnancy": {
