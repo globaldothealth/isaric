@@ -596,16 +596,31 @@
     },
     "treatment_dexamethasone": {
       "description": "Treatment with Dexamethasone",
-      "field": "corticost_cmtrt_type",
-      "values": {
-        "1": false,
-        "2": false,
-        "3": true,
-        "88": false
-      },
-      "if": {
-        "corticost_cmyn": 1
-      }
+      "combinedType": "firstNonNull",
+      "fields": [
+        {
+          "field": "corticost_cmtrt_type",
+          "values": {
+            "1": false,
+            "2": false,
+            "3": true,
+            "88": false
+          },
+          "if": {"corticost_cmyn": 1}
+        },
+        {
+          "field": "dexamethasone",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": false,
+            "4": true,
+            "5": true,
+            "6": true
+          },
+          "description": "Dexamethasone 6mg once per day?"
+        }
+      ]  
     },
     "treatment_dialysis": {
       "description": "Renal replacement therapy (RRT) or dialysis",
