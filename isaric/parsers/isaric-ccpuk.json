@@ -443,6 +443,28 @@
         "formName": "comorbidities"
       }
     },
+    "icu_admission": {
+      "field": "icu_hostdat",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "icu_hoterm",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          }
+        },
+        {
+          "field": "daily_hoterm",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          }
+        }
+      ]
+    },
     "date_death": {
       "combinedType": "firstNonNull",
       "comment": "using the proposed hierarchy of dates - check if dsstdtc dsterm == 4",
@@ -556,7 +578,25 @@
     },
     "icu_admission": {
       "field": "icu_hostdat",
-      "mappingType": "exists"
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "icu_hoterm",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          }
+        },
+        {
+          "field": "daily_hoterm",
+          "values": {
+            "1": true,
+            "2": false,
+            "3": null
+          }
+        }
+      ]
     },
     "treatment_antibiotics": {
       "description": "Antibiotic agent?",
@@ -606,7 +646,9 @@
             "3": true,
             "88": false
           },
-          "if": {"corticost_cmyn": 1}
+          "if": {
+            "corticost_cmyn": 1
+          }
         },
         {
           "field": "dexamethasone",
@@ -620,7 +662,7 @@
           },
           "description": "Dexamethasone 6mg once per day?"
         }
-      ]  
+      ]
     },
     "treatment_dialysis": {
       "description": "Renal replacement therapy (RRT) or dialysis",
