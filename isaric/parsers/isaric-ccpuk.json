@@ -263,7 +263,7 @@
     },
     "pregnancy_gestational_assessment_weeks": {
       "field": "egestage_rptestcd",
-      "description": "Gestational weeks assessment",
+      "description": "Gestational weeks assessment"
     },
     "has_chronic_hematologic_disease": {
       "field": "chronichaemo_mhyn",
