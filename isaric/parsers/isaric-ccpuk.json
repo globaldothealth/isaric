@@ -16,6 +16,15 @@
       "aggregation": "lastNotNull"
     }
   },
+  "#defs": {
+    "Y/N/NK": {
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      }
+    }
+  },
   "study": {
     "id": "isaric-ccpuk",
     "date": "2021-01-01",
@@ -123,20 +132,12 @@
     },
     "works_microbiology_lab": {
       "field": "labwork_erterm",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Employed in a microbiology laboratory?"
     },
     "works_healthcare": {
       "field": "healthwork_erterm",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Employed as a healthcare worker?"
     },
     "age": {
@@ -164,11 +165,7 @@
     "pathogen": "COVID-19",
     "pregnancy": {
       "field": "pregyn_rptestcd",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Pregnant ?"
     },
     "pregnancy_date_of_delivery": {
@@ -230,11 +227,7 @@
     },
     "pregnancy_whether_breastfed": {
       "field": "apsc_brfedind",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Breastfed"
     },
     "pregnancy_post_partum": {
@@ -267,65 +260,37 @@
     },
     "has_chronic_hematologic_disease": {
       "field": "chronichaemo_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Chronic hematologic disease"
     },
     "has_dementia": {
       "field": "dementia_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Dementia"
     },
     "has_obesity": {
       "field": "obesity_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Obesity (as defined by clinical staff)"
     },
     "has_rheumatologic_disorder": {
       "field": "rheumatologic_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Rheumatologic disorder"
     },
     "has_hiv": {
       "field": "aidshiv_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "AIDS/HIV"
     },
     "has_hypertension": {
       "field": "hypertension_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Hypertension (physician diagnosed)"
     },
     "has_malignant_neoplasm": {
       "field": "malignantneo_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Malignant neoplasm"
     },
     "has_smoking": {
@@ -348,29 +313,17 @@
     },
     "has_chronic_cardiac_disease": {
       "field": "chrincard",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Chronic cardiac disease, including congenital heart disease (not hypertension)"
     },
     "has_chronic_kidney_disease": {
       "field": "renal_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Chronic kidney disease"
     },
     "has_diabetes": {
       "field": "diabetes_mhyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Diabetes without complications"
     },
     "diabetes_type": {
@@ -408,29 +361,17 @@
     },
     "has_rare_disease_inborn_metabolism_error": {
       "field": "vulnerable_scid",
-      "mapping": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "People with rare diseases and inborn errors of metabolism that significantly increase the risk of infections (such as Severe combined immunodeficiency (SCID), homozygous sickle cell)"
     },
     "has_immunosuppression_therapy_treatment": {
       "field": "vulnerable_immuno",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "People on immunosuppression therapies sufficient to significantly increase risk of infection"
     },
     "has_solid_organ_transplant": {
       "field": "vulnerable_transplant",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      },
+      "#ref": "Y/N/NK",
       "description": "Solid organ transplant recipients:"
     },
     "icu_admission": {
@@ -439,19 +380,11 @@
       "fields": [
         {
           "field": "icu_hoterm",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         },
         {
           "field": "daily_hoterm",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         }
       ]
     },
@@ -572,57 +505,33 @@
       "fields": [
         {
           "field": "icu_hoterm",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         },
         {
           "field": "daily_hoterm",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         }
       ]
     },
     "treatment_antibiotics": {
       "description": "Antibiotic agent?",
       "field": "antibiotic_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_antifungal_agent": {
       "description": "Antifungal agent?",
       "field": "antifung_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_antivirals": {
       "description": "Antiviral agent?",
       "field": "antiviral_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_corticosteroid": {
       "description": "Corticosteroid agent?",
       "field": "corticost_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_dexamethasone": {
       "description": "Treatment with Dexamethasone",
@@ -660,20 +569,12 @@
       "fields": [
         {
           "field": "rrt_prtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Renal replacement therapy (RRT)"
         },
         {
           "field": "daily_rrt_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Dialysis / Hemofiltration?"
         }
       ]
@@ -684,20 +585,12 @@
       "fields": [
         {
           "field": "extracorp_prtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Extracorporeal (ECMO) support"
         },
         {
           "field": "daily_ecmo_prtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "ECLS/ECMO"
         }
       ]
@@ -708,19 +601,11 @@
       "fields": [
         {
           "field": "oxygenhf_cmoccur",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         },
         {
           "field": "daily_nasaloxy_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         }
       ]
     },
@@ -730,19 +615,11 @@
       "fields": [
         {
           "field": "inhalednit_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         },
         {
           "field": "daily_nitritc_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          }
+          "#ref": "Y/N/NK"
         }
       ]
     },
@@ -752,20 +629,12 @@
       "fields": [
         {
           "field": "inotrop_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Inotropes / vasopressors"
         },
         {
           "field": "daily_inotrope_cmyn",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Any vasopressor / inotropic support?"
         }
       ]
@@ -776,20 +645,12 @@
       "fields": [
         {
           "field": "invasive_proccur",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Invasive ventilation (Any intubation) ?"
         },
         {
           "field": "daily_invasive_prtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Invasive ventilation?"
         }
       ]
@@ -800,20 +661,12 @@
       "fields": [
         {
           "field": "noninvasive_proccur",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Non-invasive ventilation ? (e.g. BIPAP, CPAP)"
         },
         {
           "field": "daily_noninvasive_prtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Non-invasive ventilation (e.g. NIV (if shorter CRF), BIPAP, CPAP)?"
         }
       ]
@@ -821,11 +674,7 @@
     "treatment_offlabel": {
       "description": "Off-label / Compassionate Use medications?",
       "field": "offlabel_cmyn",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_other": {
       "combinedType": "any",
@@ -841,11 +690,7 @@
         },
         {
           "field": "other_cmyn",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "OTHER intervention or procedure"
         }
       ]
@@ -853,29 +698,17 @@
     "treatment_oxygen_interface": {
       "description": "Oxygen therapy",
       "field": "oxygen_cmoccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_oxygen_mechanical_support": {
       "description": "Oxygen therapy",
       "field": "oxygen_cmoccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_oxygen_therapy": {
       "description": "Oxygen therapy",
       "field": "oxygen_cmoccur",
-      "values": {
-        "1": true,
-        "2": false,
-        "3": null
-      }
+      "#ref": "Y/N/NK"
     },
     "treatment_prone_position": {
       "description": "Prone Positioning",
@@ -883,20 +716,12 @@
       "fields": [
         {
           "field": "pronevent_prtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Prone ventilation"
         },
         {
           "field": "daily_prone_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
+          "#ref": "Y/N/NK",
           "description": "Prone Positioning"
         }
       ]
