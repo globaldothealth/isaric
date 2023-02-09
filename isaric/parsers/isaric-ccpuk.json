@@ -416,27 +416,13 @@
       "description": "People with rare diseases and inborn errors of metabolism that significantly increase the risk of infections (such as Severe combined immunodeficiency (SCID), homozygous sickle cell)"
     },
     "has_immunosuppression_therapy_treatment": {
-      "combinedType": "any",
-      "fields": [
-        {
-          "field": "vulnerable_immuno",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
-          "description": "People on immunosuppression therapies sufficient to significantly increase risk of infection"
-        },
-        {
-          "field": "immuno_cmtrt",
-          "values": {
-            "1": true,
-            "2": false,
-            "3": null
-          },
-          "description": "Treated with immunosuppressants, including oral (not inhaled) corticosteroids prior to admission / Immunosuppressant e.g. oral (not inhaled) corticosteroids (not low dose hydrocortisone)"
-        }
-      ]
+      "field": "vulnerable_immuno",
+      "values": {
+        "1": true,
+        "2": false,
+        "3": null
+      },
+      "description": "People on immunosuppression therapies sufficient to significantly increase risk of infection"
     },
     "has_solid_organ_transplant": {
       "field": "vulnerable_transplant",
@@ -446,12 +432,6 @@
         "3": null
       },
       "description": "Solid organ transplant recipients:"
-    },
-    "has_comorbidity_other": {
-      "otherField": true,
-      "fieldSet": {
-        "formName": "comorbidities"
-      }
     },
     "icu_admission": {
       "field": "icu_hostdat",
@@ -930,30 +910,7 @@
         "3": false,
         "10": false
       },
-      "if": {
-        "antiviral_cmtrt": 9
-      }
-    },
-    "treatment_neuraminidase": {
-      "description": "Treatment with neuraminidase",
-      "field": "antiviral_cmtrt",
-      "values": {
-        "1": false,
-        "2": false,
-        "3": false,
-        "4": false,
-        "5": true,
-        "6": false,
-        "7": false,
-        "8": false,
-        "9": false,
-        "10": false,
-        "11": false,
-        "12": false
-      },
-      "if": {
-        "antiviral_cmyn": 1
-      }
+      "comment": "TODO: antiviral_cmtrt == 9 condition, but multiple fields, needs to be fixed"
     }
   }
 }
