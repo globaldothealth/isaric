@@ -130,7 +130,6 @@ class Visit(BaseModel):
     treatment_arb: bool | None = None
     treatment_antimalarial: bool | None = None
     treatment_dexamethasone: bool | None = None
-    treatment_nonsteroidal: bool | None = None
     treatment_high_flow_nasal_cannula: bool | None = None
     treatment_steroids: bool | None = None
     treatment_immunosuppressant: bool | None = None
