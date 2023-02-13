@@ -441,27 +441,26 @@
     },
     "treatment_cardiovascular": {
       "field": "ccm_b_horeas",
-      "comment": "Need to add 'other' as 13?",
       "values": {
-        "1": "Respiritory failure",
-        "2": "Septic shock",
-        "3": "Venous thromboembolism",
-        "4": "Cardiovascular complications",
-        "5": "Acute kidney injury",
-        "6": "Acute liver injury",
-        "7": "Neurological complications",
-        "8": "Secondary infetion",
-        "9": "Pancreatic injury",
-        "10": "Disseminated intravascular coagulation",
-        "11": "Pregnancy related complications",
-        "12": "Rhabdomyolysis",
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
         "13": null,
         "14": null,
-        "15": "Post-operative",
-        "16": "Gastrointestinal bleed",
-        "17": "Diabetic ketoacidosis"
+        "15": false,
+        "16": false,
+        "17": false
       },
-      "Description": "Reason for ICU admission?"
+      "Description": "Cardiovascular complications?"
     },
     "treatment_corticosteroid": {
       "description": "Corticosteroid",
