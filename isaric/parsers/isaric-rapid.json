@@ -243,5 +243,703 @@
       "description": "Outcome date"
     }
   },
-  "visit": {}
+  "visit": {
+    "icu_admission": {
+      "description": "ICU or High Dependency admission",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "icu_hoterm",
+          "#ref": "Y/N/NK",
+          "description": "ICU or High Dependency admission on the first day of admission?"
+        },
+        {
+          "field": "daily_icu_hoterm",
+          "#ref": "Y/N/NK",
+          "description": "ICU or High Dependency admission?"
+        },
+        {
+          "field": "overall_icu_hoterm",
+          "#ref": "Y/N/NK",
+          "description": "ICU or High Dependency admission?"
+        },
+        {
+          "field": "ccm_a_icu_hoyn",
+          "values": {
+            "1": true,
+            "2": true,
+            "0": false,
+            "3": false
+          },
+          "description": "Current admission to ICU or other High Dependency Unit (HDU)?"
+        }
+      ]
+    },
+    "treatment_ace_inhibitors": {
+      "description": "Ace Inhibitors",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "ace_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Angiotensin converting enzyme inhibitors (ACE) on the first day of admission?"
+        },
+        {
+          "field": "daily_ace_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Angiotension converting enzyme inhibitors (ACE inhibitors)?"
+        }
+      ]
+    },
+    "treatment_antibiotics": {
+      "description": "Antibiotics",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "antibiotic_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antibiotic on the first day of admission?"
+        },
+        {
+          "field": "daily_antibiotic_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antibiotic?"
+        },
+        {
+          "field": "overall_antibiotic_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antibiotic?"
+        }
+      ]
+    },
+    "treatment_anticoagulation": {
+      "field": "ccm_b_heparint_cmyn",
+      "#ref": "Y/N/NK",
+      "description": "Heparin for systemic anticoagulation?"
+    },
+    "treatment_antifungal_agent": {
+      "description": "Antifungal",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "antifung_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antifungal agent on the first day of admission?"
+        },
+        {
+          "field": "daily_antifung_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antifungal agent?"
+        },
+        {
+          "field": "overall_antifung_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antifugal agent?"
+        }
+      ]
+    },
+    "treatment_antimalarial": {
+      "description": "Antimalarial",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "antimal_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antimalarial agent on the first day of admission?"
+        },
+        {
+          "field": "daily_antimal_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antimalarial agent?"
+        },
+        {
+          "field": "overall_antimal_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antimalarial agent?"
+        }
+      ]
+    },
+    "treatment_antivirals": {
+      "description": "Antiviral",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "antiviral_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antiviral agent on the first day of admission?"
+        },
+        {
+          "field": "daily_antiviral_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antiviral agent?"
+        },
+        {
+          "field": "overall_antiviral_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Antiviral agent?"
+        }
+      ]
+    },
+    "treatment_neuraminidase": {
+      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
+      "description": "Antiviral type",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "antiviral_cmtrt",
+          "values": {
+            "1": "Ribavarin",
+            "2": "Lopinavir/Ritonvir",
+            "3": "Interferon alpha",
+            "4": "Interferon beta",
+            "5": "Neuraminidase inhibitors",
+            "6": null
+          },
+          "description": "Antiviral type"
+        },
+        {
+          "field": "daily_antiviral_cmtrt",
+          "values": {
+            "1": "Ribavarin",
+            "2": "Lopinavir/Ritonvir",
+            "3": "Interferon alpha",
+            "4": "Interferon beta",
+            "5": "Neuraminidase inhibitors",
+            "6": null
+          },
+          "description": "Antiviral type"
+        },
+        {
+          "field": "overall_antiviral_cmtrt",
+          "values": {
+            "1": "Ribavarin",
+            "2": "Lopinavir/Ritonvir",
+            "3": "Interferon alpha",
+            "4": "Interferon beta",
+            "5": "Neuraminidase inhibitors",
+            "6": null
+          },
+          "description": "Antiviral type"
+        }
+      ]
+    },
+    "treatment_arb": {
+      "description": "Angiotensin II receptor blockers (ARB)",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "arb_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Angiotensin II receptor blockers (ARBs) on the first day of admission?"
+        },
+        {
+          "field": "daily_arb_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Angiotensin II receptor blockers (ARBs)?"
+        }
+      ]
+    },
+    "treatment_cardiovascular": {
+      "field": "ccm_b_horeas",
+      "values": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": true,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false,
+        "11": false,
+        "12": false,
+        "13": null,
+        "14": null,
+        "15": false,
+        "16": false,
+        "17": false
+      },
+      "Description": "Cardiovascular complications?"
+    },
+    "treatment_corticosteroid": {
+      "description": "Corticosteroid",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "corticost_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Corticosteroid on the first day of admission?"
+        },
+        {
+          "field": "daily_corticost_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Corticosteroid?"
+        },
+        {
+          "field": "overall_corticost_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Corticosteroid?"
+        }
+      ]
+    },
+    "treatment_dexamethasone": {
+      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
+      "description": "Corticosteroid type",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "corticost_cmtrt",
+          "values": {
+            "1": "Dexamethasone",
+            "2": "Hydrocortisone",
+            "3": "Prednisolone",
+            "4": "Methylprednisolone",
+            "5": null
+          },
+          "description": "Corticosteroid type"
+        },
+        {
+          "field": "daily_corticost_cmtrt",
+          "values": {
+            "1": "Dexamethasone",
+            "2": "Hydrocortisone",
+            "3": "Prednisolone",
+            "4": "Methylprednisolone",
+            "5": null
+          },
+          "description": "Corticosteroid type"
+        },
+        {
+          "field": "overall_corticost_cmtrt",
+          "values": {
+            "1": "Dexamethasone",
+            "2": "Hydrocortisone",
+            "3": "Prednisolone",
+            "4": "Methylprednisolone",
+            "5": null
+          },
+          "description": "Corticosteroid type"
+        }
+      ]
+    },
+    "treatment_dialysis": {
+      "description": "Dialysis",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "daily_rrt_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Renal replacement therapy (RRT) or dialysis?"
+        },
+        {
+          "field": "overall_rrt_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Renal replacement therapy (RRT) or dialysis?"
+        },
+        {
+          "field": "ccm_a_renal_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Dialysis/Hemofiltration?"
+        },
+        {
+          "field": "ccm_b_renal_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Dialysis/Hemofiltration?"
+        }
+      ]
+    },
+    "treatment_ecmo": {
+      "description": "ECMO",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "extracorp_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Extracorporeal (ECMO) support on the first day of admission?"
+        },
+        {
+          "field": "daily_extracorp_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Extracorporeal (ECMO) support?"
+        },
+        {
+          "field": "overall_extracorp_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Extracorporeal (ECMO) support?"
+        }
+      ]
+    },
+    "treatment_experimental_agent": {
+      "description": "Experimental treatments",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "exper_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Experimental agent on the first day of admission?"
+        },
+        {
+          "field": "daily_exper_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Experimental agent?"
+        },
+        {
+          "field": "overall_exper_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Experimental agent?"
+        }
+      ]
+    },
+    "treatment_tocilizumab": {
+      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
+      "description": "Experimental agents",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "exper_cmtype",
+          "values": {
+            "1": "Chloroquine",
+            "2": "Hyroxychloroquine",
+            "3": "Remdesivir",
+            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
+            "5": "IL-1 Inhibitor (e.g., Anakinra)",
+            "6": "Convalescent plasma",
+            "7": null
+          },
+          "description": "Experimental agent type"
+        },
+        {
+          "field": "daily_exper_cmtype",
+          "values": {
+            "1": "Chloroquine",
+            "2": "Hyroxychloroquine",
+            "3": "Remdesivir",
+            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
+            "5": "IL-1 Inhibitor (e.g., Anakinra)",
+            "6": "Convalescent plasma",
+            "7": null
+          },
+          "description": "Experimental agent type"
+        },
+        {
+          "field": "overall_exper_cmtype",
+          "values": {
+            "1": "Chloroquine",
+            "2": "Hyroxychloroquine",
+            "3": "Remdesivir",
+            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
+            "5": "IL-1 Inhibitor (e.g., Anakinra)",
+            "6": "Convalescent plasma",
+            "7": null
+          },
+          "description": "Experimental agent type"
+        }
+      ]
+    },
+    "treatment_inotropes_vasopressors": {
+      "description": "Inotropes/vasopressors",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "inotrop_cmtrt",
+          "#ref": "Y/N/NK",
+          "description": "Inotropes/vasopressors on the first day of admission?"
+        },
+        {
+          "field": "daily_inotrop_cmtrt",
+          "#ref": "Y/N/NK",
+          "description": "Inotropes/vasopressors?"
+        },
+        {
+          "field": "overall_inotrop_cmtrt",
+          "#ref": "Y/N/NK",
+          "description": "Inotropes/vasopressors?"
+        },
+        {
+          "field": "ccm_a_inotrop_cmtrt",
+          "#ref": "Y/N/NK",
+          "description": "Any vasopressor/inotropic support?"
+        }
+      ]
+    },
+    "treatment_intravenous_fluids": {
+      "description": "IV fluids",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "iv_fluids_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Intraveonous fluids on the first day of admission?"
+        },
+        {
+          "field": "daily_iv_fluids_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Intraveonous fluids?"
+        },
+        {
+          "field": "overall_iv_fluids_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Intraveonous fluids?"
+        }
+      ]
+    },
+    "treatment_invasive_ventilation": {
+      "description": "Invasive ventilation",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "invasive_proccur",
+          "#ref": "Y/N/NK",
+          "description": "Invasive ventilation on first day of admission?"
+        },
+        {
+          "field": "daily_invasive_proccur",
+          "#ref": "Y/N/NK",
+          "description": "Invasive ventilation?"
+        },
+        {
+          "field": "overall_invasive_proccur",
+          "#ref": "Y/N/NK",
+          "description": "Invasive ventilation?"
+        },
+        {
+          "field": "ccm_b_ivasive_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Invasive ventilation?"
+        }
+      ]
+    },
+    "treatment_noninvasive_ventilation": {
+      "description": "Non-invasive ventilation",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "noninvasive_proccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-invasive ventilation on first day of admission?"
+        },
+        {
+          "field": "daily_noninvasive_proccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-invasive ventilation?"
+        },
+        {
+          "field": "overall_noninvasive_proccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-invasive ventilation?"
+        },
+        {
+          "field": "ccm_b_nonivasive_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Non-invasive ventilation?"
+        }
+      ]
+    },
+    "treatment_nsaid": {
+      "description": "NSAID",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "nsaid_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
+        },
+        {
+          "field": "daily_nsaid_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-steroidal anti-inflammatory (NSAID)?"
+        },
+        {
+          "field": "overall_nsaid_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Non-steroidal anti-inflammatory (NSAID)?"
+        }
+      ]
+    },
+    "treatment_nonsteroidal": {
+      "description": "Nonsteroidal",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "nsaid_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
+        },
+        {
+          "field": "daily_nsaid_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Non-steroidal anti-inflammatory (NSAID)?"
+        },
+        {
+          "field": "overall_nsaid_cmyn",
+          "#ref": "Y/N/NK",
+          "description": "Non-steroidal anti-inflammatory (NSAID)?"
+        }
+      ]
+    },
+    "treatment_other": {
+      "field": "ccm_a_oth_prperf",
+      "#ref": "Y/N/NK",
+      "description": "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
+    },
+    "treatment_oxygen_therapy": {
+      "description": "Oxygen therepy",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy on first day of admission?"
+        },
+        {
+          "field": "daily_oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy?"
+        },
+        {
+          "field": "overall_oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy?"
+        },
+        {
+          "field": "ccm_a_fiO2_lbyn",
+          "#ref": "Y/N/NK",
+          "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
+        }
+      ]
+    },
+    "treatment_oxygen_interface": {
+      "description": "Oxygen therepy",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy on first day of admission?"
+        },
+        {
+          "field": "daily_oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy?"
+        },
+        {
+          "field": "overall_oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy?"
+        },
+        {
+          "field": "ccm_a_fiO2_lbyn",
+          "#ref": "Y/N/NK",
+          "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
+        }
+      ]
+    },
+    "treatment_oxygen_mechanical_support": {
+      "description": "Oxygen therepy",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy on first day of admission?"
+        },
+        {
+          "field": "daily_oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy?"
+        },
+        {
+          "field": "overall_oxygen_cmoccur",
+          "#ref": "Y/N/NK",
+          "description": "Oxygen therepy?"
+        },
+        {
+          "field": "ccm_a_fiO2_lbyn",
+          "#ref": "Y/N/NK",
+          "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
+        }
+      ]
+    },
+    "treatment_respiratory_support": {
+      "field": "ccm_a_fi02_lbyn",
+      "#ref": "Y/N/NK",
+      "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
+    },
+    "treatment_prone_position": {
+      "description": "Prone Positioning",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "prone_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Prone position on first day of admission?"
+        },
+        {
+          "field": "daily_prone_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Prone positioning?"
+        },
+        {
+          "field": "overall_prone_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Prone positioning?"
+        },
+        {
+          "field": "cmm_a_pronevent_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Prone positioning?"
+        },
+        {
+          "field": "cmm_b_pronevent_prtrt",
+          "#ref": "Y/N/NK",
+          "description": "Prone positioning?"
+        }
+      ]
+    },
+    "treatment_inhaled_nitric_oxide": {
+      "field": "ccm_a_nitric_cmtrt",
+      "#ref": "Y/N/NK",
+      "description": "Inhaled nitric oxide?"
+    },
+    "treatment_high_flow_nasal_cannula": {
+      "field": "ccm_b_hhfnc_prtrt",
+      "#ref": "Y/N/NK",
+      "description": "Humidified high flow nasal cannula (HHFNC)?"
+    },
+    "icu_admission_dates": {
+      "description": "ICU admission date",
+      "combinedType": "any",
+      "fields": [
+        {
+          "field": "overall_icu_hostdat",
+          "description": "ICU admission date"
+        },
+        {
+          "field": "ccm_b_icu_hostdat",
+          "description": "ICU admission date"
+        }
+      ]
+    },
+    "pathogen_test_date": {
+      "field": "coll_date",
+      "description": "Collection date"
+    },
+    "outcome": {
+      "field": "dsterm",
+      "values": {
+        "1": "Discharged alive",
+        "2": "Hospitalisation",
+        "3": "Transfer to other facility",
+        "4": "Death",
+        "5": "Palliative discharge",
+        "6": null
+      },
+      "description": "Outcome"
+    },
+    "date_outcome": {
+      "field": "dsstdtc",
+      "description": "Outcome date"
+    }
+  }
 }

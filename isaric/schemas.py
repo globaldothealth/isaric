@@ -20,7 +20,6 @@ from .taxonomy import (
 
 
 class Study(BaseModel):
-
     study_id: str
     study_version: PositiveInt
     name: str
@@ -32,7 +31,6 @@ class Study(BaseModel):
 
 
 class Subject(BaseModel):
-
     subject_id: str
     study_id: str
     study_version: PositiveInt
@@ -98,7 +96,6 @@ class Subject(BaseModel):
 
 
 class Visit(BaseModel):
-
     visit_id: str
     # site details
     country_iso3: str
@@ -163,7 +160,6 @@ class Visit(BaseModel):
 
 
 class Observation(BaseModel):
-
     observation_id: int
     visit_id: str
     subject_id: str
