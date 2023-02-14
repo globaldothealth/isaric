@@ -401,6 +401,9 @@
             "5": "Neuraminidase inhibitors",
             "6": null
           },
+          "if": {
+            "antiviral_cmyn": 1
+          },
           "description": "Antiviral type"
         },
         {
@@ -413,6 +416,9 @@
             "5": "Neuraminidase inhibitors",
             "6": null
           },
+          "if": {
+            "daily_antiviral_cmyn": 1
+          },
           "description": "Antiviral type"
         },
         {
@@ -424,6 +430,9 @@
             "4": "Interferon beta",
             "5": "Neuraminidase inhibitors",
             "6": null
+          },
+          "if": {
+            "overall_antiviral_cmyn": 1
           },
           "description": "Antiviral type"
         }
@@ -466,6 +475,9 @@
         "16": false,
         "17": false
       },
+      "if": {
+        "ccm_b_icu_yn": 1
+      },
       "Description": "Cardiovascular complications?"
     },
     "treatment_corticosteroid": {
@@ -503,6 +515,9 @@
             "4": "Methylprednisolone",
             "5": null
           },
+          "if": {
+            "corticost_cmyn": 1
+          },
           "description": "Corticosteroid type"
         },
         {
@@ -514,6 +529,9 @@
             "4": "Methylprednisolone",
             "5": null
           },
+          "if": {
+            "daily_corticost_cmyn": 1
+          },
           "description": "Corticosteroid type"
         },
         {
@@ -524,6 +542,9 @@
             "3": "Prednisolone",
             "4": "Methylprednisolone",
             "5": null
+          },
+          "if": {
+            "overall_corticost_cmyn": 1
           },
           "description": "Corticosteroid type"
         }
@@ -613,6 +634,9 @@
             "6": "Convalescent plasma",
             "7": null
           },
+          "if": {
+            "exper_cmyn": 1
+          },
           "description": "Experimental agent type"
         },
         {
@@ -626,6 +650,9 @@
             "6": "Convalescent plasma",
             "7": null
           },
+          "if": {
+            "daily_exper_cmyn": 1
+          },
           "description": "Experimental agent type"
         },
         {
@@ -638,6 +665,9 @@
             "5": "IL-1 Inhibitor (e.g., Anakinra)",
             "6": "Convalescent plasma",
             "7": null
+          },
+          "if": {
+            "overall_exper_cmyn": 1
           },
           "description": "Experimental agent type"
         }
@@ -710,7 +740,7 @@
           "description": "Invasive ventilation?"
         },
         {
-          "field": "ccm_b_ivasive_prtrt",
+          "field": "ccm_b_invasive_prtrt",
           "#ref": "Y/N/NK",
           "description": "Invasive ventilation?"
         }
@@ -736,7 +766,7 @@
           "description": "Non-invasive ventilation?"
         },
         {
-          "field": "ccm_b_nonivasive_prtrt",
+          "field": "ccm_b_noninvasive_prtrt",
           "#ref": "Y/N/NK",
           "description": "Non-invasive ventilation?"
         }
@@ -809,7 +839,7 @@
           "description": "Oxygen therepy?"
         },
         {
-          "field": "ccm_a_fiO2_lbyn",
+          "field": "ccm_a_fi02_lbyn",
           "#ref": "Y/N/NK",
           "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
         }
@@ -835,7 +865,7 @@
           "description": "Oxygen therepy?"
         },
         {
-          "field": "ccm_a_fiO2_lbyn",
+          "field": "ccm_a_fi02_lbyn",
           "#ref": "Y/N/NK",
           "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
         }
@@ -861,7 +891,7 @@
           "description": "Oxygen therepy?"
         },
         {
-          "field": "ccm_a_fiO2_lbyn",
+          "field": "ccm_a_fi02_lbyn",
           "#ref": "Y/N/NK",
           "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
         }
@@ -892,19 +922,19 @@
           "description": "Prone positioning?"
         },
         {
-          "field": "cmm_a_pronevent_prtrt",
+          "field": "ccm_a_pronevent_prtrt",
           "#ref": "Y/N/NK",
           "description": "Prone positioning?"
         },
         {
-          "field": "cmm_b_pronevent_prtrt",
+          "field": "ccm_b_pronevent_prtrt",
           "#ref": "Y/N/NK",
           "description": "Prone positioning?"
         }
       ]
     },
     "treatment_inhaled_nitric_oxide": {
-      "field": "ccm_a_nitric_cmtrt",
+      "field": "ccm_a_nitritc_cmtrt",
       "#ref": "Y/N/NK",
       "description": "Inhaled nitric oxide?"
     },
@@ -922,7 +952,7 @@
           "description": "ICU admission date"
         },
         {
-          "field": "ccm_b_icu_hostdat",
+          "field": "ccm_b_icu_hodat",
           "description": "ICU admission date"
         }
       ]
