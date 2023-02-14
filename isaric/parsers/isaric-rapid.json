@@ -239,6 +239,17 @@
     }
   },
   "visit": {
+    "country_iso3": "GBR",
+    "visit_id": {
+      "comment": "This is the same as subject id!",
+      "field": "﻿subjid",
+      "sensitive": true
+    },
+    "subject_id": {
+      "comment": "This is the same as visit id!",
+      "field": "﻿subjid",
+      "sensitive": true
+    },
     "icu_admission": {
       "description": "ICU or High Dependency admission",
       "combinedType": "any",
