@@ -148,11 +148,6 @@
         "3": null
       }
     },
-    "pregnancy_whether_breastfed": {
-      "field": "apsc_brfedind",
-      "#ref": "Y/N/NK",
-      "description": "Breastfed"
-    },
     "pregnancy_gestational_assessment_weeks": {
       "field": "apsc_egestage_scorres",
       "description": "Gestational weeks assessment"
