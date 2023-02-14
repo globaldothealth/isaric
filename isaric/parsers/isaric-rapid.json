@@ -387,54 +387,41 @@
       ]
     },
     "treatment_neuraminidase": {
-      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
       "description": "Antiviral type",
       "combinedType": "any",
       "fields": [
         {
-          "field": "antiviral_cmtrt",
+          "field": "antiviral_cmtrt___5",
           "values": {
-            "1": "Ribavarin",
-            "2": "Lopinavir/Ritonvir",
-            "3": "Interferon alpha",
-            "4": "Interferon beta",
-            "5": "Neuraminidase inhibitors",
-            "6": null
+            "1": true,
+            "0": null
           },
           "if": {
             "antiviral_cmyn": 1
           },
-          "description": "Antiviral type"
+          "description": "Neuraminidase used?"
         },
         {
-          "field": "daily_antiviral_cmtrt",
+          "field": "daily_antiviral_cmtrt___5",
           "values": {
-            "1": "Ribavarin",
-            "2": "Lopinavir/Ritonvir",
-            "3": "Interferon alpha",
-            "4": "Interferon beta",
-            "5": "Neuraminidase inhibitors",
-            "6": null
+            "1": true,
+            "0": null
           },
           "if": {
             "daily_antiviral_cmyn": 1
           },
-          "description": "Antiviral type"
+          "description": "Neuraminidase used?"
         },
         {
-          "field": "overall_antiviral_cmtrt",
+          "field": "overall_antiviral_cmtrt___5",
           "values": {
-            "1": "Ribavarin",
-            "2": "Lopinavir/Ritonvir",
-            "3": "Interferon alpha",
-            "4": "Interferon beta",
-            "5": "Neuraminidase inhibitors",
-            "6": null
+            "1": true,
+            "0": null
           },
           "if": {
             "overall_antiviral_cmyn": 1
           },
-          "description": "Antiviral type"
+          "description": "Neuraminidase used?"
         }
       ]
     },
@@ -455,25 +442,10 @@
       ]
     },
     "treatment_cardiovascular": {
-      "field": "ccm_b_horeas",
+      "field": "ccm_b_horeas___4",
       "values": {
-        "1": false,
-        "2": false,
-        "3": false,
-        "4": true,
-        "5": false,
-        "6": false,
-        "7": false,
-        "8": false,
-        "9": false,
-        "10": false,
-        "11": false,
-        "12": false,
-        "13": null,
-        "14": null,
-        "15": false,
-        "16": false,
-        "17": false
+        "1": true,
+        "0": false
       },
       "if": {
         "ccm_b_icu_yn": 1
@@ -502,51 +474,41 @@
       ]
     },
     "treatment_dexamethasone": {
-      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
-      "description": "Corticosteroid type",
+      "description": "Dexamethasone used?",
       "combinedType": "any",
       "fields": [
         {
-          "field": "corticost_cmtrt",
+          "field": "corticost_cmtrt___1",
           "values": {
-            "1": "Dexamethasone",
-            "2": "Hydrocortisone",
-            "3": "Prednisolone",
-            "4": "Methylprednisolone",
-            "5": null
+            "1": true,
+            "0": false
           },
           "if": {
             "corticost_cmyn": 1
           },
-          "description": "Corticosteroid type"
+          "description": "Dexamethasone used?"
         },
         {
-          "field": "daily_corticost_cmtrt",
+          "field": "daily_corticost_cmtrt___1",
           "values": {
-            "1": "Dexamethasone",
-            "2": "Hydrocortisone",
-            "3": "Prednisolone",
-            "4": "Methylprednisolone",
-            "5": null
+            "1": true,
+            "0": false
           },
           "if": {
             "daily_corticost_cmyn": 1
           },
-          "description": "Corticosteroid type"
+          "description": "Dexamethasone used?"
         },
         {
-          "field": "overall_corticost_cmtrt",
+          "field": "overall_corticost_cmtrt___1",
           "values": {
-            "1": "Dexamethasone",
-            "2": "Hydrocortisone",
-            "3": "Prednisolone",
-            "4": "Methylprednisolone",
-            "5": null
+            "1": true,
+            "0": false
           },
           "if": {
             "overall_corticost_cmyn": 1
           },
-          "description": "Corticosteroid type"
+          "description": "Dexamethasone used?"
         }
       ]
     },
@@ -619,57 +581,41 @@
       ]
     },
     "treatment_tocilizumab": {
-      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
       "description": "Experimental agents",
       "combinedType": "any",
       "fields": [
         {
-          "field": "exper_cmtype",
+          "field": "exper_cmtype___4",
           "values": {
-            "1": "Chloroquine",
-            "2": "Hyroxychloroquine",
-            "3": "Remdesivir",
-            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
-            "5": "IL-1 Inhibitor (e.g., Anakinra)",
-            "6": "Convalescent plasma",
-            "7": null
+            "1": true,
+            "0": false
           },
           "if": {
             "exper_cmyn": 1
           },
-          "description": "Experimental agent type"
+          "description": "Tocilizumab?"
         },
         {
-          "field": "daily_exper_cmtype",
+          "field": "daily_exper_cmtype___4",
           "values": {
-            "1": "Chloroquine",
-            "2": "Hyroxychloroquine",
-            "3": "Remdesivir",
-            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
-            "5": "IL-1 Inhibitor (e.g., Anakinra)",
-            "6": "Convalescent plasma",
-            "7": null
+            "1": true,
+            "0": false
           },
           "if": {
             "daily_exper_cmyn": 1
           },
-          "description": "Experimental agent type"
+          "description": "Tocilizumab?"
         },
         {
-          "field": "overall_exper_cmtype",
+          "field": "overall_exper_cmtype___4",
           "values": {
-            "1": "Chloroquine",
-            "2": "Hyroxychloroquine",
-            "3": "Remdesivir",
-            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
-            "5": "IL-1 Inhibitor (e.g., Anakinra)",
-            "6": "Convalescent plasma",
-            "7": null
+            "1": true,
+            "0": false
           },
           "if": {
             "overall_exper_cmyn": 1
           },
-          "description": "Experimental agent type"
+          "description": "Tocilizumab?"
         }
       ]
     },
