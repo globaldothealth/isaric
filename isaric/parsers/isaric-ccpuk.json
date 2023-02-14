@@ -156,9 +156,9 @@
             "values": {
               "1": "months",
               "2": "years"
-            },
-            "unit": "years"
+            }
           },
+          "unit": "years",
           "description": "Age/Estimated age"
         }
       ]
@@ -190,9 +190,9 @@
         "values": {
           "1": "kg",
           "2": "lbs"
-        },
-        "unit": "kg"
+        }
       },
+      "unit": "kg",
       "description": "Birth weight"
     },
     "pregnancy_outcome": {
