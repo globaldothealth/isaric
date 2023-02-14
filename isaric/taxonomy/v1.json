@@ -26,10 +26,10 @@
       "confirmation/laboratory",
       "admission"
     ],
-    "VisitDuration": [
-      "before_admission",
+    "Phase": [
       "admission",
-      "post_admission"
+      "study",
+      "followup"
     ],
     "Outcome": [
       "death",

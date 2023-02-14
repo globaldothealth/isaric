@@ -102,9 +102,10 @@ class Visit(BaseModel):
     subject_id: int
     study_id: str
     study_version: PositiveInt
-    start_date: datetime.date
+    date: datetime.date
     end_date: datetime.date
-    duration_type: VisitDuration = VisitDuration.admission
+    phase: Phase = None
+    duration_days: int = None
 
     pathogen_test_date: datetime.date | None = None
     icu_admission: bool | None = None
@@ -165,9 +166,12 @@ class Observation(BaseModel):
     study_id: str
     study_version: PositiveInt
 
+    phase: Phase
     date: datetime.datetime
+    name: ObservationName
     end_date: datetime.datetime | None = None
     value_num: float | None = None
     value_char: str | None = None
     is_present: bool | None = None
-    name: ObservationName
+    duration_days: int = None
+    context: str = None
