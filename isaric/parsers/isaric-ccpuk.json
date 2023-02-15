@@ -61,7 +61,7 @@
       "description": "Ethnic groups",
       "comment": "Need to add ethnic other field",
       "combinedType": "list",
-      "excludeWhen": null,
+      "excludeWhen": "none",
       "fields": [
         {
           "field": "ethnic___1",
