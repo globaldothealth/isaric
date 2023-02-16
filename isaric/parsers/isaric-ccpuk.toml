@@ -100,8 +100,7 @@ unit = "kg"
 description = "Birth weight"
 source_unit = { field = "apvs_weightu", values = { 1 = "kg", 2 = "lbs" } }
 
-[subject.pregnancy_outcome]
-comment = "considers outcome before and after admission"
+[subject.pregnancy_outcome] # Outcome before and after admission
 combinedType = "firstNonNull"
 [[subject.pregnancy_outcome.fields]]
 field = "pregout_rptestcd"
@@ -243,7 +242,6 @@ fields = [
 
 [subject.outcome]
 combinedType = "firstNonNull"
-comment = "some patients have information in either outcome variables"
 [[subject.outcome.fields]]
 field = "dsterm"
 
@@ -284,7 +282,6 @@ field = "\ufeffsubjid"
 sensitive = true
 
 [visit.start_date]
-comment = "using the proposed hierarchy of dates"
 combinedType = "firstNonNull"
 fields = [
     { field = "hostdat", description = "Admission date at this facility" },
