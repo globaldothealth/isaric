@@ -20,6 +20,8 @@
   subject = { kind = "groupBy", groupby = "subject_id", aggregation = "lastNotNull" }
   visit = { kind = "groupBy", groupby = "visit_id", aggregation = "lastNotNull" }
 
+  ## SUBJECT
+
 [study]
   id = "isaric-rapid"
   country_iso3 = "GBR"
@@ -211,16 +213,16 @@
   field = "dsstdtc"
   description = "Outcome date"
 
+  ## VISIT
+
 [visit]
   country_iso3 = "GBR"
 
-  [visit.visit_id]
-    comment = "This is the same as subject id!"
+  [visit.visit_id] # This is the same as the subject_id!
     field = "﻿subjid"
     sensitive = true
 
   [visit.subject_id]
-    comment = "This is the same as visit id!"
     field = "﻿subjid"
     sensitive = true
 
