@@ -674,25 +674,6 @@
     "ref" = "Y/N/NK"
     description = "Non-steroidal anti-inflammatory (NSAID)?"
 
-[visit.treatment_nonsteroidal]
-  description = "Nonsteroidal"
-  combinedType = "any"
-
-  [[visit.treatment_nonsteroidal.fields]]
-    field = "nsaid_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
-
-  [[visit.treatment_nonsteroidal.fields]]
-    field = "daily_nsaid_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Non-steroidal anti-inflammatory (NSAID)?"
-
-  [[visit.treatment_nonsteroidal.fields]]
-    field = "overall_nsaid_cmyn"
-    "ref" = "Y/N/NK"
-    description = "Non-steroidal anti-inflammatory (NSAID)?"
-
 [visit.treatment_other]
   field = "ccm_a_oth_prperf"
   "ref" = "Y/N/NK"
@@ -721,59 +702,6 @@
     field = "ccm_a_fi02_lbyn"
     "ref" = "Y/N/NK"
     description = "Any supplemental oxygen (record highest level of support on day of assesment)"
-
-[visit.treatment_oxygen_interface]
-  description = "Oxygen therepy"
-  combinedType = "any"
-
-  [[visit.treatment_oxygen_interface.fields]]
-    field = "oxygen_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Oxygen therepy on first day of admission?"
-
-  [[visit.treatment_oxygen_interface.fields]]
-    field = "daily_oxygen_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Oxygen therepy?"
-
-  [[visit.treatment_oxygen_interface.fields]]
-    field = "overall_oxygen_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Oxygen therepy?"
-
-  [[visit.treatment_oxygen_interface.fields]]
-    field = "ccm_a_fi02_lbyn"
-    "ref" = "Y/N/NK"
-    description = "Any supplemental oxygen (record highest level of support on day of assesment)"
-
-[visit.treatment_oxygen_mechanical_support]
-  description = "Oxygen therepy"
-  combinedType = "any"
-
-  [[visit.treatment_oxygen_mechanical_support.fields]]
-    field = "oxygen_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Oxygen therepy on first day of admission?"
-
-  [[visit.treatment_oxygen_mechanical_support.fields]]
-    field = "daily_oxygen_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Oxygen therepy?"
-
-  [[visit.treatment_oxygen_mechanical_support.fields]]
-    field = "overall_oxygen_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Oxygen therepy?"
-
-  [[visit.treatment_oxygen_mechanical_support.fields]]
-    field = "ccm_a_fi02_lbyn"
-    "ref" = "Y/N/NK"
-    description = "Any supplemental oxygen (record highest level of support on day of assesment)"
-
-[visit.treatment_respiratory_support]
-  field = "ccm_a_fi02_lbyn"
-  "ref" = "Y/N/NK"
-  description = "Any supplemental oxygen (record highest level of support on day of assesment)"
 
 [visit.treatment_prone_position]
   description = "Prone Positioning"

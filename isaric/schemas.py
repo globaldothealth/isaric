@@ -130,17 +130,14 @@ class Visit(BaseModel):
     treatment_arb: bool | None = None
     treatment_antimalarial: bool | None = None
     treatment_dexamethasone: bool | None = None
-    treatment_nonsteroidal: bool | None = None
     treatment_high_flow_nasal_cannula: bool | None = None
     treatment_steroids: bool | None = None
     treatment_immunosuppressant: bool | None = None
     treatment_intravenous_fluids: bool | None = None
     treatment_nsaid: bool | None = None
     treatment_neuraminidase: bool | None = None
-    treatment_oxygen_interface: bool | None = None
     treatment_cpr: bool | None = None
     treatment_offlabel: bool | None = None
-    treatment_respiratory_support: bool | None = None
     treatment_tocilizumab: bool | None = None
     treatment_indication_anticoagulation: bool | None = None
     treatment_cardiovascular: bool | None = None
@@ -150,7 +147,6 @@ class Visit(BaseModel):
     treatment_monoclonal_antibody: bool | None = None
     treatment_other: list[str] = []
 
-    treatment_oxygen_mechanical_support: bool | None = None
     treatment_pacing: bool | None = None
 
     treatment_o2_flow_vol_max: int | None = None
