@@ -87,8 +87,7 @@ field = "pregyn_rptestcd"
 ref = "Y/N/NK"
 description = "Pregnant ?"
 
-[subject.pregnancy_date_of_delivery]
-comment = "considers delivery before and after admission"
+[subject.pregnancy_date_of_delivery] # Considers delivery before and after admission
 combinedType = "firstNonNull"
 fields = [
     { field = "dlvrdtc_rptestcd", description = "Delivery date" },
@@ -277,12 +276,10 @@ fields = [
 country_iso3 = "GBR"
 
 [visit.visit_id]
-comment = "This is the same as visit id!"
 field = "\ufeffsubjid"
 sensitive = true
 
-[visit.subject_id]
-comment = "This is the same as visit id!"
+[visit.subject_id]  # same as visit_id!
 field = "\ufeffsubjid"
 sensitive = true
 
@@ -443,8 +440,7 @@ fields = [
     { field = "daily_prone_cmtrt", ref = "Y/N/NK", description = "Prone positioning" },
 ]
 
-[visit.treatment_tocilizumab]
+[visit.treatment_tocilizumab]  # TODO: antiviral_cmtrt == 9 condition, but multiple fields, needs to be fixed
 description = "Treatment with Tocilizumab"
 field = "il6_cmtrt"
-comment = "TODO: antiviral_cmtrt == 9 condition, but multiple fields, needs to be fixed"
 values = { 1 = true, 2 = false, 3 = false, 10 = false }
