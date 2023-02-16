@@ -1,31 +1,24 @@
-name = "isaric-rapid"
-description = "ISARIC RAPID study"
+[adtl]
+  name = "isaric-rapid"
+  description = "ISARIC RAPID study"
 
-[tables.study]
-  kind = "constant"
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    2 = false
 
-[tables.subject]
-  kind = "groupBy"
-  groupBy = "subject_id"
-  aggregation = "lastNotNull"
+  [adtl.defs."ethnicityMap".values]
+    1 = "White"
+    2 = "Arab"
+    3 = "Black"
+    4 = "East_Asian"
+    5 = "South_Asian"
+    6 = "West_Asian"
+    7 = "Latin_American"
 
-[tables.visit]
-  kind = "groupBy"
-  groupBy = "visit_id"
-  aggregation = "lastNotNull"
-
-["defs"."Y/N/NK".values]
-  1 = true
-  2 = false
-
-["defs".ethnicityMap.values]
-  1 = "White"
-  2 = "Arab"
-  3 = "Black"
-  4 = "East_Asian"
-  5 = "South_Asian"
-  6 = "West_Asian"
-  7 = "Latin_American"
+[adtl.tables]
+  study = { kind = "constant" }
+  subject = { kind = "groupBy", groupby = "subject_id", aggregation = "lastNotNull" }
+  visit = { kind = "groupBy", groupby = "visit_id", aggregation = "lastNotNull" }
 
 [study]
   id = "isaric-rapid"
