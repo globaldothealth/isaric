@@ -148,11 +148,6 @@
         "3": null
       }
     },
-    "pregnancy_whether_breastfed": {
-      "field": "apsc_brfedind",
-      "#ref": "Y/N/NK",
-      "description": "Breastfed"
-    },
     "pregnancy_gestational_assessment_weeks": {
       "field": "apsc_egestage_scorres",
       "description": "Gestational weeks assessment"
@@ -244,6 +239,17 @@
     }
   },
   "visit": {
+    "country_iso3": "GBR",
+    "visit_id": {
+      "comment": "This is the same as subject id!",
+      "field": "﻿subjid",
+      "sensitive": true
+    },
+    "subject_id": {
+      "comment": "This is the same as visit id!",
+      "field": "﻿subjid",
+      "sensitive": true
+    },
     "icu_admission": {
       "description": "ICU or High Dependency admission",
       "combinedType": "any",
@@ -381,45 +387,41 @@
       ]
     },
     "treatment_neuraminidase": {
-      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
       "description": "Antiviral type",
       "combinedType": "any",
       "fields": [
         {
-          "field": "antiviral_cmtrt",
+          "field": "antiviral_cmtrt___5",
           "values": {
-            "1": "Ribavarin",
-            "2": "Lopinavir/Ritonvir",
-            "3": "Interferon alpha",
-            "4": "Interferon beta",
-            "5": "Neuraminidase inhibitors",
-            "6": null
+            "1": true,
+            "0": null
           },
-          "description": "Antiviral type"
+          "if": {
+            "antiviral_cmyn": 1
+          },
+          "description": "Neuraminidase used?"
         },
         {
-          "field": "daily_antiviral_cmtrt",
+          "field": "daily_antiviral_cmtrt___5",
           "values": {
-            "1": "Ribavarin",
-            "2": "Lopinavir/Ritonvir",
-            "3": "Interferon alpha",
-            "4": "Interferon beta",
-            "5": "Neuraminidase inhibitors",
-            "6": null
+            "1": true,
+            "0": null
           },
-          "description": "Antiviral type"
+          "if": {
+            "daily_antiviral_cmyn": 1
+          },
+          "description": "Neuraminidase used?"
         },
         {
-          "field": "overall_antiviral_cmtrt",
+          "field": "overall_antiviral_cmtrt___5",
           "values": {
-            "1": "Ribavarin",
-            "2": "Lopinavir/Ritonvir",
-            "3": "Interferon alpha",
-            "4": "Interferon beta",
-            "5": "Neuraminidase inhibitors",
-            "6": null
+            "1": true,
+            "0": null
           },
-          "description": "Antiviral type"
+          "if": {
+            "overall_antiviral_cmyn": 1
+          },
+          "description": "Neuraminidase used?"
         }
       ]
     },
@@ -440,25 +442,13 @@
       ]
     },
     "treatment_cardiovascular": {
-      "field": "ccm_b_horeas",
+      "field": "ccm_b_horeas___4",
       "values": {
-        "1": false,
-        "2": false,
-        "3": false,
-        "4": true,
-        "5": false,
-        "6": false,
-        "7": false,
-        "8": false,
-        "9": false,
-        "10": false,
-        "11": false,
-        "12": false,
-        "13": null,
-        "14": null,
-        "15": false,
-        "16": false,
-        "17": false
+        "1": true,
+        "0": false
+      },
+      "if": {
+        "ccm_b_icu_yn": 1
       },
       "Description": "Cardiovascular complications?"
     },
@@ -484,42 +474,41 @@
       ]
     },
     "treatment_dexamethasone": {
-      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
-      "description": "Corticosteroid type",
+      "description": "Dexamethasone used?",
       "combinedType": "any",
       "fields": [
         {
-          "field": "corticost_cmtrt",
+          "field": "corticost_cmtrt___1",
           "values": {
-            "1": "Dexamethasone",
-            "2": "Hydrocortisone",
-            "3": "Prednisolone",
-            "4": "Methylprednisolone",
-            "5": null
+            "1": true,
+            "0": false
           },
-          "description": "Corticosteroid type"
+          "if": {
+            "corticost_cmyn": 1
+          },
+          "description": "Dexamethasone used?"
         },
         {
-          "field": "daily_corticost_cmtrt",
+          "field": "daily_corticost_cmtrt___1",
           "values": {
-            "1": "Dexamethasone",
-            "2": "Hydrocortisone",
-            "3": "Prednisolone",
-            "4": "Methylprednisolone",
-            "5": null
+            "1": true,
+            "0": false
           },
-          "description": "Corticosteroid type"
+          "if": {
+            "daily_corticost_cmyn": 1
+          },
+          "description": "Dexamethasone used?"
         },
         {
-          "field": "overall_corticost_cmtrt",
+          "field": "overall_corticost_cmtrt___1",
           "values": {
-            "1": "Dexamethasone",
-            "2": "Hydrocortisone",
-            "3": "Prednisolone",
-            "4": "Methylprednisolone",
-            "5": null
+            "1": true,
+            "0": false
           },
-          "description": "Corticosteroid type"
+          "if": {
+            "overall_corticost_cmyn": 1
+          },
+          "description": "Dexamethasone used?"
         }
       ]
     },
@@ -592,48 +581,41 @@
       ]
     },
     "treatment_tocilizumab": {
-      "comment": "TODO: Create combination of combined types and conditionals here (depends on above attribute).",
       "description": "Experimental agents",
       "combinedType": "any",
       "fields": [
         {
-          "field": "exper_cmtype",
+          "field": "exper_cmtype___4",
           "values": {
-            "1": "Chloroquine",
-            "2": "Hyroxychloroquine",
-            "3": "Remdesivir",
-            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
-            "5": "IL-1 Inhibitor (e.g., Anakinra)",
-            "6": "Convalescent plasma",
-            "7": null
+            "1": true,
+            "0": false
           },
-          "description": "Experimental agent type"
+          "if": {
+            "exper_cmyn": 1
+          },
+          "description": "Tocilizumab?"
         },
         {
-          "field": "daily_exper_cmtype",
+          "field": "daily_exper_cmtype___4",
           "values": {
-            "1": "Chloroquine",
-            "2": "Hyroxychloroquine",
-            "3": "Remdesivir",
-            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
-            "5": "IL-1 Inhibitor (e.g., Anakinra)",
-            "6": "Convalescent plasma",
-            "7": null
+            "1": true,
+            "0": false
           },
-          "description": "Experimental agent type"
+          "if": {
+            "daily_exper_cmyn": 1
+          },
+          "description": "Tocilizumab?"
         },
         {
-          "field": "overall_exper_cmtype",
+          "field": "overall_exper_cmtype___4",
           "values": {
-            "1": "Chloroquine",
-            "2": "Hyroxychloroquine",
-            "3": "Remdesivir",
-            "4": "IL-6 Inhibitor (e.g., Tocalizumab)",
-            "5": "IL-1 Inhibitor (e.g., Anakinra)",
-            "6": "Convalescent plasma",
-            "7": null
+            "1": true,
+            "0": false
           },
-          "description": "Experimental agent type"
+          "if": {
+            "overall_exper_cmyn": 1
+          },
+          "description": "Tocilizumab?"
         }
       ]
     },
@@ -704,7 +686,7 @@
           "description": "Invasive ventilation?"
         },
         {
-          "field": "ccm_b_ivasive_prtrt",
+          "field": "ccm_b_invasive_prtrt",
           "#ref": "Y/N/NK",
           "description": "Invasive ventilation?"
         }
@@ -730,7 +712,7 @@
           "description": "Non-invasive ventilation?"
         },
         {
-          "field": "ccm_b_nonivasive_prtrt",
+          "field": "ccm_b_noninvasive_prtrt",
           "#ref": "Y/N/NK",
           "description": "Non-invasive ventilation?"
         }
@@ -803,7 +785,7 @@
           "description": "Oxygen therepy?"
         },
         {
-          "field": "ccm_a_fiO2_lbyn",
+          "field": "ccm_a_fi02_lbyn",
           "#ref": "Y/N/NK",
           "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
         }
@@ -829,7 +811,7 @@
           "description": "Oxygen therepy?"
         },
         {
-          "field": "ccm_a_fiO2_lbyn",
+          "field": "ccm_a_fi02_lbyn",
           "#ref": "Y/N/NK",
           "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
         }
@@ -855,7 +837,7 @@
           "description": "Oxygen therepy?"
         },
         {
-          "field": "ccm_a_fiO2_lbyn",
+          "field": "ccm_a_fi02_lbyn",
           "#ref": "Y/N/NK",
           "description": "Any supplemental oxygen (record highest level of support on day of assesment)"
         }
@@ -886,19 +868,19 @@
           "description": "Prone positioning?"
         },
         {
-          "field": "cmm_a_pronevent_prtrt",
+          "field": "ccm_a_pronevent_prtrt",
           "#ref": "Y/N/NK",
           "description": "Prone positioning?"
         },
         {
-          "field": "cmm_b_pronevent_prtrt",
+          "field": "ccm_b_pronevent_prtrt",
           "#ref": "Y/N/NK",
           "description": "Prone positioning?"
         }
       ]
     },
     "treatment_inhaled_nitric_oxide": {
-      "field": "ccm_a_nitric_cmtrt",
+      "field": "ccm_a_nitritc_cmtrt",
       "#ref": "Y/N/NK",
       "description": "Inhaled nitric oxide?"
     },
@@ -916,7 +898,7 @@
           "description": "ICU admission date"
         },
         {
-          "field": "ccm_b_icu_hostdat",
+          "field": "ccm_b_icu_hodat",
           "description": "ICU admission date"
         }
       ]
