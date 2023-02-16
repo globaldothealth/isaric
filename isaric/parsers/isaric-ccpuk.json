@@ -734,7 +734,20 @@
         "3": false,
         "10": false
       },
-      "comment": "TODO: antiviral_cmtrt == 9 condition, but multiple fields, needs to be fixed"
+      "if": {
+        "antiviral_cmtrt___9": 1
+      }
+    },
+    "treatment_neuraminidase": {
+      "description": "Treatment with Neuraminidase",
+      "field": "antiviral_cmtrt___5",
+      "values": {
+        "1": true,
+        "0": false
+      },
+      "if": {
+        "antiviral_cmyn": 1
+      }
     }
   }
 }
