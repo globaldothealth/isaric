@@ -136,6 +136,7 @@ class Visit(BaseModel):
     treatment_intravenous_fluids: bool | None = None
     treatment_nsaid: bool | None = None
     treatment_neuraminidase: bool | None = None
+    treatment_oxygen_interface: bool | None = None
     treatment_cpr: bool | None = None
     treatment_offlabel: bool | None = None
     treatment_respiratory_support: bool | None = None
@@ -148,6 +149,7 @@ class Visit(BaseModel):
     treatment_monoclonal_antibody: bool | None = None
     treatment_other: list[str] = []
 
+    treatment_oxygen_mechanical_support: bool | None = None
     treatment_pacing: bool | None = None
 
     treatment_o2_flow_vol_max: int | None = None
