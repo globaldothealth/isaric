@@ -3,5 +3,13 @@
         "tests"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "evenBetterToml.formatter.indentEntries": true,
+    "evenBetterToml.formatter.indentTables": true,
+    "evenBetterToml.formatter.indentString": "  ",
+    "evenBetterToml.formatter.arrayAutoCollapse": true,
+    "[toml]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true
+    }
 }
