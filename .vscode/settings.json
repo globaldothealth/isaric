@@ -11,5 +11,9 @@
     "[toml]": {
         "editor.formatOnSave": true,
         "editor.formatOnPaste": true
+    },
+    "[json]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
     }
 }
