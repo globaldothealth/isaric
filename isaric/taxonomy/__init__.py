@@ -22,6 +22,7 @@ Ethnicity = load_taxonomy("Ethnicity", TAXONOMY_VERSION)
 Observation = load_taxonomy("Observation", TAXONOMY_VERSION)
 Outcome = load_taxonomy("Outcome", TAXONOMY_VERSION)
 Pathogen = load_taxonomy("Pathogen", TAXONOMY_VERSION)
+Phase = load_taxonomy("Pathogen", TAXONOMY_VERSION)
 PregnancyGestationalOutcome = load_taxonomy(
     "PregnancyGestationalOutcome", TAXONOMY_VERSION
 )
