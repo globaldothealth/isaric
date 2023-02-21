@@ -173,5 +173,5 @@ class Observation(BaseModel):
     value_num: float | None = None
     value_char: str | None = None
     is_present: bool | None = None
-    duration_days: int = None
-    context: str = None
+    occurrence_duration: str = None
+    context: list[str] = None
