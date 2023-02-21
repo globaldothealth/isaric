@@ -11,6 +11,7 @@ from .taxonomy import (
     ObservationName,
     Outcome,
     Pathogen,
+    Phase,
     PregnancyGestationalOutcome,
     ReferenceDate,
     Sex,
