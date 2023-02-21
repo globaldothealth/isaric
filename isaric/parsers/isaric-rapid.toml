@@ -72,10 +72,15 @@
   [subject.age]
     description = "Age/Estimated age"
     combinedType = "firstNonNull"
-    fields = [
-      { field = "brthdtc", apply = "yearsElapsed" },
-      { field = "age", unit = "years", source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } } },
-    ]
+
+    [[subject.age.fields]]
+      field = "brthdtc"
+      apply = { mappingType = "yearsElapsed", apply_params = ["dsstdat"] }
+
+    [[subject.age.fields]]
+      field = "age"
+      unit = "years"
+      source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } }
 
   [subject.pregnancy]
     field = "pregyn_rptestcd"
@@ -461,9 +466,9 @@
     description = "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
 
 [visit.treatment_other]
-  field = "ccm_a_oth_prperf"
-  "ref" = "Y/N/NK"
+  field = "ccm_a_other_prtrt"
   description = "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
+  if = { ccm_a_oth_prperf = 1 }
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therepy"
