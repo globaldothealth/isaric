@@ -188,12 +188,12 @@
 
   [visit.icu_admission]
     description = "ICU or High Dependency admission"
-    combinedType = "any"
+    combinedType = "firstNonNull"
 
     [[visit.icu_admission.fields]]
-      field = "icu_hoterm"
+      field = "overall_icu_hoterm"
       "ref" = "Y/N/NK"
-      description = "ICU or High Dependency admission on the first day of admission?"
+      description = "ICU or High Dependency admission?"
 
     [[visit.icu_admission.fields]]
       field = "daily_icu_hoterm"
@@ -201,9 +201,9 @@
       description = "ICU or High Dependency admission?"
 
     [[visit.icu_admission.fields]]
-      field = "overall_icu_hoterm"
+      field = "icu_hoterm"
       "ref" = "Y/N/NK"
-      description = "ICU or High Dependency admission?"
+      description = "ICU or High Dependency admission on the first day of admission?"
 
     [[visit.icu_admission.fields]]
       field = "ccm_a_icu_hoyn"
@@ -212,25 +212,25 @@
 
 [visit.treatment_ace_inhibitors]
   description = "Ace Inhibitors"
-  combinedType = "any"
-
-  [[visit.treatment_ace_inhibitors.fields]]
-    field = "ace_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Angiotensin converting enzyme inhibitors (ACE) on the first day of admission?"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_ace_inhibitors.fields]]
     field = "daily_ace_cmoccur"
     "ref" = "Y/N/NK"
     description = "Angiotension converting enzyme inhibitors (ACE inhibitors)?"
 
+  [[visit.treatment_ace_inhibitors.fields]]
+    field = "ace_cmoccur"
+    "ref" = "Y/N/NK"
+    description = "Angiotensin converting enzyme inhibitors (ACE) on the first day of admission?"
+
 [visit.treatment_antibiotics]
   description = "Antibiotics"
-  combinedType = "any"
-  field = [
-    { field = "antibiotic_cmyn", "ref" = "Y/N/NK", description = "Antibiotic on the first day of admission?" },
-    { field = "daily_antibiotic_cmyn", "ref" = "Y/N/NK", description = "Antibiotic?" },
+  combinedType = "firstNonNull"
+  fields = [
     { field = "overall_antibiotic_cmyn", "ref" = "Y/N/NK", description = "Antibiotic?" },
+    { field = "daily_antibiotic_cmyn", "ref" = "Y/N/NK", description = "Antibiotic?" },
+    { field = "antibiotic_cmyn", "ref" = "Y/N/NK", description = "Antibiotic on the first day of admission?" },
   ]
 
 [visit.treatment_anticoagulation]
@@ -240,39 +240,39 @@
 
 [visit.treatment_antifungal_agent]
   description = "Antifungal"
-  combinedType = "any"
-  field = [
-    { field = "antifung_cmyn", "ref" = "Y/N/NK", description = "Antifungal agent on the first day of admission?" },
-    { field = "daily_antifung_cmyn", "ref" = "Y/N/NK", description = "Antifungal agent?" },
+  combinedType = "firstNonNull"
+  fields = [
     { field = "overall_antifung_cmyn", "ref" = "Y/N/NK", description = "Antifungal agent?" },
+    { field = "daily_antifung_cmyn", "ref" = "Y/N/NK", description = "Antifungal agent?" },
+    { field = "antifung_cmyn", "ref" = "Y/N/NK", description = "Antifungal agent on the first day of admission?" },
   ]
 
 [visit.treatment_antimalarial]
   description = "Antimalarial"
-  combinedType = "any"
-  field = [
-    { field = "antimal_cmyn", "ref" = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
-    { field = "daily_antimal_cmyn", "ref" = "Y/N/NK", description = "Antimalarial agent?" },
+  combinedType = "firstNonNull"
+  fields = [
     { field = "overall_antimal_cmyn", "ref" = "Y/N/NK", description = "Antimalarial agent?" },
+    { field = "daily_antimal_cmyn", "ref" = "Y/N/NK", description = "Antimalarial agent?" },
+    { field = "antimal_cmyn", "ref" = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
   ]
 
 [visit.treatment_antivirals]
   description = "Antiviral"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "antiviral_cmyn", "ref" = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
-    { field = "daily_antiviral_cmyn", "ref" = "Y/N/NK", description = "Antiviral agent?" },
     { field = "overall_antiviral_cmyn", "ref" = "Y/N/NK", description = "Antiviral agent?" },
+    { field = "daily_antiviral_cmyn", "ref" = "Y/N/NK", description = "Antiviral agent?" },
+    { field = "antiviral_cmyn", "ref" = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
   ]
 
 [visit.treatment_neuraminidase]
   description = "Antiviral type"
-  combinedType = "any"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_neuraminidase.fields]]
-    field = "antiviral_cmtrt___5"
+    field = "overall_antiviral_cmtrt___5"
     description = "Neuraminidase used?"
-    values = { 1 = true, if = { antiviral_cmyn = 1 } }
+    values = { 1 = true, if = { overall_antiviral_cmyn = 1 } }
 
   [[visit.treatment_neuraminidase.fields]]
     field = "daily_antiviral_cmtrt___5"
@@ -280,23 +280,23 @@
     values = { 1 = true, if = { daily_antiviral_cmyn = 1 } }
 
   [[visit.treatment_neuraminidase.fields]]
-    field = "overall_antiviral_cmtrt___5"
+    field = "antiviral_cmtrt___5"
     description = "Neuraminidase used?"
-    values = { 1 = true, if = { overall_antiviral_cmyn = 1 } }
+    values = { 1 = true, if = { antiviral_cmyn = 1 } }
 
 [visit.treatment_arb]
   description = "Angiotensin II receptor blockers (ARB)"
-  combinedType = "any"
-
-  [[visit.treatment_arb.fields]]
-    field = "arb_cmoccur"
-    "ref" = "Y/N/NK"
-    description = "Angiotensin II receptor blockers (ARBs) on the first day of admission?"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_arb.fields]]
     field = "daily_arb_cmoccur"
     "ref" = "Y/N/NK"
     description = "Angiotensin II receptor blockers (ARBs)?"
+
+  [[visit.treatment_arb.fields]]
+    field = "arb_cmoccur"
+    "ref" = "Y/N/NK"
+    description = "Angiotensin II receptor blockers (ARBs) on the first day of admission?"
 
 [visit.treatment_cardiovascular]
   field = "ccm_b_horeas___4"
@@ -305,21 +305,21 @@
 
 [visit.treatment_corticosteroid]
   description = "Corticosteroid"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "corticost_cmyn", "ref" = "Y/N/NK", description = "Corticosteroid on the first day of admission?" },
-    { field = "daily_corticost_cmyn", "ref" = "Y/N/NK", description = "Corticosteroid?" },
     { field = "overall_corticost_cmyn", "ref" = "Y/N/NK", description = "Corticosteroid?" },
+    { field = "daily_corticost_cmyn", "ref" = "Y/N/NK", description = "Corticosteroid?" },
+    { field = "corticost_cmyn", "ref" = "Y/N/NK", description = "Corticosteroid on the first day of admission?" },
   ]
 
 [visit.treatment_dexamethasone]
   description = "Dexamethasone used?"
-  combinedType = "any"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_dexamethasone.fields]]
-    field = "corticost_cmtrt___1"
+    field = "overall_corticost_cmtrt___1"
     description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true, if = { corticost_cmyn = 1 } }
+    values = { 0 = false, 1 = true, if = { overall_corticost_cmyn = 1 } }
 
   [[visit.treatment_dexamethasone.fields]]
     field = "daily_corticost_cmtrt___1"
@@ -327,28 +327,28 @@
     values = { 0 = false, 1 = true, if = { daily_corticost_cmyn = 1 } }
 
   [[visit.treatment_dexamethasone.fields]]
-    field = "overall_corticost_cmtrt___1"
+    field = "corticost_cmtrt___1"
     description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true, if = { overall_corticost_cmyn = 1 } }
+    values = { 0 = false, 1 = true, if = { corticost_cmyn = 1 } }
 
 [visit.treatment_dialysis]
   description = "Dialysis"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "daily_rrt_prtrt", "ref" = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
     { field = "overall_rrt_prtrt", "ref" = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
+    { field = "daily_rrt_prtrt", "ref" = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
     { field = "ccm_a_renal_prtrt", "ref" = "Y/N/NK", description = "Dialysis/Hemofiltration?" },
     { field = "ccm_b_renal_prtrt", "ref" = "Y/N/NK", description = "Dialysis/Hemofiltration?" },
   ]
 
 [visit.treatment_ecmo]
   description = "ECMO"
-  combinedType = "any"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_ecmo.fields]]
-    field = "extracorp_prtrt"
+    field = "overall_extracorp_prtrt"
     "ref" = "Y/N/NK"
-    description = "Extracorporeal (ECMO) support on the first day of admission?"
+    description = "Extracorporeal (ECMO) support?"
 
   [[visit.treatment_ecmo.fields]]
     field = "daily_extracorp_prtrt"
@@ -356,27 +356,27 @@
     description = "Extracorporeal (ECMO) support?"
 
   [[visit.treatment_ecmo.fields]]
-    field = "overall_extracorp_prtrt"
+    field = "extracorp_prtrt"
     "ref" = "Y/N/NK"
-    description = "Extracorporeal (ECMO) support?"
+    description = "Extracorporeal (ECMO) support on the first day of admission?"
 
 [visit.treatment_experimental_agent]
   description = "Experimental treatments"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "exper_cmyn", "ref" = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
-    { field = "daily_exper_cmyn", "ref" = "Y/N/NK", description = "Experimental agent?" },
     { field = "overall_exper_cmyn", "ref" = "Y/N/NK", description = "Experimental agent?" },
+    { field = "daily_exper_cmyn", "ref" = "Y/N/NK", description = "Experimental agent?" },
+    { field = "exper_cmyn", "ref" = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
   ]
 
 [visit.treatment_tocilizumab]
   description = "Experimental agents"
-  combinedType = "any"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_tocilizumab.fields]]
-    field = "exper_cmtype___4"
+    field = "overall_exper_cmtype___4"
     description = "Tocilizumab?"
-    values = { 0 = false, 1 = true, if = { exper_cmyn = 1 } }
+    values = { 0 = false, 1 = true, if = { overall_exper_cmyn = 1 } }
 
   [[visit.treatment_tocilizumab.fields]]
     field = "daily_exper_cmtype___4"
@@ -384,47 +384,47 @@
     values = { 0 = false, 1 = true, if = { daily_exper_cmyn = 1 } }
 
   [[visit.treatment_tocilizumab.fields]]
-    field = "overall_exper_cmtype___4"
+    field = "exper_cmtype___4"
     description = "Tocilizumab?"
-    values = { 0 = false, 1 = true, if = { overall_exper_cmyn = 1 } }
+    values = { 0 = false, 1 = true, if = { exper_cmyn = 1 } }
 
 [visit.treatment_inotropes_vasopressors]
   description = "Inotropes/vasopressors"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "inotrop_cmtrt", "ref" = "Y/N/NK", description = "Inotropes/vasopressors on the first day of admission?" },
-    { field = "daily_inotrop_cmtrt", "ref" = "Y/N/NK", description = "Inotropes/vasopressors?" },
     { field = "overall_inotrop_cmtrt", "ref" = "Y/N/NK", description = "Inotropes/vasopressors?" },
+    { field = "daily_inotrop_cmtrt", "ref" = "Y/N/NK", description = "Inotropes/vasopressors?" },
+    { field = "inotrop_cmtrt", "ref" = "Y/N/NK", description = "Inotropes/vasopressors on the first day of admission?" },
     { field = "ccm_a_inotrop_cmtrt", "ref" = "Y/N/NK", description = "Any vasopressor/inotropic support?" },
   ]
 
 [visit.treatment_intravenous_fluids]
   description = "IV fluids"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "iv_fluids_cmyn", "ref" = "Y/N/NK", description = "Intraveonous fluids on the first day of admission?" },
-    { field = "daily_iv_fluids_cmyn", "ref" = "Y/N/NK", description = "Intraveonous fluids?" },
     { field = "overall_iv_fluids_cmyn", "ref" = "Y/N/NK", description = "Intraveonous fluids?" },
+    { field = "daily_iv_fluids_cmyn", "ref" = "Y/N/NK", description = "Intraveonous fluids?" },
+    { field = "iv_fluids_cmyn", "ref" = "Y/N/NK", description = "Intraveonous fluids on the first day of admission?" },
   ]
 
 [visit.treatment_invasive_ventilation]
   description = "Invasive ventilation"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "invasive_proccur", "ref" = "Y/N/NK", description = "Invasive ventilation on first day of admission?" },
-    { field = "daily_invasive_proccur", "ref" = "Y/N/NK", description = "Invasive ventilation?" },
     { field = "overall_invasive_proccur", "ref" = "Y/N/NK", description = "Invasive ventilation?" },
+    { field = "daily_invasive_proccur", "ref" = "Y/N/NK", description = "Invasive ventilation?" },
+    { field = "invasive_proccur", "ref" = "Y/N/NK", description = "Invasive ventilation on first day of admission?" },
     { field = "ccm_b_invasive_prtrt", "ref" = "Y/N/NK", description = "Invasive ventilation?" },
   ]
 
 [visit.treatment_noninvasive_ventilation]
   description = "Non-invasive ventilation"
-  combinedType = "any"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_noninvasive_ventilation.fields]]
-    field = "noninvasive_proccur"
+    field = "overall_noninvasive_proccur"
     "ref" = "Y/N/NK"
-    description = "Non-invasive ventilation on first day of admission?"
+    description = "Non-invasive ventilation?"
 
   [[visit.treatment_noninvasive_ventilation.fields]]
     field = "daily_noninvasive_proccur"
@@ -432,9 +432,9 @@
     description = "Non-invasive ventilation?"
 
   [[visit.treatment_noninvasive_ventilation.fields]]
-    field = "overall_noninvasive_proccur"
+    field = "noninvasive_proccur"
     "ref" = "Y/N/NK"
-    description = "Non-invasive ventilation?"
+    description = "Non-invasive ventilation on first day of admission?"
 
   [[visit.treatment_noninvasive_ventilation.fields]]
     field = "ccm_b_noninvasive_prtrt"
@@ -443,12 +443,12 @@
 
 [visit.treatment_nsaid]
   description = "NSAID"
-  combinedType = "any"
+  combinedType = "firstNonNull"
 
   [[visit.treatment_nsaid.fields]]
-    field = "nsaid_cmoccur"
+    field = "overall_nsaid_cmyn"
     "ref" = "Y/N/NK"
-    description = "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
+    description = "Non-steroidal anti-inflammatory (NSAID)?"
 
   [[visit.treatment_nsaid.fields]]
     field = "daily_nsaid_cmoccur"
@@ -456,9 +456,9 @@
     description = "Non-steroidal anti-inflammatory (NSAID)?"
 
   [[visit.treatment_nsaid.fields]]
-    field = "overall_nsaid_cmyn"
+    field = "nsaid_cmoccur"
     "ref" = "Y/N/NK"
-    description = "Non-steroidal anti-inflammatory (NSAID)?"
+    description = "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
 
 [visit.treatment_other]
   field = "ccm_a_oth_prperf"
@@ -467,21 +467,21 @@
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therepy"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "oxygen_cmoccur", "ref" = "Y/N/NK", description = "Oxygen therepy on first day of admission?" },
-    { field = "daily_oxygen_cmoccur", "ref" = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "overall_oxygen_cmoccur", "ref" = "Y/N/NK", description = "Oxygen therepy?" },
+    { field = "daily_oxygen_cmoccur", "ref" = "Y/N/NK", description = "Oxygen therepy?" },
+    { field = "oxygen_cmoccur", "ref" = "Y/N/NK", description = "Oxygen therepy on first day of admission?" },
     { field = "ccm_a_fi02_lbyn", "ref" = "Y/N/NK", description = "Any supplemental oxygen?" },
   ]
 
 [visit.treatment_prone_position]
   description = "Prone Positioning"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "prone_prtrt", "ref" = "Y/N/NK", description = "Prone position on first day of admission?" },
-    { field = "daily_prone_prtrt", "ref" = "Y/N/NK", description = "Prone positioning?" },
     { field = "overall_prone_prtrt", "ref" = "Y/N/NK", description = "Prone positioning?" },
+    { field = "daily_prone_prtrt", "ref" = "Y/N/NK", description = "Prone positioning?" },
+    { field = "prone_prtrt", "ref" = "Y/N/NK", description = "Prone position on first day of admission?" },
     { field = "ccm_a_pronevent_prtrt", "ref" = "Y/N/NK", description = "Prone positioning?" },
     { field = "ccm_b_pronevent_prtrt", "ref" = "Y/N/NK", description = "Prone positioning?" },
   ]
@@ -498,7 +498,7 @@
 
 [visit.icu_admission_dates]
   description = "ICU admission date"
-  combinedType = "any"
+  combinedType = "firstNonNull"
   fields = [
     { field = "overall_icu_hostdat", description = "ICU admission date" },
     { field = "ccm_b_icu_hodat", desription = "ICU admission date" },
