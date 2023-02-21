@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/globaldothealth/isaric/main/schemas/dev/subject.schema.json",
+  "title": "Study subject",
+  "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
+  "required": [
+    "subject_id",
+    "dataset_id",
+    "country_iso3",
+    "enrolment_date",
+    "age_years",
+    "sex_at_birth",
+    "ethnicity",
+    "pathogen",
+    "outcome"
+  ],
+  "properties": {
+    "subject_id": {
+      "type": "string",
+      "description": "Unique ID of subject",
+      "category": "metadata"
+    },
+    "dataset_id": {
+      "type": "string",
+      "description": "Dataset ID, refers to a specific version",
+      "category": "metadata"
+    },
+    "country_iso3": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 3166-1 alpha-3 country code of study site",
+      "category": "site-details"
+    },
+    "enrolment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of enrolment in the study",
+      "category": "site-details"
+    },
+    "admission_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of admission to site",
+      "category": "site-details"
+    },
+    "age_years": {
+      "type": "integer",
+      "description": "Age in years",
+      "category": "demographics"
+    },
+    "sex_at_birth": {
+      "enum": [
+        "male",
+        "female",
+        "non_binary"
+      ],
+      "description": "Sex at birth",
+      "category": "demographics"
+    },
+    "ethnicity": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Arab",
+          "Black",
+          "East_Asian",
+          "South_Asian",
+          "West_Asian",
+          "Latin_American",
+          "White",
+          "Aboriginal_First_Nations",
+          "Other"
+        ]
+      },
+      "description": "Ethnicity",
+      "category": "demographics"
+    },
+    "works_microbiology_lab": {
+      "type": "boolean",
+      "description": "Works in microbiology lab",
+      "category": "demographics"
+    },
+    "works_healthcare": {
+      "type": "boolean",
+      "description": "Works in healthcare setting",
+      "category": "demographics"
+    },
+    "pathogen": {
+      "type": "string",
+      "description": "Pathogen",
+      "category": "pathogen"
+    },
+    "pregnancy": {
+      "type": "boolean",
+      "description": "Pregnant?",
+      "category": "pregnancy"
+    },
+    "pregnancy_date_of_delivery": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of delivery",
+      "category": "pregnancy"
+    },
+    "pregnancy_birth_weight_kg": {
+      "type": "number",
+      "description": "Birth weight (kg)",
+      "category": "pregnancy"
+    },
+    "pregnancy_outcome": {
+      "type": "string",
+      "description": "Pregnancy outcome",
+      "category": "pregnancy"
+    },
+    "pregnancy_gestational_outcome": {
+      "enum": [
+        "term_birth",
+        "preterm_birth"
+      ],
+      "description": "Pregnancy gestational outcome",
+      "category": "pregnancy"
+    },
+    "pregnancy_whether_breastfed": {
+      "type": "boolean",
+      "description": "Whether infant was breastfed",
+      "category": "pregnancy"
+    },
+    "pregnancy_post_partum": {
+      "type": "boolean",
+      "description": "In post partum phase",
+      "category": "pregnancy"
+    },
+    "pregnancy_gestational_assessment_weeks": {
+      "type": "number",
+      "description": "Gestational assessment weeks",
+      "category": "pregnancy"
+    },
+    "has_chronic_hematologic_disease": {
+      "type": "boolean",
+      "description": "Chronic hematologic disease",
+      "category": "comorbidities"
+    },
+    "has_asplenia": {
+      "type": "boolean",
+      "description": "Asplenia",
+      "category": "comorbidities"
+    },
+    "has_tuberculosis": {
+      "type": "boolean",
+      "description": "Tuberculosis",
+      "category": "comorbidities"
+    },
+    "has_dementia": {
+      "type": "boolean",
+      "description": "Dementia",
+      "category": "comorbidities"
+    },
+    "has_obesity": {
+      "type": "boolean",
+      "description": "Obesity",
+      "category": "comorbidities"
+    },
+    "has_rheumatologic_disorder": {
+      "type": "boolean",
+      "description": "Rheumatologic disorder",
+      "category": "comorbidities"
+    },
+    "has_hiv": {
+      "type": "boolean",
+      "description": "HIV",
+      "category": "comorbidities"
+    },
+    "has_hypertension": {
+      "type": "boolean",
+      "description": "Hypertension",
+      "category": "comorbidities"
+    },
+    "has_malignant_neoplasm": {
+      "type": "boolean",
+      "description": "Malignant neoplasm",
+      "category": "comorbidities"
+    },
+    "has_smoking": {
+      "enum": [
+        "yes",
+        "former",
+        "never"
+      ],
+      "description": "History of smoking",
+      "category": "comorbidities"
+    },
+    "has_asthma": {
+      "type": "boolean",
+      "description": "Asthma",
+      "category": "comorbidities"
+    },
+    "has_chronic_cardiac_disease": {
+      "type": "boolean",
+      "description": "Chronic cardiac disease",
+      "category": "comorbidities"
+    },
+    "has_chronic_kidney_disease": {
+      "type": "boolean",
+      "description": "Chronic kidney disease",
+      "category": "comorbidities"
+    },
+    "has_diabetes": {
+      "type": "boolean",
+      "description": "Diabetes",
+      "category": "comorbidities"
+    },
+    "diabetes_type": {
+      "enum": [
+        "type-1",
+        "type-2",
+        "gestational"
+      ],
+      "description": "Diabetes type",
+      "category": "comorbidities"
+    },
+    "has_liver_disease": {
+      "type": "boolean",
+      "description": "Liver disease",
+      "category": "comorbidities"
+    },
+    "has_apnoea": {
+      "type": "boolean",
+      "description": "Apnoea",
+      "category": "comorbidities"
+    },
+    "has_hiv_viral_suppression": {
+      "type": "boolean",
+      "description": "HIV viral suppression",
+      "category": "comorbidities"
+    },
+    "has_inflammatory_bowel_disease": {
+      "type": "boolean",
+      "description": "Inflammatory bowel disease",
+      "category": "comorbidities"
+    },
+    "has_rare_disease_inborn_metabolism_error": {
+      "type": "boolean",
+      "description": "Rare disease and inborn errors of metabolism",
+      "category": "comorbidities"
+    },
+    "has_solid_organ_transplant": {
+      "type": "boolean",
+      "description": "Solid organ transplant",
+      "category": "comorbidities"
+    },
+    "has_tuberculosis_past": {
+      "type": "boolean",
+      "description": "History of tuberculosis",
+      "category": "comorbidities"
+    },
+    "has_hiv_art": {
+      "type": "boolean",
+      "description": "HIV - on ART (ARV medication)",
+      "category": "comorbidities"
+    },
+    "has_immunosuppression_therapy_treatment": {
+      "type": "boolean",
+      "description": "Immunosuppression therapies treatment",
+      "category": "comorbidities"
+    },
+    "has_comorbidity_other": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Other comorbidities",
+      "category": "comorbidities"
+    },
+    "has_died": {
+      "type": "boolean",
+      "description": "Died",
+      "category": "outcome"
+    },
+    "date_death": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of death",
+      "category": "outcome"
+    },
+    "icu_admitted": {
+      "type": "boolean",
+      "description": "Admitted to ICU",
+      "category": "outcome"
+    },
+    "outcome": {
+      "enum": [
+        "death",
+        "recovered",
+        "discharged"
+      ],
+      "description": "Outcome",
+      "category": "outcome"
+    },
+    "date_outcome": {
+      "type": "string",
+      "format": "date",
+      "description": "Outcome date",
+      "category": "outcome"
+    }
+  }
+}
