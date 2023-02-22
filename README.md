@@ -34,10 +34,11 @@ If this does not work, try using requirements.txt
 .
 ├── isaric  # Python module
 │   ├── parsers               # specification files used by parser.py
-│   │   └── isaric-ccpuk.json
-│   ├── schemas.py            # pydantic schemas
-│   └── taxonomy              # categorical classifications
-│       └── v1.json
+│   │   └── isaric-ccpuk.toml
+└── schemas/dev               # JSON schemas for tables
+    └── subject.schema.json
+    └── visit.schema.json
+    └── observation.schema.json
 ├── notebooks                 # Jupyter notebooks
 ├── poetry.lock
 ├── pyproject.toml
@@ -46,16 +47,19 @@ If this does not work, try using requirements.txt
     └── test_example.py
 ```
 
-**Taxonomy**: Taxonomy files, such as
-[isaric/taxonomy/v1.json](isaric/taxonomy/v1.json) contain categorisations and
-the canonical name used by the ISARIC schema for a particular category.
-Taxonomy files are versioned in the filename, and with a `version` key in the
-file to enable future extensibility.
+**Schemas**: Each table in the ISARIC schema has a corresponding JSON Schema
+specification in [schemas](schemas). These schemas supersede the schemas.py file
+in previous versions of this repository, as well as the taxonomy files, which
+are now contained within the JSON schemas. Schemas are versioned by the folder
+name (`dev`, `v1`, `v2`) under schemas. At present, ISARIC schemas are under
+development, so they are located under `dev`. Once the schema is finalised, it
+will be renamed to `v1`, following which only additive changes will be performed
+on the schema. Breaking changes will require a new version to be assigned.
 
 **Specifications**: Specification files, such as
-[isaric-ccpuk](isaric/parsers/isaric-ccpuk.json) under `parsers` describe the
+[isaric-ccpuk](isaric/parsers/isaric-ccpuk.toml) under `parsers` describe the
 field mappings that are parsed by [adtl](https://github.com/globaldothealth/adtl).
-The parser JSON file follows the adtl
+The parser TOML (or JSON) file follows the adtl
 [specification](https://github.com/globaldothealth/adtl/blob/main/docs/specification.md).
 
 ## Run
@@ -66,7 +70,7 @@ the options. As an example, to transform the REDCap data to the ISARIC schema
 for the CCPUK study:
 
 ```shell
-adtl isaric/parsers/isaric-ccpuk.json data.csv -o output
+adtl isaric/parsers/isaric-ccpuk.toml data.csv -o output
 ```
 
 ### Development
