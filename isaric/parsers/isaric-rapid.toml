@@ -75,7 +75,7 @@
 
     [[subject.age.fields]]
       field = "brthdtc"
-      apply = { mappingType = "yearsElapsed", apply_params = ["dsstdat"] }
+      apply = { function = "yearsElapsed", params = ["dsstdat"] }
 
     [[subject.age.fields]]
       field = "age"
