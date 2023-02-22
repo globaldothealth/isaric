@@ -4,7 +4,7 @@
 
   [adtl.tables]
     study = { kind = "constant" }
-    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull" }
+    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
     visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull" }
 
   [adtl.defs."Y/N/NK".values]
@@ -172,7 +172,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = true, 2 = "Never", 3 = "Former" }
+  values = { 1 = "yes", 2 = "never", 3 = "former" }
 
 [subject.has_asthma]
   field = "asthma_mhyn"
@@ -197,7 +197,7 @@
 [subject.diabetes_type]
   field = "diabetes_type_mhyn"
   description = "Diabetes and Type"
-  values = { 0 = false, 1 = "1", 2 = "2" }
+  values = { 1 = "type-1", 2 = "type-2" }
 
 [subject.has_liver_disease]
   combinedType = "any"
@@ -247,20 +247,20 @@
     field = "dsterm"
 
     [subject.outcome.fields.values]
-      1 = "Discharged alive"
-      2 = "Hospitalisation (Remains in Hospital &geq; Day 28 after symptom onset)"
-      3 = "Transfer to other facility"
-      4 = "Death"
-      5 = "Palliative discharge"
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "palliative-discharged"
 
   [[subject.outcome.fields]]
     field = "dsterm_v2"
 
     [subject.outcome.fields.values]
-      1 = "Discharged alive expected to survive"
-      3 = "Transfer to other facility"
-      4 = "Death"
-      5 = "Palliative discharge"
+      1 = "discharged"
+      3 = "transferred"
+      4 = "death"
+      5 = "palliative-discharge"
 
 [subject.date_outcome]
   combinedType = "firstNonNull"
@@ -429,14 +429,14 @@
     { field = "daily_prone_cmtrt", ref = "Y/N/NK", description = "Prone positioning" },
   ]
 
-[visit.treatment_tocilizumab] # TODO: antiviral_cmtrt == 9 condition, but multiple fields, needs to be fixed
+[visit.treatment_tocilizumab]
   description = "Treatment with Tocilizumab"
   field = "il6_cmtrt"
   values = { 1 = true, 2 = false, 3 = false, 10 = false }
-  if = { antiviral_cmtrt = 9 }
+  if = { antiviral_cmtrt___9 = 1 }
 
 [visit.treatment_neuraminidase]
   description = "Treatment with Neuraminidase"
-  field = "antirviral_cmtrt___5"
+  field = "antiviral_cmtrt___5"
   values = { 1 = true, 0 = false }
   if = { antiviral_cmyn = 1 }
