@@ -19,7 +19,7 @@ fields = [
 name = "haemorrhage"
 date = { ref = "admissionDateHierarchy" }
 phase = "admission"
-is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
 if = { bleed_ceoccur_v2 = { "!=" = 3} }
 occurrence_period = 
 #description = "Bleeding (Haemorrhage)"
@@ -119,7 +119,7 @@ occurrence_period =
 [[observation]]
 name = "vomiting"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_nausea", values = { 1 = true, 0 = false } }
 if = { flw_nausea = { "!=" = 99} }
 occurrence_period = 
@@ -159,7 +159,7 @@ occurrence_period =
 [[observation]]
 name = "joint_pain"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_joint_pain", values = { 1 = true, 0 = false } }
 if = { flw_joint_pain = { "!=" = 99} }
 occurrence_period = 
@@ -175,7 +175,7 @@ occurrence_period =
 [[observation]]
 name = "muscle_aches"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_muscle_pain", values = { 1 = true, 0 = false } }
 if = { flw_muscle_pain = { "!=" = 99} }
 occurrence_period = 
@@ -199,7 +199,7 @@ occurrence_period =
 [[observation]]
 name = "shortness_breath"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_breathless", values = { 1 = true, 0 = false } }
 if = { flw_breathless = { "!=" = 99} }
 occurrence_period = 
@@ -223,7 +223,7 @@ occurrence_period =
 [[observation]]
 name = "diarrhoea"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
 if = { flw_diarrhoea = { "!=" = 99} }
 occurrence_period = 
@@ -247,7 +247,7 @@ occurrence_period =
 [[observation]]
 name = "headache"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_headache", values = { 1 = true, 0 = false } }
 if = { flw_headache = { "!=" = 99} }
 occurrence_period = 
@@ -263,7 +263,7 @@ occurrence_period =
 [[observation]]
 name = "skin_rash"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_skin_rash", values = { 1 = true, 0 = false } }
 if = { flw_skin_rash = { "!=" = 99} }
 occurrence_period = 
@@ -279,7 +279,7 @@ occurrence_period =
 [[observation]]
 name = "history_fever"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_fever", values = { 1 = true, 0 = false } }
 if = { flw_fever = { "!=" = 99} }
 occurrence_period = 
@@ -391,7 +391,7 @@ occurrence_period =
 [[observation]]
 name = "loss_smell"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_loss_smell", values = { 1 = true, 0 = false } }
 if = { flw_loss_smell = { "!=" = 99} }
 occurrence_period = 
@@ -407,7 +407,7 @@ occurrence_period =
 [[observation]]
 name = "loss_taste"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_loss_taste", values = { 1 = true, 0 = false } }
 if = { flw_loss_taste = { "!=" = 99} }
 occurrence_period = 
@@ -415,7 +415,7 @@ occurrence_period =
 [[observation]]
 name = "inability_walk"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_eq5d_mb_p", values = { 2 = "I had slight problems in walking about", 3 = "I had moderate problems in walking about", 4 = "I had severe problems in walking about", 5 = "I was unable to walk about" } }
 if = { flw_eq5d_mb_p = { "!=" = 1} }
 occurrence_period = 
@@ -423,7 +423,7 @@ occurrence_period =
 [[observation]]
 name = "inability_walk"
 phase = "followup"
-date = { ref = followupDateHierarchy }
+date = { ref = "followupDateHierarchy" }
 is_present = { if field = "flw_eq5d_mb", values = { 2 = "I had slight problems in walking about", 3 = "I had moderate problems in walking about", 4 = "I had severe problems in walking about", 5 = "I was unable to walk about" } }
 if = { flw_eq5d_mb = { "!=" = 1 } }
 occurrence_period = 
