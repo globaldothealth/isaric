@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/globaldothealth/isaric/main/schemas/dev/visit.schema.json",
+  "title": "Study visit",
+  "description": "A single hospital visit of a subject in the ISARIC schema, contains treatment information",
+  "required": [
+    "visit_id",
+    "dataset_id",
+    "enrolment_date",
+    "age_years",
+    "sex_at_birth",
+    "ethnicity",
+    "pathogen",
+    "outcome"
+  ],
+  "properties": {
+    "visit_id": {
+      "type": "string",
+      "description": "Unique ID of visit",
+      "category": "metadata"
+    },
+    "subject_id": {
+      "type": "string",
+      "description": "Unique ID of subject",
+      "category": "metadata"
+    },
+    "dataset_id": {
+      "type": "string",
+      "description": "Dataset ID, refers to a specific version",
+      "category": "metadata"
+    },
+    "country_iso3": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 3166-1 alpha-3 country code of study site",
+      "category": "site-details"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Start date of visit",
+      "category": "time-period"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "End date of visit",
+      "category": "time-period"
+    },
+    "pathogen_test_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Pathogen test date",
+      "category": "pathogen"
+    },
+    "phase": {
+      "enum": [
+        "admission",
+        "study",
+        "followup"
+      ],
+      "description": "Phase of study",
+      "category": "time-period"
+    },
+    "icu_admission": {
+      "type": "boolean",
+      "description": "Admitted to ICU in this visit",
+      "category": "treatments"
+    },
+    "icu_admission_dates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "date"
+      },
+      "description": "Date(s) of admission to ICU"
+    },
+    "treatment_dialysis": {
+      "type": "boolean",
+      "description": "Dialysis",
+      "category": "treatments"
+    },
+    "treatment_inotropes_vasopressors": {
+      "type": "boolean",
+      "description": "Inotropes vasopressors",
+      "category": "treatments"
+    },
+    "treatment_ecmo": {
+      "type": "boolean",
+      "description": "Ecmo",
+      "category": "treatments"
+    },
+    "treatment_corticosteroid": {
+      "type": "boolean",
+      "description": "Corticosteroid",
+      "category": "treatments"
+    },
+    "treatment_oxygen_therapy": {
+      "type": "boolean",
+      "description": "Oxygen therapy",
+      "category": "treatments"
+    },
+    "treatment_prone_position": {
+      "type": "boolean",
+      "description": "Prone position",
+      "category": "treatments"
+    },
+    "treatment_invasive_ventilation": {
+      "type": "boolean",
+      "description": "Invasive ventilation",
+      "category": "treatments"
+    },
+    "treatment_antifungal_agent": {
+      "type": "boolean",
+      "description": "Antifungal agent",
+      "category": "treatments"
+    },
+    "treatment_antivirals": {
+      "type": "boolean",
+      "description": "Antivirals",
+      "category": "treatments"
+    },
+    "treatment_antibiotics": {
+      "type": "boolean",
+      "description": "Antibiotics",
+      "category": "treatments"
+    },
+    "treatment_anticoagulation": {
+      "type": "boolean",
+      "description": "Anticoagulation",
+      "category": "treatments"
+    },
+    "treatment_experimental_agent": {
+      "type": "boolean",
+      "description": "Experimental agent",
+      "category": "treatments"
+    },
+    "treatment_inhaled_nitric_oxide": {
+      "type": "boolean",
+      "description": "Inhaled nitric oxide",
+      "category": "treatments"
+    },
+    "treatment_noninvasive_ventilation": {
+      "type": "boolean",
+      "description": "Noninvasive ventilation",
+      "category": "treatments"
+    },
+    "treatment_ace_inhibitors": {
+      "type": "boolean",
+      "description": "Ace inhibitors",
+      "category": "treatments"
+    },
+    "treatment_arb": {
+      "type": "boolean",
+      "description": "Arb",
+      "category": "treatments"
+    },
+    "treatment_antimalarial": {
+      "type": "boolean",
+      "description": "Antimalarial",
+      "category": "treatments"
+    },
+    "treatment_dexamethasone": {
+      "type": "boolean",
+      "description": "Dexamethasone",
+      "category": "treatments"
+    },
+    "treatment_high_flow_nasal_cannula": {
+      "type": "boolean",
+      "description": "High flow nasal cannula",
+      "category": "treatments"
+    },
+    "treatment_steroids": {
+      "type": "boolean",
+      "description": "Steroids",
+      "category": "treatments"
+    },
+    "treatment_immunosuppressant": {
+      "type": "boolean",
+      "description": "Immunosuppressant",
+      "category": "treatments"
+    },
+    "treatment_intravenous_fluids": {
+      "type": "boolean",
+      "description": "Intravenous fluids",
+      "category": "treatments"
+    },
+    "treatment_nsaid": {
+      "type": "boolean",
+      "description": "Nsaid",
+      "category": "treatments"
+    },
+    "treatment_neuraminidase": {
+      "type": "boolean",
+      "description": "Neuraminidase",
+      "category": "treatments"
+    },
+    "treatment_oxygen_interface": {
+      "type": "boolean",
+      "description": "Oxygen interface",
+      "category": "treatments"
+    },
+    "treatment_cpr": {
+      "type": "boolean",
+      "description": "Cpr",
+      "category": "treatments"
+    },
+    "treatment_offlabel": {
+      "type": "boolean",
+      "description": "Offlabel",
+      "category": "treatments"
+    },
+    "treatment_respiratory_support": {
+      "type": "boolean",
+      "description": "Respiratory support",
+      "category": "treatments"
+    },
+    "treatment_tocilizumab": {
+      "type": "boolean",
+      "description": "Tocilizumab",
+      "category": "treatments"
+    },
+    "treatment_indication_anticoagulation": {
+      "type": "boolean",
+      "description": "Indication anticoagulation",
+      "category": "treatments"
+    },
+    "treatment_cardiovascular": {
+      "type": "boolean",
+      "description": "Cardiovascular",
+      "category": "treatments"
+    },
+    "treatment_colchicine": {
+      "type": "boolean",
+      "description": "Colchicine",
+      "category": "treatments"
+    },
+    "treatment_immunoglobulins": {
+      "type": "boolean",
+      "description": "Immunoglobulins",
+      "category": "treatments"
+    },
+    "treatment_delirium": {
+      "type": "boolean",
+      "description": "Delirium",
+      "category": "treatments"
+    },
+    "treatment_monoclonal_antibody": {
+      "type": "boolean",
+      "description": "Monoclonal antibody",
+      "category": "treatments"
+    },
+    "treatment_other": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Other treatments",
+      "category": "treatments"
+    },
+    "treatment_oxygen_mechanical_support": {
+      "type": "boolean",
+      "description": "Oxygen mechanical support",
+      "category": "treatments"
+    },
+    "treatment_pacing": {
+      "type": "boolean",
+      "description": "Pacing",
+      "category": "treatments"
+    },
+    "treatment_o2_flow_vol_max": {
+      "type": "integer",
+      "description": "O2 flow vol max",
+      "category": "treatments"
+    },
+    "outcome": {
+      "enum": [
+        "death",
+        "recovered",
+        "discharged"
+      ],
+      "description": "Outcome",
+      "category": "outcome"
+    },
+    "date_outcome": {
+      "type": "string",
+      "format": "date",
+      "description": "Outcome date",
+      "category": "outcome"
+    }
+  }
+}

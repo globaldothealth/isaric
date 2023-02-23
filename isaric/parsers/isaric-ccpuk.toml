@@ -1,0 +1,442 @@
+[adtl]
+  name = "isaric-ccpuk"
+  description = "ISARIC CCPUK study"
+
+  [adtl.tables]
+    study = { kind = "constant" }
+    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
+    visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull" }
+
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    2 = false
+
+[study]
+  id = "isaric-ccpuk"
+  date = "2021-01-01"
+  country_iso3 = "GBR"
+
+  ## SUBJECT
+
+[subject]
+  study_id = "isaric-ccpuk"
+  country_iso3 = "GBR"
+  pathogen = "COVID-19"
+
+  [subject.sex_at_birth]
+    field = "sex"
+    description = "Sex at Birth"
+    values = { 1 = "male", 2 = "female", 3 = "non_binary" }
+
+  [subject.subject_id]
+    field = "\ufeffsubjid"
+    sensitive = true
+    description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
+
+  [subject.enrolment_date]
+    field = "dsstdat"
+    description = "Date of Enrolment"
+
+  [subject.admission_date]
+    field = "hostdat"
+    description = "Admission date at this facility"
+
+  [subject.ethnicity] # TODO: need to add ethnic other field
+    description = "Ethnic groups"
+    combinedType = "list"
+    excludeWhen = "none"
+    fields = [
+      { field = "ethnic___1", values = { 1 = "Arab" } },
+      { field = "ethnic___2", values = { 1 = "Black" } },
+      { field = "ethnic___3", values = { 1 = "East_Asian" } },
+      { field = "ethnic___4", values = { 1 = "South_Asian" } },
+      { field = "ethnic___5", values = { 1 = "West_Asian" } },
+      { field = "ethnic___6", values = { 1 = "Latin_American" } },
+      { field = "ethnic___7", values = { 1 = "White" } },
+      { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
+    ]
+
+  [subject.works_microbiology_lab]
+    field = "labwork_erterm"
+    ref = "Y/N/NK"
+    description = "Employed in a microbiology laboratory?"
+
+  [subject.works_healthcare]
+    field = "healthwork_erterm"
+    ref = "Y/N/NK"
+    description = "Employed as a healthcare worker?"
+
+  [subject.age]
+    combinedType = "firstNonNull"
+    [[subject.age.fields]]
+      field = "calc_age"
+      unit = "years"
+      description = "Calculated age in years"
+
+    [[subject.age.fields]]
+      field = "age_estimateyears"
+      unit = "years"
+      description = "Age/Estimated age"
+
+      [subject.age.fields.source_unit]
+        field = "age_estimateyearsu"
+        values = { 1 = "months", 2 = "years" }
+
+[subject.pregnancy]
+  field = "pregyn_rptestcd"
+  ref = "Y/N/NK"
+  description = "Pregnant ?"
+
+[subject.pregnancy_date_of_delivery] # Considers delivery before and after admission
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "dlvrdtc_rptestcd", description = "Delivery date" },
+    { field = "dlvrdtc_rptestcd_out", description = "Delivery date" },
+  ]
+
+[subject.pregnancy_birth_weight_kg]
+  field = "apvs_weight"
+  unit = "kg"
+  description = "Birth weight"
+  source_unit = { field = "apvs_weightu", values = { 1 = "kg", 2 = "lbs" } }
+
+[subject.pregnancy_outcome] # Outcome before and after admission
+  combinedType = "firstNonNull"
+  [[subject.pregnancy_outcome.fields]]
+    field = "pregout_rptestcd"
+    description = "Pregnancy Outcome"
+    values = { 1 = "Live birth", 2 = "Still birth" }
+
+  [[subject.pregnancy_outcome.fields]]
+    field = "pregout_rptestcd_out"
+    description = "Pregnancy Outcome"
+    values = { 1 = "Live birth", 2 = "Still birth" }
+
+[subject.pregnancy_gestational_outcome]
+  field = "apsc_gestout"
+  description = "Gestational outcome"
+  values = { 1 = "Term birth", 2 = "Preterm birth" }
+
+[subject.pregnancy_whether_breastfed]
+  field = "apsc_brfedind"
+  ref = "Y/N/NK"
+  description = "Breastfed"
+
+[subject.pregnancy_post_partum]
+  # Considers status before and after admission"
+  combinedType = "any"
+  description = "Post Partum (within six weeks of delivery)"
+  fields = [
+    { field = "postpart_rptestcd", values = { 1 = true, 0 = false } },
+    { field = "postpart_rptestcd_out", values = { 1 = true, 0 = false } },
+  ]
+
+[subject.pregnancy_gestational_assessment_weeks]
+  field = "egestage_rptestcd"
+  description = "Gestational weeks assessment"
+
+[subject.has_chronic_hematologic_disease]
+  field = "chronichaemo_mhyn"
+  ref = "Y/N/NK"
+  description = "Chronic hematologic disease"
+
+[subject.has_dementia]
+  field = "dementia_mhyn"
+  ref = "Y/N/NK"
+  description = "Dementia"
+
+[subject.has_obesity]
+  field = "obesity_mhyn"
+  ref = "Y/N/NK"
+  description = "Obesity (as defined by clinical staff)"
+
+[subject.has_rheumatologic_disorder]
+  field = "rheumatologic_mhyn"
+  ref = "Y/N/NK"
+  description = "Rheumatologic disorder"
+
+[subject.has_hiv]
+  field = "aidshiv_mhyn"
+  ref = "Y/N/NK"
+  description = "AIDS/HIV"
+
+[subject.has_hypertension]
+  field = "hypertension_mhyn"
+  ref = "Y/N/NK"
+  description = "Hypertension (physician diagnosed)"
+
+[subject.has_malignant_neoplasm]
+  field = "malignantneo_mhyn"
+  ref = "Y/N/NK"
+  description = "Malignant neoplasm"
+
+[subject.has_smoking]
+  field = "smoking_mhyn"
+  values = { 1 = "yes", 2 = "never", 3 = "former" }
+
+[subject.has_asthma]
+  field = "asthma_mhyn"
+  description = "Asthma (physician diagnosed)"
+  values = { 1 = true, 0 = false }
+
+[subject.has_chronic_cardiac_disease]
+  field = "chrincard"
+  ref = "Y/N/NK"
+  description = "Chronic cardiac disease, including congenital heart disease (not hypertension)"
+
+[subject.has_chronic_kidney_disease]
+  field = "renal_mhyn"
+  ref = "Y/N/NK"
+  description = "Chronic kidney disease"
+
+[subject.has_diabetes]
+  field = "diabetes_mhyn"
+  ref = "Y/N/NK"
+  description = "Diabetes without complications"
+
+[subject.diabetes_type]
+  field = "diabetes_type_mhyn"
+  description = "Diabetes and Type"
+  values = { 1 = "type-1", 2 = "type-2" }
+
+[subject.has_liver_disease]
+  combinedType = "any"
+  fields = [
+    { field = "modliv", description = "Moderate liver disease", values = { 1 = true, 0 = false } },
+    { field = "mildliver", description = "Mild liver disease", values = { 1 = true, 0 = false } },
+  ]
+
+[subject.has_rare_disease_inborn_metabolism_error]
+  field = "vulnerable_scid"
+  ref = "Y/N/NK"
+  description = """
+    People with rare diseases and inborn errors of metabolism that \
+    significantly increase the risk of infections (such as \
+    Severe combined immunodeficiency (SCID), homozygous sickle cell)"""
+
+[subject.has_immunosuppression_therapy_treatment]
+  field = "vulnerable_immuno"
+  ref = "Y/N/NK"
+  description = "People on immunosuppression therapies sufficient to significantly increase risk of infection"
+
+[subject.has_solid_organ_transplant]
+  field = "vulnerable_transplant"
+  ref = "Y/N/NK"
+  description = "Solid organ transplant recipients:"
+
+[subject.icu_admission]
+  field = "icu_hostdat"
+  combinedType = "any"
+  fields = [
+    { field = "icu_hoterm", ref = "Y/N/NK" },
+    { field = "daily_hoterm", ref = "Y/N/NK" },
+  ]
+
+[subject.date_death]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
+    { field = "dsstdtc_v2", description = "Outcome date", if = { dsterm_v2 = 4 } },
+    { field = "flw_date_death", description = "Date of death" },
+  ]
+
+[subject.outcome]
+  combinedType = "firstNonNull"
+
+  [[subject.outcome.fields]]
+    field = "dsterm"
+
+    [subject.outcome.fields.values]
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "palliative-discharged"
+
+  [[subject.outcome.fields]]
+    field = "dsterm_v2"
+
+    [subject.outcome.fields.values]
+      1 = "discharged"
+      3 = "transferred"
+      4 = "death"
+      5 = "palliative-discharge"
+
+[subject.date_outcome]
+  combinedType = "firstNonNull"
+  description = "Outcome date"
+  fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
+
+  ## VISITS
+
+[visit]
+  country_iso3 = "GBR"
+
+  [visit.visit_id]
+    field = "\ufeffsubjid"
+    sensitive = true
+
+  [visit.subject_id] # same as visit_id!
+    field = "\ufeffsubjid"
+    sensitive = true
+
+  [visit.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "hostdat", description = "Admission date at this facility" },
+      { field = "flw_date_adm", description = "Roughly at what date were you first admitted to hospital?" },
+      { field = "cestdat", description = "Onset date of first/earliest symptom" },
+      { field = "flw_date_symptoms", description = "Roughly what day did you first experience symptoms of COVID-19?" },
+      { field = "dsstdat", description = "Date of enrolment" },
+      { field = "daily_dsstdat", description = "Date of assessment" },
+      { field = "flw_survey_date", description = "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)" },
+    ]
+
+  [visit.icu_admission]
+    field = "icu_hostdat"
+    combinedType = "any"
+    fields = [
+      { field = "icu_hoterm", ref = "Y/N/NK" },
+      { field = "daily_hoterm", ref = "Y/N/NK" },
+    ]
+
+  [visit.treatment_antibiotics]
+    description = "Antibiotic agent?"
+    field = "antibiotic_cmyn"
+    ref = "Y/N/NK"
+
+  [visit.treatment_antifungal_agent]
+    description = "Antifungal agent?"
+    field = "antifung_cmyn"
+    ref = "Y/N/NK"
+
+  [visit.treatment_antivirals]
+    description = "Antiviral agent?"
+    field = "antiviral_cmyn"
+    ref = "Y/N/NK"
+
+  [visit.treatment_corticosteroid]
+    description = "Corticosteroid agent?"
+    field = "corticost_cmyn"
+    ref = "Y/N/NK"
+
+  [visit.treatment_dexamethasone]
+    description = "Treatment with Dexamethasone"
+    combinedType = "firstNonNull"
+
+    [[visit.treatment_dexamethasone.fields]]
+      field = "corticost_cmtrt_type"
+
+      [visit.treatment_dexamethasone.fields.values]
+        1 = false
+        2 = false
+        3 = true
+        88 = false
+
+      [visit.treatment_dexamethasone.fields.if]
+        corticost_cmyn = 1
+
+    [[visit.treatment_dexamethasone.fields]]
+      field = "dexamethasone"
+      description = "Dexamethasone 6mg once per day?"
+
+      [visit.treatment_dexamethasone.fields.values]
+        1 = true
+        2 = false
+        3 = false
+        4 = true
+        5 = true
+        6 = true
+
+[visit.treatment_dialysis]
+  description = "Renal replacement therapy (RRT) or dialysis"
+  combinedType = "any"
+  fields = [
+    { field = "rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy" },
+    { field = "daily_rrt_cmtrt", ref = "Y/N/NK", description = "Dialysis / Hemofiltration?" },
+  ]
+
+[visit.treatment_ecmo]
+  description = "Extracorporeal (ECMO) support"
+  combinedType = "any"
+  fields = [
+    { field = "extracorp_prtrt", ref = "Y/N/NK" },
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_high_flow_nasal_cannula]
+  description = "High-flow nasal canula?"
+  combinedType = "any"
+  fields = [
+    { field = "oxygenhf_cmoccur", ref = "Y/N/NK" },
+    { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_inhaled_nitric_oxide]
+  description = "Inhaled Nitric Oxide"
+  combinedType = "any"
+  fields = [
+    { field = "inhalednit_cmtrt", ref = "Y/N/NK" },
+    { field = "daily_nitritc_cmtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_inotropes_vasopressors]
+  description = "Inotropes / vasopressors"
+  combinedType = "any"
+  fields = [
+    { field = "inotrop_cmtrt", ref = "Y/N/NK" },
+    { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_invasive_ventilation]
+  description = "Invasive ventilation?"
+  combinedType = "any"
+  fields = [
+    { field = "invasive_proccur", ref = "Y/N/NK" },
+    { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_noninvasive_ventilation]
+  description = "Non-invasive ventilation"
+  combinedType = "any"
+  fields = [
+    { field = "noninvasive_proccur", ref = "Y/N/NK" },
+    { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_offlabel]
+  description = "Off-label / Compassionate Use medications?"
+  field = "offlabel_cmyn"
+  ref = "Y/N/NK"
+
+[visit.treatment_other]
+  combinedType = "any"
+  fields = [
+    { field = "daily_prperf", values = { 1 = true, 0 = false } },
+    { field = "other_cmyn", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_oxygen_therapy]
+  description = "Oxygen therapy"
+  field = "oxygen_cmoccur"
+  ref = "Y/N/NK"
+
+[visit.treatment_prone_position]
+  description = "Prone Positioning"
+  combinedType = "any"
+  fields = [
+    { field = "pronevent_prtrt", ref = "Y/N/NK", description = "Prone ventilation" },
+    { field = "daily_prone_cmtrt", ref = "Y/N/NK", description = "Prone positioning" },
+  ]
+
+[visit.treatment_tocilizumab]
+  description = "Treatment with Tocilizumab"
+  field = "il6_cmtrt"
+  values = { 1 = true, 2 = false, 3 = false, 10 = false }
+  if = { antiviral_cmtrt___9 = 1 }
+
+[visit.treatment_neuraminidase]
+  description = "Treatment with Neuraminidase"
+  field = "antiviral_cmtrt___5"
+  values = { 1 = true, 0 = false }
+  if = { antiviral_cmyn = 1 }
