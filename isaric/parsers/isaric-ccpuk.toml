@@ -224,14 +224,6 @@
   ref = "Y/N/NK"
   description = "Solid organ transplant recipients:"
 
-[subject.icu_admission]
-  field = "icu_hostdat"
-  combinedType = "any"
-  fields = [
-    { field = "icu_hoterm", ref = "Y/N/NK" },
-    { field = "daily_hoterm", ref = "Y/N/NK" },
-  ]
-
 [subject.date_death]
   combinedType = "firstNonNull"
   fields = [
@@ -239,6 +231,11 @@
     { field = "dsstdtc_v2", description = "Outcome date", if = { dsterm_v2 = 4 } },
     { field = "flw_date_death", description = "Date of death" },
   ]
+
+[subject.icu_admitted]
+  field = "icu_hostdat"
+  description = "Admitted to ICU?"
+  apply = { function = "isNotNull" }
 
 [subject.outcome]
   combinedType = "firstNonNull"
