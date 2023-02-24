@@ -1,0 +1,38 @@
+[adtl]
+  name = ""
+  description = ""
+
+  [adtl.tables]
+    study = { kind = "constant" }
+    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" } # this will need editing to find the correct schema name
+    visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
+    observation = { kind = "groupBy", groupBy = "", aggregation = "lastNotNull", schema = "../../schemas/dev/observation.schema.json" }
+
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    2 = false
+
+[study]
+  id = ""
+  date = ""
+  country_iso3 = ""
+
+  ## SUBJECT
+
+[subject]
+  study_id = ""
+  country_iso3 = ""
+  pathogen = ""
+
+
+  ## VISITS
+
+[visit]
+  country_iso3 = "GBR"
+
+
+  # [observation]
+  #   dataset_id = ""
+  #   observation_id = ""
+  #   visit_id = ""
+  #   subject_id = ""
