@@ -8,7 +8,6 @@ import tomli
 import tomli_w
 import json
 import structures
-import webapp_attributes
 
 study = {}
 subject = {}
@@ -18,12 +17,18 @@ observation = {}
 # TODO: set to only run when 'generate parser' is clicked.
 
 
-def string_to_dict(input):
+def string_to_dict(input_string):
     """
     Transforms a comma-seperated string input (e.g. "1=true, 2=false, 3=false")
     into a dictionary with key:value pairs, converts values into appropriate Python types.
     """
-    result = dict(item.split("=") for item in input.split(", "))
+    if input_string == "":
+        return {}
+
+    try:
+        result = dict(item.split("=") for item in input_string.split(", "))
+    except:
+        dict(input_string.split("="))
     for k, v in result.items():
         try:
             v_converted = json.loads(v)
@@ -34,20 +39,31 @@ def string_to_dict(input):
     return result
 
 
-def field_types(table, attribute, columns):
+def field_types(table, attribute, a_type, columns):
     col0, col1, col2, col3 = columns
+
+    if a_type == "boolean" or type(a_type) == list:
+        i = 1
+        if type(a_type) == list:
+            optional_vals = ", ".join([f" {i+1}={v}" for i, v in enumerate(a_type)])
+        else:
+            optional_vals = "Y/N/NK"
+    else:
+        i = 0
 
     input_type = col1.selectbox(
         "Type of input field",
         [
             "single field",
             "field with value mapping",
-            "field with conditional",
+            "single field with conditional",
+            "value mapped with conditional",
             "date field",
             "field with units",
             "applying a data transformation",
         ],
         key=table + attribute + "type",
+        index=i,
     )
 
     field = col2.text_input("Field (column) name", key=table + attribute + "field")
@@ -66,6 +82,7 @@ def field_types(table, attribute, columns):
         values = col3.text_input(
             "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death",
             key=table + attribute + "valuemap",
+            value=optional_vals,
         )
         try:
             values_transformed = string_to_dict(values)
@@ -77,26 +94,41 @@ def field_types(table, attribute, columns):
                 field, desc, values
             )
 
-    elif input_type == "field with conditional":
+    elif "with conditional" in input_type:
+        if input_type == "value mapped with conditional":
+            col3.write(
+                "Value maps can be given either as e.g., '1=alive, 2=hospitalised, 3=death, ...'"
+            )
+            col3.write(
+                "or as a reference to a predefined mapping given in the top section, e.g., 'Y/N/NK'."
+            )
+            values = col3.text_input(
+                "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death",
+                key=table + attribute + "valuemap",
+                value=optional_vals,
+            )
+            try:
+                values_transformed = string_to_dict(values)
+            except:
+                values_transformed = values
+        else:
+            values_transformed = None
+
         condition = col3.selectbox(
             "The condition to be applied",
-            ["if, if.all, if.any"],
+            ["if", "if.all", "if.any"],
             key=table + attribute + "if",
         )
         if condition == "if":
-            c_field = col3.text_input(
-                "The field to be conditioned on",
+            c_rule = col3.text_input(
+                "The conditional rule, e.g. other_cmyn=1, with no spaces.",
                 key=table + attribute + "conditionalfield",
-            )
-            c_value = col3.text_input(
-                "The conditional rule",
-                value="= 1",
-                key=table + attribute + "conditionalvalue",
             )
 
             toml_dict[table][attribute] = structures.conditional_field(
-                field, desc, condition, c_field, c_value
+                field, desc, condition, string_to_dict(c_rule), values_transformed
             )
+        # TODO: add functionality for all/any cases.
 
     elif input_type == "date field":
         source_date = col3.text_input(
@@ -143,16 +175,16 @@ def field_types(table, attribute, columns):
         )
 
 
-def create_field(table, attribute):
+def create_field(table, attribute, a_type):
     col0, col1, col2, col3 = st.columns(4)
     if col1.checkbox("Multiple fields to combine?", key=table + attribute + "combine"):
         # need to do an 'add more of these' loop
         columns = col0, col1, col2, col3
-        field_types(table, attribute, columns)
+        field_types(table, attribute, a_type, columns)
 
     else:
         columns = col0, col1, col2, col3
-        field_types(table, attribute, columns)
+        field_types(table, attribute, a_type, columns)
 
 
 st.set_page_config(layout="wide")
@@ -166,6 +198,43 @@ st.text(
 st.write(
     "Please fill in the form below to auto-generate a .toml parser file. This will need checking manually before being integrated into the ISARIC repository."
 )
+
+# Get the possible attributes for each table from existing schemas
+schema = st.selectbox("Choose a schema to base your parser from.", ["ISARIC"])
+
+# link the schema name to the folder it's located in
+schema_folder = {"ISARIC": "dev"}
+f_sub = open(f"schemas/{schema_folder[schema]}/subject.schema.json")
+subject = json.load(f_sub)
+subject_attributes = list(subject["properties"].keys())
+subject_attr_types = []
+for v in subject["properties"].values():
+    try:
+        subject_attr_types.append(v["type"])
+    except KeyError:
+        if v["enum"]:
+            subject_attr_types.append(v["enum"])
+        else:
+            subject_attr_types.append(None)
+
+
+f_visit = open(f"schemas/{schema_folder[schema]}/visit.schema.json")
+visit = json.load(f_visit)
+visit_attributes = list(visit["properties"].keys())
+visit_attr_types = []
+for v in visit["properties"].values():
+    try:
+        visit_attr_types.append(v["type"])
+    except KeyError:
+        if v["enum"]:
+            visit_attr_types.append(v["enum"])
+        else:
+            visit_attr_types.append(None)
+
+# TODO: Auto-generate observation section.
+# f_obs = open(f"schemas/{schema_folder[schema]}/observation.schema.json")
+# observation = json.load(f_obs)
+# obs_attributes = list(subject["properties"].keys())
 
 with open("generator/base-parser.toml", "rb") as f:
     toml_dict = tomli.load(f)
@@ -220,7 +289,7 @@ st.markdown(
 with st.expander("subjects table"):
     st.header("Subject table")
     st.write(
-        "All the available mapping fields (based on the ISARIC schema) for the subject field are listed below."
+        f"All the available mapping fields (based on the {schema} schema) for the subject field are listed below."
     )
     st.write(
         "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
@@ -228,10 +297,9 @@ with st.expander("subjects table"):
     with open(f"generator/{parser_name}.toml", "rb") as f:
         toml_dict = tomli.load(f)
 
-    for attribute in webapp_attributes.subject_attributes:
-        # TODO: This can be packaged up as a function to be called in subject (both cols) and visit (both cols)
+    for attribute, s_type in zip(subject_attributes, subject_attr_types):
         if st.checkbox(attribute, key="subject" + attribute + "selectbox"):
-            create_field("subject", attribute)
+            create_field("subject", attribute, s_type)
         st.markdown(
             """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
             unsafe_allow_html=True,
@@ -246,10 +314,9 @@ with st.expander("visit table"):
         "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
     )
 
-    for attribute in webapp_attributes.visit_attributes:
-        # TODO: This can be packaged up as a function to be called in subject (both cols) and visit (both cols)
+    for attribute, a_type in zip(visit_attributes, visit_attr_types):
         if st.checkbox(attribute, key="visit" + attribute + "selectbox"):
-            create_field("visit", attribute)
+            create_field("visit", attribute, a_type)
         st.markdown(
             """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
             unsafe_allow_html=True,
