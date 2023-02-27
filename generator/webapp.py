@@ -14,8 +14,6 @@ subject = {}
 visit = {}
 observation = {}
 
-# TODO: set to only run when 'generate parser' is clicked.
-
 
 def string_to_dict(input_string):
     """
@@ -39,7 +37,16 @@ def string_to_dict(input_string):
     return result
 
 
-def field_types(table, attribute, a_type, columns):
+def make_grid(cols, rows):
+    # creates a grid layout in streamlit
+    grid = [0] * cols
+    for i in range(cols):
+        with st.container():
+            grid[i] = st.columns(rows)
+    return grid
+
+
+def field_types(table, attribute, a_type, columns, iterable="0"):
     col0, col1, col2, col3 = columns
 
     if a_type == "boolean" or type(a_type) == list:
@@ -50,6 +57,7 @@ def field_types(table, attribute, a_type, columns):
             optional_vals = "Y/N/NK"
     else:
         i = 0
+        optional_vals = None
 
     input_type = col1.selectbox(
         "Type of input field",
@@ -62,15 +70,17 @@ def field_types(table, attribute, a_type, columns):
             "field with units",
             "applying a data transformation",
         ],
-        key=table + attribute + "type",
+        key=table + attribute + iterable + "type",
         index=i,
     )
 
-    field = col2.text_input("Field (column) name", key=table + attribute + "field")
-    desc = col2.text_input("Description", key=table + attribute + "desc")
+    field = col2.text_input(
+        "Field (column) name", key=table + attribute + iterable + "field"
+    )
+    desc = col2.text_input("Description", key=table + attribute + iterable + "desc")
 
     if input_type == "single field":
-        toml_dict[table][attribute] = structures.single_field(field, desc)
+        return structures.single_field(field, desc)
 
     elif input_type == "field with value mapping":
         col3.write(
@@ -81,24 +91,20 @@ def field_types(table, attribute, a_type, columns):
         )
         values = col3.text_input(
             "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death",
-            key=table + attribute + "valuemap",
+            key=table + attribute + iterable + "valuemap",
             value=optional_vals,
         )
         try:
             values_transformed = string_to_dict(values)
-            toml_dict[table][attribute] = structures.field_value_mapped(
-                field, desc, values_transformed
-            )
+            return structures.field_value_mapped(field, desc, values_transformed)
         except:
-            toml_dict[table][attribute] = structures.field_value_mapped(
-                field, desc, values
-            )
+            return structures.field_value_mapped(field, desc, values)
 
     elif "with conditional" in input_type:
         if input_type == "value mapped with conditional":
             values = col2.text_input(
                 "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death, or refer to predefined maps e.g.Y/N/NK",
-                key=table + attribute + "valuemap",
+                key=table + attribute + iterable + "valuemap",
                 value=optional_vals,
             )
             try:
@@ -111,15 +117,15 @@ def field_types(table, attribute, a_type, columns):
         condition = col3.selectbox(
             "The condition to be applied",
             ["if", "if.all", "if.any"],
-            key=table + attribute + "if",
+            key=table + attribute + iterable + "if",
         )
         if condition == "if":
             c_rule = col3.text_input(
                 "The conditional rule, e.g. other_cmyn=1, with no spaces.",
-                key=table + attribute + "conditionalfield",
+                key=table + attribute + iterable + "conditionalfield",
             )
 
-            toml_dict[table][attribute] = structures.conditional_field(
+            return structures.conditional_field(
                 field, desc, condition, string_to_dict(c_rule), values_transformed
             )
         elif condition == "if.any" or condition == "if.all":
@@ -132,71 +138,98 @@ def field_types(table, attribute, a_type, columns):
                 c_rule.append(
                     col3.text_input(
                         "The conditional rule, e.g. other_cmyn=1, with no spaces.",
-                        key=table + attribute + "conditionalfield" + str(i),
+                        key=table + attribute + iterable + "conditionalfield" + str(i),
                     )
                 )
 
             c_rule_transformed = [string_to_dict(rule) for rule in c_rule]
 
-            toml_dict[table][attribute] = structures.conditional_field(
+            return structures.conditional_field(
                 field, desc, condition, c_rule_transformed, values_transformed
             )
 
     elif input_type == "date field":
         source_date = col3.text_input(
-            "Source date format", value="%d/%m/%Y", key=table + attribute + "sourcedate"
+            "Source date format",
+            value="%d/%m/%Y",
+            key=table + attribute + iterable + "sourcedate",
         )
-        toml_dict[table][attribute] = structures.field_with_date(
-            field, desc, source_date
-        )
+        return structures.field_with_date(field, desc, source_date)
 
     elif input_type == "field with units":
         unit = col3.text_input(
-            "Desired output unit", value="kg", key=table + attribute + "unit"
+            "Desired output unit", value="kg", key=table + attribute + iterable + "unit"
         )
         source_unit = col3.text_input(
-            "Field name for source unit", key=table + attribute + "sourceunit"
+            "Field name for source unit",
+            key=table + attribute + iterable + "sourceunit",
         )
         source_values = col3.text_input(
             "Value mapping for units",
             value="1=kg, 2=lb",
-            key=table + attribute + "sourcevalue",
+            key=table + attribute + iterable + "sourcevalue",
         )
         values = string_to_dict(source_values)
 
-        toml_dict[table][attribute] = structures.field_with_unit(
-            field, desc, unit, source_unit, values
-        )
+        return structures.field_with_unit(field, desc, unit, source_unit, values)
 
     elif input_type == "applying a data transformation":
         apply = col3.selectbox(
             "The transformation to be applied",
             ["isNotNull", "yearsElapsed"],
-            key=table + attribute + "apply",
+            key=table + attribute + iterable + "apply",
         )
         params = col3.text_input(
             "Parameter fields required by the transformation (optional)",
-            key=table + attribute + "applyparam",
+            key=table + attribute + iterable + "applyparam",
         )
 
         if params == "":
             params = None
 
-        toml_dict[table][attribute] = structures.field_with_transformation(
-            field, desc, apply, params
-        )
+        return structures.field_with_transformation(field, desc, apply, params)
 
 
 def create_field(table, attribute, a_type):
     col0, col1, col2, col3 = st.columns(4)
     if col1.checkbox("Multiple fields to combine?", key=table + attribute + "combine"):
-        # need to do an 'add more of these' loop
-        columns = col0, col1, col2, col3
-        field_types(table, attribute, a_type, columns)
+        combination_type = col1.selectbox(
+            "Which combined type should be applied?",
+            ["any", "all", "firstNonNull", "list"],
+            key=table + attribute + "combinationType",
+        )
+        comb_desc = col1.text_input(
+            "Description", key=table + attribute + "combinationdesc"
+        )
+        no_fields = col1.number_input(
+            "How many fields are there to combine?",
+            value=2,
+            key=table + attribute + "multifield",
+        )
+
+        fields = []
+
+        mf_grid = make_grid(no_fields * 2, 4)
+
+        for i in range(0, no_fields * 2, 2):
+            columns = mf_grid[i][0], mf_grid[i][1], mf_grid[i][2], mf_grid[i][3]
+            field = field_types(table, attribute, a_type, columns, iterable=str(i))
+            fields.append(field)
+            for square in [
+                mf_grid[i + 1][0],
+                mf_grid[i + 1][1],
+                mf_grid[i + 1][2],
+                mf_grid[i + 1][3],
+            ]:
+                square.markdown("#")
+
+        toml_dict[table][attribute] = structures.combined_type(
+            combination_type, comb_desc, fields
+        )
 
     else:
-        columns = col0, col1, col2, col3
-        field_types(table, attribute, a_type, columns)
+        columns = st.columns(4)
+        toml_dict[table][attribute] = field_types(table, attribute, a_type, columns)
 
 
 st.set_page_config(layout="wide")
@@ -212,6 +245,7 @@ st.write(
 )
 
 # Get the possible attributes for each table from existing schemas
+# If this is the only schema we're planning on having, this option is redundant
 schema = st.selectbox("Choose a schema to base your parser from.", ["ISARIC"])
 
 # link the schema name to the folder it's located in
@@ -334,5 +368,21 @@ with st.expander("visit table"):
             unsafe_allow_html=True,
         )
 
-with open(f"generator/{parser_name}.toml", "wb") as f:
-    tomli_w.dump(toml_dict, f)
+_, col2, col3, _ = st.columns(4)
+
+
+def generate_parser(data):
+    with open(f"generator/{parser_name}.toml", "wb") as f:
+        tomli_w.dump(data, f)
+    col2.write("Parser generated! Available in the 'generator' folder.")
+
+
+if col2.button("Generate Parser", type="primary", use_container_width=True):
+    generate_parser(toml_dict)
+    with open(f"generator/{parser_name}.toml", "rb") as f:
+        col3.download_button(
+            label="Download Parser",
+            data=f,
+            file_name=f"{parser_name}.toml",
+            use_container_width=True,
+        )

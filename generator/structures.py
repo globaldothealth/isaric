@@ -74,8 +74,8 @@ def field_with_transformation(f: str, d: str, func: str, params: list | None):
 
 
 # look for ways to show the 4 options available for this.
-def combined_type(rule: str, fields: list):
-    return {"combinedType": rule, "fields": fields}
+def combined_type(rule: str, desc: str, fields: list):
+    return {"combinedType": rule, "description": desc, "fields": fields}
 
 
 ## Observations - get top bit working first.
