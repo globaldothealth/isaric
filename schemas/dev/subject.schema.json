@@ -11,7 +11,6 @@
     "sex_at_birth",
     "ethnicity",
     "pathogen",
-    "outcome"
   ],
   "properties": {
     "subject_id": {
@@ -283,23 +282,6 @@
     "icu_admitted": {
       "type": "boolean",
       "description": "Admitted to ICU",
-      "category": "outcome"
-    },
-    "outcome": {
-      "enum": [
-        "death",
-        "hospitalised",
-        "recovered",
-        "discharged",
-        "palliative-discharged"
-      ],
-      "description": "Outcome",
-      "category": "outcome"
-    },
-    "date_outcome": {
-      "type": "string",
-      "format": "date",
-      "description": "Outcome date",
       "category": "outcome"
     }
   }

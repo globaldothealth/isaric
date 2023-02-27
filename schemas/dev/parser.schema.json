@@ -413,14 +413,6 @@
         "icu_admitted": {
           "description": "Admitted to ICU",
           "$ref": "#/definitions/mapping"
-        },
-        "outcome": {
-          "description": "Outcome",
-          "$ref": "#/definitions/mapping"
-        },
-        "date_outcome": {
-          "description": "Outcome date",
-          "$ref": "#/definitions/mapping"
         }
       }
     },
