@@ -17,15 +17,17 @@ def single_field(f, d):
 def conditional_field(f, d, condition, if_rule, values=None):
     rule = {"field": f, "description": d, condition: {}}
 
+    if condition != "if":
+        log_op = condition.split(".")[1]
+        rule.pop(condition)
+        rule["if"] = {log_op: []}
+
     if values:
         value_rule = rule | field_value_mapped(f, d, value_maps=values)
         rule = value_rule
 
     if isinstance(if_rule, list):
-        # for c, v in zip(conditionals, values):
-        #     rule[condition].update({c: v})
-        # TODO: This is for the any/all scenarios.
-        pass
+        rule["if"][log_op] = if_rule
     else:
         rule[condition].update(if_rule)
 

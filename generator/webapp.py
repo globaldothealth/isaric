@@ -45,7 +45,7 @@ def field_types(table, attribute, a_type, columns):
     if a_type == "boolean" or type(a_type) == list:
         i = 1
         if type(a_type) == list:
-            optional_vals = ", ".join([f" {i+1}={v}" for i, v in enumerate(a_type)])
+            optional_vals = ", ".join([f"{i+1}={v}" for i, v in enumerate(a_type)])
         else:
             optional_vals = "Y/N/NK"
     else:
@@ -96,14 +96,8 @@ def field_types(table, attribute, a_type, columns):
 
     elif "with conditional" in input_type:
         if input_type == "value mapped with conditional":
-            col3.write(
-                "Value maps can be given either as e.g., '1=alive, 2=hospitalised, 3=death, ...'"
-            )
-            col3.write(
-                "or as a reference to a predefined mapping given in the top section, e.g., 'Y/N/NK'."
-            )
-            values = col3.text_input(
-                "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death",
+            values = col2.text_input(
+                "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death, or refer to predefined maps e.g.Y/N/NK",
                 key=table + attribute + "valuemap",
                 value=optional_vals,
             )
@@ -128,7 +122,25 @@ def field_types(table, attribute, a_type, columns):
             toml_dict[table][attribute] = structures.conditional_field(
                 field, desc, condition, string_to_dict(c_rule), values_transformed
             )
-        # TODO: add functionality for all/any cases.
+        elif condition == "if.any" or condition == "if.all":
+            no_conditions = col3.number_input(
+                "How many fields are there to combine?", value=2
+            )
+            c_rule = []
+
+            for i in range(no_conditions):
+                c_rule.append(
+                    col3.text_input(
+                        "The conditional rule, e.g. other_cmyn=1, with no spaces.",
+                        key=table + attribute + "conditionalfield" + str(i),
+                    )
+                )
+
+            c_rule_transformed = [string_to_dict(rule) for rule in c_rule]
+
+            toml_dict[table][attribute] = structures.conditional_field(
+                field, desc, condition, c_rule_transformed, values_transformed
+            )
 
     elif input_type == "date field":
         source_date = col3.text_input(
