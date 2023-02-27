@@ -274,6 +274,8 @@
     "outcome": {
       "enum": [
         "death",
+        "hospitalised",
+        "transferred",
         "recovered",
         "discharged"
       ],
