@@ -42,7 +42,7 @@
       "description": "Date of admission to site",
       "category": "site-details"
     },
-    "age_years": {
+    "age": {
       "type": "integer",
       "description": "Age in years",
       "category": "demographics"
