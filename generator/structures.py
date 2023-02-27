@@ -13,16 +13,21 @@ def single_field(f, d):
     return {"field": f, "description": d}
 
 
-# I'm not entirely sure if this will produce the correct nested key atm
 # TODO: work out how to factor in anything other than '='
-def conditional_field(f, d, condition, conditionals, values):
+def conditional_field(f, d, condition, if_rule, values=None):
     rule = {"field": f, "description": d, condition: {}}
 
-    if isinstance(conditionals, list):
-        for c, v in zip(conditionals, values):
-            rule[condition].update({c: v})
+    if values:
+        value_rule = rule | field_value_mapped(f, d, value_maps=values)
+        rule = value_rule
+
+    if isinstance(if_rule, list):
+        # for c, v in zip(conditionals, values):
+        #     rule[condition].update({c: v})
+        # TODO: This is for the any/all scenarios.
+        pass
     else:
-        rule[condition].update({conditionals: values})
+        rule[condition].update(if_rule)
 
     return rule
 
