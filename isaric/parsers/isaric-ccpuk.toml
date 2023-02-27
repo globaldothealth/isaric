@@ -290,7 +290,6 @@
     ]
 
   [visit.icu_admission]
-    field = "icu_hostdat"
     combinedType = "any"
     fields = [
       { field = "icu_hoterm", ref = "Y/N/NK" },
