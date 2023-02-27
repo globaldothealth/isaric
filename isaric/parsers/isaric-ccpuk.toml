@@ -5,7 +5,7 @@
   [adtl.tables]
     study = { kind = "constant" }
     subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
-    visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull" }
+    visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
 
   [adtl.defs."Y/N/NK".values]
     1 = true
@@ -237,37 +237,15 @@
   description = "Admitted to ICU?"
   apply = { function = "isNotNull" }
 
-[subject.outcome]
-  combinedType = "firstNonNull"
-
-  [[subject.outcome.fields]]
-    field = "dsterm"
-
-    [subject.outcome.fields.values]
-      1 = "discharged"
-      2 = "hospitalised"
-      3 = "transferred"
-      4 = "death"
-      5 = "palliative-discharged"
-
-  [[subject.outcome.fields]]
-    field = "dsterm_v2"
-
-    [subject.outcome.fields.values]
-      1 = "discharged"
-      3 = "transferred"
-      4 = "death"
-      5 = "palliative-discharge"
-
-[subject.date_outcome]
-  combinedType = "firstNonNull"
-  description = "Outcome date"
-  fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
-
   ## VISITS
 
 [visit]
   country_iso3 = "GBR"
+
+  [visit.date_outcome]
+    combinedType = "firstNonNull"
+    description = "Outcome date"
+    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
 
   [visit.visit_id]
     field = "\ufeffsubjid"
@@ -406,11 +384,10 @@
   ref = "Y/N/NK"
 
 [visit.treatment_other]
-  combinedType = "any"
-  fields = [
-    { field = "daily_prperf", values = { 1 = true, 0 = false } },
-    { field = "other_cmyn", ref = "Y/N/NK" },
-  ]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "other_cm", if = { other_cmyn = 1 } }]
+  description = "Other treatment"
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therapy"
@@ -436,3 +413,25 @@
   field = "antiviral_cmtrt___5"
   values = { 1 = true, 0 = false }
   if = { antiviral_cmyn = 1 }
+
+[visit.outcome]
+  combinedType = "firstNonNull"
+
+  [[visit.outcome.fields]]
+    field = "dsterm"
+
+    [visit.outcome.fields.values]
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "discharged"
+
+  [[visit.outcome.fields]]
+    field = "dsterm_v2"
+
+    [visit.outcome.fields.values]
+      1 = "discharged"
+      3 = "transferred"
+      4 = "death"
+      5 = "discharged"
