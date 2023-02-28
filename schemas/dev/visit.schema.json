@@ -5,13 +5,11 @@
   "description": "A single hospital visit of a subject in the ISARIC schema, contains treatment information",
   "required": [
     "visit_id",
-    "dataset_id",
-    "enrolment_date",
-    "age_years",
-    "sex_at_birth",
-    "ethnicity",
-    "pathogen",
-    "outcome"
+    "subject_id",
+    "country_iso3",
+    "start_date",
+    "outcome",
+    "date_outcome"
   ],
   "properties": {
     "visit_id": {
@@ -276,6 +274,8 @@
     "outcome": {
       "enum": [
         "death",
+        "hospitalised",
+        "transferred",
         "recovered",
         "discharged"
       ],

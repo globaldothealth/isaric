@@ -1,0 +1,768 @@
+{
+  "$schema": "https://json-schema.org/draft-04/schema",
+  "id": "https://raw.githubusercontent.com/globaldothealth/isaric/main/schemas/dev/parser.schema.json",
+  "title": "isaric-adtl",
+  "description": "ISARIC parser file in adtl format",
+  "required": [
+    "adtl"
+  ],
+  "definitions": {
+    "fieldMapping": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "A constant mapping"
+        },
+        {
+          "type": "object",
+          "required": [
+            "field"
+          ],
+          "properties": {
+            "field": {
+              "type": "string",
+              "description": "Corresponding field name in source file"
+            },
+            "fieldPattern": {
+              "type": "string",
+              "description": "This is only used with combinedType, specifies a regular expression matching multiple fields"
+            },
+            "sensitive": {
+              "type": "boolean",
+              "description": "Indicates to the parser whether the field is sensitive. Usually a sensitive field is hashed or encrypted before storing in the database.",
+              "default": false
+            },
+            "description": {
+              "type": "string",
+              "description": "Description of the source field, usually from an underlying data dictionary"
+            },
+            "source_unit": {
+              "$ref": "#/definitions/fieldMapping",
+              "description": "Specifies unit of the field in the source file"
+            },
+            "unit": {
+              "type": "string",
+              "description": "Specifies the unit that source_unit should be converted to. Both source_unit and unit take unit names from the pint Python library"
+            },
+            "source_date": {
+              "type": "string",
+              "description": "Source date format, specified in strftime(3) format"
+            },
+            "date": {
+              "type": "string",
+              "description": "Date format to convert source_date format to, specified in strftime(3) format",
+              "default": "%Y-%m-%d"
+            },
+            "apply": {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "function"
+              ],
+              "properties": {
+                "function": {
+                  "type": "string",
+                  "description": "Function to apply (defined in adtl.transformations)"
+                },
+                "params": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Additional parameters to pass to the function"
+                }
+              }
+            },
+            "values": {
+              "type": "object",
+              "patternProperties": {
+                ".*": {
+                  "type": [
+                    "string",
+                    "boolean",
+                    "number"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "mapping": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/fieldMapping"
+        },
+        {
+          "type": "object",
+          "description": "Combined type",
+          "required": [
+            "combinedType",
+            "fields"
+          ],
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "combinedType": {
+              "enum": [
+                "list",
+                "any",
+                "all",
+                "firstNonNull"
+              ],
+              "description": "Specifies a combined type using of the supported combinations"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/fieldMapping"
+              },
+              "description": "List of fields to be combined"
+            },
+            "excludeWhen": {
+              "oneOf": [
+                {
+                  "enum": [
+                    "none",
+                    "false-like"
+                  ]
+                },
+                {
+                  "type": "array"
+                }
+              ],
+              "description": "Values to exclude from the list"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "properties": {
+    "adtl": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "tables"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the parser"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the parser"
+        },
+        "defs": {
+          "type": "object",
+          "description": "Re-usable definitions"
+        },
+        "tables": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "object",
+              "required": [
+                "kind"
+              ],
+              "x-taplo": {
+                "initKeys": [
+                  "kind"
+                ]
+              },
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "constant",
+                    "groupBy",
+                    "oneToMany",
+                    "oneToOne"
+                  ],
+                  "x-taplo": {
+                    "docs": {
+                      "enumValues": [
+                        "No mapping, table is composed of a single row of (key, value) pairs",
+                        "Table is grouped by the groupBy key",
+                        "Multiple rows are generated from each row in the source file",
+                        "One-to-one mapping between a row in the source and a row in the transformed file"
+                      ]
+                    }
+                  },
+                  "description": "Whether the mapping from the source data file is constant, many-to-one (grouped), one-to-one or one-to-many"
+                },
+                "groupBy": {
+                  "type": "string",
+                  "description": "Attribute to group by"
+                },
+                "aggregation": {
+                  "enum": [
+                    "lastNotNull"
+                  ],
+                  "description": "How to aggregate when doing the group by operation. The only supported option is lastNotNull, which keeps the last non-null value"
+                },
+                "schema": {
+                  "type": "string",
+                  "description": "JSON Schema to use for parser validation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "subject": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "subject_id",
+        "country_iso3",
+        "enrolment_date",
+        "age",
+        "sex_at_birth",
+        "ethnicity",
+        "pathogen"
+      ],
+      "properties": {
+        "subject_id": {
+          "description": "Unique ID of subject",
+          "$ref": "#/definitions/mapping"
+        },
+        "study_id": {
+          "type": "string"
+        },
+        "country_iso3": {
+          "description": "ISO 3166-1 alpha-3 country code of study site",
+          "$ref": "#/definitions/mapping"
+        },
+        "enrolment_date": {
+          "description": "Date of enrolment in the study",
+          "$ref": "#/definitions/mapping"
+        },
+        "admission_date": {
+          "description": "Date of admission to site",
+          "$ref": "#/definitions/mapping"
+        },
+        "age": {
+          "description": "Age in years",
+          "$ref": "#/definitions/mapping"
+        },
+        "sex_at_birth": {
+          "description": "Sex at birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "ethnicity": {
+          "description": "Ethnicity",
+          "$ref": "#/definitions/mapping"
+        },
+        "works_microbiology_lab": {
+          "description": "Works in microbiology lab",
+          "$ref": "#/definitions/mapping"
+        },
+        "works_healthcare": {
+          "description": "Works in healthcare setting",
+          "$ref": "#/definitions/mapping"
+        },
+        "pathogen": {
+          "description": "Pathogen",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy": {
+          "description": "Pregnant?",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_date_of_delivery": {
+          "description": "Date of delivery",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_birth_weight_kg": {
+          "description": "Birth weight (kg)",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_outcome": {
+          "description": "Pregnancy outcome",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_gestational_outcome": {
+          "description": "Pregnancy gestational outcome",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_whether_breastfed": {
+          "description": "Whether infant was breastfed",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_post_partum": {
+          "description": "In post partum phase",
+          "$ref": "#/definitions/mapping"
+        },
+        "pregnancy_gestational_assessment_weeks": {
+          "description": "Gestational assessment weeks",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_chronic_hematologic_disease": {
+          "description": "Chronic hematologic disease",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_asplenia": {
+          "description": "Asplenia",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_tuberculosis": {
+          "description": "Tuberculosis",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_dementia": {
+          "description": "Dementia",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_obesity": {
+          "description": "Obesity",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_rheumatologic_disorder": {
+          "description": "Rheumatologic disorder",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_hiv": {
+          "description": "HIV",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_hypertension": {
+          "description": "Hypertension",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_malignant_neoplasm": {
+          "description": "Malignant neoplasm",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_smoking": {
+          "description": "History of smoking",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_asthma": {
+          "description": "Asthma",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_chronic_cardiac_disease": {
+          "description": "Chronic cardiac disease",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_chronic_kidney_disease": {
+          "description": "Chronic kidney disease",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_diabetes": {
+          "description": "Diabetes",
+          "$ref": "#/definitions/mapping"
+        },
+        "diabetes_type": {
+          "description": "Diabetes type",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_liver_disease": {
+          "description": "Liver disease",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_apnoea": {
+          "description": "Apnoea",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_hiv_viral_suppression": {
+          "description": "HIV viral suppression",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_inflammatory_bowel_disease": {
+          "description": "Inflammatory bowel disease",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_rare_disease_inborn_metabolism_error": {
+          "description": "Rare disease and inborn errors of metabolism",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_solid_organ_transplant": {
+          "description": "Solid organ transplant",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_tuberculosis_past": {
+          "description": "History of tuberculosis",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_hiv_art": {
+          "description": "HIV - on ART (ARV medication)",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_immunosuppression_therapy_treatment": {
+          "description": "Immunosuppression therapies treatment",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_comorbidity_other": {
+          "description": "Other comorbidities",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_died": {
+          "description": "Died",
+          "$ref": "#/definitions/mapping"
+        },
+        "date_death": {
+          "description": "Date of death",
+          "$ref": "#/definitions/mapping"
+        },
+        "icu_admitted": {
+          "description": "Admitted to ICU",
+          "$ref": "#/definitions/mapping"
+        }
+      }
+    },
+    "visit": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "visit_id",
+        "subject_id",
+        "country_iso3",
+        "start_date",
+        "outcome",
+        "date_outcome"
+      ],
+      "properties": {
+        "visit_id": {
+          "description": "Unique ID of visit",
+          "$ref": "#/definitions/mapping"
+        },
+        "subject_id": {
+          "description": "Unique ID of subject",
+          "$ref": "#/definitions/mapping"
+        },
+        "dataset_id": {
+          "description": "Dataset ID, refers to a specific version",
+          "$ref": "#/definitions/mapping"
+        },
+        "country_iso3": {
+          "description": "ISO 3166-1 alpha-3 country code of study site",
+          "$ref": "#/definitions/mapping"
+        },
+        "start_date": {
+          "description": "Start date of visit",
+          "$ref": "#/definitions/mapping"
+        },
+        "end_date": {
+          "description": "End date of visit",
+          "$ref": "#/definitions/mapping"
+        },
+        "pathogen_test_date": {
+          "description": "Pathogen test date",
+          "$ref": "#/definitions/mapping"
+        },
+        "phase": {
+          "description": "Phase of study",
+          "$ref": "#/definitions/mapping"
+        },
+        "icu_admission": {
+          "description": "Admitted to ICU in this visit",
+          "$ref": "#/definitions/mapping"
+        },
+        "icu_admission_dates": {
+          "description": "Date(s) of admission to ICU",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_dialysis": {
+          "description": "Dialysis",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_inotropes_vasopressors": {
+          "description": "Inotropes vasopressors",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_ecmo": {
+          "description": "Ecmo",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_corticosteroid": {
+          "description": "Corticosteroid",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_oxygen_therapy": {
+          "description": "Oxygen therapy",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_prone_position": {
+          "description": "Prone position",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_invasive_ventilation": {
+          "description": "Invasive ventilation",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antifungal_agent": {
+          "description": "Antifungal agent",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antivirals": {
+          "description": "Antivirals",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antibiotics": {
+          "description": "Antibiotics",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_anticoagulation": {
+          "description": "Anticoagulation",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_experimental_agent": {
+          "description": "Experimental agent",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_inhaled_nitric_oxide": {
+          "description": "Inhaled nitric oxide",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_noninvasive_ventilation": {
+          "description": "Noninvasive ventilation",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_ace_inhibitors": {
+          "description": "Ace inhibitors",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_arb": {
+          "description": "Arb",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antimalarial": {
+          "description": "Antimalarial",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_dexamethasone": {
+          "description": "Dexamethasone",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_high_flow_nasal_cannula": {
+          "description": "High flow nasal cannula",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_steroids": {
+          "description": "Steroids",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_immunosuppressant": {
+          "description": "Immunosuppressant",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_intravenous_fluids": {
+          "description": "Intravenous fluids",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_nsaid": {
+          "description": "Nsaid",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_neuraminidase": {
+          "description": "Neuraminidase",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_oxygen_interface": {
+          "description": "Oxygen interface",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_cpr": {
+          "description": "Cpr",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_offlabel": {
+          "description": "Offlabel",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_respiratory_support": {
+          "description": "Respiratory support",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_tocilizumab": {
+          "description": "Tocilizumab",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_indication_anticoagulation": {
+          "description": "Indication anticoagulation",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_cardiovascular": {
+          "description": "Cardiovascular",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_colchicine": {
+          "description": "Colchicine",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_immunoglobulins": {
+          "description": "Immunoglobulins",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_delirium": {
+          "description": "Delirium",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_monoclonal_antibody": {
+          "description": "Monoclonal antibody",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_other": {
+          "description": "Other treatments",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_oxygen_mechanical_support": {
+          "description": "Oxygen mechanical support",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_pacing": {
+          "description": "Pacing",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_o2_flow_vol_max": {
+          "description": "O2 flow vol max",
+          "$ref": "#/definitions/mapping"
+        },
+        "outcome": {
+          "description": "Outcome",
+          "$ref": "#/definitions/mapping"
+        },
+        "date_outcome": {
+          "description": "Outcome date",
+          "$ref": "#/definitions/mapping"
+        }
+      }
+    },
+    "observation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "phase",
+          "name",
+          "date"
+        ],
+        "properties": {
+          "ref": {
+            "type": "string",
+            "description": "Reference to link to this observation"
+          },
+          "phase": {
+            "description": "Phase of study",
+            "enum": [
+              "admission",
+              "study",
+              "followup"
+            ],
+            "x-taplo": {
+              "docs": {
+                "enumValues": [
+                  "Taken at or before admission",
+                  "Observation during study period",
+                  "Recorded in followup survey"
+                ]
+              }
+            }
+          },
+          "date": {
+            "description": "Date when observation was recorded",
+            "$ref": "#/definitions/mapping"
+          },
+          "value": {
+            "description": "Value of the observation",
+            "$ref": "#/definitions/mapping"
+          },
+          "text": {
+            "description": "Value of the observation (text)",
+            "$ref": "#/definitions/mapping"
+          },
+          "is_present": {
+            "description": "Whether the observation denotes presence (*true*) or absence (*false*)",
+            "$ref": "#/definitions/mapping"
+          },
+          "occurrence_period": {
+            "description": "ISO 8601 duration string referring to the time period before {date} in which observation occurred",
+            "$ref": "#/definitions/mapping"
+          },
+          "context": {
+            "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
+            "$ref": "#/definitions/mapping"
+          },
+          "name": {
+            "description": "Observation name",
+            "enum": [
+              "avpu",
+              "clinical_classification_critical_illness_scale_",
+              "clinical_classification_pneumonia_needing_oxygen",
+              "clinical_frailty_score",
+              "diastolic_blood_pressure_mmHg",
+              "from_same_blood_gas_record_as_pao2",
+              "glasgow_coma_score",
+              "abdominal_pain",
+              "adenopathy",
+              "altered_consciousness_confusion",
+              "anorexia",
+              "base_excess",
+              "bleeding_haemorrhage",
+              "chest_pain",
+              "confusion",
+              "conjunctivitis",
+              "cough",
+              "cough_with_haemoptysis",
+              "cough_with_sputum_production",
+              "cyanosis",
+              "diarrhoea",
+              "ear_pain",
+              "fatigue_malaise",
+              "feeding_intolerance_peadiatrics",
+              "headache",
+              "hepatomegaly",
+              "history_of_fever",
+              "inability_to_walk",
+              "irritability_peadiatrics",
+              "joint_pain",
+              "loss_of_smell",
+              "loss_of_taste",
+              "lower_chest_wall_indrawing",
+              "lung_sounds",
+              "lymphadenopathy",
+              "malnutrition",
+              "muscle_aches",
+              "neuromuscular_blocking_agents",
+              "renal_replacement_therapy_dialysis",
+              "runny_nose",
+              "seizures",
+              "severe_dehydration",
+              "shortness_of_breath",
+              "skin_rash",
+              "skin_ulcers",
+              "sore_throat",
+              "sternal_capillary_refill_time_greater_2s",
+              "time_of_admission",
+              "vomiting_nausea",
+              "wheezing",
+              "heart_rate_bpm",
+              "heart_sounds",
+              "mean_arterial_blood_pressure_mmHg",
+              "mid_upper_arm_circumference_cm",
+              "other_symptom",
+              "oxygen_o2hb",
+              "oxygen_saturation_percent",
+              "pao2",
+              "pao2_sample_type",
+              "pH",
+              "respiratory_rate",
+              "richmond_agitation-sedation_scale",
+              "riker_sedation-agitation_scale",
+              "systolic_blood_pressure_mmHg",
+              "temperature_celsius",
+              "total_fluid_output_ml",
+              "transfer_from_other_facility"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
