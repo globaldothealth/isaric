@@ -1,10 +1,12 @@
+#:schema ../../schemas/dev/parser.schema.json
+
 [adtl]
   name = ""
   description = ""
 
   [adtl.tables]
     study = { kind = "constant" }
-    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" } # this will need editing to find the correct schema name
+    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
     visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
     observation = { kind = "groupBy", groupBy = "", aggregation = "lastNotNull", schema = "../../schemas/dev/observation.schema.json" }
 

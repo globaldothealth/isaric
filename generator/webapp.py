@@ -253,6 +253,7 @@ schema_folder = {"ISARIC": "dev"}
 f_sub = open(f"schemas/{schema_folder[schema]}/subject.schema.json")
 subject = json.load(f_sub)
 subject_attributes = list(subject["properties"].keys())
+subject_required_attributes = subject["required"]
 subject_attr_types = []
 for v in subject["properties"].values():
     try:
@@ -267,6 +268,7 @@ for v in subject["properties"].values():
 f_visit = open(f"schemas/{schema_folder[schema]}/visit.schema.json")
 visit = json.load(f_visit)
 visit_attributes = list(visit["properties"].keys())
+visit_required_attributes = visit["required"]
 visit_attr_types = []
 for v in visit["properties"].values():
     try:
@@ -340,11 +342,19 @@ with st.expander("subjects table"):
     st.write(
         "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
     )
+    st.write(
+        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\nContact the developers if your CRF does not have this field!"
+    )
+    st.markdown("#")
+
     with open(f"generator/{parser_name}.toml", "rb") as f:
         toml_dict = tomli.load(f)
 
     for attribute, s_type in zip(subject_attributes, subject_attr_types):
-        if st.checkbox(attribute, key="subject" + attribute + "selectbox"):
+        if attribute in subject_required_attributes:
+            st.write("☑️", attribute)
+            create_field("subject", attribute, s_type)
+        elif st.checkbox(attribute, key="subject" + attribute + "selectbox"):
             create_field("subject", attribute, s_type)
         st.markdown(
             """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
@@ -359,9 +369,16 @@ with st.expander("visit table"):
     st.write(
         "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
     )
+    st.write(
+        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\nContact the developers if your CRF does not have this field!"
+    )
+    st.markdown("#")
 
     for attribute, a_type in zip(visit_attributes, visit_attr_types):
-        if st.checkbox(attribute, key="visit" + attribute + "selectbox"):
+        if attribute in visit_required_attributes:
+            st.write("☑️", attribute)
+            create_field("visit", attribute, a_type)
+        elif st.checkbox(attribute, key="visit" + attribute + "selectbox"):
             create_field("visit", attribute, a_type)
         st.markdown(
             """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
