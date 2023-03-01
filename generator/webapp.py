@@ -8,6 +8,7 @@ import tomli
 import tomli_w
 import json
 import structures
+import re
 
 study = {}
 subject = {}
@@ -15,26 +16,42 @@ visit = {}
 observation = {}
 
 
-def string_to_dict(input_string):
+def string_to_dict(input_string, conditional=False):
     """
     Transforms a comma-seperated string input (e.g. "1=true, 2=false, 3=false")
     into a dictionary with key:value pairs, converts values into appropriate Python types.
+    The conditional flag indicates that there may be a conditional rule which needs parsing
+    in addition.
     """
+
+    def convert_vals_recursive(res):
+        for k, v in res.items():
+            try:
+                v_converted = json.loads(v)
+            except TypeError:  # dict
+                v_converted = convert_vals_recursive(v)
+            except:
+                v_converted = v
+            res[k] = v_converted
+        return res
+
     if input_string == "":
         return {}
 
-    try:
-        result = dict(item.split("=") for item in input_string.split(", "))
-    except:
-        dict(input_string.split("="))
-    for k, v in result.items():
-        try:
-            v_converted = json.loads(v)
-        except:
-            v_converted = v
-        result[k] = v_converted
+    if conditional == True:
+        result = [re.split("([<>=!]+)", item) for item in input_string.split(", ")]
+        for item in result:
+            if item[1] == "=":
+                del item[1]
+            else:
+                item[1] = {item[1]: item[2]}
+                del item[2]
+        result = dict(result)
 
-    return result
+    else:
+        result = dict(item.split("=") for item in input_string.split(", "))
+
+    return convert_vals_recursive(result)
 
 
 def make_grid(cols, rows):
@@ -125,24 +142,29 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
                 key=table + attribute + iterable + "conditionalfield",
             )
 
+            if "," in c_rule:
+                error = ValueError(
+                    "Only one conditional rule can be entered if a combined option is not selected.\n\
+                           Please either change the condition being applied to if.all or if.any, or remove the additional conditions."
+                )
+                st.exception(error)
+
             return structures.conditional_field(
-                field, desc, condition, string_to_dict(c_rule), values_transformed
+                field,
+                desc,
+                condition,
+                string_to_dict(c_rule, conditional=True),
+                values_transformed,
             )
         elif condition == "if.any" or condition == "if.all":
-            no_conditions = col3.number_input(
-                "How many fields are there to combine?", value=2
+            c_rule = col3.text_input(
+                "List the conditional rules, e.g. other_cmyn=1, daily+cmyn>=2.",
+                key=table + attribute + iterable + "conditionalfield",
             )
-            c_rule = []
 
-            for i in range(no_conditions):
-                c_rule.append(
-                    col3.text_input(
-                        "The conditional rule, e.g. other_cmyn=1, with no spaces.",
-                        key=table + attribute + iterable + "conditionalfield" + str(i),
-                    )
-                )
-
-            c_rule_transformed = [string_to_dict(rule) for rule in c_rule]
+            c_rule_transformed = [
+                {k: v} for k, v in string_to_dict(c_rule, conditional=True).items()
+            ]
 
             return structures.conditional_field(
                 field, desc, condition, c_rule_transformed, values_transformed
@@ -232,6 +254,11 @@ def create_field(table, attribute, a_type):
         toml_dict[table][attribute] = field_types(table, attribute, a_type, columns)
 
 
+### -------------------------------------------------------------------------------------
+# START STREAMLIT -----------------------------------------------------------------------
+### -------------------------------------------------------------------------------------
+
+
 st.set_page_config(layout="wide")
 
 st.title("Global.health clinical data parser generation")
@@ -244,45 +271,39 @@ st.write(
     "Please fill in the form below to auto-generate a .toml parser file. This will need checking manually before being integrated into the ISARIC repository."
 )
 
-# Get the possible attributes for each table from existing schemas
-# If this is the only schema we're planning on having, this option is redundant
-schema = st.selectbox("Choose a schema to base your parser from.", ["ISARIC"])
 
-# link the schema name to the folder it's located in
-schema_folder = {"ISARIC": "dev"}
-f_sub = open(f"schemas/{schema_folder[schema]}/subject.schema.json")
-subject = json.load(f_sub)
-subject_attributes = list(subject["properties"].keys())
-subject_required_attributes = subject["required"]
-subject_attr_types = []
-for v in subject["properties"].values():
-    try:
-        subject_attr_types.append(v["type"])
-    except KeyError:
-        if v["enum"]:
-            subject_attr_types.append(v["enum"])
-        else:
-            subject_attr_types.append(None)
+def get_attributes_types(table: str):
+    with open(f"schemas/dev/{table}.schema.json") as file:
+        table_file = json.load(file)
+
+    attributes = list(table_file["properties"].keys())
+    required_attributes = table_file["required"]
+    attr_types = []
+    for v in table_file["properties"].values():
+        try:
+            attr_types.append(v["type"])
+        except KeyError:
+            if v["enum"]:
+                attr_types.append(v["enum"])
+            else:
+                attr_types.append(None)
+
+    return table_file, attributes, required_attributes, attr_types
 
 
-f_visit = open(f"schemas/{schema_folder[schema]}/visit.schema.json")
-visit = json.load(f_visit)
-visit_attributes = list(visit["properties"].keys())
-visit_required_attributes = visit["required"]
-visit_attr_types = []
-for v in visit["properties"].values():
-    try:
-        visit_attr_types.append(v["type"])
-    except KeyError:
-        if v["enum"]:
-            visit_attr_types.append(v["enum"])
-        else:
-            visit_attr_types.append(None)
-
-# TODO: Auto-generate observation section.
-# f_obs = open(f"schemas/{schema_folder[schema]}/observation.schema.json")
-# observation = json.load(f_obs)
-# obs_attributes = list(subject["properties"].keys())
+(
+    subject,
+    subject_attributes,
+    subject_required_attributes,
+    subject_attr_types,
+) = get_attributes_types("subject")
+(
+    visit,
+    visit_attributes,
+    visit_required_attributes,
+    visit_attr_types,
+) = get_attributes_types("visit")
+# observation, obs_attributes, obs_required_attributes, obs_attr_types = get_attributes_types('observation') # TODO
 
 with open("generator/base-parser.toml", "rb") as f:
     toml_dict = tomli.load(f)
@@ -314,17 +335,56 @@ with open("generator/base-parser.toml", "rb") as f:
             "Use this section to describe common field mappings - e.g., how the form handles yes/no/not known responses."
         )
 
-        # TODO: need to be able to loop through and add more of these
-        subcol1, subcol2 = st.columns(2)
-        with subcol1:
-            ref = st.text_input("Mapping reference", value="Y/N/NK")
+        # TODO: Date heirarchies for the Observation table aren't included here...
 
-        with subcol2:
-            map_key = st.text_input("value pairs", value="1=true, 2=false, 3=false")
-
-        toml_dict["adtl"]["defs"][ref] = structures.predefined_value_maps(
-            string_to_dict(map_key)
+        no_fields = col2.number_input(
+            "Number of field mappings to save:",
+            value=2,
+            key="fieldmapping_numbers",
         )
+
+        refs = []
+        map_keys = []
+        examples = [
+            ["Y/N/NK", "1=true, 2=false, 3=false"],
+            [],
+            [
+                "ethnicity",
+                "1=White, 2=Arab, 3=Black, 4=East Asian, 5=South Asian, 6=West Asian, 7=Latin American",
+            ],
+            [],
+        ]
+
+        mf_grid = make_grid(no_fields * 2, 2)
+
+        for i in range(0, no_fields * 2, 2):
+            with mf_grid[i][0]:
+                refs.append(
+                    st.text_input(
+                        "Mapping reference",
+                        value=examples[i][0] if i < len(examples) else "",
+                        key="mappingkeyref" + str(i),
+                    )
+                )
+            with mf_grid[i][1]:
+                map_keys.append(
+                    st.text_input(
+                        "value pairs",
+                        value=examples[i][1] if i < len(examples) else "",
+                        key="mappingkey" + str(i),
+                    )
+                )
+
+            for square in [
+                mf_grid[i + 1][0],
+                mf_grid[i + 1][1],
+            ]:
+                square.markdown("#")
+
+        for r, mk in zip(refs, map_keys):
+            toml_dict["adtl"]["defs"][r] = structures.predefined_value_maps(
+                string_to_dict(mk)
+            )
 
 with open(f"generator/{parser_name}.toml", "wb") as f:
     tomli_w.dump(toml_dict, f)
@@ -337,21 +397,31 @@ st.markdown(
 with st.expander("subjects table"):
     st.header("Subject table")
     st.write(
-        f"All the available mapping fields (based on the {schema} schema) for the subject field are listed below."
+        f"All the available mapping fields (based on the ISARIC schema) for the subject field are listed below. \
+            Constant fields will be taken automatically from the study-level table above."
     )
     st.write(
         "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
     )
     st.write(
-        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\nContact the developers if your CRF does not have this field!"
+        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\n\
+            Contact the developers if your CRF does not have this field!"
     )
     st.markdown("#")
 
     with open(f"generator/{parser_name}.toml", "rb") as f:
         toml_dict = tomli.load(f)
 
+    constant_attrs = {
+        "study_id": parser_name,
+        "country_iso3": parser_country,
+        "pathogen": pathogen,
+    }
     for attribute, s_type in zip(subject_attributes, subject_attr_types):
-        if attribute in subject_required_attributes:
+        if attribute in constant_attrs.keys():
+            toml_dict["subject"][attribute] = constant_attrs[attribute]
+            continue
+        elif attribute in subject_required_attributes:
             st.write("☑️", attribute)
             create_field("subject", attribute, s_type)
         elif st.checkbox(attribute, key="subject" + attribute + "selectbox"):
@@ -364,18 +434,24 @@ with st.expander("subjects table"):
 with st.expander("visit table"):
     st.header("Visit table")
     st.write(
-        "All the available mapping fields (based on the ISARIC schema) for the visit field are listed below."
+        "All the available mapping fields (based on the ISARIC schema) for the subject field are listed below. \
+            Constant fields will be taken automatically from the study-level table above."
     )
     st.write(
         "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
     )
     st.write(
-        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\nContact the developers if your CRF does not have this field!"
+        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\n\
+            Contact the developers if your CRF does not have this field!"
     )
     st.markdown("#")
 
+    constant_attrs = {"country_iso3": parser_country}
     for attribute, a_type in zip(visit_attributes, visit_attr_types):
-        if attribute in visit_required_attributes:
+        if attribute in constant_attrs.keys():
+            toml_dict["visit"][attribute] = constant_attrs[attribute]
+            continue
+        elif attribute in visit_required_attributes:
             st.write("☑️", attribute)
             create_field("visit", attribute, a_type)
         elif st.checkbox(attribute, key="visit" + attribute + "selectbox"):
@@ -389,7 +465,11 @@ _, col2, col3, _ = st.columns(4)
 
 
 def generate_parser(data):
-    with open(f"generator/{parser_name}.toml", "wb") as f:
+    data["subject"]["subject_id"]["sensitive"] = True
+    data["visit"]["subject_id"]["sensitive"] = True
+    data["visit"]["visit_id"]["sensitive"] = True
+
+    with open(f"generator/{parser_name}-generated.toml", "wb") as f:
         tomli_w.dump(data, f)
     col2.write("Parser generated! Available in the 'generator' folder.")
 

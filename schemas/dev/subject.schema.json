@@ -104,8 +104,8 @@
     },
     "pregnancy_gestational_outcome": {
       "enum": [
-        "term_birth",
-        "preterm_birth"
+        "Term birth",
+        "Preterm birth"
       ],
       "description": "Pregnancy gestational outcome",
       "category": "pregnancy"

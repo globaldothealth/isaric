@@ -325,11 +325,11 @@
     },
     "outcome": {
       "enum": [
-        "death",
+        "discharged",
         "hospitalised",
         "transferred",
-        "recovered",
-        "discharged"
+        "death",
+        "recovered"
       ],
       "description": "Outcome",
       "category": "outcome"

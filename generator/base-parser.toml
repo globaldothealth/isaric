@@ -1,4 +1,4 @@
-#:schema ../../schemas/dev/parser.schema.json
+#:schema ../schemas/dev/parser.schema.json
 
 [adtl]
   name = ""
@@ -23,6 +23,11 @@
 
 [subject]
   study_id = ""
+  subject_id = ""
+  enrolment_date = ""
+  age = ""
+  sex_at_birth = ""
+  ethnicity = ""
   country_iso3 = ""
   pathogen = ""
 
@@ -31,10 +36,8 @@
 
 [visit]
   country_iso3 = "GBR"
-
-
-  # [observation]
-  #   dataset_id = ""
-  #   observation_id = ""
-  #   visit_id = ""
-  #   subject_id = ""
+  visit_id = ""
+  start_date = ""
+  subject_id = ""
+  outcome = ""
+  date_outcome = ""
