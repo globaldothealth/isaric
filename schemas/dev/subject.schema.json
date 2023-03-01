@@ -10,7 +10,7 @@
     "age",
     "sex_at_birth",
     "ethnicity",
-    "pathogen",
+    "pathogen"
   ],
   "properties": {
     "subject_id": {
@@ -42,9 +42,11 @@
       "category": "site-details"
     },
     "age": {
-      "type": "integer",
+      "type": "number",
       "description": "Age in years",
-      "category": "demographics"
+      "category": "demographics",
+      "exclusiveMinimum": 0,
+      "maximum": 120
     },
     "sex_at_birth": {
       "enum": [
