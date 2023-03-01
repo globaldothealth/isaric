@@ -92,7 +92,7 @@
   description = "Breastfed"
   fields = [
     { field = "apsc_brfedind", ref = "Y/N/NK" },
-    { field = "apsc_brfed", values = { 1 = "YES - currently breastfeeding", 2 = "YES - breastfeeding discontinued", 0 = "NO" } }
+    { field = "apsc_brfed", values = { 1 = true, 2 = true, 0 = false } }
   ]
   
 [subject.pregnancy_post_partum]
@@ -180,7 +180,7 @@
 [subject.has_diabetes] # NEED TO CHECK THIS!
   combinedType = "firstNonNull"
   fields = [
-    { field = "diabetes_spain", description = "Did the patient have diabetes?" },
+    { field = "diabetes_spain", description = "Did the patient have diabetes?" }, # this field has no values??!!!
     { field = "diabetiscomp_mhyn", ref = "Y/N/NK", description = "Diabetes with complications" },
     { field = "diabetes_mhyn", ref = "Y/N/NK", description = "Diabetes without complications" },
     { field = "diabetes_mhyn_2", values = {1 = true, 2 = false, 4 = true, 5 = true} } # based on diabetes type
