@@ -1,3 +1,31 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "isaric-ecmo"
+  description = "ISARIC ECMO study"
+
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    2 = false
+
+  [adtl.defs.ethnicityMap.values]
+    1 = "White"
+    2 = "Arab"
+    3 = "Black"
+    4 = "East_Asian"
+    5 = "South_Asian"
+    6 = "West_Asian"
+    7 = "Latin_American"
+
+[adtl.tables]
+  study = { kind = "constant" }
+  subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
+  # visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
+
+[study]
+  id = "isaric-ecmo"
+  country_iso3 = "GBR"
+
 [subject]
   study_id = "ecmo"
   country_iso3 = "GBR"
@@ -60,7 +88,7 @@
 
       [subject.age.fields.source_unit]
         field = "age_estimateyearsu"
-        values = { 1 = "months", 2 = "years", 3 = "days" }	
+        values = { 1 = "months", 2 = "years", 3 = "days" }
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"
@@ -92,12 +120,12 @@
   description = "Breastfed"
   fields = [
     { field = "apsc_brfedind", ref = "Y/N/NK" },
-    { field = "apsc_brfed", values = { 1 = true, 2 = true, 0 = false } }
+    { field = "apsc_brfed", values = { 1 = true, 2 = true, 0 = false } },
   ]
-  
+
 [subject.pregnancy_post_partum]
   description = "Post Partum (within six weeks of delivery)"
-  field = "postpart_rptestcd" 
+  field = "postpart_rptestcd"
   values = { 1 = true, 0 = false }
 
 [subject.pregnancy_gestational_assessment_weeks]
@@ -139,7 +167,7 @@
   description = "AIDS/HIV"
   fields = [
     { field = "aidshiv_mhyn", ref = "Y/N/NK" },
-    { field = "aidshiv_mhyn_2", values = {1 = true, 2 = false, 4 = true} }
+    { field = "aidshiv_mhyn_2", values = { 1 = true, 2 = false, 4 = true } },
   ]
 
 [subject.has_hypertension]
@@ -166,10 +194,10 @@
   combinedType = "firstNonNull"
   fields = [
     { field = "chroniccard_mhyn", ref = "Y/N/NK", description = "Chronic cardiac disease" },
-    { field = "c_chd", values = { 1 = true, 0 = false }, description = "Congenital heart disease" },
+    # { field = "c_chd", values = { 1 = true, 0 = false }, description = "Congenital heart disease" },
     { field = "cardiomyopathy_ceterm", ref = "Y/N/NK", description = "Cardiomyopathy" },
-    { field = "c_pcmyo", values = { 1 = true, 0 = false }, description = "Pre-existing Cardiomyopathy" },
-    { field = "c_diagtak", values = { 1 = true, 0 = false }, description = "DIAGNOSIS OF TAKOTSUBO CARDIOMYOPATHY" }
+    # { field = "c_pcmyo", values = { 1 = true, 0 = false }, description = "Pre-existing Cardiomyopathy" },
+    # { field = "c_diagtak", values = { 1 = true, 0 = false }, description = "DIAGNOSIS OF TAKOTSUBO CARDIOMYOPATHY" },
   ]
 
 [subject.has_chronic_kidney_disease]
@@ -180,10 +208,10 @@
 [subject.has_diabetes] # NEED TO CHECK THIS!
   combinedType = "firstNonNull"
   fields = [
-    { field = "diabetes_spain", description = "Did the patient have diabetes?" }, # this field has no values??!!!
+    # { field = "diabetes_spain", description = "Did the patient have diabetes?" },                 # this field has no values??!!!
     { field = "diabetiscomp_mhyn", ref = "Y/N/NK", description = "Diabetes with complications" },
     { field = "diabetes_mhyn", ref = "Y/N/NK", description = "Diabetes without complications" },
-    { field = "diabetes_mhyn_2", values = {1 = true, 2 = false, 4 = true, 5 = true} } # based on diabetes type
+    { field = "diabetes_mhyn_2", values = { 1 = true, 2 = false, 4 = true, 5 = true } },          # based on diabetes type
   ]
 
 [subject.diabetes_type]
@@ -208,22 +236,22 @@
   ref = "Y/N/NK"
   description = "Other immunosuppressant agents (not oral steroids)"
 
-[subject.has_solid_organ_transplant]
-  description = "Solid organ transplant recipients:"
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "f_lungt_yn", values = { 1 = true, 0 = false }, description = "Did this patient receive a lung transplant due to COVID-19 associated pulmonary complications?" },
-    { field = "c_ptransplant", values = { 1 = true, 0 = false }, description = "Previous Cardiac transplant" }
-  ]
+  # [subject.has_solid_organ_transplant]  # None of the fields are available
+  #   description = "Solid organ transplant recipients:"
+  #   combinedType = "firstNonNull"
+  #   fields = [
+  #     { field = "f_lungt_yn", values = { 1 = true, 0 = false }, description = "Did this patient receive a lung transplant due to COVID-19 associated pulmonary complications?" },
+  #     { field = "c_ptransplant", values = { 1 = true, 0 = false }, description = "Previous Cardiac transplant" },
+  #   ]
 
 [subject.date_death]
   combinedType = "firstNonNull"
   fields = [
-    { field = "f_datedeath", description = "Date of death", if = { dsterm = 4 } },
-    { field = "dsstdtc", description = "Outcome date", if = { dsstdtcyn = 1 } }
+    # { field = "f_datedeath", description = "Date of death", if = { dsterm = 4 } },
+    { field = "dsstdtc", description = "Outcome date", if = { dsstdtcyn = 1 } },
   ]
-  
+
 [subject.icu_admitted]
-  field = "icu_hoterm"	
+  field = "icu_hoterm"
   description = "Admitted to ICU?"
   apply = { function = "isNotNull" } # WHAT DOES THIS DO?
