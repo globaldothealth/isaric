@@ -15,9 +15,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "field"
-          ],
+          "additionalProperties": false,
           "properties": {
             "field": {
               "type": "string",
@@ -26,6 +24,9 @@
             "fieldPattern": {
               "type": "string",
               "description": "This is only used with combinedType, specifies a regular expression matching multiple fields"
+            },
+            "if": {
+              "type": "object"
             },
             "sensitive": {
               "type": "boolean",
@@ -47,6 +48,9 @@
             "source_date": {
               "type": "string",
               "description": "Source date format, specified in strftime(3) format"
+            },
+            "ref": {
+              "type": "string"
             },
             "date": {
               "type": "string",
@@ -668,7 +672,7 @@
           },
           "date": {
             "description": "Date when observation was recorded",
-            "$ref": "#/definitions/mapping"
+            "$ref": "#/definitions/fieldMapping"
           },
           "value": {
             "description": "Value of the observation",
@@ -680,7 +684,7 @@
           },
           "is_present": {
             "description": "Whether the observation denotes presence (*true*) or absence (*false*)",
-            "$ref": "#/definitions/mapping"
+            "$ref": "#/definitions/fieldMapping"
           },
           "occurrence_period": {
             "description": "ISO 8601 duration string referring to the time period before {date} in which observation occurred",
@@ -688,7 +692,10 @@
           },
           "context": {
             "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
-            "$ref": "#/definitions/mapping"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "name": {
             "description": "Observation name",
