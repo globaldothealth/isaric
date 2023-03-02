@@ -4,10 +4,6 @@
   "title": "Study observation",
   "description": "Observations relating to a visit, including vital signs and symptoms",
   "required": [
-    "dataset_id",
-    "observation_id",
-    "visit_id",
-    "subject_id",
     "phase",
     "date",
     "name"
@@ -58,7 +54,7 @@
     },
     "occurrence_period": {
       "type": "string",
-      "format": "duration",
+      "pattern": "^P[0-9]+.*",
       "description": "ISO 8601 duration string referring to the time period before {date} in which observation occurred"
     },
     "context": {
