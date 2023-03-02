@@ -16,6 +16,7 @@ visit = {}
 observation = {}
 
 
+@st.cache_data
 def string_to_dict(input_string, conditional=False):
     """
     Transforms a comma-seperated string input (e.g. "1=true, 2=false, 3=false")
@@ -245,13 +246,15 @@ def create_field(table, attribute, a_type):
             ]:
                 square.markdown("#")
 
-        toml_dict[table][attribute] = structures.combined_type(
+        st.session_state.toml_dict[table][attribute] = structures.combined_type(
             combination_type, comb_desc, fields
         )
 
     else:
         columns = st.columns(4)
-        toml_dict[table][attribute] = field_types(table, attribute, a_type, columns)
+        st.session_state.toml_dict[table][attribute] = field_types(
+            table, attribute, a_type, columns
+        )
 
 
 ### -------------------------------------------------------------------------------------
@@ -268,10 +271,17 @@ st.text(
 )
 
 st.write(
-    "Please fill in the form below to auto-generate a .toml parser file. This will need checking manually before being integrated into the ISARIC repository."
+    "Please use this webapp to auto-generate a .toml parser file.\
+    In the sidebar to the left you will find a page for each of the three tables which\
+          will be generated: the Subject, Visit and Observations tables.\
+    All 3 of these pages will need to be filled in to create a compete parser, which will\
+          need checking manually and with the parser validator before being integrated into the ISARIC repository.\n\
+    Also provided is a page to generate the toml code for an individual field if you would like to append a small \
+        amount of data to an existing toml file while unsure of the syntax."
 )
 
 
+@st.cache_data
 def get_attributes_types(table: str):
     with open(f"schemas/dev/{table}.schema.json") as file:
         table_file = json.load(file)
@@ -292,175 +302,106 @@ def get_attributes_types(table: str):
 
 
 (
-    subject,
-    subject_attributes,
-    subject_required_attributes,
-    subject_attr_types,
+    st.session_state.subject,
+    st.session_state.subject_attributes,
+    st.session_state.subject_required_attributes,
+    st.session_state.subject_attr_types,
 ) = get_attributes_types("subject")
 (
-    visit,
-    visit_attributes,
-    visit_required_attributes,
-    visit_attr_types,
+    st.session_state.visit,
+    st.session_state.visit_attributes,
+    st.session_state.visit_required_attributes,
+    st.session_state.visit_attr_types,
 ) = get_attributes_types("visit")
 # observation, obs_attributes, obs_required_attributes, obs_attr_types = get_attributes_types('observation') # TODO
 
-with open("generator/base-parser.toml", "rb") as f:
-    toml_dict = tomli.load(f)
+if "toml_dict" not in st.session_state:
+    st.session_state.toml_dict = {}
 
-    col1, col2 = st.columns(2)
+    with open("generator/base-parser.toml", "rb") as f:
+        st.session_state.toml_dict = tomli.load(f)
 
-    with col1:
-        st.header("Study information")
-        parser_name = st.text_input("Parser name:", value="isaric-ccpuk")
-        parser_descrip = st.text_input("Parser description", value="ISARIC CCPUK study")
-        parser_country = st.text_input("Country code:", value="GBR")
-        study_date = st.text_input("Study date:", value="2021-01-01")
-        pathogen = st.text_input("Pathogen under study:", value="COVID-19")
+col1, col2 = st.columns(2)
 
-    toml_dict["adtl"]["name"] = parser_name
-    toml_dict["adtl"]["description"] = parser_descrip
+with col1:
+    st.header("Study information")
+    parser_name = st.text_input("Parser name:", value="isaric-ccpuk")
+    parser_descrip = st.text_input("Parser description", value="ISARIC CCPUK study")
+    parser_country = st.text_input("Country code:", value="GBR")
+    study_date = st.text_input("Study date:", value="2021-01-01")
+    pathogen = st.text_input("Pathogen under study:", value="COVID-19")
 
-    toml_dict["study"]["id"] = parser_name
-    toml_dict["study"]["date"] = study_date
-    toml_dict["study"]["country_iso3"] = parser_country
+st.session_state.toml_dict["adtl"]["name"] = parser_name
+st.session_state.toml_dict["adtl"]["description"] = parser_descrip
 
-    toml_dict["subject"]["study_id"] = parser_name
-    toml_dict["subject"]["country_iso3"] = parser_country
-    toml_dict["subject"]["pathogen"] = pathogen
+st.session_state.toml_dict["study"]["id"] = parser_name
+st.session_state.toml_dict["study"]["date"] = study_date
+st.session_state.toml_dict["study"]["country_iso3"] = parser_country
 
-    with col2:
-        st.header("Common mapping types")
-        st.write(
-            "Use this section to describe common field mappings - e.g., how the form handles yes/no/not known responses."
-        )
+st.session_state.toml_dict["subject"]["study_id"] = parser_name
+st.session_state.toml_dict["subject"]["country_iso3"] = parser_country
+st.session_state.toml_dict["subject"]["pathogen"] = pathogen
 
-        # TODO: Date heirarchies for the Observation table aren't included here...
+st.session_state.toml_dict["visit"]["country_iso3"] = parser_country
 
-        no_fields = col2.number_input(
-            "Number of field mappings to save:",
-            value=2,
-            key="fieldmapping_numbers",
-        )
+with col2:
+    st.header("Common mapping types")
+    st.write(
+        "Use this section to describe common field mappings - e.g., how the form handles yes/no/not known responses."
+    )
 
-        refs = []
-        map_keys = []
-        examples = [
-            ["Y/N/NK", "1=true, 2=false, 3=false"],
-            [],
-            [
-                "ethnicity",
-                "1=White, 2=Arab, 3=Black, 4=East Asian, 5=South Asian, 6=West Asian, 7=Latin American",
-            ],
-            [],
-        ]
+    # TODO: Date heirarchies for the Observation table aren't included here...
 
-        mf_grid = make_grid(no_fields * 2, 2)
+    no_fields = col2.number_input(
+        "Number of field mappings to save:",
+        value=2,
+        key="fieldmapping_numbers",
+    )
 
-        for i in range(0, no_fields * 2, 2):
-            with mf_grid[i][0]:
-                refs.append(
-                    st.text_input(
-                        "Mapping reference",
-                        value=examples[i][0] if i < len(examples) else "",
-                        key="mappingkeyref" + str(i),
-                    )
+    refs = []
+    map_keys = []
+    examples = [
+        ["Y/N/NK", "1=true, 2=false, 3=false"],
+        [],
+        [
+            "ethnicity",
+            "1=White, 2=Arab, 3=Black, 4=East Asian, 5=South Asian, 6=West Asian, 7=Latin American",
+        ],
+        [],
+    ]
+
+    mf_grid = make_grid(no_fields * 2, 2)
+
+    for i in range(0, no_fields * 2, 2):
+        with mf_grid[i][0]:
+            refs.append(
+                st.text_input(
+                    "Mapping reference",
+                    value=examples[i][0] if i < len(examples) else "",
+                    key="mappingkeyref" + str(i),
                 )
-            with mf_grid[i][1]:
-                map_keys.append(
-                    st.text_input(
-                        "value pairs",
-                        value=examples[i][1] if i < len(examples) else "",
-                        key="mappingkey" + str(i),
-                    )
+            )
+        with mf_grid[i][1]:
+            map_keys.append(
+                st.text_input(
+                    "value pairs",
+                    value=examples[i][1] if i < len(examples) else "",
+                    key="mappingkey" + str(i),
                 )
-
-            for square in [
-                mf_grid[i + 1][0],
-                mf_grid[i + 1][1],
-            ]:
-                square.markdown("#")
-
-        for r, mk in zip(refs, map_keys):
-            toml_dict["adtl"]["defs"][r] = structures.predefined_value_maps(
-                string_to_dict(mk)
             )
 
-with open(f"generator/{parser_name}.toml", "wb") as f:
-    tomli_w.dump(toml_dict, f)
+        for square in [
+            mf_grid[i + 1][0],
+            mf_grid[i + 1][1],
+        ]:
+            square.markdown("#")
 
-st.markdown(
-    """<hr style="height:5px;border:none;color:#333;background-color:#333;" /> """,
-    unsafe_allow_html=True,
-)
+    for r, mk in zip(refs, map_keys):
+        st.session_state.toml_dict["adtl"]["defs"][
+            r
+        ] = structures.predefined_value_maps(string_to_dict(mk))
 
-with st.expander("subjects table"):
-    st.header("Subject table")
-    st.write(
-        f"All the available mapping fields (based on the ISARIC schema) for the subject field are listed below. \
-            Constant fields will be taken automatically from the study-level table above."
-    )
-    st.write(
-        "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
-    )
-    st.write(
-        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\n\
-            Contact the developers if your CRF does not have this field!"
-    )
-    st.markdown("#")
-
-    with open(f"generator/{parser_name}.toml", "rb") as f:
-        toml_dict = tomli.load(f)
-
-    constant_attrs = {
-        "study_id": parser_name,
-        "country_iso3": parser_country,
-        "pathogen": pathogen,
-    }
-    for attribute, s_type in zip(subject_attributes, subject_attr_types):
-        if attribute in constant_attrs.keys():
-            toml_dict["subject"][attribute] = constant_attrs[attribute]
-            continue
-        elif attribute in subject_required_attributes:
-            st.write("☑️", attribute)
-            create_field("subject", attribute, s_type)
-        elif st.checkbox(attribute, key="subject" + attribute + "selectbox"):
-            create_field("subject", attribute, s_type)
-        st.markdown(
-            """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
-            unsafe_allow_html=True,
-        )
-
-with st.expander("visit table"):
-    st.header("Visit table")
-    st.write(
-        "All the available mapping fields (based on the ISARIC schema) for the subject field are listed below. \
-            Constant fields will be taken automatically from the study-level table above."
-    )
-    st.write(
-        "If a given field has a corresponding column in your form, check the box next to it and the section will expand to be filled."
-    )
-    st.write(
-        "If a given field is auto-expanded and not clickable, the field is required and must be filled in.\n\
-            Contact the developers if your CRF does not have this field!"
-    )
-    st.markdown("#")
-
-    constant_attrs = {"country_iso3": parser_country}
-    for attribute, a_type in zip(visit_attributes, visit_attr_types):
-        if attribute in constant_attrs.keys():
-            toml_dict["visit"][attribute] = constant_attrs[attribute]
-            continue
-        elif attribute in visit_required_attributes:
-            st.write("☑️", attribute)
-            create_field("visit", attribute, a_type)
-        elif st.checkbox(attribute, key="visit" + attribute + "selectbox"):
-            create_field("visit", attribute, a_type)
-        st.markdown(
-            """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
-            unsafe_allow_html=True,
-        )
-
+st.markdown("#")
 _, col2, col3, _ = st.columns(4)
 
 
@@ -469,14 +410,16 @@ def generate_parser(data):
     data["visit"]["subject_id"]["sensitive"] = True
     data["visit"]["visit_id"]["sensitive"] = True
 
-    with open(f"generator/{parser_name}-generated.toml", "wb") as f:
+    with open(f"generator/{parser_name}-generator.toml", "wb") as f:
         tomli_w.dump(data, f)
     col2.write("Parser generated! Available in the 'generator' folder.")
 
 
-if col2.button("Generate Parser", type="primary", use_container_width=True):
-    generate_parser(toml_dict)
-    with open(f"generator/{parser_name}.toml", "rb") as f:
+if col2.button(
+    "Generate Parser", type="primary", use_container_width=True, key="parsergen-home"
+):
+    generate_parser(st.session_state.toml_dict)
+    with open(f"generator/{parser_name}-generator.toml", "rb") as f:
         col3.download_button(
             label="Download Parser",
             data=f,

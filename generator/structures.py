@@ -13,7 +13,6 @@ def single_field(f, d):
     return {"field": f, "description": d}
 
 
-# TODO: work out how to factor in anything other than '='
 def conditional_field(f, d, condition, if_rule, values=None):
     rule = {"field": f, "description": d, condition: {}}
 
