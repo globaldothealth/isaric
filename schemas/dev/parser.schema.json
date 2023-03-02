@@ -646,7 +646,8 @@
         "required": [
           "phase",
           "name",
-          "date"
+          "date",
+          "if"
         ],
         "properties": {
           "ref": {
@@ -677,6 +678,10 @@
           "value": {
             "description": "Value of the observation",
             "$ref": "#/definitions/mapping"
+          },
+          "if": {
+            "type": "object",
+            "description": "Condition under which row is emitted"
           },
           "text": {
             "description": "Value of the observation (text)",
