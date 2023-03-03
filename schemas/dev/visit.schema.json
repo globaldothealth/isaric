@@ -93,6 +93,19 @@
       "description": "Corticosteroid",
       "category": "treatments"
     },
+    "treatment_corticosteroid_type": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Methylprednisolone",
+          "Prednisolone",
+          "Dexamethasone",
+          "Other"
+        ]
+      },
+      "description": "Corticosteroid type",
+      "category": "treatments"
+    },
     "treatment_oxygen_therapy": {
       "type": "boolean",
       "description": "Oxygen therapy",
@@ -118,6 +131,27 @@
       "description": "Antivirals",
       "category": "treatments"
     },
+    "treatment_antiviral_type": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Ribavirin",
+          "Lopinavir/Ritonvir",
+          "Interferon alpha",
+          "Interferon beta",
+          "Chloroquine/Hydroxychloroquine",
+          "Oseltamivir (Tamiflu)",
+          "Zanamivir",
+          "Casirivimab/Imdevimab",
+          "Remdesivir",
+          "IL6 inhibitor",
+          "Neuraminidase inhibitors",
+          "Other"
+        ]
+      },
+      "description": "Antivirals administered",
+      "category": "treatments"
+    },
     "treatment_antibiotics": {
       "type": "boolean",
       "description": "Antibiotics",
@@ -131,6 +165,27 @@
     "treatment_experimental_agent": {
       "type": "boolean",
       "description": "Experimental agent",
+      "category": "treatments"
+    },
+    "treatment_experimental_agent_type": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Ribavirin",
+          "Lopinavir/Ritonvir",
+          "Interferon alpha",
+          "Interferon beta",
+          "Chloroquine/Hydroxychloroquine",
+          "Oseltamivir (Tamiflu)",
+          "Zanamivir",
+          "Casirivimab/Imdevimab",
+          "Remdesivir",
+          "IL6 inhibitor",
+          "Neuraminidase inhibitors",
+          "Other"
+        ]
+      },
+      "description": "Experimental agent name",
       "category": "treatments"
     },
     "treatment_inhaled_nitric_oxide": {
