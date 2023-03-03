@@ -181,6 +181,10 @@
                 ]
               },
               "properties": {
+                "common": {
+                  "type": "object",
+                  "description": "Common mappings to include (only for oneToMany tables)"
+                },
                 "kind": {
                   "enum": [
                     "constant",
@@ -644,6 +648,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "phase",
           "name",
