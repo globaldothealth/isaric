@@ -100,6 +100,7 @@
           "Methylprednisolone",
           "Prednisolone",
           "Dexamethasone",
+          "Hydrocortisone",
           "Other"
         ]
       },
@@ -171,17 +172,12 @@
       "type": "array",
       "items": {
         "enum": [
-          "Ribavirin",
-          "Lopinavir/Ritonvir",
-          "Interferon alpha",
-          "Interferon beta",
-          "Chloroquine/Hydroxychloroquine",
-          "Oseltamivir (Tamiflu)",
-          "Zanamivir",
-          "Casirivimab/Imdevimab",
+          "Chloroquine",
+          "Hydroxychloroquine",
           "Remdesivir",
+          "IL1 inhibitor",
           "IL6 inhibitor",
-          "Neuraminidase inhibitors",
+          "Convalescent plasma",
           "Other"
         ]
       },

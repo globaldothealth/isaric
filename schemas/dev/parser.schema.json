@@ -494,6 +494,10 @@
           "description": "Corticosteroid",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_corticosteroid_type": {
+          "description": "Corticosteroid used",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_oxygen_therapy": {
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
@@ -514,6 +518,10 @@
           "description": "Antivirals",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_antiviral_type": {
+          "description": "Type of antiviral used",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_antibiotics": {
           "description": "Antibiotics",
           "$ref": "#/definitions/mapping"
@@ -524,6 +532,10 @@
         },
         "treatment_experimental_agent": {
           "description": "Experimental agent",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_experimental_agent_type": {
+          "description": "Type of experimental agent used",
           "$ref": "#/definitions/mapping"
         },
         "treatment_inhaled_nitric_oxide": {
