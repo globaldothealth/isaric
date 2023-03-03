@@ -1,0 +1,33 @@
+name: parsers
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - 'isaric/parsers/*.toml'
+    - 'ci/validate_parser.py'
+    - '.github/workflows/parsers.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+    - 'isaric/parsers/*.toml'
+    - 'ci/validate_parser.py'
+    - '.github/workflows/parsers.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: python3 -m pip install -r ci/requirements.txt
+    - name: Validate parsers
+      run: |
+        python3 ci/validate_parser.py isaric/parsers/*.toml
