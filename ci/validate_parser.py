@@ -36,13 +36,13 @@ def validate(file: str) -> Tuple[str, bool, str]:
 
 
 def message(file, valid, error_message):
-    return f" OK {file}" if valid else f"ERR {file}: {error_message}"
+    return f" OK\t{file}" if valid else f"ERR\t{file}\t{error_message}"
 
 
 files = sys.argv[1:]
 if not files:
     print(
-        """usage: {sys.argv[0]} files...
+        f"""usage: {sys.argv[0]} files...
     Validate parser file(s) according to schema directive"""
     )
     sys.exit(0)
