@@ -293,6 +293,20 @@
     { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
   ]
 
+# TODO: as above, there is this set for antiviral_cmtype, daily* and overall*. How should we combine these in that scenario?
+[visit.treatment_antiviral_type]
+  description = "Type of antiviral agent used"
+  combinedType = "list"
+  fields = [
+    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
+  ]
+  if = { antiviral_cmyn = 1 }
+
 [visit.treatment_neuraminidase]
   description = "Antiviral type"
   combinedType = "firstNonNull"
@@ -343,6 +357,19 @@
     { field = "daily_corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid?" },
     { field = "corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid on the first day of admission?" },
   ]
+
+# TODO: as above, there is this set for corticost_cmtype, daily* and overall*. How should we combine these in that scenario?
+[visit.treatment_corticosteroid_type]
+  description = "Type of corticosteroid used"
+  combinedType = "list"
+  fields = [
+    { field = "corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "corticost_cmtrt___5", values = { 1 = "Other" } },
+  ]
+  if = { corticost_cmyn = 1 }
 
 [visit.treatment_dexamethasone]
   description = "Dexamethasone used?"
@@ -403,6 +430,21 @@
     { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
     { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
   ]
+
+# TODO: as above, there is this set for exper_cmtype, daily* and overall*. How should we combine these in that scenario?
+[visit.treatment_experimental_agent_type]
+  description = "Experimental treatments used"
+  combinedType = "list"
+  fields = [
+    { field = "exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "exper_cmtype___4", values = { 1 = "IL6 Inhibitor" } },
+    { field = "exper_cmtype___5", values = { 1 = "IL1 Inhibitor" } },
+    { field = "exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "exper_cmtype___7", values = { 1 = "Other" } },
+  ]
+  if = { exper_cmyn = 1 }
 
 [visit.treatment_tocilizumab]
   description = "Experimental agents"
@@ -1198,7 +1240,7 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   context = ["highest"]
-  value = { field = "temp_vsorres" }        # there is no source unit field 
+  value = { field = "temp_vsorres" }        # there is no source unit field
   if = { temp_vsyn = 1 }
 
 [[observation]]

@@ -316,10 +316,34 @@
     field = "antiviral_cmyn"
     ref = "Y/N/NK"
 
+  [visit.treatment_antiviral_type]
+    description = "Type of antiviral agent used"
+    combinedType = "list"
+    fields = [
+      { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+      { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+      { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+      { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+      { field = "antiviral_cmtrt___7", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
+      { field = "antiviral_cmtrt___8", values = { 1 = "Remdesivir" } },
+      { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
+      { field = "antiviral_cmtrt___10", values = { 1 = "Oseltamivir (Tamiflu)" } },
+      { field = "antiviral_cmtrt___11", values = { 1 = "Zanamivir" } },
+      { field = "antiviral_cmtrt___12", values = { 1 = "Casirivimab/Imdevimab" } },
+    ]
+    if = { antiviral_cmyn = 1 }
+
   [visit.treatment_corticosteroid]
     description = "Corticosteroid agent?"
     field = "corticost_cmyn"
     ref = "Y/N/NK"
+
+  [visit.treatment_corticosteroid_type]
+    description = "Type of corticosteroid used"
+    field = "corticost_cmtrt_type"
+    values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" }
+    if = { corticost_cmyn = 1 }
 
   [visit.treatment_dexamethasone]
     description = "Treatment with Dexamethasone"
