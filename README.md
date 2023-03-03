@@ -1,5 +1,7 @@
 # ISARIC Clinical Data Model
 
+[![parsers](https://github.com/globaldothealth/isaric/actions/workflows/parsers.yml/badge.svg)](https://github.com/globaldothealth/isaric/actions/workflows/parsers.yml)
+
 ISARIC Clinical Data Model development. This repository has the
 [schemas](schemas/dev) and [parser](isaric/parsers) specifications. For the
 parsing library that does the data transformation, see
