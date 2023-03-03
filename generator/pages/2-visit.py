@@ -47,11 +47,12 @@ parser_name = st.session_state.toml_dict["adtl"]["name"]
 if col2.button(
     "Generate Parser", type="primary", use_container_width=True, key="parsergen-visit"
 ):
-    generate_parser(st.session_state.toml_dict)
-    with open(f"generator/{parser_name}-generator.toml", "rb") as f:
-        col3.download_button(
-            label="Download Parser",
-            data=f,
-            file_name=f"{parser_name}-generator.toml",
-            use_container_width=True,
-        )
+    if generate_parser(st.session_state.toml_dict):
+        col2.write("Parser generated! Available in the 'generator' folder.")
+        with open(f"generator/{parser_name}-generator.toml", "rb") as f:
+            col3.download_button(
+                label="Download Parser",
+                data=f,
+                file_name=f"{parser_name}.toml",
+                use_container_width=True,
+            )
