@@ -8,7 +8,7 @@
     study = { kind = "constant" }
     subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
     visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
-    observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json" }
+    observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "\ufeffsubjid", sensitive = true } } }
 
   [adtl.defs."Y/N/NK".values]
     1 = true
@@ -882,9 +882,8 @@
   name = "pao2"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres" }
+  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "mmHg" } }
   if = { daily_pao2_lbyn = 1 }
-  source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" }
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
