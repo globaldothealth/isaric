@@ -313,6 +313,12 @@ def get_attributes_types(table: str):
     st.session_state.visit_required_attributes,
     st.session_state.visit_attr_types,
 ) = get_attributes_types("visit")
+(
+    st.session_state.obs,
+    st.session_state.obs_attributes,
+    st.session_state.obs_required_attributes,
+    st.session_state.obs_attr_types,
+) = get_attributes_types("observation")
 # observation, obs_attributes, obs_required_attributes, obs_attr_types = get_attributes_types('observation') # TODO
 
 if "toml_dict" not in st.session_state:
@@ -402,27 +408,72 @@ with col2:
         ] = structures.predefined_value_maps(string_to_dict(mk))
 
 st.markdown("#")
-_, col2, col3, _ = st.columns(4)
+
+
+def validate_required_fields(data):
+    # currently only validates subject and visit required fields are present
+    missing_fields_sub = []
+    for field in st.session_state.subject_required_attributes:
+        if field not in data["subject"]:
+            missing_fields_sub.append(field)
+        elif data["subject"][field] != "":
+            pass
+        elif data["subject"][field] == "":
+            missing_fields_sub.append(field)
+        elif data["subject"][field]["field"] == "":
+            missing_fields_sub.append(field)
+
+    missing_fields_visit = []
+    for field in st.session_state.visit_required_attributes:
+        if field not in data["visit"]:
+            missing_fields_visit.append(field)
+        elif data["visit"][field] != "":
+            pass
+        elif data["visit"][field] == "":
+            missing_fields_visit.append(field)
+        elif data["visit"][field]["field"] == "":
+            missing_fields_visit.append(field)
+
+    if len(missing_fields_sub + missing_fields_visit) > 0:
+        st.error(
+            f"There are required fields missing from the subject or visit tables.\n\
+                 Subject: {missing_fields_sub}\n\
+                 Visit: {missing_fields_visit}"
+        )
+        return False
+    return True
 
 
 def generate_parser(data):
-    data["subject"]["subject_id"]["sensitive"] = True
-    data["visit"]["subject_id"]["sensitive"] = True
-    data["visit"]["visit_id"]["sensitive"] = True
+    if validate_required_fields(data):
+        data["subject"]["subject_id"]["sensitive"] = True
+        data["visit"]["subject_id"]["sensitive"] = True
+        data["visit"]["visit_id"]["sensitive"] = True
 
-    with open(f"generator/{parser_name}-generator.toml", "wb") as f:
-        tomli_w.dump(data, f)
-    col2.write("Parser generated! Available in the 'generator' folder.")
+        for obs in st.session_state.obs_list:
+            if "observation" in data.keys():
+                data["observation"].append(obs)
+            else:
+                data["observation"] = [obs]
 
+        with open(f"generator/{parser_name}-generator.toml", "wb") as f:
+            tomli_w.dump(data, f)
+
+        return True
+    return False
+
+
+_, col2, col3, _ = st.columns(4)
 
 if col2.button(
     "Generate Parser", type="primary", use_container_width=True, key="parsergen-home"
 ):
-    generate_parser(st.session_state.toml_dict)
-    with open(f"generator/{parser_name}-generator.toml", "rb") as f:
-        col3.download_button(
-            label="Download Parser",
-            data=f,
-            file_name=f"{parser_name}.toml",
-            use_container_width=True,
-        )
+    if generate_parser(st.session_state.toml_dict):
+        col2.write("Parser generated! Available in the 'generator' folder.")
+        with open(f"generator/{parser_name}-generator.toml", "rb") as f:
+            col3.download_button(
+                label="Download Parser",
+                data=f,
+                file_name=f"{parser_name}.toml",
+                use_container_width=True,
+            )
