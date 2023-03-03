@@ -84,7 +84,8 @@
                   "type": [
                     "string",
                     "boolean",
-                    "number"
+                    "number",
+                    "array"
                   ]
                 }
               }
@@ -697,10 +698,17 @@
           },
           "context": {
             "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "$ref": "#/definitions/mapping"
+              }
+            ]
           },
           "name": {
             "description": "Observation name",
