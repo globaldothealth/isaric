@@ -320,7 +320,7 @@ st.set_page_config(layout="wide")
 
 st.title("Global.health clinical data parser generation")
 
-st.text(
+st.write(
     "This webapp provides semi-automated parser generation for new clinical datasets."
 )
 
@@ -330,8 +330,11 @@ st.write(
           will be generated: the Subject, Visit and Observations tables.\
     All 3 of these pages will need to be filled in to create a compete parser, which will\
           need checking manually and with the parser validator before being integrated into the ISARIC repository.\n\
-    Also provided is a page to generate the toml code for an individual field if you would like to append a small \
-        amount of data to an existing toml file while unsure of the syntax."
+    If you would like to write the parser directly, the `base-parser.toml` file contains all the headers for the subject and\
+        visit tables, which can be filled in as required, along with an example of how the 'observations' should be formatted.\n\
+    Also provided is a page to generate the toml code for an individual field if you would like write to the toml file directly \
+        but are unsure of the syntax. This code can be copied and pasted into your parser file.\
+    "
 )
 
 

@@ -253,21 +253,478 @@
 
 [subject]
   study_id = ""
-  subject_id = ""
-  enrolment_date = ""
-  age = ""
-  sex_at_birth = ""
-  ethnicity = ""
   country_iso3 = { field = "country", ref = "countryMap" }
   pathogen = ""
 
+  [subject.subject_id]
+    field = ""
+    description = ""
+    sensitive = true
 
-  ## VISITS
+  [subject.enrolment_date]
+    field = ""
+    description = ""
+
+  [subject.age]
+    field = ""
+    description = ""
+
+  [subject.sex_at_birth]
+    field = ""
+    description = ""
+    values = { 1 = "male", 2 = "female", 3 = "nonbinary" }
+
+  [subject.ethnicity]
+    field = ""
+    description = ""
+
+  [subject.admission_date]
+    field = ""
+    description = ""
+
+  [subject.works_microbiology_lab]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.works_healthcare]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.pregnancy]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.pregnancy_date_of_delivery]
+    field = ""
+    description = ""
+
+  [subject.pregnancy_birth_weight_kg]
+    field = ""
+    description = ""
+
+  [subject.pregnancy_outcome]
+    field = ""
+    description = ""
+
+  [subject.pregnancy_gestational_outcome]
+    field = ""
+    description = ""
+    values = { 1 = "Term birth", 2 = "Preterm birth" }
+
+  [subject.pregnancy_whether_breastfed]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.pregnancy_post_partum]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.pregnancy_gestational_assessment_weeks]
+    field = ""
+    description = ""
+
+  [subject.has_chronic_hematologic_disease]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_asplenia]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_tuberculosis]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_dementia]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_obesity]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_rheumatologic_disorder]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_hiv]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_hypertension]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_malignant_neoplasm]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_smoking]
+    field = ""
+    description = ""
+    values = { 1 = "yes", 2 = "former", 3 = "never" }
+
+  [subject.has_asthma]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_chronic_cardiac_disease]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_chronic_kidney_disease]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_diabetes]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.diabetes_type]
+    field = ""
+    description = ""
+    values = { 1 = "type-1", 2 = "type-2", 3 = "gestational" }
+
+  [subject.has_liver_disease]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_apnoea]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_hiv_viral_suppression]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_inflammatory_bowel_disease]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_rare_disease_inborn_metabolism_error]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_solid_organ_transplant]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_tuberculosis_past]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_hiv_art]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_immunosuppression_therapy_treatment]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.has_comorbidity_other]
+    field = ""
+    description = ""
+
+  [subject.has_died]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [subject.date_death]
+    field = ""
+    description = ""
+
+  [subject.icu_admitted]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+    ## VISITS
 
 [visit]
   country_iso3 = { field = "country", ref = "countryMap" }
-  visit_id = ""
-  start_date = ""
-  subject_id = ""
-  outcome = ""
-  date_outcome = ""
+
+  [visit.visit_id]
+    field = ""
+    description = ""
+    sensitive = true
+
+  [visit.start_date]
+    field = ""
+    description = ""
+
+  [visit.subject_id]
+    field = ""
+    description = ""
+    sensitive = true
+
+  [visit.outcome]
+    field = ""
+    description = ""
+
+    [visit.outcome.values]
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "recovered"
+
+[visit.date_outcome]
+  field = ""
+  description = ""
+
+[visit.dataset_id]
+  field = ""
+  description = ""
+
+[visit.end_date]
+  field = ""
+  description = ""
+
+[visit.pathogen_test_date]
+  field = ""
+  description = ""
+
+[visit.phase]
+  field = ""
+  description = ""
+  values = { 1 = "admission", 2 = "study", 3 = "followup" }
+
+[visit.icu_admission]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.icu_admission_dates]
+  field = ""
+  description = ""
+
+[visit.treatment_dialysis]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_inotropes_vasopressors]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_ecmo]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_oxygen_therapy]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_prone_position]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_invasive_ventilation]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_antifungal_agent]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_antivirals]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_antibiotics]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_anticoagulation]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_experimental_agent]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_inhaled_nitric_oxide]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_noninvasive_ventilation]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_ace_inhibitors]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_arb]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_antimalarial]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_dexamethasone]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_high_flow_nasal_cannula]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_steroids]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_immunosuppressant]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_intravenous_fluids]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_nsaid]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_neuraminidase]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_oxygen_interface]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_cpr]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_offlabel]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_respiratory_support]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_tocilizumab]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_indication_anticoagulation]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_cardiovascular]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_colchicine]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_immunoglobulins]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_delirium]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_monoclonal_antibody]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_other]
+  field = ""
+  description = ""
+
+[visit.treatment_oxygen_mechanical_support]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_pacing]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[visit.treatment_o2_flow_vol_max]
+  field = ""
+  description = ""
+
+[[observation]]
+  name = "avpu"
+  date = "admissionDateHierarchy"
+  phase = "admission"
+  is_present = { field = "", values = {} }
+  if = {}
+  value = ""
+  text = { field = "", values = {} }
+  context = ""
