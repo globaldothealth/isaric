@@ -14,7 +14,10 @@ def single_field(f, d):
 
 
 def conditional_field(f, d, condition, if_rule, values=None):
-    rule = {"field": f, "description": d, condition: {}}
+    if d == "":
+        rule = {"field": f, condition: {}}
+    else:
+        rule = {"field": f, "description": d, condition: {}}
 
     if condition != "if":
         log_op = condition.split(".")[1]
@@ -55,9 +58,14 @@ def field_with_date(f: str, d: str, source_date_f: str):
 
 def field_value_mapped(f: str, d: str, value_maps: dict | str):
     if isinstance(value_maps, dict):
-        return {"field": f, "description": d, "values": value_maps}
+        rule = {"field": f, "description": d, "values": value_maps}
     else:
-        return {"field": f, "description": d, "ref": value_maps}
+        rule = {"field": f, "description": d, "ref": value_maps}
+
+    if rule["description"] == "":
+        del rule["description"]
+
+    return rule
 
 
 def field_with_transformation(f: str, d: str, func: str, params: list | None):

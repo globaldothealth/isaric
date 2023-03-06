@@ -26,6 +26,8 @@ st.markdown("#")
 
 constant_attrs = ["study_id", "country_iso3", "pathogen"]
 
+expand_fields = st.checkbox("Expand all the subject fields", key="subject-expand-all")
+
 for attribute, s_type in zip(
     st.session_state.subject_attributes, st.session_state.subject_attr_types
 ):
@@ -34,7 +36,9 @@ for attribute, s_type in zip(
     elif attribute in st.session_state.subject_required_attributes:
         st.write("☑️", attribute)
         create_field("subject", attribute, s_type)
-    elif st.checkbox(attribute, key="subject" + attribute + "selectbox"):
+    elif (
+        st.checkbox(attribute, key="subject" + attribute + "selectbox") or expand_fields
+    ):
         create_field("subject", attribute, s_type)
     st.markdown(
         """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
