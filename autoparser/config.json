@@ -1,0 +1,47 @@
+{
+  "stopwords": [
+    "a",
+    "an",
+    "the",
+    "if",
+    "for",
+    "has",
+    "at",
+    "of",
+    "and",
+    "or",
+    "then",
+    "treatment",
+    "agent"
+  ],
+  "schemas": {
+    "subject": "../schemas/dev/subject.schema.json",
+    "visit": "../schemas/dev/visit.schema.json",
+    "observation": "../schemas/dev/observation.schema.json"
+  },
+  "column_mappings": {
+    "Variable / Field Name": "source_field",
+    "Form Name": "category",
+    "Section Header": "section_header",
+    "Field Type": "source_field_type",
+    "Field Label": "source_field_description",
+    "Choices, Calculations, OR Slider Labels": "choices",
+    "Field Note": "source_field_note",
+    "Text Validation Type OR Show Slider Number": "source_validation_type",
+    "Text Validation Min": "source_valid_min",
+    "Text Validation Max": "source_valid_max",
+    "Identifier?": "source_field_is_identifier",
+    "Branching Logic (Show field only if...)": "source_condition",
+    "Required Field?": "source_field_is_required"
+  },
+  "scores": {
+    "type-match": 3,
+    "date-mismatch": -3,
+    "type-mismatch": -1,
+    "token-contained": 1,
+    "is-followup": -3
+  },
+  "use_fields": {
+    "observation": "properties.name.enum"
+  }
+}
