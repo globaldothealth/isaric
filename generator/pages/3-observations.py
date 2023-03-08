@@ -68,9 +68,28 @@ with st.form(key="observation", clear_on_submit=True):
         is_present_field = subcol1.text_input("Field name", key="ispresent_field")
         is_present_values = subcol2.text_input("Value map", key="ispresent_value")
         st.write("Values: Records the value of **numerical observations**")
-        value = st.text_input(
+        value_field = st.text_input(
             "Field name",
             help="For numerical values - E.g., 'diabp_vsorres' storing the recorded blood pressure for the observation.",
+            key="value_field",
+        )
+        subcol1, subcol2, subcol3 = st.columns(3)
+        value_units = subcol1.text_input(
+            "Desired unit for value (optional)",
+            placeholder="kg",
+            help="Desired unit for the value field, e.g. kg for mass, '°C' for temperature, years for age.",
+            key="value_units_required",
+        )
+        value_sunit_field = subcol2.text_input(
+            "Unit source field (optional)",
+            help="Field name where the unit of the measurement taken is recorded",
+            key="value_units_source",
+        )
+        value_sunits_map = subcol3.text_input(
+            "Unit field mapping (optional)",
+            placeholder="1=kg, 2=lbs",
+            help="",
+            key="value_units_map",
         )
         st.write("Text: records value map for **text-based observations**")
         subcol1, subcol2 = st.columns(2)
@@ -109,6 +128,13 @@ with st.form(key="observation", clear_on_submit=True):
             text_values = string_to_dict(text_values)
         except:
             pass
+
+        if value_units != "":
+            value = structures.field_with_unit(
+                value_field, "", value_units, value_sunit_field, value_sunits_map
+            )
+        else:
+            value = value_field
 
         # write to a data store
         observation = {

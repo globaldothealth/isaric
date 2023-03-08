@@ -39,12 +39,19 @@ def conditional_field(f, d, condition, if_rule, values=None):
 def field_with_unit(
     f: str, d: str, unit_f: str, source_unit_f: str, source_unit_v: dict
 ):
-    return {
-        "field": f,
-        "description": d,
-        "unit": unit_f,
-        "source_unit": {"field": source_unit_f, "values": source_unit_v},
-    }
+    if d != "":
+        return {
+            "field": f,
+            "description": d,
+            "unit": unit_f,
+            "source_unit": {"field": source_unit_f, "values": source_unit_v},
+        }
+    else:
+        return {
+            "field": f,
+            "unit": unit_f,
+            "source_unit": {"field": source_unit_f, "values": source_unit_v},
+        }
 
 
 def field_with_date(f: str, d: str, source_date_f: str):
