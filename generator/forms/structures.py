@@ -4,6 +4,10 @@ Contains dictionary structures for standard formats
 Dictionary structures which can be called to build up a parser file using a webapp interface.
 """
 
+import streamlit as st
+import json
+import re
+
 
 def predefined_value_maps(values: dict):
     return {"values": values}
@@ -92,9 +96,54 @@ def combined_type(rule: str, desc: str, fields: list):
     return {"combinedType": rule, "description": desc, "fields": fields}
 
 
-## Observations - get top bit working first.
+### ----------------------------
+# Streamlit functions
+### ----------------------------
 
 
-# rest are optional - either make lots of seperate functions calling this one, or lots of **kwargs.
-def observation_field(name, descrip, phase, date):
-    pass
+@st.cache_data
+def string_to_dict(input_string, conditional=False):
+    """
+    Transforms a comma-seperated string input (e.g. "1=true, 2=false, 3=false")
+    into a dictionary with key:value pairs, converts values into appropriate Python types.
+    The conditional flag indicates that there may be a conditional rule which needs parsing
+    in addition.
+    """
+
+    def convert_vals_recursive(res):
+        for k, v in res.items():
+            try:
+                v_converted = json.loads(v)
+            except TypeError:  # dict
+                v_converted = convert_vals_recursive(v)
+            except:
+                v_converted = v
+            res[k] = v_converted
+        return res
+
+    if input_string == "":
+        return {}
+
+    if conditional == True:
+        result = [re.split("([<>=!]+)", item) for item in input_string.split(", ")]
+        for item in result:
+            if item[1] == "=":
+                del item[1]
+            else:
+                item[1] = {item[1]: item[2]}
+                del item[2]
+        result = dict(result)
+
+    else:
+        result = dict(item.split("=") for item in input_string.split(", "))
+
+    return convert_vals_recursive(result)
+
+
+def make_grid(cols, rows):
+    # creates a grid layout in streamlit
+    grid = [0] * cols
+    for i in range(cols):
+        with st.container():
+            grid[i] = st.columns(rows)
+    return grid

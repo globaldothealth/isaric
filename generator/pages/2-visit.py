@@ -2,13 +2,9 @@
 # stores the visit table page
 
 import streamlit as st
-import tomli
-import tomli_w
-import json
-import structures
-import re
 
-from webapp import create_field, generate_parser
+from webapp import generate_parser
+from forms.visit_subject import create_field
 
 st.header("Visit table")
 st.write(
@@ -33,11 +29,11 @@ for attribute, a_type in zip(
     elif attribute in st.session_state.visit_required_attributes:
         st.write("☑️", attribute)
         st.session_state.toml_dict["visit"][attribute] = create_field(
-            "visit", attribute, a_type
+            "visit", attribute, a_type, 4
         )
     elif st.checkbox(attribute, key="visit" + attribute + "selectbox"):
         st.session_state.toml_dict["visit"][attribute] = create_field(
-            "visit", attribute, a_type
+            "visit", attribute, a_type, 4
         )
     st.markdown(
         """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,

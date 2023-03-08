@@ -2,13 +2,9 @@
 # Stores the subject table
 
 import streamlit as st
-import tomli
-import tomli_w
-import json
-import structures
-import re
 
-from webapp import create_field, generate_parser
+from webapp import generate_parser
+from forms.visit_subject import create_field
 
 st.header("Subject table")
 st.write(
@@ -36,13 +32,13 @@ for attribute, s_type in zip(
     elif attribute in st.session_state.subject_required_attributes:
         st.write("☑️", attribute)
         st.session_state.toml_dict["subject"][attribute] = create_field(
-            "subject", attribute, s_type
+            "subject", attribute, s_type, 4
         )
     elif (
         st.checkbox(attribute, key="subject" + attribute + "selectbox") or expand_fields
     ):
         st.session_state.toml_dict["subject"][attribute] = create_field(
-            "subject", attribute, s_type
+            "subject", attribute, s_type, 4
         )
     st.markdown(
         """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
