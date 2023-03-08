@@ -4,8 +4,8 @@ import forms.structures as structures
 from forms.structures import string_to_dict
 
 
-def observation_form(button_label):
-    with st.form(key="observation", clear_on_submit=True):
+def observation_form(button_label, clear_on_sub):
+    with st.form(key="observation", clear_on_submit=clear_on_sub):
         st.write("Required fields:")
         (
             col1,
