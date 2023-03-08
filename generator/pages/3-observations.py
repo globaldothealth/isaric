@@ -24,7 +24,7 @@ st.write(
 
 st.markdown("#")
 
-observation = observation_form("Add this observation field to data store")
+observation = observation_form("Add this observation field to data store", True)
 
 if observation is not None:
     # here, search for whether the key has been written before, and overwrite if it has.

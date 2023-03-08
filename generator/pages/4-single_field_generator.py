@@ -19,7 +19,7 @@ st.write(
 table = st.selectbox("Table", ["subject", "visit", "observation"])
 
 if table == "observation":
-    obs = observation_form("Click here to compile the observation")
+    obs = observation_form("Click here to compile the observation", False)
     if obs is not None:
         st.session_state.single_field_observation = obs
 else:
@@ -40,7 +40,35 @@ if st.button("Generate toml snippet", type="primary"):
 
     toml_string = tomli_w.dumps(toml_snippet)
 
-    with open("generator/test_dump.toml", "wb") as f:
-        tomli_w.dump(toml_snippet, f)
-
     st.code(toml_string, language="toml")
+    st.markdown("#### Please Note:")
+    st.write(
+        "This page will produce a toml snippet with all tables fully expanded.\
+             If you wish to condense the entry, note that"
+    )
+    st.code(
+        """
+        [[observation]]
+        name = "pao2"
+
+        [observation.text]
+        field = 'daily_pao2_lborres'
+
+        [observation.text.values]
+        1 = "Arterial"
+        2 = "Venous"
+        3 = "Capillary"
+            """,
+        language="toml",
+    )
+    st.write(" is equivalent to")
+    st.code(
+        """
+        [[observation]]
+        name = "pao2"
+        text = {field = 'daily_pao2_lborres', values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" }}.""",
+        language="toml",
+    )
+    st.write(
+        "We suggest condensing short tables as above where sensible to reduce the length and increase readability of parser files."
+    )
