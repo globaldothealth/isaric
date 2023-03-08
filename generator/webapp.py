@@ -247,15 +247,11 @@ def create_field(table, attribute, a_type):
             ]:
                 square.markdown("#")
 
-        st.session_state.toml_dict[table][attribute] = structures.combined_type(
-            combination_type, comb_desc, fields
-        )
+        return structures.combined_type(combination_type, comb_desc, fields)
 
     else:
         columns = st.columns(4)
-        st.session_state.toml_dict[table][attribute] = field_types(
-            table, attribute, a_type, columns
-        )
+        return field_types(table, attribute, a_type, columns)
 
 
 def validate_required_fields(data):

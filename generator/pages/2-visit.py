@@ -32,9 +32,13 @@ for attribute, a_type in zip(
         continue
     elif attribute in st.session_state.visit_required_attributes:
         st.write("☑️", attribute)
-        create_field("visit", attribute, a_type)
+        st.session_state.toml_dict["visit"][attribute] = create_field(
+            "visit", attribute, a_type
+        )
     elif st.checkbox(attribute, key="visit" + attribute + "selectbox"):
-        create_field("visit", attribute, a_type)
+        st.session_state.toml_dict["visit"][attribute] = create_field(
+            "visit", attribute, a_type
+        )
     st.markdown(
         """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
         unsafe_allow_html=True,
