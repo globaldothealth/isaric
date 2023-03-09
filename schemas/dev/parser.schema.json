@@ -678,8 +678,27 @@
             }
           },
           "date": {
-            "description": "Date when observation was recorded",
+            "description": "Date of observation, or end date of observation period",
             "$ref": "#/definitions/fieldMapping"
+          },
+          "start_date": {
+            "description": "Start date of observation duration",
+            "$ref": "#/definitions/fieldMapping"
+          },
+          "duration_type": {
+            "description": "Duration type of observation",
+            "enum": [
+              "block",
+              "event"
+            ],
+            "x-taplo": {
+              "docs": {
+                "enumValues": [
+                  "Observation happened for the entire period from start_date to date",
+                  "Observation happened one or more times within the observation duration from start_date to date"
+                ]
+              }
+            }
           },
           "value": {
             "description": "Value of the observation",
@@ -696,10 +715,6 @@
           "is_present": {
             "description": "Whether the observation denotes presence (*true*) or absence (*false*)",
             "$ref": "#/definitions/fieldMapping"
-          },
-          "occurrence_period": {
-            "description": "ISO 8601 duration string referring to the time period before {date} in which observation occurred",
-            "$ref": "#/definitions/mapping"
           },
           "context": {
             "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
