@@ -1,8 +1,10 @@
 """
 Generate TOML parser from intermediate CSV file
 """
+import re
 import json
 import argparse
+import operator
 from pathlib import Path
 
 import tomli_w
@@ -93,12 +95,14 @@ def make_toml_table(
         return {}
     outmap = {}
 
-    def single_field_mapping(match: pd.core.frame.pandas, is_map: bool) -> dict[str]:
+    def single_field_mapping(
+        match: pd.core.frame.pandas, field_type: str, field_enum: list[str] = []
+    ) -> dict[str]:
         out = {
             "field": match.source_field,
             "description": match.source_field_description,
         }
-        if is_map and (
+        if field_type in ["boolean", "enum"] and (
             choices := parse_choices(
                 match.choices, choice_delimiter, choice_delimiter_map
             )
@@ -107,11 +111,32 @@ def make_toml_table(
                 out["ref"] = references[choice_key]
             else:
                 out["values"] = choices
+
+        if field_type == "enum" and field_enum and out.get("values"):
+            mapped_enum = map_enum(list(out["values"].values()), field_enum)
+            source_values = out["values"].copy()
+            out["values"] = {
+                k: mapped_enum[v] for k, v in out["values"].items() if v in mapped_enum
+            }
+            print(
+                f"{match.source_field}\n"
+                + "\n".join(
+                    f"    {source} -> {target}"
+                    for source, target in zip(
+                        source_values.values(), out["values"].values()
+                    )
+                )
+            )
+
         return out
 
     for field, field_matches in mappings.groupby("field"):
-        is_map = "enum" in schema[field] or schema[field]["type"] == "boolean"
+        field_type = schema[field].get("type")
+        field_enum = schema[field].get("enum", [])
+        if "enum" in schema[field]:
+            field_type = "enum"
         if len(field_matches) == 1:  # single field
+<<<<<<< HEAD
 <<<<<<< HEAD
             outmap[field] = single_field_mapping(field_matches[0], is_map)
 =======
@@ -119,6 +144,11 @@ def make_toml_table(
                 field_matches.iloc[0], field_type, field_enum
             )
 >>>>>>> b7e1512 (fixup)
+=======
+            outmap[field] = single_field_mapping(
+                field_matches[0], field_type, field_enum
+            )
+>>>>>>> 5dcc300 (autoparser(make_toml): add support for mapping enum types)
 
         else:  # combinedType
             outmap[field] = {
@@ -126,7 +156,7 @@ def make_toml_table(
                     schema[field].get("type"), "firstNonNull"
                 ),
                 "fields": [
-                    single_field_mapping(match, is_map)
+                    single_field_mapping(match, field_type, field_enum)
                     for match in field_matches.itertuples()
                 ],
             }
@@ -159,6 +189,31 @@ def make_toml(
         else:
             data.update(make_toml_observation(config, mappings))
     return data
+
+
+def map_enum(keys: list[str], sources: list[str]) -> dict[str, str]:
+    def score(key, source):
+        key = re.split("-|_| ", str(key).lower())
+        source = re.split("-|_| ", source.lower())
+        return sum(
+            sum([[s.startswith(w) or s.endswith(w) for s in source] for w in key], [])
+        )
+
+    def max_score(key, sources):
+        try:
+            return max(
+                (
+                    (source, score(key, source))
+                    for source in sources
+                    if score(key, source) > 0
+                ),
+                key=operator.itemgetter(1),
+            )[0]
+        except ValueError:
+            return None
+
+    mapped_enum = {key: max_score(key, sources) for key in keys}
+    return {k: v for k, v in mapped_enum.items() if v is not None}
 
 
 def common_mappings(
