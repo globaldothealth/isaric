@@ -25,9 +25,17 @@ TRUE = ["y", "yes", "t", "true"]
 FALSE = ["f", "false", "no", "n"]
 
 
-def read_json(file: str | Path) -> dict:
-    with open(file) as fp:
-        return json.load(fp)
+def maybe(x, func, default=None):
+    return func(x) if x is not None else default
+
+
+def read_data(path: Path) -> dict:
+    if path.suffix == ".json":
+        with path.open() as fp:
+            return json.load(fp)
+    elif path.suffix == ".toml":
+        with path.open("rb") as fp:
+            return tomli.load(fp)
 
 
 def adtl_header(
@@ -89,7 +97,7 @@ def make_toml_table(
 ) -> dict[str]:
     "Make TOML table (not observation, which is handled separately)"
     assert table in set(config["schemas"]) - {"observation"}
-    schema = read_json(config["schemas"][table])["properties"]
+    schema = read_data(config["schemas"][table])["properties"]
     mappings = mappings[mappings.table == table]
     if mappings.empty:
         return {}
@@ -136,19 +144,9 @@ def make_toml_table(
         if "enum" in schema[field]:
             field_type = "enum"
         if len(field_matches) == 1:  # single field
-<<<<<<< HEAD
-<<<<<<< HEAD
-            outmap[field] = single_field_mapping(field_matches[0], is_map)
-=======
             outmap[field] = single_field_mapping(
                 field_matches.iloc[0], field_type, field_enum
             )
->>>>>>> b7e1512 (fixup)
-=======
-            outmap[field] = single_field_mapping(
-                field_matches[0], field_type, field_enum
-            )
->>>>>>> 5dcc300 (autoparser(make_toml): add support for mapping enum types)
 
         else:  # combinedType
             outmap[field] = {
@@ -265,13 +263,26 @@ def main():
     parser.add_argument(
         "-n", "--name", help="Name of the parser (default=isaric)", default="isaric"
     )
+    parser.add_argument(
+        "-c",
+        "--config",
+        help="Configuration file to use (default=config.toml)",
+        type=Path,
+    )
+
     args = parser.parse_args()
     mappings = pd.concat((pd.read_csv(f) for f in args.mappings), ignore_index=True)
 
     with open(f"{args.name}.toml", "wb") as fp:
         tomli_w.dump(
             make_toml(
-                read_json(Path(__file__).with_name("config.json")),
+                read_data(
+                    maybe(
+                        args.config,
+                        Path,
+                        default=Path(__file__).with_name("config.toml"),
+                    )
+                ),
                 mappings,
                 args.name,
             ),

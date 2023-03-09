@@ -1,15 +1,20 @@
 """
 Create draft intermediate mapping in CSV from source dataset to target dataset
 """
+import json
 import copy
 import argparse
-import json
 from typing import Optional
 from pathlib import Path
 
+import tomli
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+
+def maybe(x, func, default=None):
+    return func(x) if x is not None else default
 
 
 def matches_redcap(
@@ -174,11 +179,14 @@ def main():
     parser.add_argument(
         "-t", "--tables", help="Only match for tables (comma separated list, no spaces)"
     )
+    parser.add_argument(
+        "-c", "--config", help="Configuration file to use (default=config.toml)"
+    )
     args = parser.parse_args()
-    with open(Path(__file__).parent / "config.json") as fp:
-        config = json.load(fp)
-    # for table in config["schemas"]:
-    table = "subject"
+    with maybe(args.config, Path, default=Path(__file__).parent / "config.toml").open(
+        "rb"
+    ) as fp:
+        config = tomli.load(fp)
     tables = args.tables.split(",") if args.tables else config["schemas"].keys()
     for table in tables:
         df = matches_redcap(
