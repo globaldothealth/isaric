@@ -38,7 +38,20 @@
     "date": {
       "type": "string",
       "format": "date",
-      "description": "Date when observation was recorded"
+      "description": "Date of observation, or end date of observation period"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Start date of observation duration"
+    },
+    "duration_type": {
+      "enum": [
+        "event",
+        "block"
+      ],
+      "default": "event",
+      "description": "Duration type, either present throughout the period (block), or something that occurred within the period (event)"
     },
     "value": {
       "type": "number",
@@ -51,11 +64,6 @@
     "is_present": {
       "type": "boolean",
       "description": "Whether the observation denotes presence (*true*) or absence (*false*)"
-    },
-    "occurrence_period": {
-      "type": "string",
-      "pattern": "^P[0-9]+.*",
-      "description": "ISO 8601 duration string referring to the time period before {date} in which observation occurred"
     },
     "context": {
       "type": "array",
@@ -135,6 +143,11 @@
         "transfer_from_other_facility"
       ],
       "description": "Observation name"
+    }
+  },
+  "dependencies": {
+    "start_date": {
+      "required": "duration_type"
     }
   }
 }
