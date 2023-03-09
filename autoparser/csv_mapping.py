@@ -94,15 +94,22 @@ def matches_redcap(
         if T == "boolean":
             score += (
                 scores["type-match"]
-                if row["source_field_type"] in ["dropdown", "radio"]
+                if row["source_field_type"] in ["dropdown", "radio", "yesno"]
                 else scores["type-mismatch"]
             )
-        if T == "string" and row["source_field_type"] == "text":
+        if (
+            (T == "string" and row["source_field_type"] == "text")
+            or (T == "number" and row["source_field_type"] == "decimal")
+            or ("enum" in attributes and row["source_field_type"] == "categorical")
+            or T == row["source_field_type"] == "integer"
+        ):
             score += scores["type-match"]
         if attributes.get("format") == "date":
             score += (
                 scores["type-match"]
-                if "date_" in str(row.get("source_validation_type", ""))
+                if (
+                    "date_" in str(row.get("source_validation_type", "")) or T == "date"
+                )
                 else scores["date-mismatch"]
             )
         if (
