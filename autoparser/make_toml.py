@@ -7,6 +7,7 @@ import argparse
 import operator
 from pathlib import Path
 
+import tomli
 import tomli_w
 import pandas as pd
 
@@ -87,6 +88,44 @@ def parse_choices(s: str, delimiter: str, delimiter_map: str) -> dict[str]:
     return choices
 
 
+def single_field_mapping(
+    match: pd.core.frame.pandas,
+    references: dict[str],
+    choice_delimiter: str,
+    choice_delimiter_map: str,
+    field_type: str,
+    field_enum: list[str] = [],
+) -> dict[str]:
+    out = {
+        "field": match.source_field,
+        "description": match.source_field_description,
+    }
+    if field_type in ["boolean", "enum", "radio", "dropdown"] and (
+        choices := parse_choices(match.choices, choice_delimiter, choice_delimiter_map)
+    ):
+        if (choice_key := json.dumps(choices, sort_keys=True)) in references:
+            out["ref"] = references[choice_key]
+        else:
+            out["values"] = choices
+
+    if field_type == "enum" and field_enum and out.get("values"):
+        mapped_enum = map_enum(list(out["values"].values()), field_enum)
+        source_values = out["values"].copy()
+        out["values"] = {
+            k: mapped_enum[v] for k, v in out["values"].items() if v in mapped_enum
+        }
+        print(
+            f"{match.source_field}\n"
+            + "\n".join(
+                f"    {source} -> {target}"
+                for source, target in zip(
+                    source_values.values(), out["values"].values()
+                )
+            )
+        )
+    return out
+
+
 def make_toml_table(
     config: dict[str],
     mappings: pd.DataFrame,
@@ -95,48 +134,16 @@ def make_toml_table(
     choice_delimiter="|",
     choice_delimiter_map=",",
 ) -> dict[str]:
-    "Make TOML table (not observation, which is handled separately)"
-    assert table in set(config["schemas"]) - {"observation"}
-    schema = read_data(config["schemas"][table])["properties"]
+    "Make TOML table (observation handling is separate)"
+    if table == "observation":
+        return _make_toml_observation(
+            config, mappings, table, references, choice_delimiter, choice_delimiter_map
+        )
+    schema = read_data(Path(config["schemas"][table]))["properties"]
     mappings = mappings[mappings.table == table]
     if mappings.empty:
         return {}
     outmap = {}
-
-    def single_field_mapping(
-        match: pd.core.frame.pandas, field_type: str, field_enum: list[str] = []
-    ) -> dict[str]:
-        out = {
-            "field": match.source_field,
-            "description": match.source_field_description,
-        }
-        if field_type in ["boolean", "enum"] and (
-            choices := parse_choices(
-                match.choices, choice_delimiter, choice_delimiter_map
-            )
-        ):
-            if (choice_key := json.dumps(choices, sort_keys=True)) in references:
-                out["ref"] = references[choice_key]
-            else:
-                out["values"] = choices
-
-        if field_type == "enum" and field_enum and out.get("values"):
-            mapped_enum = map_enum(list(out["values"].values()), field_enum)
-            source_values = out["values"].copy()
-            out["values"] = {
-                k: mapped_enum[v] for k, v in out["values"].items() if v in mapped_enum
-            }
-            print(
-                f"{match.source_field}\n"
-                + "\n".join(
-                    f"    {source} -> {target}"
-                    for source, target in zip(
-                        source_values.values(), out["values"].values()
-                    )
-                )
-            )
-
-        return out
 
     for field, field_matches in mappings.groupby("field"):
         field_type = schema[field].get("type")
@@ -145,7 +152,12 @@ def make_toml_table(
             field_type = "enum"
         if len(field_matches) == 1:  # single field
             outmap[field] = single_field_mapping(
-                field_matches.iloc[0], field_type, field_enum
+                field_matches.iloc[0],
+                references,
+                choice_delimiter,
+                choice_delimiter_map,
+                field_type,
+                field_enum,
             )
 
         else:  # combinedType
@@ -154,7 +166,14 @@ def make_toml_table(
                     schema[field].get("type"), "firstNonNull"
                 ),
                 "fields": [
-                    single_field_mapping(match, field_type, field_enum)
+                    single_field_mapping(
+                        match,
+                        references,
+                        choice_delimiter,
+                        choice_delimiter_map,
+                        field_type,
+                        field_enum,
+                    )
                     for match in field_matches.itertuples()
                 ],
             }
@@ -162,19 +181,61 @@ def make_toml_table(
     return {table: outmap}
 
 
-def make_toml_observation(
+def _make_toml_observation(
     config: dict[str],
     mappings: pd.DataFrame,
-) -> list[dict[str]]:
+    table: str,
+    references: dict[str],
+    choice_delimiter="|",
+    choice_delimiter_map=",",
+) -> dict[str]:
+    assert table == "observation"
     mappings = mappings[mappings.table == "observation"]
-    observation = []
+    observations = []
+
+    for mapping in mappings.itertuples():
+        phase = map_enum(
+            [mapping.category.replace("treatment", "study")],
+            ["admission", "study", "followup"],
+        )
+        phase = phase.get(mapping.category, "study")
+        obs_type = {
+            "text": "text",
+            "categorical": "text",
+            "boolean": "is_present",
+            "yesno": "is_present",
+            "radio": "is_present",
+            "decimal": "value",
+            "integer": "value",
+        }.get(mapping.source_field_type, "text")
+        observations.append(
+            {
+                "name": mapping.field,
+                "phase": phase,
+                "date": {
+                    "ref": {
+                        "admission": "admissionDateHierachy",
+                        "study": "dailyDateHierarchy",
+                        "followup": "followupDateHierarchy",
+                    }.get(phase)
+                },
+                obs_type: single_field_mapping(
+                    mapping,
+                    references,
+                    choice_delimiter,
+                    choice_delimiter_map,
+                    mapping.source_field_type,
+                ),
+            }
+        )
+    return {"observation": observations}
 
 
 def make_toml(
     config: dict[str],
     mappings: pd.DataFrame,
     name: str,
-    tables: list[str] = ["subject", "visit"],
+    tables: list[str] = ["subject", "visit", "observation"],
     description: str = None,
 ):
     references, definitions = common_mappings(
@@ -182,10 +243,7 @@ def make_toml(
     )
     data = adtl_header(name, description or name, definitions=definitions)
     for table in tables:
-        if table != "observation":
-            data.update(make_toml_table(config, mappings, table, references))
-        else:
-            data.update(make_toml_observation(config, mappings))
+        data.update(make_toml_table(config, mappings, table, references))
     return data
 
 
