@@ -15,5 +15,7 @@
     "[json]": {
         "editor.insertSpaces": true,
         "editor.tabSize": 2
-    }
+    },
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
 }
