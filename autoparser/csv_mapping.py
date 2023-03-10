@@ -4,7 +4,6 @@ Create draft intermediate mapping in CSV from source dataset to target dataset
 import json
 import copy
 import argparse
-from typing import Optional
 from pathlib import Path
 
 import tomli
@@ -12,30 +11,34 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+DEFAULT_CONFIG = "redcap-en.toml"
+
 
 def maybe(x, func, default=None):
     return func(x) if x is not None else default
 
 
 def matches_redcap(
+    config: dict[str],
     data_dictionary: pd.DataFrame | str,
     table: str,
-    column_mappings: dict[str],
-    schema: dict[str],
-    scores: dict[str, int] = {},
     num_matches: int = 6,
-    stopwords: list[str] | str = "english",
 ) -> pd.DataFrame:
+
+    column_mappings = {v: k for k, v in config["column_mappings"].items()}
+    stopwords = config["lang"]["stopwords"]
+    schema = get_fields(config, table)
+    scores = config["scores"]
 
     if isinstance(data_dictionary, str):
         df = pd.read_csv(data_dictionary).rename(columns=column_mappings)[
             list(column_mappings.values())
         ]
-        df["source_field_description"] = df.source_field_description.map(str.strip)
+        df["description"] = df.description.map(str.strip)
 
     # Drop field types like 'banner' which are purely informative
     _allowed_field_types = ["dropdown", "radio", "text"]
-    df = df[df.source_field_type.isin(_allowed_field_types)]
+    df = df[df.type.isin(_allowed_field_types)]
 
     # Initial scoring (tf_rank column) using TF-IDF similarity
     vec = TfidfVectorizer(
@@ -48,7 +51,7 @@ def matches_redcap(
 
     # Use the data dictionary to set up the vocabulary and do the initial TF-IDF
     # which is used to transform the field names
-    X = vec.fit_transform(df.source_field_description)
+    X = vec.fit_transform(df.description)
     Y = vec.transform(descriptions)
 
     # Similarity
@@ -59,13 +62,13 @@ def matches_redcap(
 
     # First draft of match data
     match_df = pd.DataFrame(
-        columns=["field", "source_field", "tf_rank"],
+        columns=["schema_field", "field", "tf_rank"],
         data=sum(
             [
                 [
                     [
                         properties[i],
-                        df.iloc[k].source_field,
+                        df.iloc[k].field,
                         num_matches - j,
                     ]
                     for j, k in enumerate(S[i])
@@ -78,7 +81,7 @@ def matches_redcap(
     match_df["table"] = table
 
     # Merge data dictionary into match_df for further scoring
-    match_df = match_df.merge(df, on="source_field")
+    match_df = match_df.merge(df, on="field")
 
     # We can return match_df here, but we can put in some manual hints for
     # refining tf_rank, based on matching field types:
@@ -94,42 +97,40 @@ def matches_redcap(
         score = 1  # default score, every match gets this
         if row["table"] == "observation":
             return row["tf_rank"]  # no type information available here yet
-        attributes = schema["properties"][row["field"]]
+        attributes = schema["properties"][row["schema_field"]]
         T = attributes.get("type")
         if T == "boolean":
             score += (
                 scores["type-match"]
-                if row["source_field_type"] in ["dropdown", "radio", "yesno"]
+                if row["type"] in ["dropdown", "radio", "yesno"]
                 else scores["type-mismatch"]
             )
         if (
-            (T == "string" and row["source_field_type"] == "text")
-            or (T == "number" and row["source_field_type"] == "decimal")
-            or ("enum" in attributes and row["source_field_type"] == "categorical")
-            or T == row["source_field_type"] == "integer"
+            (T == "string" and row["type"] == "text")
+            or (T == "number" and row["type"] == "decimal")
+            or ("enum" in attributes and row["type"] == "categorical")
+            or T == row["type"] == "integer"
         ):
             score += scores["type-match"]
         if attributes.get("format") == "date":
             score += (
                 scores["type-match"]
-                if (
-                    "date_" in str(row.get("source_validation_type", "")) or T == "date"
-                )
+                if ("date_" in str(row.get("valid_type", "")) or T == "date")
                 else scores["date-mismatch"]
             )
         if (
             "follow" in row["category"]
         ):  # de-emphasise followup, usually only required in observation
             score += scores["is-followup"]
-        words = row["field"].split("_")
+        words = row["schema_field"].split("_")
         score += sum(
-            w in row["source_field"] + " " + row["source_field_description"]
+            w in row["field"] + " " + row["description"]
             for w in set(words) - set(stopwords)
         )
         return score * row["tf_rank"]
 
     match_df["score"] = match_df.apply(scorer, axis=1)
-    return match_df.sort_values(["field", "score"], ascending=[True, False])
+    return match_df.sort_values(["schema_field", "score"], ascending=[True, False])
 
 
 def deep_get(d: dict, keys: str):
@@ -147,16 +148,15 @@ def read_json(file: str) -> dict:
 
 def get_fields(config: dict[str], table: str) -> list[str]:
     schemas = config.get("schemas", [])
-    use_fields = config.get("use_fields", {})
     if table not in schemas:
         raise ValueError(f"Schema not found for table: {table}")
-    if table not in use_fields:
+    if table != "observation":
         return read_json(schemas[table])
     else:
         return {
             "properties": {
                 k: {"category": "observation"}
-                for k in deep_get(read_json(schemas[table]), use_fields[table])
+                for k in deep_get(read_json(schemas[table]), "properties.name.enum")
             }
         }
 
@@ -180,23 +180,20 @@ def main():
         "-t", "--tables", help="Only match for tables (comma separated list, no spaces)"
     )
     parser.add_argument(
-        "-c", "--config", help="Configuration file to use (default=config.toml)"
+        "-c", "--config", help=f"Configuration file to use (default={DEFAULT_CONFIG})"
     )
     args = parser.parse_args()
-    with maybe(args.config, Path, default=Path(__file__).parent / "config.toml").open(
+    with maybe(args.config, Path, default=Path(__file__).parent / DEFAULT_CONFIG).open(
         "rb"
     ) as fp:
         config = tomli.load(fp)
     tables = args.tables.split(",") if args.tables else config["schemas"].keys()
     for table in tables:
         df = matches_redcap(
+            config,
             args.dictionary,
             table,
-            config["column_mappings"],
-            get_fields(config, table),
-            scores=config.get("scores", {}),
             num_matches=args.num_matches,
-            stopwords=config.get("stopwords", "english"),
         )
         df.to_csv(f"{args.output}-{table}.csv", index=False)
 
