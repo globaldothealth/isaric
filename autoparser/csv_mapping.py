@@ -11,11 +11,7 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-DEFAULT_CONFIG = "redcap-en.toml"
-
-
-def maybe(x, func, default=None):
-    return func(x) if x is not None else default
+from .util import maybe, json_get, DEFAULT_CONFIG
 
 
 def matches_redcap(
@@ -24,7 +20,6 @@ def matches_redcap(
     table: str,
     num_matches: int = 6,
 ) -> pd.DataFrame:
-
     column_mappings = {v: k for k, v in config["column_mappings"].items()}
     stopwords = config["lang"]["stopwords"]
     schema = get_fields(config, table)
