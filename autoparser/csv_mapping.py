@@ -37,7 +37,7 @@ def matches_redcap(
         df["description"] = df.description.map(str.strip)
 
     # Drop field types like 'banner' which are purely informative
-    _allowed_field_types = ["dropdown", "radio", "text"]
+    _allowed_field_types = config["categorical_types"] + config["text_types"]
     df = df[df.type.isin(_allowed_field_types)]
 
     # Initial scoring (tf_rank column) using TF-IDF similarity
