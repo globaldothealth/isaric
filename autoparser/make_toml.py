@@ -11,19 +11,7 @@ import tomli
 import tomli_w
 import pandas as pd
 
-MISSING = [
-    "unknown",
-    "n/a",
-    "n/k",
-    "na",
-    "nk",
-    "not applicable",
-    "prefer not to say",
-    "not specified",
-    "not answered",
-]
-TRUE = ["y", "yes", "t", "true"]
-FALSE = ["f", "false", "no", "n"]
+DEFAULT_CONFIG = "redcap-en.toml"
 
 
 def maybe(x, func, default=None):
@@ -71,38 +59,38 @@ def adtl_header(
     }
 
 
-def parse_choices(s: str, delimiter: str, delimiter_map: str) -> dict[str]:
+def parse_choices(config: dict[str], s: str) -> dict[str]:
+    delimiter = config["choice_delimiter"]
+    delimiter_map = config["choice_delimiter_map"]
+    lang = config["lang"]
     lower_string = lambda s: s.strip().lower()
     if not isinstance(s, str):
-        return None
+        return None, []
     choices = dict(
         tuple(map(lower_string, x.split(delimiter_map)[:2])) for x in s.split(delimiter)
     )
     # drop n/a, n/k, unknowns
-    choices = {k: v for k, v in choices.items() if v not in MISSING}
+    choices = {k: v for k, v in choices.items() if v not in lang["is_missing"]}
+    nulls = [v for k, v in choices.items() if v in lang["is_missing"]]
     for k, v in choices.items():
-        if v in TRUE:
+        if v in lang["is_true"]:
             choices[k] = True
-        if v in FALSE:
+        if v in lang["is_false"]:
             choices[k] = False
-    return choices
+    return choices, nulls
 
 
 def single_field_mapping(
+    config: dict[str],
     match: pd.core.frame.pandas,
     references: dict[str],
-    choice_delimiter: str,
-    choice_delimiter_map: str,
     field_type: str,
     field_enum: list[str] = [],
+    add_auto_condition=False,
 ) -> dict[str]:
-    out = {
-        "field": match.source_field,
-        "description": match.source_field_description,
-    }
-    if field_type in ["boolean", "enum", "radio", "dropdown"] and (
-        choices := parse_choices(match.choices, choice_delimiter, choice_delimiter_map)
-    ):
+    choices, nulls = parse_choices(config, match.choices)
+    out = {"field": match.field, "description": match.description}
+    if field_type in ["boolean", "enum", "radio", "dropdown"] and choices:
         if (choice_key := json.dumps(choices, sort_keys=True)) in references:
             out["ref"] = references[choice_key]
         else:
@@ -115,7 +103,7 @@ def single_field_mapping(
             k: mapped_enum[v] for k, v in out["values"].items() if v in mapped_enum
         }
         print(
-            f"{match.source_field}\n"
+            f"{match.field}\n"
             + "\n".join(
                 f"    {source} -> {target}"
                 for source, target in zip(
@@ -123,6 +111,19 @@ def single_field_mapping(
                 )
             )
         )
+
+    # Only add auto-generated condition if flag enabled and we have not already
+    # added a condition, usually from a condition column in the data dictionary
+    if add_auto_condition and "if" not in out:
+        if "values" not in out or not nulls:  # text field
+            out["if"] = {match.field: {"!=": ""}}
+        elif len(nulls) > 1:
+            out["if"] = {"all": [{match.field: {"!=": n}} for n in nulls]}
+        else:
+            out["if"] = {match.field: {"!=": nulls[0]}}
+        if out.get("ref") == "Y/N/NK":  # most common case
+            out["if"] = {match.field: {"!=": 3}}
+
     return out
 
 
@@ -131,31 +132,26 @@ def make_toml_table(
     mappings: pd.DataFrame,
     table: str,
     references: dict[str],
-    choice_delimiter="|",
-    choice_delimiter_map=",",
 ) -> dict[str]:
     "Make TOML table (observation handling is separate)"
     if table == "observation":
-        return _make_toml_observation(
-            config, mappings, table, references, choice_delimiter, choice_delimiter_map
-        )
+        return _make_toml_observation(config, mappings, table, references)
     schema = read_data(Path(config["schemas"][table]))["properties"]
     mappings = mappings[mappings.table == table]
     if mappings.empty:
         return {}
     outmap = {}
 
-    for field, field_matches in mappings.groupby("field"):
+    for field, field_matches in mappings.groupby("schema_field"):
         field_type = schema[field].get("type")
         field_enum = schema[field].get("enum", [])
         if "enum" in schema[field]:
             field_type = "enum"
         if len(field_matches) == 1:  # single field
             outmap[field] = single_field_mapping(
+                config,
                 field_matches.iloc[0],
                 references,
-                choice_delimiter,
-                choice_delimiter_map,
                 field_type,
                 field_enum,
             )
@@ -167,10 +163,9 @@ def make_toml_table(
                 ),
                 "fields": [
                     single_field_mapping(
+                        config,
                         match,
                         references,
-                        choice_delimiter,
-                        choice_delimiter_map,
                         field_type,
                         field_enum,
                     )
@@ -186,8 +181,6 @@ def _make_toml_observation(
     mappings: pd.DataFrame,
     table: str,
     references: dict[str],
-    choice_delimiter="|",
-    choice_delimiter_map=",",
 ) -> dict[str]:
     assert table == "observation"
     mappings = mappings[mappings.table == "observation"]
@@ -207,10 +200,17 @@ def _make_toml_observation(
             "radio": "is_present",
             "decimal": "value",
             "integer": "value",
-        }.get(mapping.source_field_type, "text")
+        }.get(mapping.type, "text")
+        field_mapping = single_field_mapping(
+            config, mapping, references, mapping.type, add_auto_condition=True
+        )
+
+        # Move if to observation block instead of in the mapping
+        condition = field_mapping["if"]
+        del field_mapping["if"]
         observations.append(
             {
-                "name": mapping.field,
+                "name": mapping.schema_field,
                 "phase": phase,
                 "date": {
                     "ref": {
@@ -219,13 +219,8 @@ def _make_toml_observation(
                         "followup": "followupDateHierarchy",
                     }.get(phase)
                 },
-                obs_type: single_field_mapping(
-                    mapping,
-                    references,
-                    choice_delimiter,
-                    choice_delimiter_map,
-                    mapping.source_field_type,
-                ),
+                "if": condition,
+                obs_type: field_mapping,
             }
         )
     return {"observation": observations}
@@ -238,9 +233,7 @@ def make_toml(
     tables: list[str] = ["subject", "visit", "observation"],
     description: str = None,
 ):
-    references, definitions = common_mappings(
-        mappings, delimiter="|", delimiter_map=","
-    )
+    references, definitions = common_mappings(config, mappings)
     data = adtl_header(name, description or name, definitions=definitions)
     for table in tables:
         data.update(make_toml_table(config, mappings, table, references))
@@ -273,21 +266,20 @@ def map_enum(keys: list[str], sources: list[str]) -> dict[str, str]:
 
 
 def common_mappings(
-    mappings: pd.DataFrame, delimiter: str, delimiter_map: str, top: int = 3
+    config: dict[str], mappings: pd.DataFrame, top: int = 3
 ) -> tuple[dict[str], dict[str]]:
     mappings.choices.value_counts()[:3]
     references = {}
     definitions = {}
 
     def _parse_choices(s):
-        c = parse_choices(s, delimiter, delimiter_map)
+        c, _ = parse_choices(config, s)
         return json.dumps(c, sort_keys=True) if c else None
 
     # use value_counts() on parsed_choices instead of choices to
     # normalise various flavours of Y/N/NK or Y/N/NA
     mappings["parsed_choices"] = mappings.choices.map(_parse_choices)
     top_mappings = mappings.parsed_choices.value_counts()[:top].index
-    boolean_mapping_name = "Y/N/NK"
 
     # only add one boolean map for simplicity
     boolean_map_found = False
@@ -324,7 +316,7 @@ def main():
     parser.add_argument(
         "-c",
         "--config",
-        help="Configuration file to use (default=config.toml)",
+        help=f"Configuration file to use (default={DEFAULT_CONFIG})",
         type=Path,
     )
 
@@ -338,7 +330,7 @@ def main():
                     maybe(
                         args.config,
                         Path,
-                        default=Path(__file__).with_name("config.toml"),
+                        default=Path(__file__).with_name(DEFAULT_CONFIG),
                     )
                 ),
                 mappings,
