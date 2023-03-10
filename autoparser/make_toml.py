@@ -11,11 +11,7 @@ import tomli
 import tomli_w
 import pandas as pd
 
-DEFAULT_CONFIG = "redcap-en.toml"
-
-
-def maybe(x, func, default=None):
-    return func(x) if x is not None else default
+from .util import maybe, json_get, DEFAULT_CONFIG
 
 
 def read_data(path: Path) -> dict:
