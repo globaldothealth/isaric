@@ -90,7 +90,7 @@ def single_field_mapping(
 ) -> dict[str]:
     choices, nulls = parse_choices(config, match.choices)
     out = {"field": match.field, "description": match.description}
-    if field_type in ["boolean", "enum", "radio", "dropdown"] and choices:
+    if field_type in config["categorical_types"] and choices:
         if (choice_key := json.dumps(choices, sort_keys=True)) in references:
             out["ref"] = references[choice_key]
         else:
@@ -192,15 +192,7 @@ def _make_toml_observation(
             ["admission", "study", "followup"],
         )
         phase = phase.get(mapping.category, "study")
-        obs_type = {
-            "text": "text",
-            "categorical": "text",
-            "boolean": "is_present",
-            "yesno": "is_present",
-            "radio": "is_present",
-            "decimal": "value",
-            "integer": "value",
-        }.get(mapping.type, "text")
+        obs_type = config["observation_mapping_type"].get(mapping.type, "text")
         field_mapping = single_field_mapping(
             config, mapping, references, mapping.type, add_auto_condition=True
         )
