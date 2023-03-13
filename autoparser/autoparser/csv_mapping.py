@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from util import maybe, DEFAULT_CONFIG
+from .util import maybe, DEFAULT_CONFIG
 
 
 def matches_redcap(
