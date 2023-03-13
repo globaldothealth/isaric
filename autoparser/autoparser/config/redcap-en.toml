@@ -53,9 +53,9 @@ text_types = ["text"]
   ]
 
 [schemas]
-  subject = "../schemas/dev/subject.schema.json"
-  visit = "../schemas/dev/visit.schema.json"
-  observation = "../schemas/dev/observation.schema.json"
+  subject = "schemas/dev/subject.schema.json"
+  visit = "schemas/dev/visit.schema.json"
+  observation = "schemas/dev/observation.schema.json"
 
 # Tweak these to influence ordering of field matches
 [scores]
