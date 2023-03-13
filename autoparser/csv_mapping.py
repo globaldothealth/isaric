@@ -1,22 +1,24 @@
 """
 Create draft intermediate mapping in CSV from source dataset to target dataset
 """
+import os
 import json
 import copy
 import argparse
 from pathlib import Path
+from typing import Dict, Any, List, Union
 
 import tomli
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from .util import maybe, json_get, DEFAULT_CONFIG
+from util import maybe, DEFAULT_CONFIG
 
 
 def matches_redcap(
-    config: dict[str],
-    data_dictionary: pd.DataFrame | str,
+    config: Dict[str, Any],
+    data_dictionary: Union[pd.DataFrame, str],
     table: str,
     num_matches: int = 6,
 ) -> pd.DataFrame:
@@ -128,7 +130,7 @@ def matches_redcap(
     return match_df.sort_values(["schema_field", "score"], ascending=[True, False])
 
 
-def deep_get(d: dict, keys: str):
+def deep_get(d: Dict[str, Any], keys: str) -> Any:
     dc = copy.deepcopy(d)
     ks = keys.split(".")
     for k in ks:
@@ -136,17 +138,17 @@ def deep_get(d: dict, keys: str):
     return dc
 
 
-def read_json(file: str) -> dict:
+def read_json(file: str) -> Dict:
     with (Path(__file__).parent / file).open() as fp:
         return json.load(fp)
 
 
-def get_fields(config: dict[str], table: str) -> list[str]:
+def get_fields(config: Dict[str, Any], table: str) -> List[str]:
     schemas = config.get("schemas", [])
     if table not in schemas:
         raise ValueError(f"Schema not found for table: {table}")
     if table != "observation":
-        return read_json(schemas[table])
+        return read_json(config["schema-path"] / schemas[table])
     else:
         return {
             "properties": {
@@ -171,6 +173,7 @@ def main():
         type=int,
         default=6,
     )
+    parser.add_argument("--schema-path", help="Path where ISARIC schemas are located")
     parser.add_argument(
         "-t", "--tables", help="Only match for tables (comma separated list, no spaces)"
     )
@@ -182,6 +185,11 @@ def main():
         "rb"
     ) as fp:
         config = tomli.load(fp)
+        config["schema-path"] = (
+            maybe(args.schema_path, Path)
+            or maybe(os.getenv("ISARIC_SCHEMA_PATH"), Path)
+            or Path.cwd()
+        )
     tables = args.tables.split(",") if args.tables else config["schemas"].keys()
     for table in tables:
         df = matches_redcap(
