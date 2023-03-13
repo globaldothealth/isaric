@@ -153,7 +153,10 @@ def get_fields(config: Dict[str, Any], table: str) -> List[str]:
         return {
             "properties": {
                 k: {"category": "observation"}
-                for k in deep_get(read_json(schemas[table]), "properties.name.enum")
+                for k in deep_get(
+                    read_json(config["schema-path"] / schemas[table]),
+                    "properties.name.enum",
+                )
             }
         }
 

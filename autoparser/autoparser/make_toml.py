@@ -314,7 +314,7 @@ def main():
     args = parser.parse_args()
     mappings = pd.concat((pd.read_csv(f) for f in args.mappings), ignore_index=True)
     config = read_data(
-        maybe(args.config, Path, default=Path(__file__).with_name(DEFAULT_CONFIG))
+        maybe(args.config, Path, default=Path(__file__).parent / DEFAULT_CONFIG)
     )
     config["schema-path"] = (
         maybe(args.schema_path, Path)
