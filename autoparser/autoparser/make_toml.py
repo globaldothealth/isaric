@@ -13,7 +13,7 @@ import tomli
 import tomli_w
 import pandas as pd
 
-from util import maybe, DEFAULT_CONFIG
+from .util import maybe, DEFAULT_CONFIG
 
 
 def read_data(path: Path) -> Dict:
