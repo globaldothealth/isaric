@@ -79,7 +79,7 @@ text_types = ["text"]
   condition = "Branching Logic (Show field only if...)"
   is_required = "Required Field?"
 
-[observation_categorical_mapping]
+[observation_type_mapping]
   # Maps field type ('type') from column_mappings to the appropriate observation
   # column. This is needed as observation table is long and types for each
   # observation are not specified and have to be inferred from the source field

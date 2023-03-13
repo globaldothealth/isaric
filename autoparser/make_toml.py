@@ -1,20 +1,22 @@
 """
 Generate TOML parser from intermediate CSV file
 """
+import os
 import re
 import json
 import argparse
 import operator
 from pathlib import Path
+from typing import Dict, List, Any, Tuple
 
 import tomli
 import tomli_w
 import pandas as pd
 
-from .util import maybe, json_get, DEFAULT_CONFIG
+from util import maybe, DEFAULT_CONFIG
 
 
-def read_data(path: Path) -> dict:
+def read_data(path: Path) -> Dict:
     if path.suffix == ".json":
         with path.open() as fp:
             return json.load(fp)
@@ -55,7 +57,7 @@ def adtl_header(
     }
 
 
-def parse_choices(config: dict[str], s: str) -> dict[str]:
+def parse_choices(config: Dict[str, Any], s: str) -> Dict[str, Any]:
     delimiter = config["choice_delimiter"]
     delimiter_map = config["choice_delimiter_map"]
     lang = config["lang"]
@@ -77,13 +79,13 @@ def parse_choices(config: dict[str], s: str) -> dict[str]:
 
 
 def single_field_mapping(
-    config: dict[str],
+    config: Dict[str, Any],
     match: pd.core.frame.pandas,
-    references: dict[str],
+    references: Dict[str, Any],
     field_type: str,
-    field_enum: list[str] = [],
+    field_enum: List[str] = [],
     add_auto_condition=False,
-) -> dict[str]:
+) -> Dict[str, Any]:
     choices, nulls = parse_choices(config, match.choices)
     out = {"field": match.field, "description": match.description}
     if field_type in config["categorical_types"] and choices:
@@ -124,15 +126,15 @@ def single_field_mapping(
 
 
 def make_toml_table(
-    config: dict[str],
+    config: Dict[str, Any],
     mappings: pd.DataFrame,
     table: str,
-    references: dict[str],
-) -> dict[str]:
+    references: Dict[str, Any],
+) -> Dict[str, Any]:
     "Make TOML table (observation handling is separate)"
     if table == "observation":
         return _make_toml_observation(config, mappings, table, references)
-    schema = read_data(Path(config["schemas"][table]))["properties"]
+    schema = read_data(config["schema-path"] / config["schemas"][table])["properties"]
     mappings = mappings[mappings.table == table]
     if mappings.empty:
         return {}
@@ -173,11 +175,11 @@ def make_toml_table(
 
 
 def _make_toml_observation(
-    config: dict[str],
+    config: Dict[str, Any],
     mappings: pd.DataFrame,
     table: str,
-    references: dict[str],
-) -> dict[str]:
+    references: Dict[str, Any],
+) -> Dict[str, Any]:
     assert table == "observation"
     mappings = mappings[mappings.table == "observation"]
     observations = []
@@ -188,7 +190,7 @@ def _make_toml_observation(
             ["admission", "study", "followup"],
         )
         phase = phase.get(mapping.category, "study")
-        obs_type = config["observation_mapping_type"].get(mapping.type, "text")
+        obs_type = config["observation_type_mapping"].get(mapping.type, "text")
         field_mapping = single_field_mapping(
             config, mapping, references, mapping.type, add_auto_condition=True
         )
@@ -215,10 +217,10 @@ def _make_toml_observation(
 
 
 def make_toml(
-    config: dict[str],
+    config: Dict[str, Any],
     mappings: pd.DataFrame,
     name: str,
-    tables: list[str] = ["subject", "visit", "observation"],
+    tables: List[str] = ["subject", "visit", "observation"],
     description: str = None,
 ):
     references, definitions = common_mappings(config, mappings)
@@ -228,7 +230,7 @@ def make_toml(
     return data
 
 
-def map_enum(keys: list[str], sources: list[str]) -> dict[str, str]:
+def map_enum(keys: List[str], sources: List[str]) -> Dict[str, str]:
     def score(key, source):
         key = re.split("-|_| ", str(key).lower())
         source = re.split("-|_| ", source.lower())
@@ -254,8 +256,8 @@ def map_enum(keys: list[str], sources: list[str]) -> dict[str, str]:
 
 
 def common_mappings(
-    config: dict[str], mappings: pd.DataFrame, top: int = 3
-) -> tuple[dict[str], dict[str]]:
+    config: Dict[str, Any], mappings: pd.DataFrame, top: int = 3
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     mappings.choices.value_counts()[:3]
     references = {}
     definitions = {}
@@ -286,7 +288,7 @@ def common_mappings(
     return references, definitions
 
 
-def write_toml(data: dict[str], output: str):
+def write_toml(data: Dict[str, Any], output: str):
     with open(output, "wb") as fp:
         tomli_w.dump(data, fp)
 
@@ -307,20 +309,23 @@ def main():
         help=f"Configuration file to use (default={DEFAULT_CONFIG})",
         type=Path,
     )
+    parser.add_argument("--schema-path", help="Path where ISARIC schemas are located")
 
     args = parser.parse_args()
     mappings = pd.concat((pd.read_csv(f) for f in args.mappings), ignore_index=True)
+    config = read_data(
+        maybe(args.config, Path, default=Path(__file__).with_name(DEFAULT_CONFIG))
+    )
+    config["schema-path"] = (
+        maybe(args.schema_path, Path)
+        or maybe(os.getenv("ISARIC_SCHEMA_PATH"), Path)
+        or Path.cwd()
+    )
 
     with open(f"{args.name}.toml", "wb") as fp:
         tomli_w.dump(
             make_toml(
-                read_data(
-                    maybe(
-                        args.config,
-                        Path,
-                        default=Path(__file__).with_name(DEFAULT_CONFIG),
-                    )
-                ),
+                config,
                 mappings,
                 args.name,
             ),
