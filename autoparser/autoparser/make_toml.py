@@ -61,7 +61,7 @@ def parse_choices(config: Dict[str, Any], s: str) -> Dict[str, Any]:
     delimiter = config["choice_delimiter"]
     delimiter_map = config["choice_delimiter_map"]
     lang = config["lang"]
-    lower_string = lambda s: s.strip().lower()
+    lower_string = lambda s: s.strip().lower()  # NOQA
     if not isinstance(s, str):
         return None, []
     choices = dict(
