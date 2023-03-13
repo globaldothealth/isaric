@@ -61,7 +61,16 @@ def generate_parser(data):
 
         for obs in st.session_state.obs_list:
             if "observation" in data.keys():
-                data["observation"].append(obs)
+                overwrite = False
+                # check whether an observation previously existed
+                for i, d in enumerate(data["observation"]):
+                    if d["name"] == obs["name"] and d["phase"] == obs["phase"]:
+                        data["observation"][i] = obs
+                        overwrite = True
+                        break
+
+                if overwrite == False:
+                    data["observation"].append(obs)
             else:
                 data["observation"] = [obs]
 
