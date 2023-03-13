@@ -2,9 +2,7 @@
 Common utility functions for autoparser
 """
 
-from typing import Optional, Dict, Any
-
-DEFAULT_CONFIG = "redcap-en.toml"
+DEFAULT_CONFIG = "config/redcap-en.toml"
 
 
 def maybe(x, func, default=None):
