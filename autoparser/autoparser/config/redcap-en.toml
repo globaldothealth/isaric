@@ -1,3 +1,5 @@
+#:schema ../../autoparser-config.schema.json
+
 name = "redcap-en"
 description = "Autoparser config for generating CSV mappings and TOML from REDCap dictionaries"
 
