@@ -255,7 +255,13 @@ def map_enum(keys: List[str], sources: List[str]) -> Dict[str, str]:
         key = re.split("-|_| ", str(key).lower())
         source = re.split("-|_| ", source.lower())
         return sum(
-            sum([[s.startswith(w) or s.endswith(w) for s in source] for w in key], [])
+            sum(
+                [
+                    [int(s.startswith(w) or s.endswith(w)) * len(w) for s in source]
+                    for w in key
+                ],
+                [],
+            )
         )
 
     def max_score(key, sources):
