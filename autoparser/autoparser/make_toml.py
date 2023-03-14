@@ -64,12 +64,18 @@ def parse_choices(config: Dict[str, Any], s: str) -> Dict[str, Any]:
     lower_string = lambda s: s.strip().lower()  # NOQA
     if not isinstance(s, str):
         return None, []
-    choices = dict(
-        tuple(map(lower_string, x.split(delimiter_map)[:2])) for x in s.split(delimiter)
-    )
+    try:
+        choices = dict(
+            tuple(map(lower_string, x.split(delimiter_map)[:2]))
+            for x in s.split(delimiter)
+        )
+    except ValueError:
+        raise ValueError(
+            f"parse_choices({s!r}) failed with delimiter={delimiter!r} delimiter_map={delimiter_map!r}"
+        )
     # drop n/a, n/k, unknowns
+    nulls = [k for k, v in choices.items() if v in lang["is_missing"]]
     choices = {k: v for k, v in choices.items() if v not in lang["is_missing"]}
-    nulls = [v for k, v in choices.items() if v in lang["is_missing"]]
     for k, v in choices.items():
         if v in lang["is_true"]:
             choices[k] = True
