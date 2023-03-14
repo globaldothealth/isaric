@@ -29,8 +29,8 @@
     "scikit-learn>=1.0.0",
   ]
 
-  #  [project.optional-dependencies]
-  #    test = ["pytest", "pytest-cov", "syrupy==4.*"]
+  [project.optional-dependencies]
+    test = ["pytest", "pytest-cov", "syrupy==4.*"]
 
   [project.urls]
     Home = "https://github.com/globaldothealth/isaric"
