@@ -68,4 +68,24 @@ Phase descriptors are used within the 'observations' table to describe which tim
 
 **followup**: Data collected during follow-up visits. As with the 'admission' phase, the attribute can refer to the single day of the follow-up survey being completed, or to a time period between hospital discharge and the date of the follow-up form being completed.
 
+These phases can also be used in the 'visit' table (where they are optional rather than required). For datasets where followup treatments are recorded, the 'study' and 'followup' phases can be used in the visit table to distinguish between the primary visit and any followup treatments or subsequent visits, respectively.
+
+## Duration type
+
 In addition to the three phase descriptors, within the observations table the `duration_type` attribute can be used to distinguish between an 'event', which denotes an observation that occurs once or multiple times within the observation period, or a 'block' to refers to something present within the entire observation period. In this case, the observation period is given by the interval between `start_date` and `date`, providing a more specific date range on top of the phase descriptors.
+
+For example:
+```
+[[observation]]
+  name = "headache"
+  phase = "followup"
+  date = { ref = "followupDateHierarchy" }
+  start_date = {
+    field = { ref = "followupDateHierarchy" }, 
+    apply = { function = "startDate", params = [10] } 
+    }
+  duration_type = "event"
+  is_present = { field = "flw_headache", values = { 1 = true, 0 = false } }
+  if = { flw_headache = { "!=" = 99 } }
+```
+records an observation of a headache which has occurred at least once in the 10 days leading up to the date of the follow-up form being completed.
