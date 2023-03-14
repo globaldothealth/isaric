@@ -5,6 +5,7 @@ import os
 import re
 import json
 import argparse
+import functools
 import operator
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
@@ -84,16 +85,40 @@ def parse_choices(config: Dict[str, Any], s: str) -> Dict[str, Any]:
     return choices, nulls
 
 
+@functools.lru_cache
+def get_schema(schema_path: Path) -> Dict[str, Any]:
+    return read_data(schema_path)["properties"]
+
+
+def get_type_enum(config: Dict[str, Any], table: str, field: str):
+    "Returns field types and enums from a field in a table"
+
+    schema = get_schema(
+        schema_path := Path(config["schema-path"]) / config["schemas"][table]
+    )
+    if field not in schema:
+        raise ValueError(
+            f"get_type_enum(): {field!r} field not in {table!r} schema, from {schema_path}"
+        )
+    if "enum" in schema[field]:
+        return "enum", schema[field]["enum"]
+    else:
+        return schema[field].get("type", "string"), []
+
+
 def single_field_mapping(
     config: Dict[str, Any],
     match: pd.core.frame.pandas,
     references: Dict[str, Any],
-    field_type: str,
-    field_enum: List[str] = [],
+    use_type: str = None,
     add_auto_condition=False,
 ) -> Dict[str, Any]:
     choices, nulls = parse_choices(config, match.choices)
     out = {"field": match.field, "description": match.description}
+    if not use_type:  # auto detect type from schema field type
+        field_type, field_enum = get_type_enum(config, match.table, match.schema_field)
+    else:
+        field_type, field_enum = use_type, []
     if field_type in config["categorical_types"] and choices:
         if (choice_key := json.dumps(choices, sort_keys=True)) in references:
             out["ref"] = references[choice_key]
@@ -102,19 +127,15 @@ def single_field_mapping(
 
     if field_type == "enum" and field_enum and out.get("values"):
         mapped_enum = map_enum(list(out["values"].values()), field_enum)
-        source_values = out["values"].copy()
         out["values"] = {
             k: mapped_enum[v] for k, v in out["values"].items() if v in mapped_enum
         }
-        print(
-            f"{match.field}\n"
-            + "\n".join(
-                f"    {source} -> {target}"
-                for source, target in zip(
-                    source_values.values(), out["values"].values()
-                )
+        if mapped_enum:
+            print(
+                f"\n- [ ] Review map for {match.schema_field!r} mapped from {match.field!r}"
             )
-        )
+            for s, t in mapped_enum.items():
+                print(f"  - {s} → {t}")
 
     # Only add auto-generated condition if flag enabled and we have not already
     # added a condition, usually from a condition column in the data dictionary
@@ -140,38 +161,31 @@ def make_toml_table(
     "Make TOML table (observation handling is separate)"
     if table == "observation":
         return _make_toml_observation(config, mappings, table, references)
-    schema = read_data(config["schema-path"] / config["schemas"][table])["properties"]
+
     mappings = mappings[mappings.table == table]
     if mappings.empty:
         return {}
     outmap = {}
 
     for field, field_matches in mappings.groupby("schema_field"):
-        field_type = schema[field].get("type")
-        field_enum = schema[field].get("enum", [])
-        if "enum" in schema[field]:
-            field_type = "enum"
+        field_type, field_enum = get_type_enum(config, table, field)
         if len(field_matches) == 1:  # single field
             outmap[field] = single_field_mapping(
                 config,
                 field_matches.iloc[0],
                 references,
-                field_type,
-                field_enum,
             )
 
         else:  # combinedType
             outmap[field] = {
                 "combinedType": {"array": "list", "boolean": "any"}.get(
-                    schema[field].get("type"), "firstNonNull"
+                    field_type, "firstNonNull"
                 ),
                 "fields": [
                     single_field_mapping(
                         config,
                         match,
                         references,
-                        field_type,
-                        field_enum,
                     )
                     for match in field_matches.itertuples()
                 ],
@@ -198,7 +212,7 @@ def _make_toml_observation(
         phase = phase.get(mapping.category, "study")
         obs_type = config["observation_type_mapping"].get(mapping.type, "text")
         field_mapping = single_field_mapping(
-            config, mapping, references, mapping.type, add_auto_condition=True
+            config, mapping, references, use_type=mapping.type, add_auto_condition=True
         )
 
         # Move if to observation block instead of in the mapping

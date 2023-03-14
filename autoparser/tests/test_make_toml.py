@@ -1,12 +1,17 @@
 """
 Tests for autoparser-toml (make_toml.py)
 """
-from typing import Dict, Any
 
 import autoparser.make_toml as make_toml
 import pytest
 
 CONFIG = {
+    "schema-path": "..",
+    "schemas": {
+        "subject": "schemas/dev/subject.schema.json",
+        "visit": "schemas/dev/visit.schema.json",
+        "observation": "schemas/dev/observation.schema.json",
+    },
     "choice_delimiter": "|",
     "choice_delimiter_map": ",",
     "lang": {
@@ -52,6 +57,14 @@ def test_map_enum():
         ["followup_signs", "info_at_admission2", "followup_symptoms", "during_study5"],
         ["admission", "study", "followup"],
     ) == {"followup_signs": "followup", "followup_symptoms": "followup"}
+
+
+@pytest.mark.parametrize(
+    "source,expected",
+    [[("observation", "phase"), ("enum", ["admission", "study", "followup"])]],
+)
+def test_get_type_enum(source, expected):
+    assert make_toml.get_type_enum(CONFIG, *source) == expected
 
 
 def test_single_field_mapping():
