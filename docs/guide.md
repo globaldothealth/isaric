@@ -49,22 +49,23 @@ However, below is a valid example of `if` statement usage; `dsstdtc` will usuall
 [visit.outcome]
   field = "dsterm"
   description = "Outcome date"
-  values = {
-    1 = "discharged"
-    2 = "hospitalised"
-    3 = "transferred"
-    4 = "death"
-    5 = "discharged"
-  }
+  
+  [visit.outcome.values]
+     1 = "discharged"
+     2 = "hospitalised"
+     3 = "transferred"
+     4 = "death"
+     5 = "discharged"
+  
 ```
 
 ## Phase descriptors
-Phase descriptors are used within the 'visit' and 'observations' tables to describe which time period within the study the data refers to. One of three descriptors can be used:
+Phase descriptors are used within the 'observations' table to describe which time period within the study the data refers to. One of three descriptors can be used:
 
-**admission**: Refers to data collected upon patient admission; general patient data (age, gender etc) plus any co-morbidities. Any symptoms/observations recorded at admission may refer to the day of admission, or a time-period leading up to the day of hospital admission.
+**admission**: Refers to data collected upon patient admission. Any symptoms/observations recorded at admission may refer to the day of admission, or a time-period leading up to the day of hospital admission.
 
 **study**: Data collected during a single hospital visit. Can refer to a single event within the visit period, or something present throughout the time spent in hospital.
 
-**follow-up**: Data collected during follow-up visits. As with the 'admission' phase, the attribute can refer to the single day of the follow-up survey being completed, or to a time period between hospital discharge and the date of the follow-up form being completed.
+**followup**: Data collected during follow-up visits. As with the 'admission' phase, the attribute can refer to the single day of the follow-up survey being completed, or to a time period between hospital discharge and the date of the follow-up form being completed.
 
 In addition to the three phase descriptors, within the observations table the `duration_type` attribute can be used to distinguish between an 'event', which denotes an observation that occurs once or multiple times within the observation period, or a 'block' to refers to something present within the entire observation period. In this case, the observation period is given by the interval between `start_date` and `date`, providing a more specific date range on top of the phase descriptors.
