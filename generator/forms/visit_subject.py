@@ -5,7 +5,7 @@ from forms.structures import string_to_dict, make_grid
 
 
 def field_types(table, attribute, a_type, columns, iterable="0"):
-    col0, col1, col2, col3 = columns
+    col1, col2, col3 = columns
 
     if a_type == "boolean" or type(a_type) == list:
         i = 1
@@ -153,41 +153,40 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
         return structures.field_with_transformation(field, desc, apply, params)
 
 
-def create_field(table, attribute, a_type, num_cols: int | list):
-    col0, col1, col2, col3 = st.columns(num_cols)
-    if col1.checkbox("Multiple fields to combine?", key=table + attribute + "combine"):
-        combination_type = col1.selectbox(
+def create_field(table, attribute, a_type, multicol=False):
+    if multicol == True:
+        coll, colr = st.columns([1, 3], gap="large")
+        combination_type = coll.selectbox(
             "Which combined type should be applied?",
-            ["any", "all", "firstNonNull", "list"],
+            ["any", "all", "firstNonNull", "list", "set"],
             key=table + attribute + "combinationType",
         )
-        comb_desc = col1.text_input(
+        comb_desc = coll.text_input(
             "Description", key=table + attribute + "combinationdesc"
         )
-        no_fields = col1.number_input(
+        no_fields = coll.number_input(
             "How many fields are there to combine?",
             value=2,
             key=table + attribute + "multifield",
         )
 
-        fields = []
+        with colr:
+            fields = []
+            mf_grid = make_grid(no_fields * 2, 3)
 
-        mf_grid = make_grid(no_fields * 2, num_cols)
-
-        for i in range(0, no_fields * 2, 2):
-            columns = mf_grid[i][0], mf_grid[i][1], mf_grid[i][2], mf_grid[i][3]
-            field = field_types(table, attribute, a_type, columns, iterable=str(i))
-            fields.append(field)
-            for square in [
-                mf_grid[i + 1][0],
-                mf_grid[i + 1][1],
-                mf_grid[i + 1][2],
-                mf_grid[i + 1][3],
-            ]:
-                square.markdown("#")
+            for i in range(0, no_fields * 2, 2):
+                columns = mf_grid[i][0], mf_grid[i][1], mf_grid[i][2]
+                field = field_types(table, attribute, a_type, columns, iterable=str(i))
+                fields.append(field)
+                for square in [
+                    mf_grid[i + 1][0],
+                    mf_grid[i + 1][1],
+                    mf_grid[i + 1][2],
+                ]:
+                    square.markdown("#")
 
         return structures.combined_type(combination_type, comb_desc, fields)
 
     else:
-        columns = st.columns(num_cols)
+        columns = st.columns(3)
         return field_types(table, attribute, a_type, columns)

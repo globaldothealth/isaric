@@ -8,8 +8,6 @@ import tomli
 import tomli_w
 import json
 import forms.structures as structures
-import re
-import pandas as pd
 
 from forms.structures import string_to_dict, make_grid
 
@@ -50,6 +48,7 @@ def validate_required_fields(data):
                  Visit: {missing_fields_visit}"
         )
         return False
+
     return True
 
 
@@ -59,20 +58,24 @@ def generate_parser(data):
         data["visit"]["subject_id"]["sensitive"] = True
         data["visit"]["visit_id"]["sensitive"] = True
 
-        for obs in st.session_state.obs_list:
-            if "observation" in data.keys():
-                overwrite = False
-                # check whether an observation previously existed
-                for i, d in enumerate(data["observation"]):
-                    if d["name"] == obs["name"] and d["phase"] == obs["phase"]:
-                        data["observation"][i] = obs
-                        overwrite = True
-                        break
+        if "obs_list" not in st.session_state:
+            st.warning("Your parser doesn't contain any observations at the moment!")
 
-                if overwrite == False:
-                    data["observation"].append(obs)
-            else:
-                data["observation"] = [obs]
+        else:
+            for obs in st.session_state.obs_list:
+                if "observation" in data.keys():
+                    overwrite = False
+                    # check whether an observation previously existed
+                    for i, d in enumerate(data["observation"]):
+                        if d["name"] == obs["name"] and d["phase"] == obs["phase"]:
+                            data["observation"][i] = obs
+                            overwrite = True
+                            break
+
+                    if overwrite == False:
+                        data["observation"].append(obs)
+                else:
+                    data["observation"] = [obs]
 
         with open(f"generator/{parser_name}-generator.toml", "wb") as f:
             tomli_w.dump(data, f)
@@ -115,15 +118,15 @@ def get_attributes_types(table: str):
 
     attributes = list(table_file["properties"].keys())
     required_attributes = table_file["required"]
-    attr_types = []
-    for v in table_file["properties"].values():
+    attr_types = {}
+    for k, v in table_file["properties"].items():
         try:
-            attr_types.append(v["type"])
+            attr_types[k] = v["type"]
         except KeyError:
             if v["enum"]:
-                attr_types.append(v["enum"])
+                attr_types[k] = v["enum"]
             else:
-                attr_types.append(None)
+                attr_types[k] = None
 
     return table_file, attributes, required_attributes, attr_types
 
@@ -150,7 +153,7 @@ def get_attributes_types(table: str):
 if "toml_dict" not in st.session_state:
     st.session_state.toml_dict = {}
 
-    with open("generator/base-parser.toml", "rb") as f:
+    with open("generator/base-parser-empty.toml", "rb") as f:
         st.session_state.toml_dict = tomli.load(f)
 
 st.header("Study information")

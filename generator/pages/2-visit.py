@@ -2,6 +2,7 @@
 # stores the visit table page
 
 import streamlit as st
+import pandas as pd
 
 from webapp import generate_parser
 from forms.visit_subject import create_field
@@ -21,24 +22,48 @@ st.write(
 st.markdown("#")
 
 constant_attrs = ["country_iso3"]
-for attribute, a_type in zip(
-    st.session_state.visit_attributes, st.session_state.visit_attr_types
-):
-    if attribute in constant_attrs:
-        continue
-    elif attribute in st.session_state.visit_required_attributes:
-        st.write("☑️", attribute)
-        st.session_state.toml_dict["visit"][attribute] = create_field(
-            "visit", attribute, a_type, 4
-        )
-    elif st.checkbox(attribute, key="visit" + attribute + "selectbox"):
-        st.session_state.toml_dict["visit"][attribute] = create_field(
-            "visit", attribute, a_type, 4
-        )
-    st.markdown(
-        """<hr style="height:2px;border:none;color:#333;background-color:#333;" /> """,
-        unsafe_allow_html=True,
+
+cola, colb = st.columns(2)
+attribute = cola.selectbox("Attribute name", st.session_state.visit_attributes)
+colb.markdown("#")
+multifields = colb.checkbox(
+    "Multiple fields to combine?", key="visit_multifield_checkbox"
+)
+st.markdown("#")
+
+if attribute in constant_attrs:
+    st.write(
+        "This is a constant attribute. If you wish to edit it, please use the webapp home page."
     )
+else:
+    # This will also allow overwriting if present.
+    field = create_field(
+        "visit", attribute, st.session_state.visit_attr_types[attribute], multifields
+    )
+
+    col1, col2, col3 = st.columns(3)
+    if col2.button("Apply this attribute to the table", type="primary"):
+        st.session_state.toml_dict["visit"][attribute] = field
+
+if not all(
+    x in st.session_state.toml_dict["visit"].keys()
+    for x in st.session_state.visit_required_attributes
+):
+    missing_fields = [
+        attr
+        for attr in st.session_state.visit_required_attributes
+        if attr not in st.session_state.toml_dict["visit"].keys()
+    ]
+    st.warning(
+        f"You are missing the following required attributes from the Visit table: {missing_fields}"
+    )
+
+df = pd.DataFrame.from_dict(
+    st.session_state.toml_dict["visit"],
+    orient="index",
+    columns=["values"],
+)
+st.table(df)
 
 _, col2, col3, _ = st.columns(4)
 
