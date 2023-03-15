@@ -1,0 +1,242 @@
+# serializer version: 1
+# name: test_make_toml
+  '''
+  [adtl]
+  name = "test"
+  description = "test mappings"
+  
+  [adtl.tables.study]
+  kind = "constant"
+  
+  [adtl.tables.subject]
+  kind = "groupBy"
+  groupBy = "subject_id"
+  aggregation = "lastNotNull"
+  schema = "../../schemas/dev/subject.schema.json"
+  
+  [adtl.tables.visit]
+  kind = "groupBy"
+  groupBy = "subject_id"
+  aggregation = "lastNotNull"
+  schema = "../../schemas/dev/visit.schema.json"
+  
+  [adtl.tables.observation]
+  kind = "oneToMany"
+  schema = "../../schemas/dev/observation.schema.json"
+  
+  [adtl.tables.observation.common.visit_id]
+  field = "subjid"
+  sensitive = true
+  
+  [adtl.defs."Y/N/NK".values]
+  1 = true
+  2 = false
+  
+  [adtl.defs."discharged alive/hospitalization/transfer to other facility/death/palliative discharge".values]
+  1 = "discharged alive"
+  2 = "hospitalization"
+  3 = "transfer to other facility"
+  4 = "death"
+  5 = "palliative discharge"
+  
+  [subject.admission_date]
+  combinedType = "firstNonNull"
+  
+  [[subject.admission_date.fields]]
+  field = "ccm_b_icu_hodat"
+  description = "ICU ADMISSION DATE"
+  
+  [[subject.admission_date.fields]]
+  field = "hostdat_transfer"
+  description = "2.5.2 If YES: Admission date at transfer facility"
+  
+  [[subject.admission_date.fields]]
+  field = "date"
+  description = "Date"
+  
+  [[subject.admission_date.fields]]
+  field = "icu_hostdat"
+  description = "Date of ICU admission:"
+  
+  [subject.age]
+  field = "age_estimateyears"
+  description = "Age"
+  
+  [subject.date_death]
+  field = "f_datedeath"
+  description = "5.5 Date Of Death"
+  
+  [subject.enrolment_date]
+  field = "dsstdat"
+  description = "<acronym title=\"Date of enrolment into the study or for in-patients is the date that COVID-19 was first assessed as suspected or confirmed by a clinician.\">Enrolment date / first COVID-19 assessment date:</acronym>"
+  
+  [subject.has_asthma]
+  field = "asthma_mhyn"
+  description = "<acronym title=\"Clinician-diagnosed asthma\">Asthma <i>(physician diagnosed)</i></acronym>"
+  ref = "Y/N/NK"
+  
+  [subject.has_chronic_cardiac_disease]
+  field = "chroniccard_mhyn"
+  description = "<acronym title=\"Include any of coronary artery disease, heart failure, congenital heart disease, cardiomyopathy, rheumatic heart disease.\">Chronic cardiac disease <i>(not hypertension)</i></acronym>"
+  ref = "Y/N/NK"
+  
+  [subject.has_chronic_hematologic_disease]
+  field = "chronhaemo_mhyn"
+  description = "<acronym title=\"Any long-term disorder of the red or white blood cells, platelets or coagulation system requiring regular or intermittent treatment.  Do not include leukaemia, lymphoma or myeloma, which should be entered under malignancy. Do not include iron-deficiency anaemia which is explained by diet or chronic blood loss.\">Chronic hematologic disease</acronym>"
+  ref = "Y/N/NK"
+  
+  [subject.has_chronic_kidney_disease]
+  field = "renal_mhyn"
+  description = "<acronym title=\"Please include any of clinician-diagnosed chronic kidney disease, chronic estimated glomerular filtration rate < 60mL/min/1.73m2, history of kidney transplantation\">Chronic kidney disease</acronym>"
+  ref = "Y/N/NK"
+  
+  [subject.has_liver_disease]
+  combinedType = "any"
+  
+  [[subject.has_liver_disease.fields]]
+  field = "mildliv_mhyn"
+  description = "<acronym title=\"This is defined as cirrhosis without portal hypertension or chronic hepatitis\">Mild liver disease</acronym>"
+  ref = "Y/N/NK"
+  
+  [[subject.has_liver_disease.fields]]
+  field = "modliver_mhyn"
+  description = "<acronym title=\"This is defined as cirrhosis with portal hypertension, with or without bleeding or a history of variceal bleeding\">Moderate or severe liver disease</acronym>"
+  ref = "Y/N/NK"
+  
+  [visit.date_outcome]
+  field = "dsstdtc"
+  description = "<acronym title=\"Please state the date for the outcome listed above.\">Outcome date</acronym>"
+  
+  [visit.icu_admission]
+  field = "icu_hostdat"
+  description = "Date of ICU admission:"
+  
+  [visit.outcome]
+  field = "dsterm"
+  description = "<acronym title=\"Definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Outcome:</acronym>"
+  
+  [visit.outcome.values]
+  1 = "discharged"
+  3 = "transferred"
+  4 = "death"
+  5 = "discharged"
+  
+  [visit.treatment_anticoagulation]
+  field = "anticoag_cmyn"
+  description = "Anticoagulation?"
+  ref = "Y/N/NK"
+  
+  [visit.treatment_antifungal_agent]
+  field = "antifung_cmyn"
+  description = "<acronym title=\"\"Antifungal agent\" refers to any agent(s) prescribed specifically to treat systemic or topical infections caused by fungi. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Antifungal agent?</acronym>"
+  ref = "Y/N/NK"
+  
+  [visit.treatment_antivirals]
+  field = "antiviral_cmyn"
+  description = "<acronym title=\"Record all antivirals administered from date of admission or during the hospitalisation.  Record the total number of days the treatment was given. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Antiviral or COVID-19 targeted agent?</acronym>"
+  ref = "Y/N/NK"
+  
+  [[observation]]
+  name = "abdominal_pain"
+  phase = "admission"
+  
+  [observation.date]
+  ref = "admissionDateHierachy"
+  
+  [observation.if.abdopain_ceoccur_v2]
+  "!=" = 3
+  
+  [observation.is_present]
+  field = "abdopain_ceoccur_v2"
+  description = "Abdominal pain"
+  ref = "Y/N/NK"
+  
+  [[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "admission"
+  
+  [observation.date]
+  ref = "admissionDateHierachy"
+  
+  [observation.if.confusion_ceoccur_v2]
+  "!=" = 3
+  
+  [observation.is_present]
+  field = "confusion_ceoccur_v2"
+  description = "Altered consciousness / confusion"
+  ref = "Y/N/NK"
+  
+  [[observation]]
+  name = "anorexia"
+  phase = "admission"
+  
+  [observation.date]
+  ref = "admissionDateHierachy"
+  
+  [observation.if.anorexia_ceoccur_v2]
+  "!=" = 3
+  
+  [observation.is_present]
+  field = "anorexia_ceoccur_v2"
+  description = "Anorexia"
+  ref = "Y/N/NK"
+  
+  [[observation]]
+  name = "glasgow_coma_score"
+  phase = "study"
+  
+  [observation.date]
+  ref = "dailyDateHierarchy"
+  
+  [observation.if.daily_gcs_vsorres]
+  "!=" = ""
+  
+  [observation.value]
+  field = "daily_gcs_vsorres"
+  description = "<acronym title=\"Please state the lowest GCS recorded.  Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Glasgow Coma Score (GCS / 15):</acronym>"
+  
+  [[observation]]
+  name = "headache"
+  phase = "admission"
+  
+  [observation.date]
+  ref = "admissionDateHierachy"
+  
+  [observation.if.headache_ceoccur_v2]
+  "!=" = 3
+  
+  [observation.is_present]
+  field = "headache_ceoccur_v2"
+  description = "Headache"
+  ref = "Y/N/NK"
+  
+  [[observation]]
+  name = "heart_rate_bpm"
+  phase = "admission"
+  
+  [observation.date]
+  ref = "admissionDateHierachy"
+  
+  [observation.if.hr_vsorres]
+  "!=" = ""
+  
+  [observation.value]
+  field = "hr_vsorres"
+  description = "<acronym title=\"Enter the heart rate measured in beats per minute. This may be measured manually or by electronic monitoring.\">Heart Rate</acronym>"
+  
+  [[observation]]
+  name = "heart_rate_bpm"
+  phase = "study"
+  
+  [observation.date]
+  ref = "dailyDateHierarchy"
+  
+  [observation.if.daily_hr_vsorres]
+  "!=" = ""
+  
+  [observation.value]
+  field = "daily_hr_vsorres"
+  description = "<acronym title=\"Enter the heart rate measured in beats per minute. This may be measured manually or by electronic monitoring.\">Heart Rate</acronym>"
+  
+  '''
+# ---

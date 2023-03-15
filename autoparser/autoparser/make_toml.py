@@ -116,23 +116,34 @@ def single_field_mapping(
     choices, nulls = parse_choices(config, match.choices)
     out = {"field": match.field, "description": match.description}
     if not use_type:  # auto detect type from schema field type
-        field_type, field_enum = get_type_enum(config, match.table, match.schema_field)
+        schema_field_type, schema_field_enum = get_type_enum(
+            config, match.table, match.schema_field
+        )
     else:
-        field_type, field_enum = use_type, []
-    if field_type in config["categorical_types"] and choices:
+        schema_field_type, schema_field_enum = use_type, []
+    if match.type in config["categorical_types"] and choices:
         if (choice_key := json.dumps(choices, sort_keys=True)) in references:
             out["ref"] = references[choice_key]
         else:
             out["values"] = choices
 
-    if field_type == "enum" and field_enum and out.get("values"):
-        mapped_enum = map_enum(list(out["values"].values()), field_enum)
+    if (
+        schema_field_type == "enum"
+        and schema_field_enum
+        and (out.get("values") or out.get("ref"))
+    ):
+        if out.get("ref"):
+            # re-expand references to enable map_enum() to work
+            backref = [k for k in references if references[k] == out["ref"]][0]
+            out["values"] = json.loads(backref)
+            del out["ref"]
+        mapped_enum = map_enum(list(out["values"].values()), schema_field_enum)
         out["values"] = {
             k: mapped_enum[v] for k, v in out["values"].items() if v in mapped_enum
         }
         if mapped_enum:
             print(
-                f"\n- [ ] Review map for {match.schema_field!r} mapped from {match.field!r}"
+                f"\n* {match.schema_field!r} from {match.field!r}, one of {schema_field_enum!r}"
             )
             for s, t in mapped_enum.items():
                 print(f"  - {s} → {t}")
@@ -210,7 +221,7 @@ def _make_toml_observation(
             ["admission", "study", "followup"],
         )
         phase = phase.get(mapping.category, "study")
-        obs_type = config["observation_type_mapping"].get(mapping.type, "text")
+        obs_type = config["observation_type_mapping"].get(mapping.type, "value")
         field_mapping = single_field_mapping(
             config, mapping, references, use_type=mapping.type, add_auto_condition=True
         )

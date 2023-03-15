@@ -1,0 +1,8 @@
+schema_field,field,tf_rank,table,category,section_header,type,description,choices,note,valid_type,valid_min,valid_max,is_identifier,condition,is_required,score
+abdominal_pain,abdopain_ceoccur_v2,6,observation,admission_signs_and_symptoms,,radio,Abdominal pain,"1, YES|2, NO|3, Unknown",,,,,,,y,6
+altered_consciousness_confusion,confusion_ceoccur_v2,6,observation,admission_signs_and_symptoms,,radio,Altered consciousness / confusion,"1, YES|2, NO|3, Unknown",,,,,,,y,6
+anorexia,anorexia_ceoccur_v2,6,observation,admission_signs_and_symptoms,,radio,Anorexia,"1, YES|2, NO|3, Unknown",,,,,,,y,6
+glasgow_coma_score,daily_gcs_vsorres,5,observation,daily_form,,text,"<acronym title=""Please state the lowest GCS recorded.  Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy."">Glasgow Coma Score (GCS / 15):</acronym>",,out of 15 (1 - 15),number,1,15.0,,[daily_gcs_lbyn] = '1',y,5
+headache,headache_ceoccur_v2,6,observation,admission_signs_and_symptoms,,radio,Headache,"1, YES|2, NO|3, Unknown",,,,,,,y,6
+heart_rate_bpm,hr_vsorres,4,observation,admission_signs_and_symptoms,,text,"<acronym title=""Enter the heart rate measured in beats per minute. This may be measured manually or by electronic monitoring."">Heart Rate</acronym>",,beats per minute ,number,,,,[hr_vsyn] = '1',y,4
+heart_rate_bpm,daily_hr_vsorres,3,observation,daily_form,,text,"<acronym title=""Enter the heart rate measured in beats per minute. This may be measured manually or by electronic monitoring."">Heart Rate</acronym>",,beats per minute ,number,,,,[daily_hr_vsyn] = '1',y,3
