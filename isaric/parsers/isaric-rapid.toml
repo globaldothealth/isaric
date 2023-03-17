@@ -274,7 +274,7 @@
 
   [subject.ethnicity]
     description = "Ethnicity"
-    combinedType = "list"
+    combinedType = "set"
     excludeWhen = "none"
     fields = [
       { field = "flw_ethnicity", ref = "ethnicityMap" },
@@ -490,11 +490,22 @@
     { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
   ]
 
-# TODO: as above, there is this set for antiviral_cmtype, daily* and overall*. How should we combine these in that scenario?
 [visit.treatment_antiviral_type]
   description = "Type of antiviral agent used"
-  combinedType = "list"
+  combinedType = "set"
   fields = [
+    { field = "overall_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "overall_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "overall_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "overall_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "overall_antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
     { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
@@ -555,11 +566,20 @@
     { field = "corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid on the first day of admission?" },
   ]
 
-# TODO: as above, there is this set for corticost_cmtype, daily* and overall*. How should we combine these in that scenario?
 [visit.treatment_corticosteroid_type]
   description = "Type of corticosteroid used"
-  combinedType = "list"
+  combinedType = "set"
   fields = [
+    { field = "overall_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "overall_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "overall_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "overall_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "overall_corticost_cmtrt___5", values = { 1 = "Other" } },
+    { field = "daily_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmtrt___5", values = { 1 = "Other" } },
     { field = "corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
     { field = "corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
     { field = "corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
@@ -628,11 +648,24 @@
     { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
   ]
 
-# TODO: as above, there is this set for exper_cmtype, daily* and overall*. How should we combine these in that scenario?
 [visit.treatment_experimental_agent_type]
   description = "Experimental treatments used"
-  combinedType = "list"
+  combinedType = "set"
   fields = [
+    { field = "overall_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "overall_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "overall_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "overall_exper_cmtype___4", values = { 1 = "IL6 Inhibitor" } },
+    { field = "overall_exper_cmtype___5", values = { 1 = "IL1 Inhibitor" } },
+    { field = "overall_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "overall_exper_cmtype___7", values = { 1 = "Other" } },
+    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 Inhibitor" } },
+    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 Inhibitor" } },
+    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
     { field = "exper_cmtype___1", values = { 1 = "Chloroquine" } },
     { field = "exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
     { field = "exper_cmtype___3", values = { 1 = "Remdesivir" } },
