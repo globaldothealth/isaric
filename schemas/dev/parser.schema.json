@@ -115,7 +115,8 @@
                 "list",
                 "any",
                 "all",
-                "firstNonNull"
+                "firstNonNull",
+                "set"
               ],
               "description": "Specifies a combined type using of the supported combinations"
             },

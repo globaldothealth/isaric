@@ -69,7 +69,7 @@
 
   [subject.ethnicity] # TODO: need to add ethnic other field
     description = "Ethnic groups"
-    combinedType = "list"
+    combinedType = "set"
     excludeWhen = "none"
     fields = [
       { field = "ethnic___1", values = { 1 = "Arab" } },
@@ -318,7 +318,7 @@
 
   [visit.treatment_antiviral_type]
     description = "Type of antiviral agent used"
-    combinedType = "list"
+    combinedType = "set"
     fields = [
       { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
       { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
@@ -435,7 +435,7 @@
   ref = "Y/N/NK"
 
 [visit.treatment_other]
-  combinedType = "list"
+  combinedType = "set"
   excludeWhen = "none"
   fields = [{ field = "other_cm", if = { other_cmyn = 1 } }]
   description = "Other treatment"
