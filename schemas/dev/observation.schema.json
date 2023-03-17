@@ -147,7 +147,9 @@
   },
   "dependencies": {
     "start_date": {
-      "required": "duration_type"
+      "required": [
+        "duration_type"
+      ]
     }
   }
 }
