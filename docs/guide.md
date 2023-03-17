@@ -89,3 +89,37 @@ For example:
   if = { flw_headache = { "!=" = 99 } }
 ```
 records an observation of a headache which has occurred at least once in the 10 days leading up to the date of the follow-up form being completed.
+
+## Parser validation
+
+There are two stages of parser validation which can be used during parser development.
+
+### 1) During development
+
+We recommend developing using VScode to make the most of the parser development tools. Ensure the [evenBetterToml](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml) VSCode extension is present in your environment, and then add a schema comment to the top of your parser file like this:
+```
+#:schema ../../schemas/dev/parser.schema.json
+```
+The file path should be correct from the file you are developing, to the parser.schema.json file. If you have not changed the structure of the repository and are writing a file within the `isaric/parsers/` folder, this path should be correct. 
+
+Once this is set up, some autocompletion of code and hints will be availbe to help write your parser file, with error highlighting included.
+
+### 2) Testing the parser
+
+Once the parser file has been written, it can be validated (i.e. check what percentage of the data generated using this parser is valid according to the schemas) using [adtl](https://github.com/globaldothealth/adtl). You should ensure your parser file contains a table which looks similar to the following, with the `schema` key included:
+```
+[adtl.tables]
+    study = { kind = "constant" }
+    subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
+    visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
+    observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "\ufeffsubjid", sensitive = true } } }
+```
+The schema file path should, as above, match the path from your parser file, to the relevant schema file. If you only wish to validate a subset of the tables (e.g. only the subject table has been written so far) the other tables should be commented out.
+
+Follow the instructions on [adtl](https://github.com/globaldothealth/adtl) for running the data transformation; the terminal command should follow the format
+```
+adtl specification-file input-file -o output
+```
+Once the command has run, adtl will generate a report in the terminal showing validation error counts, and will prodice error messages indicating what is causing the parser validation to fail at particular steps.
+
+Each output file will also contain two additional columns, `adtl_valid` and `adtl_error`, with data indicating whether the output row is valid according to the schema (True, empty, respectively) or invalid (False, error message).
