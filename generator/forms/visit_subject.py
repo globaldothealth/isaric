@@ -139,7 +139,7 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
     elif input_type == "applying a data transformation":
         apply = col3.selectbox(
             "The transformation to be applied",
-            ["isNotNull", "yearsElapsed"],
+            ["isNotNull", "yearsElapsed", "durationDays", "startDate"],
             key=table + attribute + iterable + "apply",
         )
         params = col3.text_input(
