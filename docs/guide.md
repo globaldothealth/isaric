@@ -16,9 +16,11 @@ combinedType fields are also described in the [adtl specification file](https://
 
 **any**: If any of the fields listed are non-null (truthy), the attribute will be set to `True`. Otherwise, it will be set to `False`; *even if all the fields given as options are `None`*.
 
-**firstNonNull**: The first field in the list which is *not Null* - i.e. either True, False, or a specifc value, will be given. If *all* the fields are `None`, *the field will also be returned as `None`* (**Note to devs - This is still an open issue, this is the desired behavior rather than current**).
+**firstNonNull**: The first field in the list which is *not Null* - i.e. either True, False, or a specifc value, will be given. If *all* the fields are `None`, *the field will also be returned as `None`*.
 
-If it is important that an attribute distinguishes between `True/False` and `None` (e.g., there is an important distinction between an observation which has been made and where the condition is either present or absent, and an observation not being made at all), then 'firstNonNull' should be used rather than 'any'.
+**set**: Similar to the 'list' combinedType, `set` will return a list of items with duplicates removed. 
+
+If it is important that an attribute distinguishes between `True/False` and `None` (e.g., there is an important distinction between an observation which has been made and where the condition is either present or absent, and an observation not being made at all), then 'firstNonNull' should be used rather than 'any'. `set` should be used in place of `list` unless duplicate entries are specifically required.
 
 ## Conditional fields
 
