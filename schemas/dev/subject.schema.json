@@ -45,7 +45,7 @@
       "type": "number",
       "description": "Age in years",
       "category": "demographics",
-      "exclusiveMinimum": 0,
+      "minimum": 0,
       "maximum": 120
     },
     "sex_at_birth": {
