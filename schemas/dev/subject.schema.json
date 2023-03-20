@@ -60,18 +60,9 @@
     "ethnicity": {
       "type": "array",
       "items": {
-        "enum": [
-          "Arab",
-          "Black",
-          "East_Asian",
-          "South_Asian",
-          "West_Asian",
-          "Latin_American",
-          "White",
-          "Aboriginal_First_Nations",
-          "Other"
-        ]
+        "type": "string"
       },
+      "uniqueItems": true,
       "description": "Ethnicity",
       "category": "demographics"
     },
