@@ -71,6 +71,7 @@
         "type": "string",
         "format": "date"
       },
+      "uniqueItems": true,
       "description": "Date(s) of admission to ICU"
     },
     "treatment_dialysis": {
@@ -104,6 +105,7 @@
           "Other"
         ]
       },
+      "uniqueItems": true,
       "description": "Corticosteroid type",
       "category": "treatments"
     },
@@ -150,6 +152,7 @@
           "Other"
         ]
       },
+      "uniqueItems": true,
       "description": "Antivirals administered",
       "category": "treatments"
     },
@@ -181,6 +184,7 @@
           "Other"
         ]
       },
+      "uniqueItems": true,
       "description": "Experimental agent name",
       "category": "treatments"
     },
@@ -304,6 +308,7 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Other treatments",
       "category": "treatments"
     },

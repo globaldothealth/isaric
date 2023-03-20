@@ -70,12 +70,13 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement"
     },
     "name": {
       "enum": [
         "avpu",
-        "clinical_classification_critical_illness_scale_",
+        "clinical_classification_critical_illness_scale",
         "clinical_classification_pneumonia_needing_oxygen",
         "clinical_frailty_score",
         "diastolic_blood_pressure_mmHg",

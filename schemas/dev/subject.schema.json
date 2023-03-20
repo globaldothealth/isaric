@@ -258,6 +258,7 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Other comorbidities",
       "category": "comorbidities"
     },
