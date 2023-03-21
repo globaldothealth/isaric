@@ -1,0 +1,95 @@
+#:schema ../../autoparser-config.schema.json
+
+name = "redcap-en"
+description = "Autoparser config for generating CSV mappings and TOML from REDCap dictionaries"
+
+# Used by parse_choices() to generate values mapping
+# Using the delimiters below, we can parse this:
+#   1, yes | 2, always | 3, sometimes
+# to this TOML:
+#  { 1 = "yes", 2 = "always", 3 = "sometimes" }
+
+choice_delimiter = "|"
+choice_delimiter_map = ","
+
+# Categorical field types are used by single_field_mapping() to infer whether
+# values or references to values mapping should be set
+categorical_types = ["boolean", "enum", "radio", "dropdown"]
+
+# Text field types are used as a hint to single_field_mapping() to _not_ set
+# values mapping
+text_types = ["text"]
+
+[lang] # Language specific settings
+  is_missing = [
+    "unknown",
+    "n/a",
+    "n/k",
+    "na",
+    "nk",
+    "not applicable",
+    "prefer not to say",
+    "not specified",
+    "not answered",
+  ]
+  is_true = ["y", "yes", "t", "true"]
+  is_false = ["f", "false", "no", "n"]
+
+  # stopwords are ignored while matching and building the TF-IDF matrix
+  stopwords = [
+    "a",
+    "an",
+    "the",
+    "if",
+    "for",
+    "has",
+    "at",
+    "of",
+    "and",
+    "or",
+    "then",
+    "treatment",
+    "agent",
+  ]
+
+[schemas]
+  subject = "schemas/dev/subject.schema.json"
+  visit = "schemas/dev/visit.schema.json"
+  observation = "schemas/dev/observation.schema.json"
+
+# Tweak these to influence ordering of field matches
+[scores]
+  type-match = 3
+  date-mismatch = -3
+  type-mismatch = -1
+  token-contained = 1
+  is-followup = -3
+
+# Column mappings to standardise column names across data dictionaries
+[column_mappings]
+  field = "Variable / Field Name"
+  category = "Form Name"
+  section_header = "Section Header"
+  type = "Field Type"
+  description = "Field Label"
+  choices = "Choices, Calculations, OR Slider Labels"
+  note = "Field Note"
+  valid_type = "Text Validation Type OR Show Slider Number"
+  valid_min = "Text Validation Min"
+  valid_max = "Text Validation Max"
+  is_identifier = "Identifier?"
+  condition = "Branching Logic (Show field only if...)"
+  is_required = "Required Field?"
+
+[observation_type_mapping]
+  # Maps field type ('type') from column_mappings to the appropriate observation
+  # column. This is needed as observation table is long and types for each
+  # observation are not specified and have to be inferred from the source field
+  # type
+  categorical = "text"
+  boolean = "is_present"
+  yesno = "is_present"
+  radio = "is_present"
+  text = "text"
+  decimal = "value"
+  integer = "value"

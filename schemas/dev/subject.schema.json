@@ -45,7 +45,7 @@
       "type": "number",
       "description": "Age in years",
       "category": "demographics",
-      "exclusiveMinimum": 0,
+      "minimum": 0,
       "maximum": 120
     },
     "sex_at_birth": {
@@ -60,18 +60,9 @@
     "ethnicity": {
       "type": "array",
       "items": {
-        "enum": [
-          "Arab",
-          "Black",
-          "East_Asian",
-          "South_Asian",
-          "West_Asian",
-          "Latin_American",
-          "White",
-          "Aboriginal_First_Nations",
-          "Other"
-        ]
+        "type": "string"
       },
+      "uniqueItems": true,
       "description": "Ethnicity",
       "category": "demographics"
     },
@@ -227,11 +218,6 @@
       "description": "Apnoea",
       "category": "comorbidities"
     },
-    "has_hiv_viral_suppression": {
-      "type": "boolean",
-      "description": "HIV viral suppression",
-      "category": "comorbidities"
-    },
     "has_inflammatory_bowel_disease": {
       "type": "boolean",
       "description": "Inflammatory bowel disease",
@@ -267,6 +253,7 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Other comorbidities",
       "category": "comorbidities"
     },

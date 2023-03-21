@@ -274,7 +274,7 @@
 
   [subject.ethnicity]
     description = "Ethnicity"
-    combinedType = "list"
+    combinedType = "set"
     excludeWhen = "none"
     fields = [
       { field = "flw_ethnicity", ref = "ethnicityMap" },
@@ -413,7 +413,7 @@
 
   [visit.icu_admission]
     description = "ICU or High Dependency admission"
-    combinedType = "firstNonNull"
+    combinedType = "any"
 
     [[visit.icu_admission.fields]]
       field = "overall_icu_hoterm"
@@ -437,7 +437,7 @@
 
 [visit.treatment_ace_inhibitors]
   description = "Ace Inhibitors"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_ace_inhibitors.fields]]
     field = "daily_ace_cmoccur"
@@ -451,7 +451,7 @@
 
 [visit.treatment_antibiotics]
   description = "Antibiotics"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic?" },
     { field = "daily_antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic?" },
@@ -465,7 +465,7 @@
 
 [visit.treatment_antifungal_agent]
   description = "Antifungal"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_antifung_cmyn", ref = "Y/N/NK", description = "Antifungal agent?" },
     { field = "daily_antifung_cmyn", ref = "Y/N/NK", description = "Antifungal agent?" },
@@ -474,7 +474,7 @@
 
 [visit.treatment_antimalarial]
   description = "Antimalarial"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
     { field = "daily_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
@@ -483,16 +483,42 @@
 
 [visit.treatment_antivirals]
   description = "Antiviral"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "daily_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
   ]
 
+[visit.treatment_antiviral_type]
+  description = "Type of antiviral agent used"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "overall_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "overall_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "overall_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "overall_antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
+  ]
+  if = { antiviral_cmyn = 1 }
+
 [visit.treatment_neuraminidase]
   description = "Antiviral type"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_neuraminidase.fields]]
     field = "overall_antiviral_cmtrt___5"
@@ -514,7 +540,7 @@
 
 [visit.treatment_arb]
   description = "Angiotensin II receptor blockers (ARB)"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_arb.fields]]
     field = "daily_arb_cmoccur"
@@ -534,16 +560,39 @@
 
 [visit.treatment_corticosteroid]
   description = "Corticosteroid"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid?" },
     { field = "daily_corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid?" },
     { field = "corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid on the first day of admission?" },
   ]
 
+[visit.treatment_corticosteroid_type]
+  description = "Type of corticosteroid used"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "overall_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "overall_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "overall_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "overall_corticost_cmtrt___5", values = { 1 = "Other" } },
+    { field = "daily_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmtrt___5", values = { 1 = "Other" } },
+    { field = "corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "corticost_cmtrt___5", values = { 1 = "Other" } },
+  ]
+  if = { corticost_cmyn = 1 }
+
 [visit.treatment_dexamethasone]
   description = "Dexamethasone used?"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_dexamethasone.fields]]
     field = "overall_corticost_cmtrt___1"
@@ -565,7 +614,7 @@
 
 [visit.treatment_dialysis]
   description = "Dialysis"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
     { field = "daily_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
@@ -575,7 +624,7 @@
 
 [visit.treatment_ecmo]
   description = "ECMO"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_ecmo.fields]]
     field = "overall_extracorp_prtrt"
@@ -594,16 +643,45 @@
 
 [visit.treatment_experimental_agent]
   description = "Experimental treatments"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
     { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
     { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
   ]
 
+[visit.treatment_experimental_agent_type]
+  description = "Experimental treatments used"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "overall_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "overall_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "overall_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "overall_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "overall_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "overall_exper_cmtype___7", values = { 1 = "Other" } },
+    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
+    { field = "exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "exper_cmtype___7", values = { 1 = "Other" } },
+  ]
+  if = { exper_cmyn = 1 }
+
 [visit.treatment_tocilizumab]
   description = "Experimental agents"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_tocilizumab.fields]]
     field = "overall_exper_cmtype___4"
@@ -625,7 +703,7 @@
 
 [visit.treatment_inotropes_vasopressors]
   description = "Inotropes/vasopressors"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_inotrop_cmtrt", ref = "Y/N/NK", description = "Inotropes/vasopressors?" },
     { field = "daily_inotrop_cmtrt", ref = "Y/N/NK", description = "Inotropes/vasopressors?" },
@@ -635,7 +713,7 @@
 
 [visit.treatment_intravenous_fluids]
   description = "IV fluids"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids?" },
     { field = "daily_iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids?" },
@@ -644,7 +722,7 @@
 
 [visit.treatment_invasive_ventilation]
   description = "Invasive ventilation"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
     { field = "daily_invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
@@ -654,7 +732,7 @@
 
 [visit.treatment_noninvasive_ventilation]
   description = "Non-invasive ventilation"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_noninvasive_ventilation.fields]]
     field = "overall_noninvasive_proccur"
@@ -678,7 +756,7 @@
 
 [visit.treatment_nsaid]
   description = "NSAID"
-  combinedType = "firstNonNull"
+  combinedType = "any"
 
   [[visit.treatment_nsaid.fields]]
     field = "overall_nsaid_cmyn"
@@ -696,13 +774,14 @@
     description = "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
 
 [visit.treatment_other]
-  field = "ccm_a_other_prtrt"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } }]
   description = "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
-  if = { ccm_a_oth_prperf = 1 }
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therepy"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "daily_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
@@ -712,7 +791,7 @@
 
 [visit.treatment_prone_position]
   description = "Prone Positioning"
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "overall_prone_prtrt", ref = "Y/N/NK", description = "Prone positioning?" },
     { field = "daily_prone_prtrt", ref = "Y/N/NK", description = "Prone positioning?" },
@@ -811,10 +890,12 @@
   if = { oxy_vsyn = 1 }
 
   [observation.context]
-    field = "oxy_vsorresu"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "oxy_vsorresu", values = { 1 = "Room air", 2 = "Oxygen therapy" } },
+    ]
     description = "Oxygen saturation on:"
-    values = { 1 = ["Room air"], 2 = ["Oxygen therapy"] }
-
 
 [[observation]]
   name = "oxygen_saturation_percent"
@@ -824,9 +905,12 @@
   if = { daily_oxy_vsyn = 1 }
 
   [observation.context]
-    field = "daily_oxy_vsorresu"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_oxy_vsorresu", values = { 1 = "Room air", 2 = "Oxygen therapy" } },
+    ]
     description = "Oxygen saturation on:"
-    values = { 1 = ["Room air"], 2 = ["Oxygen therapy"] }
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -1395,7 +1479,7 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   context = ["highest"]
-  value = { field = "temp_vsorres" }        # there is no source unit field 
+  value = { field = "temp_vsorres" }        # there is no source unit field
   if = { temp_vsyn = 1 }
 
 [[observation]]
@@ -1431,7 +1515,7 @@
   name = "pao2_sample_type"
   phase = "study"
   date = { field = "ccm_a_dat" }
-  value = { field = "ccm_a_pao2_lbspec", values = { 1 = "Arterial", 3 = "Capillary" } }
+  text = { field = "ccm_a_pao2_lbspec", values = { 1 = "Arterial", 3 = "Capillary" } }
   if = { ccm_a_pao2_lbyn = 1 }
 
 [[observation]]

@@ -38,7 +38,20 @@
     "date": {
       "type": "string",
       "format": "date",
-      "description": "Date when observation was recorded"
+      "description": "Date of observation, or end date of observation period"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Start date of observation duration"
+    },
+    "duration_type": {
+      "enum": [
+        "event",
+        "block"
+      ],
+      "default": "event",
+      "description": "Duration type, either present throughout the period (block), or something that occurred within the period (event)"
     },
     "value": {
       "type": "number",
@@ -52,22 +65,18 @@
       "type": "boolean",
       "description": "Whether the observation denotes presence (*true*) or absence (*false*)"
     },
-    "occurrence_period": {
-      "type": "string",
-      "pattern": "^P[0-9]+.*",
-      "description": "ISO 8601 duration string referring to the time period before {date} in which observation occurred"
-    },
     "context": {
       "type": "array",
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement"
     },
     "name": {
       "enum": [
         "avpu",
-        "clinical_classification_critical_illness_scale_",
+        "clinical_classification_critical_illness_scale",
         "clinical_classification_pneumonia_needing_oxygen",
         "clinical_frailty_score",
         "diastolic_blood_pressure_mmHg",
@@ -135,6 +144,13 @@
         "transfer_from_other_facility"
       ],
       "description": "Observation name"
+    }
+  },
+  "dependencies": {
+    "start_date": {
+      "required": [
+        "duration_type"
+      ]
     }
   }
 }

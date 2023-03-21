@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft-04/schema",
+  "id": "https://raw.githubusercontent.com/globaldothealth/isaric/main/autoparser/autoparser-config.schema.json",
+  "title": "autoparser configuration schema",
+  "description": "Schema for autoparser configuration",
+  "required": [
+    "name",
+    "column_mappings",
+    "choice_delimiter",
+    "choice_delimiter_map",
+    "categorical_types",
+    "text_types",
+    "lang",
+    "schemas",
+    "scores",
+    "observation_type_mapping"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the configuration"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the configuration"
+    },
+    "choice_delimiter": {
+      "type": "string",
+      "description": "Delimiter used to separate integer -> value mappings. Used by parse_choices() to generate values mapping"
+    },
+    "choice_delimiter_map": {
+      "type": "string",
+      "description": "Delimiter used to separate integer from value. Used by parse_choices() to generate values mapping"
+    },
+    "categorical_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of categorical types according to data dictionary. Categorical field types are used by single_field_mapping() to infer whether values or references to values mapping should be set"
+    },
+    "text_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of non-categorical (textual) types according to data dictionary. Text field types are used as a hint to single_field_mapping() to _not_ set a values mapping"
+    },
+    "lang": {
+      "description": "Language specific settings",
+      "type": "object",
+      "required": [
+        "is_missing",
+        "is_true",
+        "is_false",
+        "stopwords"
+      ],
+      "properties": {
+        "is_missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Denotes missing values"
+        },
+        "is_true": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Denotes true or yes values"
+        },
+        "is_false": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Denotes false or no values"
+        },
+        "stopwords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Words to ignore when matching or when generating TF-IDF matrix"
+        }
+      }
+    },
+    "schemas": {
+      "type": "object",
+      "required": [
+        "subject",
+        "visit",
+        "observation"
+      ],
+      "description": "Schema mappings",
+      "properties": {
+        "subject": {
+          "type": "string",
+          "description": "Schema for the subject mapping"
+        },
+        "visit": {
+          "type": "string",
+          "description": "Schema for the visit mapping"
+        },
+        "observation": {
+          "type": "string",
+          "description": "Schema for the observation mapping"
+        }
+      }
+    },
+    "scores": {
+      "description": "Scores used by csv_mapping to order mappings",
+      "type": "object",
+      "patternProperties": {
+        "*": {
+          "type": "integer"
+        }
+      }
+    },
+    "column_mappings": {
+      "type": "object",
+      "description": "Mappings of intermediate CSV to source data dictionary fields",
+      "required": [
+        "field",
+        "category",
+        "description",
+        "choices"
+      ],
+      "properties": {
+        "schema_field": {
+          "type": "string",
+          "description": "Field in the ISARIC schema that this mapping corresponds to"
+        },
+        "field": {
+          "type": "string",
+          "description": "Field in the source data file that corresponds to the ISARIC schema field"
+        },
+        "category": {
+          "type": "string",
+          "description": "Field category according to source"
+        },
+        "description": {
+          "type": "string",
+          "description": "Field description"
+        },
+        "choices": {
+          "type": "string",
+          "description": "Delimited field -> value mappings"
+        },
+        "note": {
+          "type": "string",
+          "description": "Field note"
+        },
+        "valid_type": {
+          "type": "string",
+          "description": "Field validation type according to source"
+        },
+        "valid_min": {
+          "type": "string",
+          "description": "Minimum value for field if applicable"
+        },
+        "valid_max": {
+          "type": "string",
+          "description": "Whether field is identifier"
+        },
+        "is_identifier": {
+          "type": "string",
+          "description": "Whether field is identifier"
+        },
+        "condition": {
+          "type": "string",
+          "description": "Field condition, when field is shown"
+        },
+        "is_required": {
+          "type": "string",
+          "description": "Whether field is required in the source form"
+        }
+      }
+    },
+    "observation_type_mapping": {
+      "description": "Mapping from source types to observation fields",
+      "type": "object",
+      "patternProperties": {
+        "*": {
+          "enum": [
+            "is_present",
+            "value",
+            "text"
+          ]
+        }
+      }
+    }
+  }
+}
