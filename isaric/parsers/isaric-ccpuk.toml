@@ -141,7 +141,7 @@
 [subject.pregnancy_gestational_outcome]
   field = "apsc_gestout"
   description = "Gestational outcome"
-  values = { 1 = "Term birth", 2 = "Preterm birth" }
+  values = { 1 = "term_birth", 2 = "preterm_birth" }
 
 [subject.pregnancy_whether_breastfed]
   field = "apsc_brfedind"
@@ -319,6 +319,7 @@
   [visit.treatment_antiviral_type]
     description = "Type of antiviral agent used"
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
       { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
@@ -340,14 +341,17 @@
     ref = "Y/N/NK"
 
   [visit.treatment_corticosteroid_type]
+    combinedType = "set"
     description = "Type of corticosteroid used"
-    field = "corticost_cmtrt_type"
-    values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" }
-    if = { corticost_cmyn = 1 }
+    excludeWhen = "none"
+    fields = [
+      { field = "corticost_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" }, if = { corticost_cmyn = 1 } },
+    ]
+
 
   [visit.treatment_dexamethasone]
     description = "Treatment with Dexamethasone"
-    combinedType = "firstNonNull"
+    combinedType = "any"
 
     [[visit.treatment_dexamethasone.fields]]
       field = "corticost_cmtrt_type"

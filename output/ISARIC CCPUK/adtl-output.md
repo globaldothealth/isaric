@@ -1,18 +1,17 @@
 >adtl ../../isaric/parsers/isaric-ccpuk.toml ../../../isaric-data/ISARIC\ CCPUK/CCPUKSARILondon_DATA_2022-06-06_1135.csv
 
-|table       	|valid	|total	|percentage_valid|
+|table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject       	|32135	|36754	|87.432660% |
-|visit         	|30834	|36754	|83.892910% |
-|observation   	|1014060	|1025470	|98.887339% |
+|subject        |32352  |36754  |88.023072% |
+|visit          |30834  |36754  |83.892910% |
+|observation    |1015041        |1025470        |98.983003% |
 
 ## subject
 
 * 4394: data must contain ['subject_id', 'country_iso3', 'enrolment_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
-* 217: data.pregnancy_gestational_outcome must be one of ['term_birth', 'preterm_birth']
 * 5: data.age must be smaller than or equal to 120
 * 2: data.admission_date must be date
-* 1: data.age must be bigger than 0
+* 1: data.age must be bigger than or equal to 0
 
 ## visit
 
@@ -21,10 +20,6 @@
 
 ## observation
 
-* 10362: data.date must be string
-* 561: data.text must be string
-* 298: data.is_present must be boolean
-* 90: data.context must be array
+* 10362: data must contain ['phase', 'date', 'name'] properties
 * 61: data.date must be date
-* 38: data.value must be number
-
+* 6: data.value must be number
