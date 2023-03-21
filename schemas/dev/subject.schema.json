@@ -218,11 +218,6 @@
       "description": "Apnoea",
       "category": "comorbidities"
     },
-    "has_hiv_viral_suppression": {
-      "type": "boolean",
-      "description": "HIV viral suppression",
-      "category": "comorbidities"
-    },
     "has_inflammatory_bowel_disease": {
       "type": "boolean",
       "description": "Inflammatory bowel disease",
