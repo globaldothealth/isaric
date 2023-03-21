@@ -233,7 +233,7 @@
 [adtl.tables]
   study = { kind = "constant" }
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
-  # visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
+  visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "\ufeffsubjid", sensitive = true } } }
 
 [study]
@@ -457,6 +457,233 @@
   field = "icu_hoterm"
   description = "Admitted to ICU?"
   apply = { function = "isNotNull" } # WHAT DOES THIS DO?
+
+[visit]
+  country_iso3 = { field = "country", ref = "countryMap" }
+
+  [visit.subject_id] # This is the same as the subject_id!
+    field = "\ufeffsubjid"
+    sensitive = true
+
+  [visit.visit_id] # This is the same as the subject_id!
+    field = "\ufeffsubjid"
+    sensitive = true
+
+  [visit.date_outcome]
+    field = "dsstdtc"
+    description = "Outcome date"
+
+  [visit.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "hostdat", description = "Admission date at this facility" },
+      { field = "cestdat", description = "Onset date of first/earliest symptom" },
+      { field = "dsstdat", description = "Date of enrolment" },
+      { field = "daily_dsstdat", description = "Date of assessment" },
+      { field = "hostdat_transfer", description = "Admission date at transfer facility" },
+    ]
+
+  [visit.outcome]
+    field = "dsterm"
+    description = "Outcome"
+
+    [visit.outcome.values]
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "discharged"
+
+[visit.pathogen_test_date]
+  field = "mbdat"
+  description = "Pathogen testing sample collection date"
+
+[visit.icu_admission]
+  description = "ICU Admission"
+  combinedType = "any"
+  fields = [
+    { field = "icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency Unit admission?" },
+    { field = "daily_hoterm", ref = "Y/N/NK", description = "Admitted to intensive care, intensive therapy, intermediate care or high dependency unit?" },
+  ]
+
+[visit.icu_admission_dates]
+  description = "ICU admission date"
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "icu_hostdat" }]
+
+[visit.treatment_antivirals]
+  field = "antiviral_cmyn"
+  ref = "Y/N/NK"
+  description = "Antiviral agent?"
+
+[visit.treatment_antiviral_type]
+  combinedType = "set"
+  description = "Antiviral ot COVID-19 targeted agent"
+  excludeWhen = 'none'
+  fields = [
+    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" } },
+    { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
+    { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
+    { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" } },
+    { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
+  ]
+
+[visit.treatment_neuraminidase]
+  field = "antiviral_cmtrt___5"
+  values = { 1 = true }
+  if = { antiviral_cmyn = 1 }
+
+[visit.treatment_antibiotics]
+  description = "Antibiotics?"
+  field = "antibiotic_cmyn"
+  ref = "Y/N/NK"
+
+[visit.treatment_antifungal_agent]
+  description = "Antifungal agent?"
+  field = "antiviral_cmyn"
+  ref = "Y/N/NK"
+
+[visit.treatment_other]
+  description = "Other treatments administered for COVID-19 including experimental or compassionate use?"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "othertx_cmtrt_1" },
+    { field = "othertx_cmtrt_3" },
+    { field = "othertx_cmtrt_3" },
+  ]
+
+[visit.treatment_dialysis]
+  description = "Renal replacement therapy (RRT) or dialysis"
+  combinedType = "any"
+  fields = [
+    { field = "rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy" },
+    { field = "daily_rrt_cmtrt", ref = "Y/N/NK", description = "Dialysis / Hemofiltration?" },
+  ]
+
+[visit.treatment_inotropes_vasopressors]
+  description = "Inotropes/vasopressors?"
+  combinedType = "any"
+  fields = [
+    { field = "inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+    { field = "daily_inotrope_cmyn", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_corticosteroid]
+  description = "Corticosteroid?"
+  field = "corticost_cmyn"
+  ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid_type]
+  description = "Other corticosteroid?"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "dexameth_cmyn", values = { 1 = "Dexamethasone" } },
+    { field = "steroid_other_cmtrt___1", values = { 1 = "Prednisolone" } },
+    { field = "steroid_other_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "steroid_other_cmtrt___3", values = { 1 = "Methylprednisolone" } },
+    { field = "steroid_other_cmtrt___4", values = { 1 = "Other" } },
+  ]
+
+[visit.treatment_dexamethasone]
+  description = "Dexamethasone?"
+  field = "dexameth_cmyn"
+  ref = "Y/N/NK"
+
+[visit.treatment_anticoagulation]
+  description = "Anticoagulation?"
+  combinedType = "any"
+  fields = [
+    { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
+    # { field = "ef_anticoag", description = "Anticoagulation while on mechanical ventilation", values = { "yes" = true } },
+  ]
+
+[visit.treatment_prone_position]
+  description = "Ventilation in prone position?"
+  combinedType = "any"
+  fields = [
+    { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+    { field = "daily_prone_cmtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+  ]
+
+  # [visit.treatment_nsaid]
+  #   combinedType = "any"
+  #   fields = [
+  #     { field = "k_adrugs", values = { 1 = true } },
+  #     { field = "k_bdrugs", values = { 1 = true } },
+  #   ]
+
+  # [visit.treatment_indication_anticoagulation]
+  #   field = "ef_anticoag"
+
+[visit.treatment_ecmo]
+  description = "Extracorporeal (ECMO) support"
+  combinedType = "any"
+  fields = [
+    { field = "extracorp_prtrt", ref = "Y/N/NK" },
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_noninvasive_ventilation]
+  combinedType = "any"
+  fields = [
+    { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+    { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+    # { field = "ccm_b_noninvasive_prtrt", ref = "Y/N/NK", description = "Noninvasive ventilation in critical care?" },
+    # { field = "mv_ventprior", values = { 2 = true, 3 = true, 4 = true }, description = "Noninvasive Ventilatory Support Before Intubation?" },
+  ]
+  description = "Noninvasive ventilation"
+
+[visit.treatment_high_flow_nasal_cannula]
+  combinedType = "any"
+  fields = [
+    { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
+    { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+  ]
+  description = "High flow nasal oxygen therapy?"
+
+[visit.treatment_invasive_ventilation]
+  combinedType = "any"
+  description = "Invasive ventilation"
+  fields = [
+    { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+    { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+    # { field = "ccm_b_invasive_prtrt", ref = "Y/N/NK", description = "Invasive ventilation in critical care?" },
+  ]
+
+[visit.treatment_oxygen_therapy]
+  combinedType = "any"
+  description = "Oxygen therapy"
+  fields = [
+    { field = "oxygen_cmoccur", values = { 1 = true, 2 = false }, description = "Any oxygen therapy?" },
+    { field = "daily_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
+  ]
+
+  # [visit.treatment_pacing]
+  #   description = "Pacing"
+  #   field = "c_pimplant"
+  #   values = { 1 = true, 0 = false }
+
+  # [visit.treatment_cardiovascular] # critical care form not present
+  #   field = "ccm_b_horeas___4"
+  #   description = "Cardiovascular complications?"
+  #   values = { 0 = false, 1 = true }
+  #   if = { ccm_b_icu_yn = 1 }
+
+[visit.treatment_inhaled_nitric_oxide]
+  combinedType = "any"
+  fields = [
+    { field = "inhalednit_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
+    { field = "daily_nitritc_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
+  ]
 
 [[observation]]
   name = "bleeding_haemorrhage"

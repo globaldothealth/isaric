@@ -39,12 +39,6 @@
       "description": "Start date of visit",
       "category": "time-period"
     },
-    "end_date": {
-      "type": "string",
-      "format": "date",
-      "description": "End date of visit",
-      "category": "time-period"
-    },
     "pathogen_test_date": {
       "type": "string",
       "format": "date",
@@ -71,6 +65,7 @@
         "type": "string",
         "format": "date"
       },
+      "uniqueItems": true,
       "description": "Date(s) of admission to ICU"
     },
     "treatment_dialysis": {
@@ -91,6 +86,21 @@
     "treatment_corticosteroid": {
       "type": "boolean",
       "description": "Corticosteroid",
+      "category": "treatments"
+    },
+    "treatment_corticosteroid_type": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Methylprednisolone",
+          "Prednisolone",
+          "Dexamethasone",
+          "Hydrocortisone",
+          "Other"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Corticosteroid type",
       "category": "treatments"
     },
     "treatment_oxygen_therapy": {
@@ -118,6 +128,30 @@
       "description": "Antivirals",
       "category": "treatments"
     },
+    "treatment_antiviral_type": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Ribavirin",
+          "Lopinavir/Ritonvir",
+          "Interferon alpha",
+          "Interferon beta",
+          "Chloroquine/Hydroxychloroquine",
+          "Oseltamivir (Tamiflu)",
+          "Zanamivir",
+          "Casirivimab/Imdevimab",
+          "Remdesivir",
+          "IL6 inhibitor",
+          "Neuraminidase inhibitor",
+          "Convalescent plasma",
+          "Anti-influenza antiviral",
+          "Other"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Antivirals administered",
+      "category": "treatments"
+    },
     "treatment_antibiotics": {
       "type": "boolean",
       "description": "Antibiotics",
@@ -131,6 +165,23 @@
     "treatment_experimental_agent": {
       "type": "boolean",
       "description": "Experimental agent",
+      "category": "treatments"
+    },
+    "treatment_experimental_agent_type": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "Chloroquine",
+          "Hydroxychloroquine",
+          "Remdesivir",
+          "IL1 inhibitor",
+          "IL6 inhibitor",
+          "Convalescent plasma",
+          "Other"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Experimental agent name",
       "category": "treatments"
     },
     "treatment_inhaled_nitric_oxide": {
@@ -253,6 +304,7 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Other treatments",
       "category": "treatments"
     },
