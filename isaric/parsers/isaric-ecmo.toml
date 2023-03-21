@@ -22,7 +22,7 @@
   fields = [
     { field = "hostdat", description = "Admission date at this facility" },
     { field = "dsstdat", description = "Date of enrolment" },
-    { field = "cestdat", description = "Onset date of first/earliest symptom" }
+    { field = "cestdat", description = "Onset date of first/earliest symptom" },
   ]
 
 [adtl.defs.dailyDateHierarchy]
@@ -33,208 +33,208 @@
   ]
 
 [adtl.defs.countryMap.values]
-    1 = "AFG"
-    2 = "ALB"
-    3 = "DZA"
-    4 = "AND"
-    5 = "AGO"
-    6 = "ATG"
-    7 = "ARG"
-    8 = "ARM"
-    9 = "AUS"
-    10 = "AUT"
-    11 = "AZE"
-    12 = "BHS"
-    13 = "BHR"
-    14 = "BGD"
-    15 = "BRB"
-    16 = "BLR"
-    17 = "BEL"
-    18 = "BLZ"
-    19 = "BEN"
-    20 = "BTN"
-    21 = "BOL"
-    22 = "BIH"
-    23 = "BWA"
-    24 = "BRA"
-    25 = "BRN"
-    26 = "BGR"
-    27 = "BFA"
-    28 = "BDI"
-    29 = "KHM"
-    30 = "CMR"
-    31 = "CAN"
-    32 = "CPV"
-    33 = "CAF"
-    34 = "TCD"
-    35 = "CHL"
-    36 = "CHN"
-    37 = "COL"
-    38 = "COM"
-    39 = "COG"
-    40 = "COD"
-    41 = "CRI"
-    42 = "HRV"
-    43 = "CUB"
-    44 = "CYP"
-    45 = "CZE"
-    46 = "DNK"
-    47 = "DJI"
-    48 = "DMA"
-    49 = "DOM"
-    50 = "TLS"
-    51 = "ECU"
-    52 = "EGY"
-    53 = "SLV"
-    54 = "GNQ"
-    55 = "ERI"
-    56 = "EST"
-    57 = "ETH"
-    58 = "FJI"
-    59 = "FIN"
-    60 = "FRA"
-    61 = "GAB"
-    62 = "GMB"
-    63 = "GEO"
-    64 = "DEU"
-    65 = "GHA"
-    66 = "GRC"
-    67 = "GRD"
-    68 = "GTM"
-    69 = "GIN"
-    70 = "GNB"
-    71 = "GUY"
-    72 = "HTI"
-    73 = "HND"
-    74 = "HUN"
-    75 = "ISL"
-    76 = "IND"
-    77 = "IDN"
-    78 = "IRN"
-    79 = "IRQ"
-    80 = "IRL"
-    81 = "ISR"
-    82 = "ITA"
-    83 = "CIV"
-    84 = "JAM"
-    85 = "JPN"
-    86 = "JOR"
-    87 = "KAZ"
-    88 = "KEN"
-    89 = "KIR"
-    90 = "PRK"
-    91 = "KOR"
-    92 = "XXK"
-    93 = "KWT"
-    94 = "KGZ"
-    95 = "LAO"
-    96 = "LVA"
-    97 = "LBN"
-    98 = "LSO"
-    99 = "LBR"
-    100 = "LBY"
-    101 = "LIE"
-    102 = "LTU"
-    103 = "LUX"
-    104 = "MKD"
-    105 = "MDG"
-    106 = "MWI"
-    107 = "MYS"
-    108 = "MDV"
-    109 = "MLI"
-    110 = "MLT"
-    111 = "MHL"
-    112 = "MRT"
-    113 = "MUS"
-    114 = "MEX"
-    115 = "FSM"
-    116 = "MDA"
-    117 = "MCO"
-    118 = "MNG"
-    119 = "MNE"
-    120 = "MAR"
-    121 = "MOZ"
-    122 = "MMR"
-    123 = "NAM"
-    124 = "NRU"
-    125 = "NPL"
-    126 = "NLD"
-    127 = "NZL"
-    128 = "NIC"
-    129 = "NER"
-    130 = "NGA"
-    131 = "NOR"
-    132 = "OMN"
-    133 = "PAK"
-    134 = "PLW"
-    135 = "PAN"
-    136 = "PNG"
-    137 = "PRY"
-    138 = "PER"
-    139 = "PHL"
-    140 = "POL"
-    141 = "PRT"
-    142 = "QAT"
-    143 = "ROU"
-    144 = "RUS"
-    145 = "RWA"
-    146 = "KNA"
-    147 = "LCA"
-    148 = "VCT"
-    149 = "WSM"
-    150 = "SMR"
-    151 = "STP"
-    152 = "SAU"
-    153 = "SEN"
-    154 = "SRB"
-    155 = "SYC"
-    156 = "SLE"
-    157 = "SGP"
-    158 = "SVK"
-    159 = "SVN"
-    160 = "SLB"
-    161 = "SOM"
-    162 = "ZAF"
-    163 = "SSD"
-    164 = "ESP"
-    165 = "LKA"
-    166 = "SDN"
-    167 = "SUR"
-    168 = "SWZ"
-    169 = "SWE"
-    170 = "CHE"
-    171 = "SYR"
-    172 = "TWN"
-    173 = "TJK"
-    174 = "TZA"
-    175 = "THA"
-    176 = "TGO"
-    177 = "TON"
-    178 = "TTO"
-    179 = "TUN"
-    180 = "TUR"
-    181 = "TKM"
-    182 = "TUV"
-    183 = "UGA"
-    184 = "UKR"
-    185 = "ARE"
-    186 = "GBR"
-    187 = "USA"
-    188 = "URY"
-    189 = "UZB"
-    190 = "VUT"
-    191 = "VAT"
-    192 = "VEN"
-    193 = "VNM"
-    194 = "YEM"
-    195 = "ZMB"
-    196 = "ZWE"
+  1 = "AFG"
+  2 = "ALB"
+  3 = "DZA"
+  4 = "AND"
+  5 = "AGO"
+  6 = "ATG"
+  7 = "ARG"
+  8 = "ARM"
+  9 = "AUS"
+  10 = "AUT"
+  11 = "AZE"
+  12 = "BHS"
+  13 = "BHR"
+  14 = "BGD"
+  15 = "BRB"
+  16 = "BLR"
+  17 = "BEL"
+  18 = "BLZ"
+  19 = "BEN"
+  20 = "BTN"
+  21 = "BOL"
+  22 = "BIH"
+  23 = "BWA"
+  24 = "BRA"
+  25 = "BRN"
+  26 = "BGR"
+  27 = "BFA"
+  28 = "BDI"
+  29 = "KHM"
+  30 = "CMR"
+  31 = "CAN"
+  32 = "CPV"
+  33 = "CAF"
+  34 = "TCD"
+  35 = "CHL"
+  36 = "CHN"
+  37 = "COL"
+  38 = "COM"
+  39 = "COG"
+  40 = "COD"
+  41 = "CRI"
+  42 = "HRV"
+  43 = "CUB"
+  44 = "CYP"
+  45 = "CZE"
+  46 = "DNK"
+  47 = "DJI"
+  48 = "DMA"
+  49 = "DOM"
+  50 = "TLS"
+  51 = "ECU"
+  52 = "EGY"
+  53 = "SLV"
+  54 = "GNQ"
+  55 = "ERI"
+  56 = "EST"
+  57 = "ETH"
+  58 = "FJI"
+  59 = "FIN"
+  60 = "FRA"
+  61 = "GAB"
+  62 = "GMB"
+  63 = "GEO"
+  64 = "DEU"
+  65 = "GHA"
+  66 = "GRC"
+  67 = "GRD"
+  68 = "GTM"
+  69 = "GIN"
+  70 = "GNB"
+  71 = "GUY"
+  72 = "HTI"
+  73 = "HND"
+  74 = "HUN"
+  75 = "ISL"
+  76 = "IND"
+  77 = "IDN"
+  78 = "IRN"
+  79 = "IRQ"
+  80 = "IRL"
+  81 = "ISR"
+  82 = "ITA"
+  83 = "CIV"
+  84 = "JAM"
+  85 = "JPN"
+  86 = "JOR"
+  87 = "KAZ"
+  88 = "KEN"
+  89 = "KIR"
+  90 = "PRK"
+  91 = "KOR"
+  92 = "XXK"
+  93 = "KWT"
+  94 = "KGZ"
+  95 = "LAO"
+  96 = "LVA"
+  97 = "LBN"
+  98 = "LSO"
+  99 = "LBR"
+  100 = "LBY"
+  101 = "LIE"
+  102 = "LTU"
+  103 = "LUX"
+  104 = "MKD"
+  105 = "MDG"
+  106 = "MWI"
+  107 = "MYS"
+  108 = "MDV"
+  109 = "MLI"
+  110 = "MLT"
+  111 = "MHL"
+  112 = "MRT"
+  113 = "MUS"
+  114 = "MEX"
+  115 = "FSM"
+  116 = "MDA"
+  117 = "MCO"
+  118 = "MNG"
+  119 = "MNE"
+  120 = "MAR"
+  121 = "MOZ"
+  122 = "MMR"
+  123 = "NAM"
+  124 = "NRU"
+  125 = "NPL"
+  126 = "NLD"
+  127 = "NZL"
+  128 = "NIC"
+  129 = "NER"
+  130 = "NGA"
+  131 = "NOR"
+  132 = "OMN"
+  133 = "PAK"
+  134 = "PLW"
+  135 = "PAN"
+  136 = "PNG"
+  137 = "PRY"
+  138 = "PER"
+  139 = "PHL"
+  140 = "POL"
+  141 = "PRT"
+  142 = "QAT"
+  143 = "ROU"
+  144 = "RUS"
+  145 = "RWA"
+  146 = "KNA"
+  147 = "LCA"
+  148 = "VCT"
+  149 = "WSM"
+  150 = "SMR"
+  151 = "STP"
+  152 = "SAU"
+  153 = "SEN"
+  154 = "SRB"
+  155 = "SYC"
+  156 = "SLE"
+  157 = "SGP"
+  158 = "SVK"
+  159 = "SVN"
+  160 = "SLB"
+  161 = "SOM"
+  162 = "ZAF"
+  163 = "SSD"
+  164 = "ESP"
+  165 = "LKA"
+  166 = "SDN"
+  167 = "SUR"
+  168 = "SWZ"
+  169 = "SWE"
+  170 = "CHE"
+  171 = "SYR"
+  172 = "TWN"
+  173 = "TJK"
+  174 = "TZA"
+  175 = "THA"
+  176 = "TGO"
+  177 = "TON"
+  178 = "TTO"
+  179 = "TUN"
+  180 = "TUR"
+  181 = "TKM"
+  182 = "TUV"
+  183 = "UGA"
+  184 = "UKR"
+  185 = "ARE"
+  186 = "GBR"
+  187 = "USA"
+  188 = "URY"
+  189 = "UZB"
+  190 = "VUT"
+  191 = "VAT"
+  192 = "VEN"
+  193 = "VNM"
+  194 = "YEM"
+  195 = "ZMB"
+  196 = "ZWE"
 
 [adtl.tables]
   study = { kind = "constant" }
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
   # visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
-  observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
+  observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "\ufeffsubjid", sensitive = true } } }
 
 [study]
   id = "isaric-ecmo"
@@ -251,7 +251,7 @@
     values = { 1 = "male", 2 = "female", 3 = "non_binary" }
 
   [subject.subject_id]
-    field = "subjid"
+    field = "\ufeffsubjid"
     sensitive = true
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
@@ -327,7 +327,7 @@
 [subject.pregnancy_gestational_outcome]
   field = "apsc_gestout"
   description = "Gestational outcome"
-  values = { 1 = "Term birth", 2 = "Preterm birth" }
+  values = { 1 = "term_birth", 2 = "preterm_birth" }
 
 [subject.pregnancy_whether_breastfed] # SK to check here!!
   combinedType = "any"
@@ -408,7 +408,7 @@
   combinedType = "firstNonNull"
   fields = [
     { field = "chroniccard_mhyn", ref = "Y/N/NK", description = "Chronic cardiac disease" },
-    { field = "cardiomyopathy_ceterm", ref = "Y/N/NK", description = "Cardiomyopathy" }
+    { field = "cardiomyopathy_ceterm", ref = "Y/N/NK", description = "Cardiomyopathy" },
   ]
 
 [subject.has_chronic_kidney_disease]
@@ -516,10 +516,10 @@
 
 [[observation]]
   name = "glasgow_coma_score"
-  phase = "admission"
+  phase = "study"
   date = { ref = "admissionDateHierarchy" }
-  value = { field = "gcs_vsorres" }
-  if = { gcs_vsyn = 1 }
+  value = { field = "daily_gcs_vsorres" }
+  if = { daily_gcs_lbyn = 1 }
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -788,19 +788,19 @@
   is_present = { field = "inablewalk_ceoccur_v2", ref = "Y/N/NK" }
   if = { inablewalk_ceoccur_v2 = { "!=" = 3 } }
 
-[[observation]]
-  name = "clinical_frailty_score"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" } # this is in the critical_care_module
-  value = { field = "ccm_b_cfs_rsorres" }
-  if = { ccm_b_cfs_rsyn = 1 }
+  # [[observation]] # this isn't present in the data file
+  #   name = "clinical_frailty_score"
+  #   phase = "admission"
+  #   date = { ref = "admissionDateHierarchy" } # this is in the critical_care_module
+  #   value = { field = "ccm_b_cfs_rsorres" }
+  #   if = { ccm_b_cfs_rsyn = 1 }
 
-[[observation]]
+[[observation]] # This is a treatment - should it be here?
   name = "renal_replacement_therapy_dialysis"
   phase = "study"
   date = { ref = "admissionDateHierarchy" }            # date in the treatment form? ..
   is_present = { field = "rrt_prtrt", ref = "Y/N/NK" }
-  if = { overall_rrt_prtrt = { "!=" = 3 } }
+  if = { rrt_prtrt = { "!=" = 3 } }
 
 [[observation]]
   name = "renal_replacement_therapy_dialysis"
@@ -816,28 +816,28 @@
   is_present = { field = "renal_proccur", ref = "Y/N/NK" }
   if = { renal_proccur = { "!=" = 3 } }
 
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }                    # in the critical_care_module form
-  is_present = { field = "ccm_b_renal_prtrt", ref = "Y/N/NK" }
-  if = { ccm_b_renal_prtrt = { "!=" = 3 } }
+  # [[observation]] # Not in data
+  #   name = "renal_replacement_therapy_dialysis"
+  #   phase = "study"
+  #   date = { ref = "admissionDateHierarchy" }                    # in the critical_care_module form
+  #   is_present = { field = "ccm_b_renal_prtrt", ref = "Y/N/NK" }
+  #   if = { ccm_b_renal_prtrt = { "!=" = 3 } }
 
-[[observation]] # not sure if this mapping (below) needs to be there ..
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "k_dicuddial", values = { 1 = true, 0 = false } }
-  if = { k_dicuddial = { "!=" = "" } }
-  # description = "Is this patient still dialysis dependent at ICU discharge?"
+  # [[observation]] # not in data
+  #   name = "renal_replacement_therapy_dialysis"
+  #   phase = "study"
+  #   date = { ref = "admissionDateHierarchy" }
+  #   is_present = { field = "k_dicuddial", values = { 1 = true, 0 = false } }
+  #   if = { k_dicuddial = { "!=" = "" } }
+  #   # description = "Is this patient still dialysis dependent at ICU discharge?"
 
-[[observation]] # not sure if this mapping (below) needs to be there ..
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "k_dhosddial", values = { 1 = true, 0 = false } }
-  if = { k_dhosddia = { "!=" = "" } }
-  # description = "Is this patient still dialysis dependent at Hospital discharge?"
+  # [[observation]] # not in data
+  #   name = "renal_replacement_therapy_dialysis"
+  #   phase = "study"
+  #   date = { ref = "admissionDateHierarchy" }
+  #   is_present = { field = "k_dhosddial", values = { 1 = true, 0 = false } }
+  #   if = { k_dhosddia = { "!=" = "" } }
+  #   # description = "Is this patient still dialysis dependent at Hospital discharge?"
 
 [[observation]]
   name = "temperature_celsius"
@@ -878,29 +878,29 @@
   name = "pao2_sample_type"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  value = { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } }
+  text = { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } }
   if = { daily_pao2_lbyn = 1 }
 
 [[observation]]
   name = "base_excess"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  is_present = { field = "daily_baseex_lborres" }
+  value = { field = "daily_baseex_lborres" }
   if = { daily_baseex_lbyn = 1 }
 
 [[observation]]
   name = "richmond_agitation-sedation_scale"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  is_present = { field = "rass_vsorres" }
-  if = { rass_vsyn = 1 }
+  value = { field = "rass_vsorres" }
+  if.any = [{ rass_vsyn = 1 }, { rass_sas_vsyn = 1 }]
 
 [[observation]]
   name = "riker_sedation-agitation_scale"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  is_present = { field = "sas_vsorres" }
-  if = { rass_sas_vsyn = 4 }
+  value = { field = "sas_vsorres" }
+  if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
 
 [[observation]]
   name = "neuromuscular_blocking_agents"                       # should this be in the visit table - it's a treatment ..
