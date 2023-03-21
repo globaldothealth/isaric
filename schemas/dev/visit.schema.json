@@ -39,12 +39,6 @@
       "description": "Start date of visit",
       "category": "time-period"
     },
-    "end_date": {
-      "type": "string",
-      "format": "date",
-      "description": "End date of visit",
-      "category": "time-period"
-    },
     "pathogen_test_date": {
       "type": "string",
       "format": "date",
