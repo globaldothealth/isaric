@@ -510,14 +510,15 @@
   is_present = { field = "flw_fev", values = { 0 = false, 1 = true } }
   if.any = [{ flw_fev = 2 }, { flw_fev = 4 }]
 
-  # [[observation]]
-  #   name = "history_of_fever"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_fever", values = { 0 = false, 1 = true } } # values = ['0', '1', '2']
-  #   if = { flw2_fever = { "!=" = 2 } }
+[[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_fever_{n}", values = { 0 = false, 1 = true } } # values = ['0', '1', '2']
+  if.any = [{ "flw2_fever_{n}" = 1 }, { "flw2_fever_{n}" = 0 }]
+  for.n.range = [1, 5]
 
-  # [[observation]]
+  # [[observation]]  # TODO: should this be merged into above?
   #   name = "history_of_fever"
   #   phase = "followup"
   #   date = { ref = "followupDateHierarchy" }
@@ -573,12 +574,13 @@
   is_present = { field = "flw_short_breth", values = { 0 = false, 1 = true } }
   if.any = [{ flw_short_breth = 2 }, { flw_short_breth = 4 }]
 
-  # [[observation]]
-  #   name = "shortness_of_breath"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_short_breath", values = { 0 = false, 1 = true } }
-  #   if.any = [{ flw2_short_breath = 2 }, { flw2_short_breath = 4 }]
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_short_breath_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_short_breath_{n}" = 0 }, { "flw2_short_breath_{n}" = 1 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "muscle_aches"
@@ -622,12 +624,13 @@
   is_present = { field = "flw_fat_mal", values = { 0 = false, 1 = true } }
   if.any = [{ flw_fat_mal = 2 }, { flw_fat_mal = 4 }]
 
-  # [[observation]]
-  #   name = "fatigue_malaise"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_fat_mal", values = { 0 = false, 1 = true } }
-  #   if.any = [{ flw2_fat_mal = 2 }, { flw2_fat_mal = 4 }]
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_fat_mal_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_fat_mal_{n}" = 1 }, { "flw2_fat_mal_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "headache"
@@ -650,12 +653,13 @@
   is_present = { field = "flw_headache", values = { 0 = false, 1 = true } }
   if.any = [{ flw_headache = 2 }, { flw_headache = 4 }]
 
-  # [[observation]]
-  #   name = "headache"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_headache", values = { 0 = false, 1 = true } }
-  #   if.any = [{ flw2_headache = 2 }, { flw2_headache = 4 }]
+[[observation]]
+  name = "headache"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_headache_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_headache_{n}" = 1 }, { "flw2_headache_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "confusion"
@@ -678,12 +682,13 @@
   is_present = { field = "flw_confusion", values = { 0 = false, 1 = true } }
   if.any = [{ flw_confusion = 2 }, { flw_confusion = 4 }]
 
-  # [[observation]]
-  #   name = "confusion"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_confusion", values = { 0 = false, 1 = true } }
-  #   if = { flw2_confusion = { "!=" = 2 } }
+[[observation]]
+  name = "confusion"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_confusion_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_confusion_{n}" = 1 }, { "flw2_confusion_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "anorexia"
@@ -706,12 +711,13 @@
   is_present = { field = "flw_appetite", values = { 0 = false, 1 = true } }
   if.any = [{ flw_appetite = 2 }, { flw_appetite = 4 }]
 
-  # [[observation]]
-  #   name = "anorexia"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_appetite", values = { 0 = false, 1 = true } }
-  #   if.any = [{ flw2_appetite = 2 }, { flw2_appetite = 4 }]
+[[observation]]
+  name = "anorexia"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_appetite_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_appetite_{n}" = 1 }, { "flw2_appetite_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "vomiting_nausea"
@@ -734,12 +740,13 @@
   is_present = { field = "flw_feeling_sick", values = { 1 = true, 0 = false } }
   if.any = [{ flw_feeling_sick = 2 }, { flw_feeling_sick = 4 }]
 
-  # [[observation]]
-  #   name = "vomiting_nausea"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_feeling_sick", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_feeling_sick = 2 }, { flw2_feeling_sick = 4 }]
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_feeling_sick_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_feeling_sick_{n}" = 1 }, { "flw2_feeling_sick_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "diarrhoea"
@@ -762,12 +769,13 @@
   is_present = { field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
   if.any = [{ flw_diarrhoea = 2 }, { flw_diarrhoea = 4 }]
 
-  # [[observation]]
-  #   name = "diarrhoea"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_diarrhoea", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_diarrhoea = 2 }, { flw2_diarrhoea = 4 }]
+[[observation]]
+  name = "diarrhoea"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_diarrhoea_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_diarrhoea_{n}" = 1 }, { "flw2_diarrhoea_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "mid_upper_arm_circumference_cm"
@@ -811,12 +819,13 @@
   is_present = { field = "flw_chest_pains", values = { 1 = true, 0 = false } }
   if.any = [{ flw_chest_pains = 2 }, { flw_chest_pains = 4 }]
 
-  # [[observation]]
-  #   name = "chest_pain"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_chest_pains", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_chest_pains = 2 }, { flw2_chest_pains = 4 }]
+[[observation]]
+  name = "chest_pain"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_chest_pains_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_chest_pains_{n}" = 1 }, { "flw2_chest_pains_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "joint_pain"
@@ -832,12 +841,13 @@
   is_present = { field = "flw_joint_pain", values = { 1 = true, 0 = false } }
   if.any = [{ flw_joint_pain = 2 }, { flw_joint_pain = 4 }]
 
-  # [[observation]]
-  #   name = "joint_pain"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_joint_pain", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_joint_pain = 2 }, { flw2_joint_pain = 4 }]
+[[observation]]
+  name = "joint_pain"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_joint_pain_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_joint_pain_{n}" = 1 }, { "flw2_joint_pain_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "inability_to_walk"
@@ -895,12 +905,13 @@
   is_present = { field = "flw_seizures", values = { 1 = true, 0 = false } }
   if.any = [{ flw_seizures = 2 }, { flw_seizures = 4 }]
 
-  # [[observation]]
-  #   name = "seizures"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_seizures", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_seizures = 2 }, { flw2_seizures = 4 }]
+[[observation]]
+  name = "seizures"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_seizures_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_seizures_{n}" = 1 }, { "flw2_seizures_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "abdominal_pain"
@@ -930,12 +941,13 @@
   is_present = { field = "flw_skin_rash", values = { 1 = true, 0 = false } }
   if.any = [{ flw_skin_rash = 2 }, { flw_skin_rash = 4 }]
 
-  # [[observation]]
-  #   name = "skin_rash"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_skin_rash", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_skin_rash = 2 }, { flw2_skin_rash = 4 }]
+[[observation]]
+  name = "skin_rash"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_skin_rash_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_skin_rash_{n}" = 1 }, { "flw2_skin_rash_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "skin_ulcers"
@@ -965,12 +977,13 @@
   is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false } }
   if = { flw_bleeding = { "!=" = 2 } }
 
-  # [[observation]]
-  #   name = "bleeding_haemorrhage"
-  #   date = { ref = "followupDateHierarchy" }
-  #   phase = "followup"
-  #   is_present = { field = "flw2_bleeding", values = { 1 = true, 0 = false } }
-  #   if = { flw2_bleeding = { "!=" = 2 } }
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = { field = "flw2_survey_date_{n}" }
+  phase = "followup"
+  is_present = { field = "flw2_bleeding_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_bleeding_{n}" = 1 }, { "flw2_bleeding_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "loss_of_smell"
@@ -993,12 +1006,13 @@
   is_present = { field = "flw_loss_of_smell", values = { 1 = true, 0 = false } }
   if.any = [{ flw_loss_of_smell = 2 }, { flw_loss_of_smell = 4 }]
 
-  # [[observation]]
-  #   name = "loss_of_smell"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_loss_of_smell", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_loss_of_smell = 2 }, { flw2_loss_of_smell = 4 }]
+[[observation]]
+  name = "loss_of_smell"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_loss_of_smell_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_loss_of_smell_{n}" = 1 }, { "flw2_loss_of_smell_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "loss_of_taste"
@@ -1021,12 +1035,13 @@
   is_present = { field = "flw_loss_of_taste", values = { 1 = true, 0 = false } }
   if.any = [{ flw_loss_of_taste = 2 }, { flw_loss_of_taste = 4 }]
 
-  # [[observation]]
-  #   name = "loss_of_taste"
-  #   phase = "followup"
-  #   date = { ref = "followupDateHierarchy" }
-  #   is_present = { field = "flw2_loss_of_taste", values = { 1 = true, 0 = false } }
-  #   if.any = [{ flw2_loss_of_taste = 2 }, { flw2_loss_of_taste = 4 }]
+[[observation]]
+  name = "loss_of_taste"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_loss_of_taste_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_loss_of_taste_{n}" = 1 }, { "flw2_loss_of_taste_{n}" = 0 }]
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
