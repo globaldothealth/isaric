@@ -721,6 +721,37 @@
             "type": "object",
             "description": "Condition under which row is emitted"
           },
+          "for": {
+            "type": "object",
+            "description": "For expression for repeating blocks",
+            "patternProperties": {
+              ".*": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "range"
+                    ],
+                    "properties": {
+                      "range": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        },
+                        "description": "Range of values [start, end] inclusive",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "uniqueItems": true
+                      }
+                    }
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              }
+            }
+          },
           "text": {
             "description": "Value of the observation (text)",
             "$ref": "#/definitions/mapping"
