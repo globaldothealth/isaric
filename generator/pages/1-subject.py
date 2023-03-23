@@ -2,7 +2,6 @@
 # Stores the subject table
 
 import streamlit as st
-import pandas as pd
 
 from webapp import generate_parser
 from forms.visit_subject import create_field
@@ -11,21 +10,25 @@ from forms.view_table import view_parser
 st.header("Subject table")
 
 st.write(
-    "The 'attribute name' dropdown box contains all the available mapping fields within the ISARIC schema, for the subject table. Constant fields will be taken from\
+    "The 'attribute name' dropdown box contains all the available mapping fields within\
+          the ISARIC schema, for the subject table. Constant fields will be taken from\
           the study-level table on the [home page](webapp)."
 )
 
 st.write(
-    "As each attribute is added, you will see the table at the bottom of the page fill out with the added attributes and their corresponding mapping.\
-         If you want to change an attribute map, re-do the form and the row(s) will be replaced."
+    "As each attribute is added, you will see the table at the bottom of the page fill\
+        out with the added attributes and their corresponding mapping. If you want\
+        to change an attribute map, re-do the form and the row(s) will be replaced."
 )
 
 st.write(
-    "When you have filled in the subject, visit and observation pages, click 'Generate Parser' (found at the bottom of each page)\
-         to generate a parser .toml file ready for use."
+    "When you have filled in the subject, visit and observation pages, click 'Generate\
+        Parser' (found at the bottom of each page) to generate a parser .toml file\
+              ready for use."
 )
 
-# st.write("We strongly advise you to check and validate the parser (see [docs](https://github.com/globaldothealth/isaric/blob/mapping-guide/docs/guide.md)\
+# st.write("We strongly advise you to check and validate the parser (see [docs]
+# (https://github.com/globaldothealth/isaric/blob/mapping-guide/docs/guide.md)\
 #          before use to catch any breaking errors.)")
 st.markdown("#")
 
@@ -39,7 +42,8 @@ st.markdown("#")
 
 if attribute in constant_attrs:
     st.write(
-        "This is a constant attribute. If you wish to edit it, please use the webapp home page."
+        "This is a constant attribute.\
+              If you wish to edit it, please use the webapp home page."
     )
 else:
     # This will also allow overwriting if present.
@@ -66,7 +70,8 @@ if not all(
         if attr not in st.session_state.toml_dict["subject"].keys()
     ]
     st.warning(
-        f"You are missing the following required attributes from the Subject table: {missing_fields}"
+        f"You are missing the following required attributes from the Subject\
+              table: {missing_fields}"
     )
 
 st.dataframe(

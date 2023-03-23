@@ -1,6 +1,6 @@
 """
-Format the dictionary structure as a readable table format (which can eventually be made editable.)
-For the subject and visit tables.
+Format the dictionary structure as a readable table format (which can eventually
+be made editable.) For the subject and visit tables.
 """
 
 import pandas as pd
@@ -8,7 +8,7 @@ import pandas as pd
 
 def view_parser(dict_structure, constants, reverse_order=False):
     dict_structure = dict_structure.copy()
-    if reverse_order == True:
+    if reverse_order is True:
         dict_structure = dict(reversed(list(dict_structure.items())))
 
     if any(x in dict_structure.keys() for x in constants):
@@ -33,7 +33,8 @@ def view_parser(dict_structure, constants, reverse_order=False):
     df.rename(columns={"index": "attribute"}, inplace=True)
     if "fields" in df.columns:
         df = df.explode("fields", ignore_index=True)
-        # At this point the df has multiple rows for every 'combinedtype', with the 'fields' column containing the whole field/unit/values content.
+        # At this point the df has multiple rows for every 'combinedtype', with the
+        # 'fields' column containing the whole field/unit/values content.
 
         # df_fields is the expanded-out version of the 'fields' columns
         idx = df[df.duplicated("attribute", keep=False)]["fields"].index

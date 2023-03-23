@@ -25,9 +25,9 @@ def observation_form(button_label, clear_on_sub):
                 help="This can either be a single field name where the date is stored,\
                                 or a reference to a pre-defined date hierarchy.",
             )
-            condition = st.text_input(
-                "Condition required to show this observation as a row, e.g. 'cmyn=1'"
-            )
+            # condition = st.text_input(
+            #     "Condition required to show this observation as a row, e.g. 'cmyn=1'"
+            # )
 
         st.markdown("#")
         st.write("Optional fields")
@@ -39,7 +39,8 @@ def observation_form(button_label, clear_on_sub):
 
         with col1:
             st.write(
-                "**is_present**: Records if the observation denotes presence (*true*) or absence (*false*) of the symptom."
+                "**is_present**: Records if the observation denotes presence (*true*)\
+                      or absence (*false*) of the symptom."
             )
             subcol1, subcol2 = st.columns(2)
             is_present_field = subcol1.text_input("Field name", key="ispresent_field")
@@ -47,14 +48,16 @@ def observation_form(button_label, clear_on_sub):
             st.write("Values: Records the value of **numerical observations**")
             value_field = st.text_input(
                 "Field name",
-                help="For numerical values - E.g., 'diabp_vsorres' storing the recorded blood pressure for the observation.",
+                help="For numerical values - E.g., 'diabp_vsorres' storing the recorded\
+                      blood pressure for the observation.",
                 key="value_field",
             )
             subcol1, subcol2, subcol3 = st.columns(3)
             value_units = subcol1.text_input(
                 "Desired unit for value (optional)",
                 placeholder="kg",
-                help="Desired unit for the value field, e.g. kg for mass, '°C' for temperature, years for age.",
+                help="Desired unit for the value field, e.g. kg for mass, '°C' for\
+                      temperature, years for age.",
                 key="value_units_required",
             )
             value_sunit_field = subcol2.text_input(
@@ -73,19 +76,28 @@ def observation_form(button_label, clear_on_sub):
             text_field = subcol1.text_input("Field name", key="text_field")
             text_values = subcol2.text_input(
                 "Value map",
-                help="For text observations - E.g., for a conciousness scale, field = 'avpu_vsorres', values = '1=Alert, 2=Verbal, 3=Pain, 4=Unresponsive' }.",
+                help="For text observations - E.g., for a conciousness scale,\
+                     field = 'avpu_vsorres', values = '1=Alert, 2=Verbal, 3=Pain,\
+                      4=Unresponsive' }.",
                 key="text_value",
             )
         with col2:
             st.write(
-                "**Occurance period**: ISO 8601 duration string referring to the time period before the date in which observation occurred"
+                "**if**: Conditional controlling whether observation is included as a\
+                      row in the output file."
             )
-            occurence_period = st.text_input("Field name")
+            condition = st.text_input("Condition, e.g. 'cmyn=1'")
             st.write("**Context**: Context that qualifies the observation")
             context = st.text_input(
                 "Field name",
-                help="e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
+                help="e.g. *axillary* temperature, or *room air* oxygen saturation\
+                      measurement",
             )
+            st.write(
+                "**Occurance period**: ISO 8601 duration string referring to the time\
+                 period before the date in which observation occurred"
+            )
+            occurence_period = st.text_input("Field name")
 
             st.write("")
             st.write("")
@@ -95,12 +107,12 @@ def observation_form(button_label, clear_on_sub):
             # check for potential dictionary entries
             try:
                 is_present_values = string_to_dict(is_present_values)
-            except:
+            except ValueError:
                 pass
 
             try:
                 text_values = string_to_dict(text_values)
-            except:
+            except ValueError:
                 pass
 
             if value_units != "":
