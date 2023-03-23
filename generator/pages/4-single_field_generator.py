@@ -1,5 +1,6 @@
 # single_field_generator.py
-# This page will output the toml code for a single field, in the correct format to be read by adtl.
+# This page will output the toml code for a single field,
+# in the correct format to be read by adtl.
 
 import streamlit as st
 import tomli_w
@@ -12,8 +13,8 @@ if "single_field_observation" not in st.session_state:
 
 st.header("Generate a single parser attribute")
 st.write(
-    "You can use this page to generate a toml code snippet for a single parser attribute,\
-          to copy into a parser you are working on."
+    "You can use this page to generate a toml code snippet for a single parser\
+     attribute, to copy into a parser you are working on."
 )
 
 table = st.selectbox("Table", ["subject", "visit", "observation"])
@@ -34,7 +35,8 @@ else:
     attribute = cola.selectbox(
         "Attribute name",
         attr_list,
-        help="Every attribute option for the subject, visit and obs table is listed here; start typing your attribute name to seach through the list.",
+        help="Every attribute option in the subject, visit and observation tables is\
+              listed here; start typing your attribute name to seach through the list.",
     )
     colb.markdown("#")
     multifields = colb.checkbox(
@@ -83,9 +85,11 @@ if st.button("Generate toml snippet", type="primary"):
         """
         [[observation]]
         name = "pao2"
-        text = {field = 'daily_pao2_lborres', values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" }}.""",
+        text = {field = 'daily_pao2_lborres', values = { 1 = "Arterial", 2 = "Venous",\
+              3 = "Capillary" }}.""",
         language="toml",
     )
     st.write(
-        "We suggest condensing short tables as above where sensible to reduce the length and increase readability of parser files."
+        "We suggest condensing short tables as above where sensible to reduce the\
+              length and increase readability of parser files."
     )

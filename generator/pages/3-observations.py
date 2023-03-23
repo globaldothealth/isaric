@@ -13,13 +13,16 @@ df = pd.DataFrame(st.session_state.obs_list)
 
 st.header("Observations table")
 st.write(
-    "All the available mapping fields (based on the ISARIC schema) for the observations table are listed below. \
-        Constant fields will be taken automatically from the study-level table on the home page."
+    "All the available mapping fields (based on the ISARIC schema) for the observations\
+     table are listed below. Constant fields will be taken automatically from the\
+          study-level table on the home page."
 )
 st.write(
-    "For every observation in your form, fill in this form. When the 'add this observation to the data store' button is clicked, it will be added to memory.\
-        The currently stored observations are listed under the form. Observations which are already present can be overwritten\
-             by filling in the form with the same observation name and phase."
+    "For every observation in your form, fill in this form. When the 'add this\
+     observation to the data store' button is clicked, it will be added to memory.\
+     The currently stored observations are listed under the form. Observations which\
+     are already present can be overwritten by filling in the form with the same\
+     observation name and phase."
 )
 
 st.markdown("#")
@@ -35,7 +38,7 @@ if observation is not None:
             overwrite = True
             break
 
-    if overwrite == False:
+    if overwrite is False:
         st.session_state.obs_list.append(observation)
 
     # df = pd.json_normalize(st.session_state.obs_list, max_level=0)

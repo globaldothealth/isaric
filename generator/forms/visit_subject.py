@@ -42,10 +42,12 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
 
     elif input_type == "field with value mapping":
         col3.write(
-            "Value maps can be given either as e.g., '1=alive, 2=hospitalised, 3=death, ...'"
+            "Value maps can be given either as e.g., '1=alive, 2=hospitalised,\
+                  3=death, ...'"
         )
         col3.write(
-            "or as a reference to a predefined mapping given in the top section, e.g., 'Y/N/NK'."
+            "or as a reference to a predefined mapping given in the top section,\
+                  e.g., 'Y/N/NK'."
         )
         values = col3.text_input(
             "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death",
@@ -55,19 +57,20 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
         try:
             values_transformed = string_to_dict(values)
             return structures.field_value_mapped(field, desc, values_transformed)
-        except:
+        except ValueError:
             return structures.field_value_mapped(field, desc, values)
 
     elif "with conditional" in input_type:
         if input_type == "value mapped with conditional":
             values = col2.text_input(
-                "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death, or refer to predefined maps e.g.Y/N/NK",
+                "Value mapping given as, e.g., 1=alive, 2=hospitalised, 3=death,\
+                      or refer to predefined maps e.g.Y/N/NK",
                 key=table + attribute + iterable + "valuemap",
                 value=optional_vals,
             )
             try:
                 values_transformed = string_to_dict(values)
-            except:
+            except ValueError:
                 values_transformed = values
         else:
             values_transformed = None
@@ -85,8 +88,9 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
 
             if "," in c_rule:
                 error = ValueError(
-                    "Only one conditional rule can be entered if a combined option is not selected.\n\
-                           Please either change the condition being applied to if.all or if.any, or remove the additional conditions."
+                    "Only one conditional rule can be entered if a combined option is\
+                     not selected.\n Please either change the condition being applied\
+                     to if.all or if.any, or remove the additional conditions."
                 )
                 st.exception(error)
 
@@ -154,7 +158,7 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
 
 
 def create_field(table, attribute, a_type, multicol=False):
-    if multicol == True:
+    if multicol is True:
         coll, colr = st.columns([1, 3], gap="large")
         combination_type = coll.selectbox(
             "Which combined type should be applied?",

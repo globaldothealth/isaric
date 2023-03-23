@@ -1,6 +1,7 @@
 """
-To use, pip install streamlit then run `streamlit run generator/webapp.py` in the terminal.
-A locally-hosted website will open in a browser where you can interact with it.
+To use, pip install streamlit then run `streamlit run generator/webapp.py` in
+the terminal. A locally-hosted website will open in a browser where you can
+interact with it.
 """
 
 import streamlit as st
@@ -43,8 +44,9 @@ def validate_required_fields(data):
 
     if len(missing_fields_sub + missing_fields_visit) > 0:
         st.error(
-            f"There are required fields missing from the subject or visit tables.\n\
-                 Subject: {missing_fields_sub}\n\
+            f"There are required fields missing from the subject or visit\
+                 tables.\n\
+                Subject: {missing_fields_sub}\n\
                  Visit: {missing_fields_visit}"
         )
         return False
@@ -72,7 +74,7 @@ def generate_parser(data):
                             overwrite = True
                             break
 
-                    if overwrite == False:
+                    if overwrite is False:
                         data["observation"].append(obs)
                 else:
                     data["observation"] = [obs]
@@ -84,9 +86,9 @@ def generate_parser(data):
     return False
 
 
-### -------------------------------------------------------------------------------------
-# START STREAMLIT -----------------------------------------------------------------------
-### -------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# START STREAMLIT -------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 st.set_page_config(layout="wide")
@@ -99,14 +101,18 @@ st.write(
 
 st.write(
     "Please use this webapp to auto-generate a .toml parser file.\
-    In the sidebar to the left you will find a page for each of the three tables which\
-          will be generated: the Subject, Visit and Observations tables.\
-    All 3 of these pages will need to be filled in to create a compete parser, which will\
-          need checking manually and with the parser validator before being integrated into the ISARIC repository.\n\
-    If you would like to write the parser directly, the `base-parser.toml` file contains all the headers for the subject and\
-        visit tables, which can be filled in as required, along with an example of how the 'observations' should be formatted.\n\
-    Also provided is a page to generate the toml code for an individual field if you would like write to the toml file directly \
-        but are unsure of the syntax. This code can be copied and pasted into your parser file.\
+    In the sidebar to the left you will find a page for each of the three\
+     tables which will be generated: the Subject, Visit and Observations\
+     tables. All 3 of these pages will need to be filled in to create a\
+     complete parser, which will need checking manually and with the parser\
+     validator before being integrated into the ISARIC repository.\n\
+    If you would like to write the parser directly, the `base-parser.toml`\
+     file contains all the headers for the subject and visit tables, which can\
+     be filled in as required, along with an example of how the 'observations'\
+     should be formatted.\n\
+    Also provided is a page to generate the toml code for an individual field\
+     if you would like write to the toml file directly but are unsure of the\
+     syntax. This code can be copied and pasted into your parser file.\
     "
 )
 
@@ -183,11 +189,13 @@ st.session_state.toml_dict["visit"]["country_iso3"] = parser_country
 st.markdown("#")
 
 st.header(
-    "Below are the common mapping types for value fields currently defined in the parser file."
+    "Below are the common mapping types for value fields currently defined in\
+          the parser file."
 )
 st.write(
-    "To edit the existing maps, or add a new one, use the form to the right. If a reference which already exists,\
-          e.g. 'Y/N/NK' is given as the reference in the form, the current map will be overwritten."
+    "To edit the existing maps, or add a new one, use the form to the right.\
+     If a reference which already exists, e.g. 'Y/N/NK' is given as the\
+     reference in the form, the current map will be overwritten."
 )
 
 col1, col2 = st.columns(2)

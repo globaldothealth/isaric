@@ -1,7 +1,8 @@
 """
 Contains dictionary structures for standard formats
 
-Dictionary structures which can be called to build up a parser file using a webapp interface.
+Dictionary structures which can be called to build up a parser file using
+a webapp interface.
 """
 
 import streamlit as st
@@ -88,7 +89,7 @@ def field_with_transformation(f: str, d: str, func: str, params: list | None):
     return rule
 
 
-## Combined types
+# Combined types
 
 
 # look for ways to show the 4 options available for this.
@@ -96,18 +97,18 @@ def combined_type(rule: str, desc: str, fields: list):
     return {"combinedType": rule, "description": desc, "fields": fields}
 
 
-### ----------------------------
+# ---------------------------------------------------------
 # Streamlit functions
-### ----------------------------
+# ---------------------------------------------------------
 
 
 @st.cache_data
 def string_to_dict(input_string, conditional=False):
     """
     Transforms a comma-seperated string input (e.g. "1=true, 2=false, 3=false")
-    into a dictionary with key:value pairs, converts values into appropriate Python types.
-    The conditional flag indicates that there may be a conditional rule which needs parsing
-    in addition.
+    into a dictionary with key:value pairs, converts values into appropriate Python
+    types. The conditional flag indicates that there may be a conditional rule which
+    needs parsing in addition.
     """
 
     def convert_vals_recursive(res):
@@ -116,7 +117,7 @@ def string_to_dict(input_string, conditional=False):
                 v_converted = json.loads(v)
             except TypeError:  # dict
                 v_converted = convert_vals_recursive(v)
-            except:
+            except json.decoder.JSONDecodeError:
                 v_converted = v
             res[k] = v_converted
         return res
@@ -124,7 +125,7 @@ def string_to_dict(input_string, conditional=False):
     if input_string == "":
         return {}
 
-    if conditional == True:
+    if conditional is True:
         result = [re.split("([<>=!]+)", item) for item in input_string.split(", ")]
         for item in result:
             if item[1] == "=":
