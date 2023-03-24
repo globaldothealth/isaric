@@ -304,12 +304,13 @@
     { field = "Ever ICU", values = { 0 = false, 1 = true } },
     { field = "Intervention during hospitalisation.IcuAdmission", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
     { field = "flw_icu" , values = { 0 = false, 1 = true } }
+  ]
 
 [visit.icu_admission_dates]
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "Intervention during hospitalisation.IcuAdmissionDate", source_date = "%m/%d/%y" },
+    { field = "Intervention during hospitalisation.IcuAdmissionDate", source_date = "%m/%d/%y" }
   ]
 
 [visit.treatment_dialysis]
@@ -848,21 +849,21 @@
   phase = "followup"
   date = { field = flw_survey_date }
   is_present = { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true } }
-  if.all = [ { "flw_eq5d_mb_5l_uk_eng_2" = 1 }, { "flw_eq5d_mb_5l_uk_eng_2" = 2 }, { "flw_eq5d_mb_5l_uk_eng_2" = 3 }, { "flw_eq5d_mb_5l_uk_eng_2" = 4 }, { "flw_eq5d_mb_5l_uk_eng_2" = 5 } }
+  if.any = [ { "flw_eq5d_mb_5l_uk_eng_2" = 1 }, { "flw_eq5d_mb_5l_uk_eng_2" = 2 }, { "flw_eq5d_mb_5l_uk_eng_2" = 3 }, { "flw_eq5d_mb_5l_uk_eng_2" = 4 }, { "flw_eq5d_mb_5l_uk_eng_2" = 5 } ]
 
 [[observation]]
   name = "inability_to_walk"
   phase = "followup"
   date = { field = flw_survey_date }
-  is_present = { field = "flw_walking_today", values = { 2 = true, 3 = true, 4 = true } } # check if this is correct
-  if = { flw_walking_today = { "!=" = 1 } }
+  is_present = { field = "flw_walking_today", values = { 1 = false, 2 = false, 3 = false, 4 = true } } # check if this is correct
+  if.any = [ { flw_walking_today = 1 }, { flw_walking_today = 2 }, { flw_walking_today = 3 }, { flw_walking_today = 4 } ]
   
 [[observation]] # Q. IS BELOW CORRECT?
   name = "inability_to_walk"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
   is_present = { field = "flw2_eq5d_mb_5l_uk_eng_{n}", values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true } }
-  if.all = [ { "flw2_eq5d_mb_5l_uk_eng_{n}" = 1 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 2 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 3 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 4 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 5 } ] # Q. IS THIS CORRECT? NOT SURE ...
+  if.any = [ { "flw2_eq5d_mb_5l_uk_eng_{n}" = 1 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 2 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 3 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 4 }, { "flw2_eq5d_mb_5l_uk_eng_{n}" = 5 } ] # Q. IS THIS CORRECT? NOT SURE ...
   for.n.range = [1, 5]
   
 [[observation]] # Q. IS BELOW CORRECT?
@@ -870,7 +871,7 @@
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
   is_present = { field = "flw2_walking_today_{n}", values = { 1 = false, 2 = false, 3 = false, 4 = true } }
-  if.all = [ { "flw2_walking_today_{n}" = 1 }, { "flw2_walking_today_{n}" = 2 }, { "flw2_walking_today_{n}" = 3 }, { "flw2_walking_today_{n}" = 4 } ] # Q. IS THIS CORRECT? NOT SURE ...
+  if.any = [ { "flw2_walking_today_{n}" = 1 }, { "flw2_walking_today_{n}" = 2 }, { "flw2_walking_today_{n}" = 3 }, { "flw2_walking_today_{n}" = 4 } ] # Q. IS THIS CORRECT? NOT SURE ...
   for.n.range = [1, 5]
 
 [[observation]]
