@@ -12,7 +12,7 @@ TODO: Examples?
 
 ## combinedTypes
 
-combinedType fields are also described in the [adtl specification file](https://github.com/globaldothealth/adtl/blob/main/docs/specification.md). For ISARIC, it is particularly important to note the differences between `any` and `firstNonNull` and how they should be applied; they are therefore also described here.
+combinedType fields are also described in the [adtl specification file](https://github.com/globaldothealth/adtl/blob/main/docs/specification.md). For clinical data, it is particularly important to note the differences between `any` and `firstNonNull` and how they should be applied; they are therefore also described here.
 
 **any**: If any of the fields listed are non-null (truthy), the attribute will be set to `True`. Otherwise, it will be set to `False`; *even if all the fields given as options are `None`*.
 
@@ -63,6 +63,8 @@ However, below is a valid example of `if` statement usage; `dsstdtc` will usuall
 
 ## Phase descriptors
 Phase descriptors are used within the 'observations' table to describe which time period within the study the data refers to. One of three descriptors can be used:
+
+**pre-admission**: Specifically for medication/treatments recorded as e.g., medical history, before hospital admission. All symptoms, including those which may be described as occuring before admission, should NOT be recorded with this descriptor.
 
 **admission**: Refers to data collected upon patient admission. Any symptoms/observations recorded at admission may refer to the day of admission, or a time-period leading up to the day of hospital admission.
 
@@ -120,8 +122,29 @@ The schema file path should, as above, match the path from your parser file, to 
 
 Follow the instructions on [adtl](https://github.com/globaldothealth/adtl) for running the data transformation; the terminal command should follow the format
 ```
-adtl specification-file input-file -o output
+adtl specification-file input-file
 ```
 Once the command has run, adtl will generate a report in the terminal showing validation error counts, and will prodice error messages indicating what is causing the parser validation to fail at particular steps.
 
 Each output file will also contain two additional columns, `adtl_valid` and `adtl_error`, with data indicating whether the output row is valid according to the schema (True, empty, respectively) or invalid (False, error message).
+
+# Table-by-table notes for each attribute
+
+Listed below are all the attributes for the Subject, Visit and Observation tables, grouped by table, with notes on how they should be applied.
+
+## Subject
+
+**has_died**: boolean indicator, can take data from both hospitalisation and follow-up surveys, and includes non-covid related deaths where specified (as in many studies the cause of death is unknown).
+
+**date_death**: Takes date from outcome date/date of death (if outcome records death)/death reported at followup.
+
+## Visit
+
+**treatment_oxygen_therapy**: General level boolean indicator. If any of the more specific *treatment_oxygen* fields are True, this general-level attribute should also be True.
+
+## Observation
+Complications should be recorded here, not in the subject table.
+
+<a name="inability_to_walk"></a> **inability_to_walk**: boolean indicator. Where a relevant field contains a scale, rather than boolean Y/N responses, use [inability_to_walk_scale](inability_to_walk_scale).
+
+<a name="inability_to_walk_scale"></a>**inability_to_walk_scale**: Use a 1-4 scale to indicate the degree of difficulty a patient has walking. Values should map to: *1-No difficulty, 2-Some difficulty, 3-Lots of difficulty, 4-Unable to walk*. If the field contains a greater number of options, they should be mapped onto a 1-4 scale, rounding down. E.g., for a 1-5 scale of: *1-no inability, 2-slight inability, 3-moderate inability, 4-severe inability, 5-unable*, option 3 (moderate inability) should be rounded down and mapped to *2-some difficulty* in the 1-4 scale. If a relevant field instead contains a boolean Y/N response, use [inability_to_walk](#inability_to_walk) instead.
