@@ -51,6 +51,7 @@ CONFIG = {
     [
         ("1, yes | 2, no | 3, unknown", ({"1": True, "2": False}, ["3"])),
         ("1, yes | 0, no | 3, unknown", ({"1": True, "0": False}, ["3"])),
+        ("yes | no | unknown", (None, [])),
         (
             "kg, weight in kilograms | lbs, weight in pounds",
             ({"kg": "weight in kilograms", "lbs": "weight in pounds"}, []),
@@ -59,11 +60,6 @@ CONFIG = {
 )
 def test_parse_choices(source, expected):
     assert make_toml.parse_choices(CONFIG, source) == expected
-
-
-def test_invalid_parse_choices():
-    with pytest.raises(ValueError, match="parse_choices"):
-        make_toml.parse_choices(CONFIG, "yes | no | unknown")
 
 
 def test_map_enum():
