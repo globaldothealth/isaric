@@ -12,10 +12,10 @@ from pathlib import Path
 from typing import Dict, List, Any, Tuple
 
 import tomli
-import tomli_w
 import pandas as pd
 
 from .util import maybe, DEFAULT_CONFIG
+from .toml_writer import dump
 
 
 def read_data(path: Path) -> Dict:
@@ -329,7 +329,7 @@ def common_mappings(
 
 def write_toml(data: Dict[str, Any], output: str):
     with open(output, "wb") as fp:
-        tomli_w.dump(data, fp)
+        dump(data, fp)
 
 
 def main():
@@ -361,15 +361,7 @@ def main():
         or Path.cwd()
     )
 
-    with open(f"{args.name}.toml", "wb") as fp:
-        tomli_w.dump(
-            make_toml(
-                config,
-                mappings,
-                args.name,
-            ),
-            fp,
-        )
+    write_toml(make_toml(config, mappings, args.name), f"{args.name}.toml")
 
 
 if __name__ == "__main__":

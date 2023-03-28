@@ -5,8 +5,8 @@
   name = "test"
   description = "test mappings"
   
-  [adtl.tables.study]
-  kind = "constant"
+  [adtl.tables]
+  study = { kind = "constant" }
   
   [adtl.tables.subject]
   kind = "groupBy"
@@ -23,14 +23,10 @@
   [adtl.tables.observation]
   kind = "oneToMany"
   schema = "../../schemas/dev/observation.schema.json"
+  common = { visit_id = { field = "subjid", sensitive = true } }
   
-  [adtl.tables.observation.common.visit_id]
-  field = "subjid"
-  sensitive = true
-  
-  [adtl.defs."Y/N/NK".values]
-  1 = true
-  2 = false
+  [adtl.defs]
+  "Y/N/NK" = { values = { 1 = true, 2 = false } }
   
   [adtl.defs."discharged alive/hospitalization/transfer to other facility/death/palliative discharge".values]
   1 = "discharged alive"
@@ -114,12 +110,7 @@
   [visit.outcome]
   field = "dsterm"
   description = "<acronym title=\"Definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Outcome:</acronym>"
-  
-  [visit.outcome.values]
-  1 = "discharged"
-  3 = "transferred"
-  4 = "death"
-  5 = "discharged"
+  values = { 1 = "discharged", 3 = "transferred", 4 = "death", 5 = "discharged" }
   
   [visit.treatment_anticoagulation]
   field = "anticoag_cmyn"
@@ -139,27 +130,15 @@
   [[observation]]
   name = "abdominal_pain"
   phase = "admission"
-  
-  [observation.date]
-  ref = "admissionDateHierachy"
-  
-  [observation.if.abdopain_ceoccur_v2]
-  "!=" = 3
-  
-  [observation.is_present]
-  field = "abdopain_ceoccur_v2"
-  description = "Abdominal pain"
-  ref = "Y/N/NK"
+  date = { ref = "admissionDateHierachy" }
+  if = { abdopain_ceoccur_v2 = { "!=" = 3 } }
+  is_present = { field = "abdopain_ceoccur_v2", description = "Abdominal pain", ref = "Y/N/NK" }
   
   [[observation]]
   name = "altered_consciousness_confusion"
   phase = "admission"
-  
-  [observation.date]
-  ref = "admissionDateHierachy"
-  
-  [observation.if.confusion_ceoccur_v2]
-  "!=" = 3
+  date = { ref = "admissionDateHierachy" }
+  if = { confusion_ceoccur_v2 = { "!=" = 3 } }
   
   [observation.is_present]
   field = "confusion_ceoccur_v2"
@@ -169,27 +148,15 @@
   [[observation]]
   name = "anorexia"
   phase = "admission"
-  
-  [observation.date]
-  ref = "admissionDateHierachy"
-  
-  [observation.if.anorexia_ceoccur_v2]
-  "!=" = 3
-  
-  [observation.is_present]
-  field = "anorexia_ceoccur_v2"
-  description = "Anorexia"
-  ref = "Y/N/NK"
+  date = { ref = "admissionDateHierachy" }
+  if = { anorexia_ceoccur_v2 = { "!=" = 3 } }
+  is_present = { field = "anorexia_ceoccur_v2", description = "Anorexia", ref = "Y/N/NK" }
   
   [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  
-  [observation.date]
-  ref = "dailyDateHierarchy"
-  
-  [observation.if.daily_gcs_vsorres]
-  "!=" = ""
+  date = { ref = "dailyDateHierarchy" }
+  if = { daily_gcs_vsorres = { "!=" = "" } }
   
   [observation.value]
   field = "daily_gcs_vsorres"
@@ -198,27 +165,15 @@
   [[observation]]
   name = "headache"
   phase = "admission"
-  
-  [observation.date]
-  ref = "admissionDateHierachy"
-  
-  [observation.if.headache_ceoccur_v2]
-  "!=" = 3
-  
-  [observation.is_present]
-  field = "headache_ceoccur_v2"
-  description = "Headache"
-  ref = "Y/N/NK"
+  date = { ref = "admissionDateHierachy" }
+  if = { headache_ceoccur_v2 = { "!=" = 3 } }
+  is_present = { field = "headache_ceoccur_v2", description = "Headache", ref = "Y/N/NK" }
   
   [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
-  
-  [observation.date]
-  ref = "admissionDateHierachy"
-  
-  [observation.if.hr_vsorres]
-  "!=" = ""
+  date = { ref = "admissionDateHierachy" }
+  if = { hr_vsorres = { "!=" = "" } }
   
   [observation.value]
   field = "hr_vsorres"
@@ -227,12 +182,8 @@
   [[observation]]
   name = "heart_rate_bpm"
   phase = "study"
-  
-  [observation.date]
-  ref = "dailyDateHierarchy"
-  
-  [observation.if.daily_hr_vsorres]
-  "!=" = ""
+  date = { ref = "dailyDateHierarchy" }
+  if = { daily_hr_vsorres = { "!=" = "" } }
   
   [observation.value]
   field = "daily_hr_vsorres"

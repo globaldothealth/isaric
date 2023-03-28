@@ -6,8 +6,8 @@ import pytest
 import pandas as pd
 from pathlib import Path
 
-import tomli_w
 import autoparser.make_toml as make_toml
+import autoparser.toml_writer as toml_writer
 
 CONFIG = {
     "schema-path": "..",
@@ -151,4 +151,4 @@ def test_make_toml(snapshot):  # integration test
     toml_data = make_toml.make_toml(
         CONFIG, mappings, name="test", description="test mappings"
     )
-    assert tomli_w.dumps(toml_data) == snapshot
+    assert toml_writer.dumps(toml_data) == snapshot
