@@ -130,14 +130,14 @@
   [[observation]]
   name = "abdominal_pain"
   phase = "admission"
-  date = { ref = "admissionDateHierachy" }
+  date = { ref = "admissionDateHierarchy" }
   if = { abdopain_ceoccur_v2 = { "!=" = 3 } }
   is_present = { field = "abdopain_ceoccur_v2", description = "Abdominal pain", ref = "Y/N/NK" }
   
   [[observation]]
   name = "altered_consciousness_confusion"
   phase = "admission"
-  date = { ref = "admissionDateHierachy" }
+  date = { ref = "admissionDateHierarchy" }
   if = { confusion_ceoccur_v2 = { "!=" = 3 } }
   
   [observation.is_present]
@@ -148,7 +148,7 @@
   [[observation]]
   name = "anorexia"
   phase = "admission"
-  date = { ref = "admissionDateHierachy" }
+  date = { ref = "admissionDateHierarchy" }
   if = { anorexia_ceoccur_v2 = { "!=" = 3 } }
   is_present = { field = "anorexia_ceoccur_v2", description = "Anorexia", ref = "Y/N/NK" }
   
@@ -165,14 +165,14 @@
   [[observation]]
   name = "headache"
   phase = "admission"
-  date = { ref = "admissionDateHierachy" }
+  date = { ref = "admissionDateHierarchy" }
   if = { headache_ceoccur_v2 = { "!=" = 3 } }
   is_present = { field = "headache_ceoccur_v2", description = "Headache", ref = "Y/N/NK" }
   
   [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
-  date = { ref = "admissionDateHierachy" }
+  date = { ref = "admissionDateHierarchy" }
   if = { hr_vsorres = { "!=" = "" } }
   
   [observation.value]

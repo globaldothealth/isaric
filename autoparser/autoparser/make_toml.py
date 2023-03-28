@@ -237,7 +237,7 @@ def _make_toml_observation(
                 "phase": phase,
                 "date": {
                     "ref": {
-                        "admission": "admissionDateHierachy",
+                        "admission": "admissionDateHierarchy",
                         "study": "dailyDateHierarchy",
                         "followup": "followupDateHierarchy",
                     }.get(phase)
