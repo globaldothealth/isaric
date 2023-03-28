@@ -7,6 +7,7 @@ import json
 import argparse
 import functools
 import operator
+import logging
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
 
@@ -71,9 +72,10 @@ def parse_choices(config: Dict[str, Any], s: str) -> Dict[str, Any]:
             for x in s.split(delimiter)
         )
     except ValueError:
-        raise ValueError(
+        logging.warning(
             f"parse_choices({s!r}) failed with delimiter={delimiter!r} delimiter_map={delimiter_map!r}"
         )
+        return None, []
     # drop n/a, n/k, unknowns
     nulls = [k for k, v in choices.items() if v in lang["is_missing"]]
     choices = {k: v for k, v in choices.items() if v not in lang["is_missing"]}
