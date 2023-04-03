@@ -1009,7 +1009,7 @@
   phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_vomit_ceoccur_v2", ref = "Y/N/NK" }
-  if = { vomit_ceoccur_v2 = { "!=" = 3 } }
+  if = { daily_vomit_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "vomiting_nausea"
@@ -1308,7 +1308,7 @@
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_date" }
   value = { field = "daily_hr_vsorres" }
   if = { daily_hr_vsyn = 1 }
 
@@ -1322,7 +1322,7 @@
 [[observation]]
   name = "respiratory_rate"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_date" }
   value = { field = "daily_rr_vsorres" }
   if = { daily_rr_vsyn = 1 }
 
@@ -1336,7 +1336,7 @@
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_date" }
   value = { field = "systolic_vsorres" }
   if = { systolic_vsyn = 1 }
 
@@ -1364,7 +1364,7 @@
 [[observation]]
   name = "severe_dehydration"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_date" }
   is_present = { field = "daily_dehydration_vsorres", values = { 1 = true, 0 = false } }
   if = { daily_dehydration_vsorres = { "!=" = 3 } }
 
@@ -1378,7 +1378,7 @@
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_date" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
   if = { daily_stercap_vsorres = { "!=" = 3 } }
 
