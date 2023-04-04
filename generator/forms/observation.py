@@ -1,7 +1,18 @@
 import streamlit as st
+import json
 import forms.structures as structures
 
 from forms.structures import string_to_dict
+
+parser = json.load(open("schemas/dev/parser.schema.json"))
+obs = parser["properties"]["observation"]["items"]["properties"]["name"]["enum"]
+
+with st.sidebar:
+    st.header("Search for pre-defined mappings:")
+    ref = st.selectbox(
+        "Reference name", list(st.session_state.toml_dict["adtl"]["defs"].keys())
+    )
+    st.json(st.session_state.toml_dict["adtl"]["defs"][ref])
 
 
 def observation_form(button_label, clear_on_sub):
@@ -12,9 +23,7 @@ def observation_form(button_label, clear_on_sub):
             col2,
         ) = st.columns(2)
         with col1:
-            name = st.selectbox(
-                "Observation name", st.session_state.obs["properties"]["name"]["enum"]
-            )
+            name = st.selectbox("Observation name", obs)
             phase = st.radio(
                 "Observation phase", ["admission", "study", "followup"], horizontal=True
             )
@@ -25,9 +34,6 @@ def observation_form(button_label, clear_on_sub):
                 help="This can either be a single field name where the date is stored,\
                                 or a reference to a pre-defined date hierarchy.",
             )
-            # condition = st.text_input(
-            #     "Condition required to show this observation as a row, e.g. 'cmyn=1'"
-            # )
 
         st.markdown("#")
         st.write("Optional fields")

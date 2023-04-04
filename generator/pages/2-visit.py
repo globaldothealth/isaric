@@ -6,6 +6,13 @@ import streamlit as st
 from webapp import generate_parser
 from forms.visit_subject import create_field
 from forms.view_table import view_parser
+from forms.structures import sidebar_search
+
+visit_attributes = st.session_state.parser["properties"]["visit"]["properties"].keys()
+required_attributes = st.session_state.parser["properties"]["visit"]["required"]
+
+with st.sidebar:
+    sidebar_search("visit")
 
 st.header("Visit table")
 
@@ -31,37 +38,49 @@ st.markdown("#")
 constant_attrs = ["country_iso3"]
 
 cola, colb = st.columns(2)
-attribute = cola.selectbox("Attribute name", st.session_state.visit_attributes)
+attribute = cola.selectbox("Attribute name", visit_attributes)
+
+if attribute in st.session_state.toml_dict["visit"]:
+    current_data = st.session_state.toml_dict["visit"][attribute]
+    if "fields" in current_data:
+        mf = True
+else:
+    current_data, mf = False, False
+
+
 colb.markdown("#")
-multifields = colb.checkbox(
-    "Multiple fields to combine?", key="visit_multifield_checkbox"
-)
+multifields = colb.checkbox("Multiple fields to combine?", value=mf)
 st.markdown("#")
 
-if attribute in constant_attrs:
-    st.write(
-        "This is a constant attribute. If you wish to edit it,\
-         please use the webapp home page."
-    )
-else:
-    # This will also allow overwriting if present.
-    field = create_field(
-        "visit", attribute, st.session_state.visit_attr_types[attribute], multifields
-    )
+# if attribute in constant_attrs:
+#     st.write(
+#         "This is a constant attribute.\
+#               If you wish to edit it, please use the webapp home page."
+#     )
+# else:
+# This will also allow overwriting if present.
+field = create_field(
+    "visit",
+    attribute,
+    st.session_state.visit_attr_types[attribute]
+    if "visit_attr_types" in st.session_state
+    else "",
+    multifields,
+    data_provided=current_data,
+)
 
-    col1, col2, col3 = st.columns(3)
-    if col2.button("Apply this attribute to the table", type="primary"):
-        st.session_state.toml_dict["visit"][attribute] = field
+col1, col2, col3 = st.columns(3)
+if col2.button("Apply this attribute to the table", type="primary"):
+    st.session_state.toml_dict["visit"][attribute] = field
 
 st.markdown("### Attributes currently in the 'visit' table")
 
 if not all(
-    x in st.session_state.toml_dict["visit"].keys()
-    for x in st.session_state.visit_required_attributes
+    x in st.session_state.toml_dict["visit"].keys() for x in required_attributes
 ):
     missing_fields = [
         attr
-        for attr in st.session_state.visit_required_attributes
+        for attr in required_attributes
         if attr not in st.session_state.toml_dict["visit"].keys()
     ]
     st.warning(
@@ -69,10 +88,15 @@ if not all(
               Visit table: {missing_fields}"
     )
 
+# st.dataframe(
+#     view_parser(
+#         st.session_state.toml_dict["visit"], constant_attrs, reverse_order=True
+#     ),
+# )
 st.dataframe(
     view_parser(
-        st.session_state.toml_dict["visit"], constant_attrs, reverse_order=True
-    ),
+        st.session_state.toml_dict["visit"], [], reverse_order=True
+    ),  # ideally only  reverse the order when data isn't being provided.
 )
 
 _, col2, col3, _ = st.columns(4)

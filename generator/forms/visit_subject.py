@@ -1,13 +1,43 @@
 import streamlit as st
+import json
 import forms.structures as structures
 
 from forms.structures import string_to_dict, make_grid
 
+parser = json.load(open("schemas/dev/parser.schema.json"))
+combinedtypes = parser["definitions"]["mapping"]["oneOf"][1]["properties"][
+    "combinedType"
+]["enum"]
 
-def field_types(table, attribute, a_type, columns, iterable="0"):
+
+def field_types(table, attribute, a_type, columns, iterable="0", data_provided=False):
     col1, col2, col3 = columns
 
-    if a_type == "boolean" or type(a_type) == list:
+    if data_provided:
+        # autoparser has been used to fill in the fields
+        if "value" in data_provided or "ref" in data_provided:
+            if "if" in data_provided:
+                # value mapped with conditional
+                i = 3
+                data_cond = data_provided["if"]
+            else:
+                # value mapped
+                i = 1
+            optional_vals = data_provided.get("value", data_provided["ref"])
+        elif "if" in data_provided:
+            i = 2
+            data_cond = data_provided["if"]
+        elif "source_unit" in data_provided or "unit" in data_provided:
+            i = 5
+            optional_vals = data_provided.get(
+                "value", data_provided["ref"]
+            )  # first try ap['source_unit'][value], then
+        elif "date" in data_provided or "source_date" in data_provided:
+            i = 4
+        else:
+            i = 0
+
+    elif a_type == "boolean" or type(a_type) == list:
         i = 1
         if type(a_type) == list:
             optional_vals = ", ".join([f"{i+1}={v}" for i, v in enumerate(a_type)])
@@ -33,9 +63,17 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
     )
 
     field = col2.text_input(
-        "Field (column) name", key=table + attribute + iterable + "field"
+        "Field (column) name",
+        key=table + attribute + iterable + "field",
+        value=data_provided["field"] if data_provided else "",
     )
-    desc = col2.text_input("Description", key=table + attribute + iterable + "desc")
+    desc = col2.text_input(
+        "Description",
+        key=table + attribute + iterable + "desc",
+        value=data_provided["description"]
+        if (data_provided and "description" in data_provided)
+        else "",
+    )
 
     if input_type == "single field":
         return structures.single_field(field, desc)
@@ -84,6 +122,7 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
             c_rule = col3.text_input(
                 "The conditional rule, e.g. other_cmyn=1, with no spaces.",
                 key=table + attribute + iterable + "conditionalfield",
+                value=data_cond if data_provided else "",
             )
 
             if "," in c_rule:
@@ -105,6 +144,7 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
             c_rule = col3.text_input(
                 "List the conditional rules, e.g. other_cmyn=1, daily+cmyn>=2.",
                 key=table + attribute + iterable + "conditionalfield",
+                value=data_cond if data_provided else "",
             )
 
             c_rule_transformed = [
@@ -133,10 +173,15 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
         )
         source_values = col3.text_input(
             "Value mapping for units",
-            value="1=kg, 2=lb",
+            value=optional_vals if data_provided else "1=kg, 2=lb",
             key=table + attribute + iterable + "sourcevalue",
         )
-        values = string_to_dict(source_values)
+
+        try:
+            values = string_to_dict(source_values)
+        except ValueError:
+            # uses reference, not dict-like
+            values = source_values
 
         return structures.field_with_unit(field, desc, unit, source_unit, values)
 
@@ -157,20 +202,34 @@ def field_types(table, attribute, a_type, columns, iterable="0"):
         return structures.field_with_transformation(field, desc, apply, params)
 
 
-def create_field(table, attribute, a_type, multicol=False):
+def create_field(table, attribute, a_type, multicol=False, data_provided=False):
+    i = 0
+
+    if data_provided:
+        multicol = True if "fields" in data_provided else False
+        multicol_length = (
+            len(data_provided["fields"]) if "fields" in data_provided else 2
+        )
+        i = (
+            combinedtypes.index(data_provided["combinedType"])
+            if multicol is True
+            else 0
+        )
+
     if multicol is True:
         coll, colr = st.columns([1, 3], gap="large")
         combination_type = coll.selectbox(
             "Which combined type should be applied?",
-            ["any", "all", "firstNonNull", "list", "set"],
+            combinedtypes,
             key=table + attribute + "combinationType",
+            index=i,
         )
         comb_desc = coll.text_input(
             "Description", key=table + attribute + "combinationdesc"
         )
         no_fields = coll.number_input(
             "How many fields are there to combine?",
-            value=2,
+            value=multicol_length if data_provided else 2,
             key=table + attribute + "multifield",
         )
 
@@ -178,9 +237,20 @@ def create_field(table, attribute, a_type, multicol=False):
             fields = []
             mf_grid = make_grid(no_fields * 2, 3)
 
-            for i in range(0, no_fields * 2, 2):
+            for i, j in zip(
+                range(0, no_fields * 2, 2), range(len(data_provided["fields"]))
+            ):
                 columns = mf_grid[i][0], mf_grid[i][1], mf_grid[i][2]
-                field = field_types(table, attribute, a_type, columns, iterable=str(i))
+                field = field_types(
+                    table,
+                    attribute,
+                    a_type,
+                    columns,
+                    iterable=str(i),
+                    data_provided=data_provided["fields"][
+                        j
+                    ],  # this bit needs to iterate
+                )
                 fields.append(field)
                 for square in [
                     mf_grid[i + 1][0],
@@ -193,4 +263,6 @@ def create_field(table, attribute, a_type, multicol=False):
 
     else:
         columns = st.columns(3)
-        return field_types(table, attribute, a_type, columns)
+        return field_types(
+            table, attribute, a_type, columns, data_provided=data_provided
+        )

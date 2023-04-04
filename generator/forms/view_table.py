@@ -11,6 +11,8 @@ def view_parser(dict_structure, constants, reverse_order=False):
     if reverse_order is True:
         dict_structure = dict(reversed(list(dict_structure.items())))
 
+    # constant fields don't map well as they don't have a 'field'
+    # - so we exclude them here as they're set at the study level.
     if any(x in dict_structure.keys() for x in constants):
         for c in constants:
             dict_structure.pop(c)
@@ -23,6 +25,7 @@ def view_parser(dict_structure, constants, reverse_order=False):
             "fields",
             "field",
             "values",
+            "ref",
             "unit",
             "source_unit",
             "if",

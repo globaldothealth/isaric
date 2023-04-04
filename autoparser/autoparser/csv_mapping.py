@@ -28,10 +28,12 @@ def matches_redcap(
     scores = config["scores"]
 
     if isinstance(data_dictionary, str):
-        df = pd.read_csv(data_dictionary).rename(columns=column_mappings)[
-            list(column_mappings.values())
-        ]
-        df["description"] = df.description.map(str.strip)
+        df = pd.read_csv(data_dictionary)
+    else:
+        df = data_dictionary
+
+    df = df.rename(columns=column_mappings)[list(column_mappings.values())]
+    df["description"] = df.description.map(str.strip)
 
     # Drop field types like 'banner' which are purely informative
     _allowed_field_types = config["categorical_types"] + config["text_types"]
@@ -86,7 +88,8 @@ def matches_redcap(
     # score=3 for type match (dropdown/radio == booleans/enums, text otherwise)
     # score=3 for both being dates
     # score=-3 for only one of the fields being a date, extremely unlikely match
-    # score=1 for every token that is not a stopword appearing in the source field / description
+    # score=1 for every token that is not a stopword appearing in the source field
+    #  / description
 
     # scoring using pre-defined rules
     def scorer(row) -> int:
@@ -161,6 +164,27 @@ def get_fields(config: Dict[str, Any], table: str) -> List[str]:
         }
 
 
+def generate_csv(args):
+    with maybe(args.config, Path, default=Path(__file__).parent / DEFAULT_CONFIG).open(
+        "rb"
+    ) as fp:
+        config = tomli.load(fp)
+        config["schema-path"] = (
+            maybe(args.schema_path, Path)
+            or maybe(os.getenv("ISARIC_SCHEMA_PATH"), Path)
+            or Path.cwd()
+        )
+    tables = args.tables.split(",") if args.tables else config["schemas"].keys()
+    for table in tables:
+        df = matches_redcap(
+            config,
+            args.dictionary,
+            table,
+            num_matches=args.num_matches,
+        )
+        df.to_csv(f"{args.output}-{table}.csv", index=False)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate intermediate CSV used by make_toml.py to create TOML"
@@ -184,24 +208,7 @@ def main():
         "-c", "--config", help=f"Configuration file to use (default={DEFAULT_CONFIG})"
     )
     args = parser.parse_args()
-    with maybe(args.config, Path, default=Path(__file__).parent / DEFAULT_CONFIG).open(
-        "rb"
-    ) as fp:
-        config = tomli.load(fp)
-        config["schema-path"] = (
-            maybe(args.schema_path, Path)
-            or maybe(os.getenv("ISARIC_SCHEMA_PATH"), Path)
-            or Path.cwd()
-        )
-    tables = args.tables.split(",") if args.tables else config["schemas"].keys()
-    for table in tables:
-        df = matches_redcap(
-            config,
-            args.dictionary,
-            table,
-            num_matches=args.num_matches,
-        )
-        df.to_csv(f"{args.output}-{table}.csv", index=False)
+    generate_csv(args)
 
 
 if __name__ == "__main__":

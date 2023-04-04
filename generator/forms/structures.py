@@ -94,7 +94,245 @@ def field_with_transformation(f: str, d: str, func: str, params: list | None):
 
 # look for ways to show the 4 options available for this.
 def combined_type(rule: str, desc: str, fields: list):
-    return {"combinedType": rule, "description": desc, "fields": fields}
+    if desc != "" and desc is not None:
+        return {"combinedType": rule, "description": desc, "fields": fields}
+    else:
+        return {"combinedType": rule, "fields": fields}
+
+
+def sidebar_search(table):
+    """
+    Allows user to view, edit, add and delete pre-defined value mappings
+    such as 'y/n/nk', some of which may already have been written by autoparser.
+    Runs in the app sidebar
+    """
+
+    if f"definition_edits_{table}" not in st.session_state:
+        st.session_state[f"definition_edits_{table}"] = False
+
+    st.header("Search for pre-defined mappings:")
+    ref = st.selectbox(
+        "Reference name",
+        ["<select>"] + list(st.session_state.toml_dict["adtl"]["defs"].keys()),
+        key=f"ref_selectbox_{table}",
+        index=0,
+    )
+
+    if ref != "<select>":
+        if "values" in st.session_state.toml_dict["adtl"]["defs"][ref]:
+            st.json(st.session_state.toml_dict["adtl"]["defs"][ref]["values"])
+        elif "combinedType" in st.session_state.toml_dict["adtl"]["defs"][ref]:
+            st.json(st.session_state.toml_dict["adtl"]["defs"][ref])
+
+        if st.button("Edit/add/delete predefined mappings", key="make-edits"):
+            st.session_state[f"definition_edits_{table}"] = True
+    else:
+        st.session_state[f"definition_edits_{table}"] = False
+
+    if st.session_state[f"definition_edits_{table}"]:
+        st.warning(
+            "Changes made here will not propegate; any edits or deletions\
+                will have to be made manually to any attibutes using them."
+        )
+        edits = st.radio(
+            "Make edits:",
+            ["edit this reference", "delete reference", "add new reference"],
+            index=0,
+        )
+        if edits == "edit this reference":
+            with st.form("edit", clear_on_submit=True):
+                reference = st.text_input("Reference", value=ref)
+
+                if "combinedType" in st.session_state.toml_dict["adtl"]["defs"][ref]:
+                    combination_type = st.selectbox(
+                        "Which combined type?",
+                        ["any", "all", "firstNonNull", "list", "set"],
+                        key="MappingscombinationType",
+                    )
+                    no_fields = st.number_input(
+                        "How many fields are there to combine?",
+                        value=len(
+                            st.session_state.toml_dict["adtl"]["defs"][ref]["fields"]
+                        ),
+                    )
+
+                    st.write("Fields to combine:")
+                    fields = value_map_multi(
+                        no_fields,
+                        data=st.session_state.toml_dict["adtl"]["defs"][ref]["fields"],
+                    )
+                else:
+                    definition = st.text_input(
+                        "Value map",
+                        value=", ".join(
+                            [
+                                f"{k}={v}"
+                                for k, v in st.session_state.toml_dict["adtl"]["defs"][
+                                    ref
+                                ]["values"].items()
+                            ]
+                        ),
+                    )
+
+                add_ref = st.form_submit_button("Edit definition")
+                if add_ref:
+                    st.session_state.toml_dict["adtl"]["defs"][
+                        reference
+                    ] = st.session_state.toml_dict["adtl"]["defs"].pop(ref)
+                    if (
+                        "combinedType"
+                        in st.session_state.toml_dict["adtl"]["defs"][ref]
+                    ):
+                        # fields need combining into one
+                        st.session_state.toml_dict["adtl"]["defs"][
+                            reference
+                        ] = combined_type(combination_type, None, fields)
+                    else:
+                        st.session_state.toml_dict["adtl"]["defs"][reference][
+                            "values"
+                        ] = string_to_dict(definition)
+                    st.session_state[f"definition_edits_{table}"] = False
+                    st.experimental_rerun()
+
+        elif edits == "delete reference":
+            delete = st.button("Delete this reference")
+            if delete:
+                st.session_state.toml_dict["adtl"]["defs"].pop(ref)
+                edits = ["edit this reference"]
+                delete = False
+                st.session_state[f"definition_edits_{table}"] = False
+                st.experimental_rerun()
+
+        elif edits == "add new reference":
+            combined = st.radio(
+                "Multiple fields to combine?", ["No", "Yes"], horizontal=True
+            )
+            with st.form("add", clear_on_submit=True):
+                reference = st.text_input("Reference")
+                if combined == "No":
+                    definition = st.text_input("Value map")
+                else:
+                    combination_type = st.selectbox(
+                        "Which combined type?",
+                        ["any", "all", "firstNonNull", "list", "set"],
+                        key="MappingscombinationTypeAdd",
+                    )
+                    no_fields = st.number_input(
+                        "How many fields are there to combine?",
+                        value=2,
+                    )
+
+                    st.write("Fields to combine:")
+                    fields = value_map_multi(no_fields)
+
+                add_ref = st.form_submit_button("Add mapping to definitions")
+                if add_ref:
+                    st.session_state.toml_dict["adtl"]["defs"][reference] = {}
+                    if combined:
+                        st.session_state.toml_dict["adtl"]["defs"][
+                            reference
+                        ] = combined_type(combination_type, None, fields)
+                    else:
+                        st.session_state.toml_dict["adtl"]["defs"][reference][
+                            "values"
+                        ] = string_to_dict(definition)
+                    edits = "edit this reference"
+                    st.session_state[f"definition_edits_{table}"] = False
+                    st.experimental_rerun()
+
+
+def value_map_multi(nrows, data=None):
+    """
+    Provides fields for value maps where multiple fields are combined.
+    Returns a list of the fields.
+    """
+
+    fields = []
+
+    mf_grid = make_grid(nrows * 2, 2)
+
+    for i, j in zip(range(0, nrows * 2, 2), range(nrows)):
+        cell1, cell2 = mf_grid[i][0], mf_grid[i][1]
+        with cell1:
+            field_name = st.text_input(
+                f"Field name ({j})",
+                key="keymaps_fields" + str(i),
+                value=data[j]["field"] if data else "",
+            )
+            st.markdown("#")
+            st.markdown("###")
+            descrip = st.text_input(
+                "Description (optional)",
+                key="keymaps_description" + str(i),
+                value=data[j]["description"]
+                if (data and "description" in data[j])
+                else "",
+            )
+        with cell2:
+            if "values" in data[j]:
+                val_map = st.text_area(
+                    "Value map (optional)",
+                    value=", ".join([f"{k}={v}" for k, v in data[j]["values"].items()]),
+                    key="keymaps_values" + str(i),
+                )
+            else:
+                val_map = st.text_area(
+                    "Value map (optional)",
+                    key="keymaps_values" + str(i),
+                    placeholder="2=slight, 3=moderate, 4=severe, 5=unable",
+                )
+
+            if "if" in data[j]:
+                conditional = st.text_input(
+                    "Condition (optional)",
+                    value=", ".join([f"{k}={v}" for k, v in data[j]["if"].items()]),
+                    key="keymaps_condition" + str(i),
+                )
+            else:
+                conditional = st.text_input(
+                    "Condition (optional)",
+                    key="keymaps_condition" + str(i),
+                    placeholder="dsterm=4",
+                )
+        if conditional != "":
+            if val_map != "":
+                fields.append(
+                    conditional_field(
+                        field_name,
+                        descrip,
+                        "if",
+                        string_to_dict(conditional, conditional=True),
+                        values=string_to_dict(val_map),
+                    )
+                )
+            else:
+                fields.append(
+                    conditional_field(
+                        field_name,
+                        descrip,
+                        "if",
+                        string_to_dict(conditional, conditional=True),
+                    )
+                )
+        elif val_map != "":
+            fields.append(
+                field_value_mapped(
+                    field_name,
+                    descrip,
+                    values=string_to_dict(val_map),
+                )
+            )
+        else:
+            fields.append(single_field(field_name, descrip))
+
+        for square in [
+            mf_grid[i + 1][0],
+            mf_grid[i + 1][1],
+        ]:
+            square.markdown("#")
+            square.markdown("#")
+
+    return fields
 
 
 # ---------------------------------------------------------

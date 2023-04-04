@@ -3,11 +3,16 @@
 import streamlit as st
 import pandas as pd
 
+from forms.structures import sidebar_search
+
 from webapp import generate_parser
 from forms.observation import observation_form
 
 if "obs_list" not in st.session_state:
     st.session_state.obs_list = []
+
+with st.sidebar:
+    sidebar_search("observations")
 
 df = pd.DataFrame(st.session_state.obs_list)
 
@@ -26,12 +31,17 @@ st.write(
 )
 
 st.markdown("#")
+# I think theres an issue with the way this is done, because i think you can have
+# observations which have the same name and phase. - e.g. from different follow-up
+# forms.
 
 observation = observation_form("Add this observation field to data store", True)
 
 if observation is not None:
     # here, search for whether the key has been written before, and overwrite if it has.
     overwrite = False
+    # filter(lambda obs: obs['name'] == 'anorexia' and obs['phase'] == 'study', st.session_state.toml_dict['observation'])
+    # search on the fieldname instead - that should always be different? that's the whole point after all
     for i, d in enumerate(st.session_state.obs_list):
         if d["name"] == observation["name"] and d["phase"] == observation["phase"]:
             st.session_state.obs_list[i] = observation
