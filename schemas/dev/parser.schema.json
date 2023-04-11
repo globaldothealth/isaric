@@ -10,7 +10,10 @@
     "fieldMapping": {
       "oneOf": [
         {
-          "type": "string",
+          "type": [
+            "string",
+            "boolean"
+          ],
           "description": "A constant mapping"
         },
         {
@@ -698,11 +701,11 @@
           },
           "date": {
             "description": "Date of observation, or end date of observation period",
-            "$ref": "#/definitions/fieldMapping"
+            "$ref": "#/definitions/mapping"
           },
           "start_date": {
             "description": "Start date of observation duration",
-            "$ref": "#/definitions/fieldMapping"
+            "$ref": "#/definitions/mapping"
           },
           "duration_type": {
             "description": "Duration type of observation",
@@ -764,7 +767,7 @@
           },
           "is_present": {
             "description": "Whether the observation denotes presence (*true*) or absence (*false*)",
-            "$ref": "#/definitions/fieldMapping"
+            "$ref": "#/definitions/mapping"
           },
           "context": {
             "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
