@@ -591,6 +591,10 @@
           "description": "Neuraminidase",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_neuromuscular_blocking_agents": {
+          "description": "Neuromuscular blocking agents",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_oxygen_interface": {
           "description": "Oxygen interface",
           "$ref": "#/definitions/mapping"
@@ -815,7 +819,6 @@
               "lung_sounds",
               "lymphadenopathy",
               "muscle_aches",
-              "neuromuscular_blocking_agents",
               "renal_replacement_therapy_dialysis",
               "runny_nose",
               "seizures",

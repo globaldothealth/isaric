@@ -244,6 +244,11 @@
       "description": "Neuraminidase",
       "category": "treatments"
     },
+    "treatment_neuromuscular_blocking_agents": {
+      "type": "boolean",
+      "description": "Neuromuscular blocking agents",
+      "category": "treatments"
+    },
     "treatment_oxygen_interface": {
       "type": "boolean",
       "description": "Oxygen interface",
