@@ -676,6 +676,7 @@
           "phase": {
             "description": "Phase of study",
             "enum": [
+              "pre-admission",
               "admission",
               "study",
               "followup"
@@ -683,6 +684,7 @@
             "x-taplo": {
               "docs": {
                 "enumValues": [
+                  "Strictly before admission",
                   "Taken at or before admission",
                   "Observation during study period",
                   "Recorded in followup survey"

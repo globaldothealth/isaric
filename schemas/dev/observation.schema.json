@@ -29,6 +29,7 @@
     },
     "phase": {
       "enum": [
+        "pre-admission",
         "admission",
         "study",
         "followup"
