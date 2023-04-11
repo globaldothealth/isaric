@@ -318,11 +318,6 @@
       "description": "Pacing",
       "category": "treatments"
     },
-    "treatment_o2_flow_vol_max": {
-      "type": "integer",
-      "description": "O2 flow vol max",
-      "category": "treatments"
-    },
     "outcome": {
       "enum": [
         "death",
