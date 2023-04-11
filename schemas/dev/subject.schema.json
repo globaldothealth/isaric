@@ -6,7 +6,7 @@
   "required": [
     "subject_id",
     "country_iso3",
-    "enrolment_date",
+    "admission_date",
     "age",
     "sex_at_birth",
     "ethnicity",
