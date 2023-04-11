@@ -170,6 +170,11 @@
       "description": "Malignant neoplasm",
       "category": "comorbidities"
     },
+    "has_malnutrition": {
+      "type": "boolean",
+      "description": "Malnutrition",
+      "category": "comorbidities"
+    },
     "has_smoking": {
       "enum": [
         "yes",

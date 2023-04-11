@@ -349,6 +349,10 @@
           "description": "Malignant neoplasm",
           "$ref": "#/definitions/mapping"
         },
+        "has_malnutrition": {
+          "description": "Malnutrition",
+          "$ref": "#/definitions/mapping"
+        },
         "has_smoking": {
           "description": "History of smoking",
           "$ref": "#/definitions/mapping"
@@ -810,7 +814,6 @@
               "lower_chest_wall_indrawing",
               "lung_sounds",
               "lymphadenopathy",
-              "malnutrition",
               "muscle_aches",
               "neuromuscular_blocking_agents",
               "renal_replacement_therapy_dialysis",
