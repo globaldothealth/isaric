@@ -1127,9 +1127,9 @@
   value = { field = "sas_vsorres" }
   if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
 
-[[observation]]
-  name = "neuromuscular_blocking_agents"                       # should this be in the visit table - it's a treatment ..
-  phase = "study"
-  date = { ref = "dailyDateHierarchy" }
-  is_present = { field = "daily_neuro_cmtrt", ref = "Y/N/NK" }
-  if = { rass_sas_vsyn = 4 }
+  # [[observation]]
+  #   name = "neuromuscular_blocking_agents"                       # should this be in the visit table - it's a treatment ..
+  #   phase = "study"
+  #   date = { ref = "dailyDateHierarchy" }
+  #   is_present = { field = "daily_neuro_cmtrt", ref = "Y/N/NK" }
+  #   if = { rass_sas_vsyn = 4 }
