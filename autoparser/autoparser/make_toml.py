@@ -6,6 +6,7 @@ import re
 import json
 import argparse
 import functools
+import logging
 import operator
 import logging
 from pathlib import Path
@@ -66,6 +67,12 @@ def parse_choices(config: Dict[str, Any], s: str) -> Dict[str, Any]:
     lower_string = lambda s: s.strip().lower()  # NOQA
     if not isinstance(s, str):
         return None, []
+    choices_list = [
+        tuple(map(lower_string, x.split(delimiter_map)[:2])) for x in s.split(delimiter)
+    ]
+    if any(len(c) != 2 for c in choices_list):
+        logging.info("Invalid choices list {choices_list!r}, returning None")
+        return None, []
     try:
         choices = dict(
             tuple(map(lower_string, x.split(delimiter_map)[:2]))
@@ -115,7 +122,11 @@ def single_field_mapping(
     use_type: str = None,
     add_auto_condition=False,
 ) -> Dict[str, Any]:
-    choices, nulls = parse_choices(config, match.choices)
+    try:
+        choices, nulls = parse_choices(config, match.choices)
+    except ValueError as e:
+        logging.warning(e)
+        choices, nulls = None, []
     out = {"field": match.field, "description": match.description}
     if not use_type:  # auto detect type from schema field type
         schema_field_type, schema_field_enum = get_type_enum(
