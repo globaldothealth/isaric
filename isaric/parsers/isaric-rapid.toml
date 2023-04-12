@@ -344,6 +344,11 @@
   ref = "Y/N/NK"
   description = "Malignant neoplasm"
 
+[subject.has_malnutrition]
+  field = "malnutrition_vsorres"
+  values = { 1 = true, 0 = false }
+  description = "Malnutrition"
+
 [subject.has_smoking]
   field = "smoking_mhyn"
   values = { 1 = "yes", 2 = "never" } # TODO: How to get has_smoking=former?
@@ -940,13 +945,6 @@
   date = { field = "daily_date" }
   is_present = { field = "daily_conjunct_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_conjunct_ceoccur_v2 = { "!=" = 3 } }
-
-[[observation]]
-  name = "malnutrition"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "malnutrition_vsorres", values = { 1 = true, 0 = false } }
-  if = { malnutrition_vsorres = { "!=" = 3 } }
 
 [[observation]]
   name = "runny_nose"

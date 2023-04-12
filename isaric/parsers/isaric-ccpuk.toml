@@ -196,6 +196,11 @@
   ref = "Y/N/NK"
   description = "Malignant neoplasm"
 
+[subject.has_malnutrition]
+  field = "malnutrition_mhyn"
+  ref = "Y/N/NK"
+  description = "Malnutrition"
+
 [subject.has_smoking]
   field = "smoking_mhyn"
   values = { 1 = "yes", 2 = "never", 3 = "former" }
@@ -551,13 +556,6 @@
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "conjunct_ceoccur_v2", ref = "Y/N/NK" }
   if = { conjunct_ceoccur_v2 = { "!=" = 3 } }
-
-[[observation]]
-  name = "malnutrition"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "malnutrition_mhyn", ref = "Y/N/NK" }
-  if = { malnutrition_mhyn = { "!=" = 3 } }
 
 [[observation]]
   name = "runny_nose"
