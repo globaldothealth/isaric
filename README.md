@@ -30,16 +30,20 @@ follows the adtl
 [specification](https://github.com/globaldothealth/adtl/blob/main/docs/specification.md).
 
 ### Generating new parsers
-A graphical interface for writing new parser files can be found in [generator](generator). 
+A graphical interface for writing new parser files can be found in [generator](generator).
 Eventually, this will be hosted as a webpage; however for now, it must be run locally.
 
-To use this interface, you must first ensure you have `streamlit`, `tomli` and `tomli_w` 
+To use this interface, you must first ensure you have `streamlit`, `tomli` and `tomli_w`
 pip installed. You can then run
 
 ```shell
-streamlit run generator/webapp.py
+streamlit run generator/home.py
 ```
 which will open a web browser containing the app.
+
+The graphical interface also includes the 'autoparser' functionality for semi-automating
+the parser-writing process. You can read more in the [autoparser doc](autoparser/README.md);
+you don't need to install autoparser to use the graphical interface.
 
 ## How to use these
 

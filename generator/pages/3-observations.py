@@ -3,13 +3,16 @@
 import streamlit as st
 import pandas as pd
 
-from forms.structures import sidebar_search
+from forms.structures import sidebar_search, search_for_pair
 
 from webapp import generate_parser
 from forms.observation import observation_form
+from forms.view_table import view_obs_parser
 
 if "obs_list" not in st.session_state:
     st.session_state.obs_list = []
+    if "observation" in st.session_state.toml_dict:
+        st.session_state.obs_list = st.session_state.toml_dict["observation"]
 
 with st.sidebar:
     sidebar_search("observations")
@@ -37,21 +40,30 @@ st.markdown("#")
 
 observation = observation_form("Add this observation field to data store", True)
 
+# The best way to do this is by implementing cliakcable dataframes, e.g. with
+# streamlit-aggrid, to edit entries.
+# Hwvr, there's currently a py3.10+ bug where the horizontal scroll bar doesn't appear;
+# that's a major issue here.
+# Hence, next-best option is to implement a search for first name and phase
+# compatability, then for an equivalent field to check for duplication;
+# can build that into the dropdown menu as observation-fieldname when the form accepts
+# field data.
 if observation is not None:
     # here, search for whether the key has been written before, and overwrite if it has.
     overwrite = False
-    # filter(lambda obs: obs['name'] == 'anorexia' and obs['phase'] == 'study', st.session_state.toml_dict['observation'])
-    # search on the fieldname instead - that should always be different? that's the whole point after all
     for i, d in enumerate(st.session_state.obs_list):
         if d["name"] == observation["name"] and d["phase"] == observation["phase"]:
-            st.session_state.obs_list[i] = observation
-            overwrite = True
-            break
+            if search_for_pair(d, observation, "field"):
+                st.session_state.obs_list[i] = observation
+                overwrite = True
+                break
 
     if overwrite is False:
         st.session_state.obs_list.append(observation)
 
     # df = pd.json_normalize(st.session_state.obs_list, max_level=0)
+    df = pd.DataFrame(st.session_state.obs_list)
+elif st.session_state.obs_list:
     df = pd.DataFrame(st.session_state.obs_list)
 
 
@@ -73,4 +85,4 @@ if col2.button(
             )
 
 st.markdown("### Observations currently stored in memory")
-st.table(df)
+st.dataframe(view_obs_parser(df, reverse_order=True))

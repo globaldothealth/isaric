@@ -9,15 +9,10 @@ import pandas as pd
 from pathlib import Path
 from autoparser.csv_mapping import matches_redcap
 from autoparser.make_toml import make_toml
+from streamlit_extras.switch_page_button import switch_page
 
 import forms.structures as structures
-from forms.structures import string_to_dict
-
-
-def V_SPACE(lines):
-    for _ in range(lines):
-        st.write("&nbsp;")
-
+from forms.structures import string_to_dict, V_SPACE
 
 if "autoparser_df" not in st.session_state:
     st.session_state.autoparser_df = {}
@@ -82,7 +77,10 @@ st.set_page_config(layout="wide")
 
 st.title("Global.health clinical data parser generation")
 
-if st.session_state.manual_generation is False:
+if (
+    st.session_state.manual_generation is False
+    and "subject" not in st.session_state.autoparser_df
+):
     st.write(
         "This webapp provides semi-automated parser generation for new clinical\
             datasets."
@@ -100,11 +98,13 @@ if st.session_state.manual_generation is False:
         "
     )
 
-    _, col1, col2, _ = st.columns(4)
+    _, col1, col2, _ = st.columns([1, 3, 3, 1], gap="medium")
 
     ap_file = col1.file_uploader("Upload data dictionary", type=["csv"])
+    with col2:
+        V_SPACE(1)
     st.session_state.manual_generation = col2.button(
-        "Continue to manual parser generation", use_container_width=True, type="primary"
+        "Continue to manual parser generation", use_container_width=True
     )
     if ap_file is not None:
 
@@ -141,6 +141,8 @@ if "subject" in st.session_state.autoparser_df:
         , click the 'Next' button to load the suggestions into the graphical interface."
     )
 
+    # TODO: Once this has been done once, keep the 'checked' data visible rather than
+    #  reverting.
     st.header("Subject")
     st.session_state.autoparser_df_checked["subject"] = st.experimental_data_editor(
         st.session_state.autoparser_df["subject"],
@@ -165,8 +167,8 @@ if "subject" in st.session_state.autoparser_df:
     )
 
     if dict_created:
-        pass
-    # go to the subject page to view the subject parser table.
+        switch_page("subject")
+
 
 if st.session_state.manual_generation is True:
     st.write(

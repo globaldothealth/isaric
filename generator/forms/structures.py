@@ -10,6 +10,11 @@ import json
 import re
 
 
+def V_SPACE(lines):
+    for _ in range(lines):
+        st.write("&nbsp;")
+
+
 def predefined_value_maps(values: dict):
     return {"values": values}
 
@@ -76,6 +81,9 @@ def field_value_mapped(f: str, d: str, value_maps: dict | str):
 
     if rule["description"] == "":
         del rule["description"]
+
+    # if "values" in rule and (rule["values"] == "" or not rule["values"]):
+    #     del rule["values"]
 
     return rule
 
@@ -386,3 +394,33 @@ def make_grid(cols, rows):
         with st.container():
             grid[i] = st.columns(rows)
     return grid
+
+
+def recursive_search(dict_2_search, key):
+    """
+    Search for a specific key in a nested dictionary.
+    Can't account for other data structures, lists etc.
+    """
+
+    if key in dict_2_search:
+        return dict_2_search[key]
+    for v in dict_2_search.values():
+        if isinstance(v, dict):
+            returned_field = recursive_search(v, key)
+            if returned_field is not None:
+                return returned_field
+
+
+def search_for_pair(old_observation, new_observation, key):
+    """
+    Returns True if both dicts contain a key with the same value regardless
+     of that key's location.
+    """
+
+    field1 = recursive_search(old_observation, key)
+    field2 = recursive_search(new_observation, key)
+
+    if field1 == field2:
+        return True
+    else:
+        return False

@@ -54,3 +54,34 @@ def view_parser(dict_structure, constants, reverse_order=False):
         return df_final
     else:
         return df
+
+
+# TODO: How to deal with a ref for date field? So far ref is only used in a 'values'
+# sense, where it's assumed to be a reference if it's not a dict-like strucutre.
+# This will be a string in the box, regardless.
+
+
+# TODO: Also how to make the table presentation nicer - an entire dictionary per
+# 'values', 'is_present' etc not terribly readable.
+def view_obs_parser(dict_structure, reverse_order=False):
+    dict_structure = dict_structure.copy()
+    if reverse_order is True:
+        dict_structure = dict(reversed(list(dict_structure.items())))
+
+    df = pd.DataFrame.from_dict(dict_structure)
+    df = df.reindex(
+        columns=[
+            "name",
+            "date",
+            "phase",
+            "is_present",
+            "values",
+            "text",
+            "if",
+            "context",
+            "start_date",
+            "duration_type",
+        ]
+    )
+    df.reset_index()
+    return df

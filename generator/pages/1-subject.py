@@ -4,10 +4,9 @@
 import streamlit as st
 
 from webapp import generate_parser
-from home import V_SPACE
 from forms.visit_subject import create_field
 from forms.view_table import view_parser
-from forms.structures import sidebar_search
+from forms.structures import sidebar_search, V_SPACE
 
 subject_attributes = st.session_state.parser["properties"]["subject"][
     "properties"
@@ -23,14 +22,23 @@ st.header("Subject table")
 st.write(
     "The 'attribute name' dropdown box contains all the available mapping fields within\
           the current schema, for the subject table. Constant fields will be taken from\
-          the study-level table on the [home page](webapp)."
+          the study-level table on the [home page](home)."
 )
-# This needs editing to reflect the addition of autoparser
-st.write(
-    "As each attribute is added, you will see the table at the bottom of the page fill\
-        out with the added attributes and their corresponding mapping. If you want\
+if st.session_state.manual_generation:
+    st.write(
+        "As each attribute is added, you will see the table at the bottom of the page\
+        fill out with the added attributes and their corresponding mapping. If you want\
         to change an attribute map, re-do the form and the row(s) will be replaced."
-)
+    )
+else:
+    st.write(
+        "The table below is currently filled with the 'subject' attributes you selected\
+        with the autoparser functionality. You can edit the auto-generated entries,\
+        or add new attributes, by selecting from the drop-down 'attribute name' box.\
+        Where an attribute already exists, the form will be pre-filled with\
+        existing data, which can be edited. Once you're happy, click 'Apply this\
+        attribute' to save your changes."
+    )
 
 st.write(
     "When you have filled in the subject, visit and observation pages, click 'Generate\
