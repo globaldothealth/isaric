@@ -22,13 +22,15 @@
     [adtl.tables.observation]
       kind = "oneToMany"
       schema = "../../schemas/dev/observation.schema.json"
-      common = { visit_id = { field = "\ufeffrecord_id", sensitive = true } }
+      # common = { visit_id = { field = "\ufeffrecord_id", sensitive = true } }
+      common = { visit_id = { field = "record_id", sensitive = true } }
 
 [adtl.defs]
   "Y/N/NK" = { values = { 0 = false, 1 = true } }
   "still birth/live birth" = { values = { 0 = "still birth", 1 = "live birth" } }
   admissionDateHierarchy = { field = "add_date", description = "Admission date at this facility", source_date = "%d/%m/%Y" }
-  uid = { field = "\ufeffrecord_id" }
+  # uid = { field = "\ufeffrecord_id" }
+  uid = { field = "record_id" }
 
   [adtl.defs.countryMap.values]
     1 = "AFG"
@@ -399,6 +401,8 @@
   description = "Sex at birth"
   values = { 0 = "female", 1 = "male" }
 
+[visit]
+
 [visit.subject_id]
   ref = "uid"
 
@@ -438,7 +442,7 @@
 [visit.outcome]
   field = "outcome"
   description = "Outcome"
-  values = { 1 = "discharged", 3 = "transferred", 5 = "discharged", 6 = "discharged" }
+  values = { 1 = "discharged", 2 = "recovered", 3 = "transferred", 4 = "death", 5 = "discharged", 6 = "discharged" }
 
 [visit.pathogen_test_date]
   field = "path_date"
@@ -485,6 +489,20 @@
   description = "Antiviral?"
   ref = "Y/N/NK"
 
+[visit.treatment_antiviral_type]
+  description = "Type of antiviral(s) used"
+  combinedType = 'set'
+  excludeWhen = 'none'
+  fields = [
+    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavarin" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitors" } },
+    { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "daily_antiviral_cmoth", if.all = [{daily_antiviral_cmtrt___6 = 1}, { daily_antiviral_cmyn = 1 } ]}, # free text field
+  ]
+  if = { daily_antiviral_cmyn = 1 }
+
 [visit.treatment_arb]
   field = "sec_arb_2"
   description = "Second ARB inhibitor"
@@ -496,8 +514,17 @@
   ref = "Y/N/NK"
 
 [visit.treatment_corticosteroid_type]
-  field = "daily_corticost_cmoth"
-  description = "Corticosteroid - if <i>Other corticosteroid</i>, specify"
+  description = "Corticosteroid - if 'Other' corticosteroid, specify"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmoth", if.all = [{daily_corticost_cmtrt___5 = 1}, { daily_corticost_cmyn = 1 } ]}, # free text field
+  ]
+  if = { daily_exper_cmyn = 1 }
 
 [visit.treatment_dialysis]
   field = "overall_rrt_prtrt"
@@ -515,8 +542,19 @@
   ref = "Y/N/NK"
 
 [visit.treatment_experimental_agent_type]
-  field = "daily_exper_cmoth"
-  description = "Experimental agent - if <i>Other experimental agent</i>, specify"
+  description = "Experimental agent - if 'Other' experimental agent, specify"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "daily_exper_cmoth", if.all = [{daily_exper_cmtype___7 = 1}, { daily_exper_cmyn = 1 } ]}, # free text field
+  ]
+  if = { daily_exper_cmyn = 1 }
 
 [visit.treatment_high_flow_nasal_cannula]
   field = "can_oxy_ther"
@@ -624,7 +662,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "abd_pain_date" }, { field = "add_date" }]
+    fields = [{ field = "abd_pain_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "abdominal_pain"
@@ -648,7 +686,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "consciousness_date" }, { field = "add_date" }]
+    fields = [{ field = "consciousness_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "avpu"
@@ -681,7 +719,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "bleeding_date" }, { field = "add_date" }]
+    fields = [{ field = "bleeding_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "bleeding_haemorrhage"
@@ -698,7 +736,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "chest_pain_date" }, { field = "add_date" }]
+    fields = [{ field = "chest_pain_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "chest_pain"
@@ -717,7 +755,7 @@
 [[observation]]
   name = "conjunctivitis"
   phase = "pre-admission"
-  date = { field = "conjunc_date" }
+  date = { field = "conjunc_date", source_date = "%d/%m/%Y" }
   if = { conjunc = { "!=" = 3 } }
   is_present = { field = "conjunc", description = "Conjunctivitis", ref = "Y/N/NK" }
 
@@ -735,10 +773,10 @@
   [observation.date]
     combinedType = "firstNonNull"
     fields = [
-      { field = "dry_cough_date" },
-      { field = "wet_cough_date" },
-      { field = "blood_cough_date" },
-      { field = "add_date" },
+      { field = "dry_cough_date", source_date = "%d/%m/%Y" },
+      { field = "wet_cough_date", source_date = "%d/%m/%Y" },
+      { field = "blood_cough_date", source_date = "%d/%m/%Y" },
+      { field = "add_date", source_date = "%d/%m/%Y" },
     ]
 
   [observation.is_present]
@@ -764,7 +802,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "blood_cough_date" }, { field = "add_date" }]
+    fields = [{ field = "blood_cough_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "cough_with_haemoptysis"
@@ -783,7 +821,7 @@
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "pre-admission"
-  date = { field = "wet_cough_date" }
+  date = { field = "wet_cough_date", source_date = "%d/%m/%Y" }
   if = { wet_cough = { "!=" = 3 } }
   is_present = { field = "wet_cough", description = "Cough with sputum production", ref = "Y/N/NK" }
 
@@ -797,14 +835,14 @@
 [[observation]]
   name = "diarrhoea"
   phase = "pre-admission"
-  date = { field = "diarrhea_date" }
+  date = { field = "diarrhea_date", source_date = "%d/%m/%Y" }
   if = { diarrhea = { "!=" = 3 } }
   is_present = { field = "diarrhea", description = "Diarrhoea", ref = "Y/N/NK" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
-  date = { field = "vitals_date" }
+  date = { field = "vitals_date", source_date = "%d/%m/%Y" }
   if = { diastol = { "!=" = "" } }
   value = { field = "diastol", description = "Diastolic BP" }
 
@@ -830,7 +868,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "ear_pain_date" }, { field = "add_date" }]
+    fields = [{ field = "ear_pain_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "fatigue_malaise"
@@ -842,14 +880,14 @@
 [[observation]]
   name = "fatigue_malaise"
   phase = "pre-admission"
-  date = { field = "fatigue_date" }
+  date = { field = "fatigue_date", source_date = "%d/%m/%Y" }
   if = { fatigue = { "!=" = 3 } }
   is_present = { field = "fatigue", description = "Fatigue / Tiredness", ref = "Y/N/NK" }
 
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { field = "vitals_date" }
+  date = { field = "vitals_date", source_date = "%d/%m/%Y" }
   if = { gcs = { "!=" = "" } }
   value = { field = "gcs", description = "Glasgow Coma SGHS (GCS / 15)" }
 
@@ -861,7 +899,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "headache_date" }, { field = "add_date" }]
+    fields = [{ field = "headache_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "headache"
@@ -878,7 +916,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "fever_date" }, { field = "add_date" }]
+    fields = [{ field = "fever_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "history_of_fever"
@@ -902,7 +940,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "jt_pain_date" }, { field = "add_date" }]
+    fields = [{ field = "jt_pain_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "joint_pain"
@@ -919,7 +957,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "anosmia_date" }, { field = "add_date" }]
+    fields = [{ field = "anosmia_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "loss_of_smell"
@@ -936,7 +974,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "ageusia_date" }, { field = "add_date" }]
+    fields = [{ field = "ageusia_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "loss_of_taste"
@@ -960,7 +998,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "chest_pain_date" }, { field = "add_date" }]
+    fields = [{ field = "chest_pain_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "muscle_aches"
@@ -970,7 +1008,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "myalagia_date" }, { field = "add_date" }]
+    fields = [{ field = "myalagia_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "muscle_aches"
@@ -987,7 +1025,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "other_date" }, { field = "add_date" }]
+    fields = [{ field = "other_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "other_symptom"
@@ -998,7 +1036,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "other_{n}_date" }, { field = "add_date" }]
+    fields = [{ field = "other_{n}_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "other_symptom"
@@ -1011,7 +1049,7 @@
 [[observation]]
   name = "oxygen_saturation_percent"
   phase = "study"
-  date = { field = "vitals_date" }
+  date = { field = "vitals_date", source_date = "%d/%m/%Y" }
   if = { o2_sate = { "!=" = "" } }
   value = { field = "o2_sate", description = "Oxygen Saturation" }
 
@@ -1032,21 +1070,21 @@
 [[observation]]
   name = "pH"
   phase = "study"
-  date = { field = "icu_date" }
+  date = { field = "icu_date", source_date = "%d/%m/%Y" }
   if = { ph = { "!=" = "" } }
   text = { field = "ph", description = "pH" }
 
 [[observation]]
   name = "pao2"
   phase = "study"
-  date = { field = "icu_date" }
+  date = { field = "icu_date", source_date = "%d/%m/%Y" }
   if = { pa02 = { "!=" = "" } }
-  text = { field = "pa02", description = "PaO2 at time of FiO2 above" }
+  value = { field = "pa02", description = "PaO2 at time of FiO2 above" }
 
 [[observation]]
   name = "pao2_sample_type"
   phase = "study"
-  date = { field = "icu_date" }
+  date = { field = "icu_date", source_date = "%d/%m/%Y" }
   if = { pa02_samp_type = { "!=" = "" } }
 
   [observation.text]
@@ -1057,10 +1095,10 @@
 [[observation]]
   name = "renal_replacement_therapy_dialysis"
   phase = "study"
-  date = { field = "overall_icu_hostdat" }
+  date = { field = "overall_icu_hostdat", source_date = "%d/%m/%Y" }
   if = { overall_rrt_prtrt = { "!=" = "3" } }
 
-  [observation.value]
+  [observation.is_present]
     field = "overall_rrt_prtrt"
     description = "Renal replacement therapy (RRT) or dialysis?"
     values = { 1 = true, 2 = false }
@@ -1080,7 +1118,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "rhinorrhea_date" }, { field = "add_date" }]
+    fields = [{ field = "rhinorrhea_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "seizures"
@@ -1097,7 +1135,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "seizures_date_s_and_s" }, { field = "add_date" }]
+    fields = [{ field = "seizures_date_s_and_s", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "shortness_of_breath"
@@ -1107,7 +1145,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "dyspnea_date" }, { field = "add_date" }]
+    fields = [{ field = "dyspnea_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "shortness_of_breath"
@@ -1124,7 +1162,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "skin_rash_date" }, { field = "add_date" }]
+    fields = [{ field = "skin_rash_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "skin_rash"
@@ -1141,7 +1179,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "skin_ulcers_date" }, { field = "add_date" }]
+    fields = [{ field = "skin_ulcers_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "skin_ulcers"
@@ -1158,7 +1196,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "sore_throat_date" }, { field = "add_date" }]
+    fields = [{ field = "sore_throat_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "sore_throat"
@@ -1170,7 +1208,7 @@
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "study"
-  date = { field = "vitals_date" }
+  date = { field = "vitals_date", source_date = "%d/%m/%Y" }
   if = { systol = { "!=" = "" } }
   value = { field = "systol", description = "Systolic BP" }
 
@@ -1206,14 +1244,14 @@
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
-  date = { field = "vitals_date" }
+  date = { field = "vitals_date", source_date = "%d/%m/%Y" }
   if = { temperature = { "!=" = "" } }
   value = { field = "temperature", description = "Temperature" }
 
 [[observation]]
   name = "transfer_from_other_facility"
   phase = "study"
-  date = { field = "rpt_date" }
+  date = { field = "rpt_date", source_date = "%d/%m/%Y" }
   if = { rpt_date = { "!=" = "" } }
   is_present = true
 
@@ -1232,7 +1270,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "nausea_date" }, { field = "add_date" }]
+    fields = [{ field = "nausea_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 [[observation]]
   name = "wheezing"
@@ -1242,7 +1280,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "wheezing_date" }, { field = "add_date" }]
+    fields = [{ field = "wheezing_date", source_date = "%d/%m/%Y" }, { field = "add_date", source_date = "%d/%m/%Y" }]
 
 
 [[observation]]
