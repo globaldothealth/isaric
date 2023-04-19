@@ -200,6 +200,7 @@
 [subject.has_malnutrition]
   field = "malnutrition_mhyn"
   ref = "Y/N/NK"
+  description = "Malnutrition"
 
 [subject.has_smoking]
   field = "smoking_mhyn"

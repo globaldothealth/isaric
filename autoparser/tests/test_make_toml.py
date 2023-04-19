@@ -71,7 +71,12 @@ def test_map_enum():
 
 @pytest.mark.parametrize(
     "source,expected",
-    [[("observation", "phase"), ("enum", ["admission", "study", "followup"])]],
+    [
+        [
+            ("observation", "phase"),
+            ("enum", ["pre-admission", "admission", "study", "followup"]),
+        ]
+    ],
 )
 def test_get_type_enum(source, expected):
     assert make_toml.get_type_enum(CONFIG, *source) == expected
