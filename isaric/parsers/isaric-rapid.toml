@@ -18,10 +18,11 @@
     7 = "Latin_American"
 
   [adtl.defs.inabilityWalk.values]
-    2 = "slight"
-    3 = "moderate"
-    4 = "severe"
-    5 = "unable"
+    1 = "No difficulty"
+    2 = "Some difficulty"
+    3 = "Some difficulty"
+    4 = "Lots of difficulty"
+    5 = "Unable to walk"
 
   [adtl.defs.countryMap.values]
     1 = "AFG"
@@ -242,7 +243,7 @@
   study = { kind = "constant" }
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
   visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
-  observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "﻿subjid", sensitive = true } } }
+  observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
 [study]
   id = "isaric-rapid"
@@ -260,7 +261,7 @@
     values = { 1 = "male", 2 = "female", 3 = "non_binary" }
 
   [subject.subject_id]
-    field = "﻿subjid"
+    field = "subjid"
     sensitive = true
     description = "Participant Identification Number (PIN)"
 
@@ -347,7 +348,7 @@
 [subject.has_malnutrition]
   field = "malnutrition_vsorres"
   values = { 1 = true, 0 = false }
-  description = "Malnutrition"
+  description = "Patient is malnourished"
 
 [subject.has_smoking]
   field = "smoking_mhyn"
@@ -399,7 +400,7 @@
   country_iso3 = { field = "country", ref = "countryMap" }
 
   [visit.visit_id] # This is the same as the subject_id!
-    field = "﻿subjid"
+    field = "subjid"
     sensitive = true
 
   [visit.start_date]
@@ -413,7 +414,7 @@
     ]
 
   [visit.subject_id]
-    field = "﻿subjid"
+    field = "subjid"
     sensitive = true
 
   [visit.icu_admission]
@@ -542,6 +543,10 @@
     description = "Neuraminidase used?"
     values = { 1 = true }
     if = { antiviral_cmyn = 1 }
+
+[visit.treatment_neuromuscular_blocking_agents]
+  field = "ccm_a_neuro_cmtrt"
+  ref = "Y/N/NK"
 
 [visit.treatment_arb]
   description = "Angiotensin II receptor blockers (ARB)"
@@ -1402,14 +1407,14 @@
   if = { inablewalk_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   text = { field = "flw_eq5d_mb_5l_uk_eng", ref = "inabilityWalk" }
   if = { flw_eq5d_mb_5l_uk_eng = { "!=" = 1 } }
 
 [[observation]]
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   text = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
@@ -1419,21 +1424,21 @@
   name = "inability_to_walk"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  text = { field = "flw_walking_today", values = { 2 = "slight", 3 = "severe", 4 = "unable" } }
+  text = { field = "flw_walking_today", values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
   if = { flw_walking_today = { "!=" = 1 } }
 
 [[observation]]
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   text = { field = "flw2_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
   if = { flw2_eq5d_mb_5l_uk_eng_2 = { "!=" = 1 } }
 
 [[observation]]
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  text = { field = "flw2_walking_today", values = { 2 = "Yes - some difficulty", 3 = "Yes - a lot of difficulty", 4 = "Cannot do at all" } }
+  text = { field = "flw2_walking_today", values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
   if = { flw2_walking_today = { "!=" = 1 } }
 
 [[observation]]

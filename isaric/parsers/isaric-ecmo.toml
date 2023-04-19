@@ -234,7 +234,7 @@
   study = { kind = "constant" }
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
   visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
-  observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "\ufeffsubjid", sensitive = true } } }
+  observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
 [study]
   id = "isaric-ecmo"
@@ -251,7 +251,7 @@
     values = { 1 = "male", 2 = "female", 3 = "non_binary" }
 
   [subject.subject_id]
-    field = "\ufeffsubjid"
+    field = "subjid"
     sensitive = true
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
@@ -397,7 +397,7 @@
 [subject.has_malnutrition]
   field = "malnutrition_mhyn"
   ref = "Y/N/NK"
-  description = "Malnutrition"
+  description = "Patient is malnourished"
 
 [subject.has_smoking]
   field = "smoking_mhyn"
@@ -467,11 +467,11 @@
   country_iso3 = { field = "country", ref = "countryMap" }
 
   [visit.subject_id] # This is the same as the subject_id!
-    field = "\ufeffsubjid"
+    field = "subjid"
     sensitive = true
 
   [visit.visit_id] # This is the same as the subject_id!
-    field = "\ufeffsubjid"
+    field = "subjid"
     sensitive = true
 
   [visit.date_outcome]
@@ -544,6 +544,10 @@
   field = "antiviral_cmtrt___5"
   values = { 1 = true }
   if = { antiviral_cmyn = 1 }
+
+[visit.treatment_neuromuscular_blocking_agents]
+  field = "daily_neuro_cmtrt"
+  ref = "Y/N/NK"
 
 [visit.treatment_antibiotics]
   description = "Antibiotics?"
@@ -1110,14 +1114,14 @@
   name = "base_excess"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  value = { field = "daily_baseex_lborres" }
+  value = { field = "daily_baseex_lborres", apply = { function = "getFloat" } }
   if = { daily_baseex_lbyn = 1 }
 
 [[observation]]
   name = "richmond_agitation-sedation_scale"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  value = { field = "rass_vsorres" }
+  value = { field = "rass_vsorres", apply = { function = "getFloat" } }
   if.any = [{ rass_vsyn = 1 }, { rass_sas_vsyn = 1 }]
 
 [[observation]]
@@ -1126,10 +1130,3 @@
   date = { ref = "dailyDateHierarchy" }
   value = { field = "sas_vsorres" }
   if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
-
-  # [[observation]]
-  #   name = "neuromuscular_blocking_agents"                       # should this be in the visit table - it's a treatment ..
-  #   phase = "study"
-  #   date = { ref = "dailyDateHierarchy" }
-  #   is_present = { field = "daily_neuro_cmtrt", ref = "Y/N/NK" }
-  #   if = { rass_sas_vsyn = 4 }
