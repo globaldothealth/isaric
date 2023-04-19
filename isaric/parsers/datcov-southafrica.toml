@@ -20,7 +20,7 @@
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
 
-  [adtl.defs."Y/N/NK".values] # hoping this works ...
+  [adtl.defs."Y/N/NK".values]
     1 = true
     0 = false
 
@@ -38,10 +38,17 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  2 = "slight"
-  3 = "moderate"
-  4 = "severe"
-  5 = "unable"
+  1 = "No difficulty"
+  2 = "Some difficulty"
+  3 = "Some difficulty"
+  4 = "Lots of difficulty"
+  5 = "Unable to walk"
+
+[adtl.defs.inabilityWalkToday.values]
+  1 = "No difficulty"
+  2 = "Some difficulty"
+  3 = "Lots of difficulty"
+  4 = "Unable to walk"
 
 [study]
   id = "datcov-southafrica"
@@ -94,8 +101,7 @@
   [subject.pregnancy] # pregnancy fields not in the data?
     field = "PregnancyStatus"
     description = "If female patient, select pregnancy status"
-    values = { 'Yes' = true, 'No' = false }                    # is this correct?
-    # values in the data = ['No', 'Yes']
+    values = { 'Yes' = true, 'No' = false }
 
   [subject.has_asplenia]
     field = "flw_ongoing_chronic_list___10"
@@ -202,7 +208,7 @@
   [subject.has_tuberculosis_past]
     field = "Tuberculosis Past"
     values = { 'Yes' = true, 'No' = false }
-    # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan] 
+    # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
 
   [subject.has_hiv_art]
     field = "HIV On ART"
@@ -356,7 +362,7 @@
   combinedType = "any"
   fields = [
     { field = "Ever Antifungals", values = { 1 = true, 0 = false } },
-    { field = "Medication during hospitalisation.AntifungalAgentAdministered", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1'] 
+    { field = "Medication during hospitalisation.AntifungalAgentAdministered", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
   ]
 
 [visit.treatment_antivirals]
@@ -769,7 +775,7 @@
   name = "mid_upper_arm_circumference_cm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  text = { field = "Mid-Upper-Arm Circumference" }
+  value = { field = "Mid-Upper-Arm Circumference" }
   if = { "Mid-Upper-Arm Circumference" = { "!=" = "" } }
 
 [[observation]]
@@ -839,61 +845,39 @@
 
 [[observation]]
   name = "inability_to_walk"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  phase = "followup"
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_inablewalk_ceoccur_2", values = { 1 = true, 0 = false } }
   if = { "flw_inablewalk_ceoccur_2" = { "!=" = 3 } }
 
-[[observation]] # Q. IS BELOW CORRECT?
+[[observation]]
   date = { field = "flw_survey_date" }
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
-  is_present = { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true } }
-  if.any = [
-    { "flw_eq5d_mb_5l_uk_eng_2" = 1 },
-    { "flw_eq5d_mb_5l_uk_eng_2" = 2 },
-    { "flw_eq5d_mb_5l_uk_eng_2" = 3 },
-    { "flw_eq5d_mb_5l_uk_eng_2" = 4 },
-    { "flw_eq5d_mb_5l_uk_eng_2" = 5 },
-  ]
+  text = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
+  if.not.flw_eq5d_mb_5l_uk_eng_2 = ""
 
 [[observation]]
   date = { field = "flw_survey_date" }
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
-  is_present = { field = "flw_walking_today", values = { 1 = false, 2 = false, 3 = false, 4 = true } } # check if this is correct
-  if.any = [
-    { flw_walking_today = 1 },
-    { flw_walking_today = 2 },
-    { flw_walking_today = 3 },
-    { flw_walking_today = 4 },
-  ]
+  text = { field = "flw_walking_today", ref = "inabilityWalkToday" }
+  if.not.flw_walking_today = ""
 
-[[observation]] # Q. IS BELOW CORRECT?
-  name = "inability_to_walk"
+[[observation]]
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
-  is_present = { field = "flw2_eq5d_mb_5l_uk_eng_{n}", values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true } }
-  if.any = [
-    { "flw2_eq5d_mb_5l_uk_eng_{n}" = 1 },
-    { "flw2_eq5d_mb_5l_uk_eng_{n}" = 2 },
-    { "flw2_eq5d_mb_5l_uk_eng_{n}" = 3 },
-    { "flw2_eq5d_mb_5l_uk_eng_{n}" = 4 },
-    { "flw2_eq5d_mb_5l_uk_eng_{n}" = 5 },
-  ] # Q. IS THIS CORRECT? NOT SURE ...
+  text = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
+  if.not = {"flw2_eq5d_mb_5l_uk_eng_2_{n}" = ""}
   for.n.range = [1, 5]
 
-[[observation]] # Q. IS BELOW CORRECT?
-  name = "inability_to_walk"
+[[observation]]
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
-  is_present = { field = "flw2_walking_today_{n}", values = { 1 = false, 2 = false, 3 = false, 4 = true } }
-  if.any = [
-    { "flw2_walking_today_{n}" = 1 },
-    { "flw2_walking_today_{n}" = 2 },
-    { "flw2_walking_today_{n}" = 3 },
-    { "flw2_walking_today_{n}" = 4 },
-  ] # Q. IS THIS CORRECT? NOT SURE ...
+  text = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
+  if.not = {"flw2_walking_today_{n}" = ""}
   for.n.range = [1, 5]
 
 [[observation]]

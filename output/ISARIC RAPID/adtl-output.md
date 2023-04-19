@@ -4,7 +4,7 @@
 |---------------|-------|-------|----------------|
 |subject        |5392   |8061   |66.889964% |
 |visit          |4911   |8061   |60.922962% |
-|observation    |351915 |374996 |93.845001% |
+|observation    |366950 |390034 |94.081542% |
 
 ## subject
 
@@ -18,5 +18,5 @@
 
 ## observation
 
-* 23078: data must contain ['phase', 'date', 'name'] properties
+* 23081: data must contain ['phase', 'date', 'name'] properties
 * 3: data.value must be number

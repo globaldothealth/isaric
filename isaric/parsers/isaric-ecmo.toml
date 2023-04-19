@@ -1130,3 +1130,10 @@
   date = { ref = "dailyDateHierarchy" }
   value = { field = "sas_vsorres" }
   if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
+  text = { field = "oxygen_cmdose", values = { 1 = "<2 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min", 6 = "2-5 L/min" } }
+  if.all = [{ oxygen_cmoccur = 1 }, { oxygen_cmdose = { "!=" = 5 } }]

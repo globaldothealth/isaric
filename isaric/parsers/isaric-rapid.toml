@@ -1527,3 +1527,30 @@
   date = { field = "ccm_a_dat" }
   is_present = { field = "ccm_a_baseex_lborres", values = { 1 = true } }
   if = { ccm_a_baseex_lborres = { "!=" = 3 } }
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  text = { field = "oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
+  if.all = [{ oxygen_cmoccur = 1 }, { oxygen_cmdose = { "!=" = 5 } }]
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } }]
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  phase = "study"
+  date = { field = "daily_date" }
+  text = { field = "daily_oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
+  if.all = [
+    { daily_oxygen_cmoccur = 1 },
+    { daily_oxygen_cmdose = { "!=" = 5 } },
+  ]
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "daily_oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } }]
