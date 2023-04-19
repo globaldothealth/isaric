@@ -1,14 +1,14 @@
->adtl ../isaric/isaric/parsers/isaric-ecmo.toml ../../ISARIC_files/ISARIC/ISARIC\ ECMO/CoVEOT-ISARICDataOnlyLM_DATA_2023-02-03_1041.csv
+>adtl ../isaric/isaric/parsers/isaric-ecmo.toml ../../ISARIC_files/ISARIC/ISARIC\ ECMO/ISARIC_ECMO_Merge.csv
 
-|table       	|valid	|total	|percentage_valid|
+|table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject       	|18854	|23313	|80.873332% |
-|visit         	|8948	|23313	|38.382019% |
-|observation   	|1202218	|1382276	|86.973803% |
+|subject        |18758  |23313  |80.461545% |
+|visit          |8948   |23313  |38.382019% |
+|observation    |1187510        |1367525        |86.836438% |
 
 ## subject
 
-* 4459: data must contain ['subject_id', 'country_iso3', 'enrolment_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 4555: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
 
 ## visit
 
@@ -16,5 +16,5 @@
 
 ## observation
 
-* 179721: data must contain ['phase', 'date', 'name'] properties
-* 337: data.value must be number
+* 179715: data must contain ['phase', 'date', 'name'] properties
+* 300: data.value must be number

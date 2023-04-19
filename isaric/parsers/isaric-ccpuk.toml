@@ -8,7 +8,7 @@
     study = { kind = "constant" }
     subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
     visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
-    observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "\ufeffsubjid", sensitive = true } } }
+    observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
   [adtl.defs."Y/N/NK".values]
     1 = true
@@ -32,10 +32,11 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  2 = "slight"
-  3 = "moderate"
-  4 = "severe"
-  5 = "unable"
+  1 = "No difficulty"
+  2 = "Some difficulty"
+  3 = "Some difficulty"
+  4 = "Lots of difficulty"
+  5 = "Unable to walk"
 
 [study]
   id = "isaric-ccpuk"
@@ -55,7 +56,7 @@
     values = { 1 = "male", 2 = "female", 3 = "non_binary" }
 
   [subject.subject_id]
-    field = "\ufeffsubjid"
+    field = "subjid"
     sensitive = true
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
@@ -196,6 +197,10 @@
   ref = "Y/N/NK"
   description = "Malignant neoplasm"
 
+[subject.has_malnutrition]
+  field = "malnutrition_mhyn"
+  ref = "Y/N/NK"
+
 [subject.has_smoking]
   field = "smoking_mhyn"
   values = { 1 = "yes", 2 = "never", 3 = "former" }
@@ -275,11 +280,11 @@
     fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
 
   [visit.visit_id]
-    field = "\ufeffsubjid"
+    field = "subjid"
     sensitive = true
 
   [visit.subject_id] # same as visit_id!
-    field = "\ufeffsubjid"
+    field = "subjid"
     sensitive = true
 
   [visit.start_date]
@@ -469,6 +474,10 @@
   values = { 1 = true, 0 = false }
   if = { antiviral_cmyn = 1 }
 
+[visit.treatment_neuromuscular_blocking_agents]
+  field = "daily_neuro_cmtrt"
+  ref = "Y/N/NK"
+
 [visit.outcome]
   combinedType = "firstNonNull"
 
@@ -551,13 +560,6 @@
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "conjunct_ceoccur_v2", ref = "Y/N/NK" }
   if = { conjunct_ceoccur_v2 = { "!=" = 3 } }
-
-[[observation]]
-  name = "malnutrition"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "malnutrition_mhyn", ref = "Y/N/NK" }
-  if = { malnutrition_mhyn = { "!=" = 3 } }
 
 [[observation]]
   name = "runny_nose"
@@ -848,7 +850,7 @@
   if = { flw_loss_taste = { "!=" = 99 } }
 
 [[observation]]
-  name = "inability_to_walk"
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   if.any = [{ flw_eq5d_mb_p = { "!=" = 1 } }, { flw_eq5d_mb = { "!=" = 1 } }]
