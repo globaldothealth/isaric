@@ -36,7 +36,6 @@ def adtl_header(
             "name": name,
             "description": description,
             "tables": {
-                "study": {"kind": "constant"},
                 "subject": {
                     "kind": "groupBy",
                     "groupBy": "subject_id",
