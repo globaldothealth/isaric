@@ -170,6 +170,10 @@
           "type": "object",
           "description": "Re-usable definitions"
         },
+        "defaultDateFormat": {
+          "type": "string",
+          "description": "Default source date format, applied to fields with 'date' in name or format: date in the schema"
+        },
         "tables": {
           "type": "object",
           "patternProperties": {
@@ -221,6 +225,13 @@
                 "schema": {
                   "type": "string",
                   "description": "JSON Schema to use for parser validation"
+                },
+                "optional-fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Fields which are ordinarily required, but should be optional for this parser"
                 }
               }
             }

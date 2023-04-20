@@ -19,12 +19,12 @@ def make_fields_optional(
         if table in ["subject", "visit"]:
             schema["properties"][table]["required"] = list(
                 set(schema["properties"][table]["required"])
-                - set(optional_fields or [])
+                - set(optional_fields[table] or [])
             )
         elif table == "observation":
             schema["properties"][table]["items"]["required"] = list(
                 set(schema["properties"][table]["items"]["required"])
-                - set(optional_fields or [])
+                - set(optional_fields[table] or [])
             )
         else:
             continue
