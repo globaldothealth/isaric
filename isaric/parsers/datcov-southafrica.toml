@@ -4,9 +4,6 @@
   name = "datcov-southafrica"
   description = "South Africa DATCOV study"
 
-  [adtl.tables.study]
-    kind = "constant"
-
   [adtl.tables.subject]
     kind = "oneToOne"
     schema = "../../schemas/dev/subject.schema.json"
@@ -49,11 +46,6 @@
   2 = "Some difficulty"
   3 = "Lots of difficulty"
   4 = "Unable to walk"
-
-[study]
-  id = "datcov-southafrica"
-  date = ""                 # to be filled
-  country_iso3 = "ZAF"
 
 [subject]
   study_id = "datcov-southafrica"
@@ -869,7 +861,7 @@
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
   text = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
-  if.not = {"flw2_eq5d_mb_5l_uk_eng_2_{n}" = ""}
+  if.not = { "flw2_eq5d_mb_5l_uk_eng_2_{n}" = "" }
   for.n.range = [1, 5]
 
 [[observation]]
@@ -877,7 +869,7 @@
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
   text = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
-  if.not = {"flw2_walking_today_{n}" = ""}
+  if.not = { "flw2_walking_today_{n}" = "" }
   for.n.range = [1, 5]
 
 [[observation]]

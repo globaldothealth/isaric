@@ -4,9 +4,6 @@
   name = "western-australia"
   description = "Western Australian Covid-19 Research Response"
 
-  [adtl.tables.study]
-    kind = "constant"
-
   [adtl.tables.subject]
     kind = "groupBy"
     groupBy = "subject_id"
@@ -39,12 +36,6 @@
     { field = "cestdat", description = "Onset date of first/earliest symptom", source_date = "%d/%m/%Y" },
     { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y" },
   ]
-
-
-[study]
-  id = "CVPPNSH"
-  date = ""            # fill here!
-  country_iso3 = "AUS"
 
 [subject]
   study_id = "western-australia" # fill here!

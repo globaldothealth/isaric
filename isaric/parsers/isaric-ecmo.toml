@@ -231,14 +231,9 @@
   196 = "ZWE"
 
 [adtl.tables]
-  study = { kind = "constant" }
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
   visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
-
-[study]
-  id = "isaric-ecmo"
-  country_iso3 = "GBR"
 
 [subject]
   study_id = "isaric-ecmo"
