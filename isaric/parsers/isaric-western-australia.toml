@@ -1,8 +1,8 @@
 #:schema ../../schemas/dev/parser.schema.json
 
 [adtl]
-  name = ""
-  description = ""
+  name = "western-australia"
+  description = "Western Australian Covid-19 Research Response"
 
   [adtl.tables.study]
     kind = "constant"
@@ -19,6 +19,7 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ["outcome", "date_outcome"]
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -33,10 +34,10 @@
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
-    { field = "admission_date" },
-    { field = "hostdat", description = "Admission date at this facility", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
-    { field = "cestdat", description = "Onset date of first/earliest symptom", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
-    { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
+    { field = "admission_date", source_date = "%d/%m/%Y" },
+    { field = "hostdat", description = "Admission date at this facility", source_date = "%d/%m/%Y" },
+    { field = "cestdat", description = "Onset date of first/earliest symptom", source_date = "%d/%m/%Y" },
+    { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y" },
   ]
 
 
@@ -46,8 +47,8 @@
   country_iso3 = "AUS"
 
 [subject]
-  study_id = ""         # fill here!
-  country_iso3 = "AUS"  # this should be a map
+  study_id = "western-australia" # fill here!
+  country_iso3 = "AUS"           # this should be a map
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -55,27 +56,18 @@
     description = "participant_identification_number_pin"
     sensitive = true
 
-    # [subject.ethnicity]
-    #   field = ""
-    #   description = "Not provided in this dataset"
-
-    # [subject.sex_at_birth]
-    #   field = ""
-    #   description = "Not provided in this dataset"
-
   [subject.enrolment_date] # optional field
     field = "dsstdat"
     description = "Date of enrollment"
     source_date = "%d/%m/%Y"
-    date = "%Y-%m-%d"
 
   [subject.admission_date]
     combinedType = "firstNonNull"
     fields = [
       { field = "admission_date" },
-      { field = "hostdat", description = "Admission date at this facility", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
-      { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
-      { field = "cestdat", description = "Symptom onset (date of first/earliest symptom):", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
+      { field = "hostdat", description = "Admission date at this facility", source_date = "%d/%m/%Y" },
+      { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y" },
+      { field = "cestdat", description = "Symptom onset (date of first/earliest symptom):", source_date = "%d/%m/%Y" },
     ]
 
   [subject.age] # fix here ..
@@ -127,7 +119,7 @@
   [subject.has_smoking]
     field = "smoking_mhyn"
     description = "Current smoking"
-    ref = "Y/N/NK"
+    values = { 1 = "yes" }
 
   [subject.has_asthma]
     field = "asthma_mhyn"
@@ -200,10 +192,10 @@
   [visit.start_date]
     combinedType = "firstNonNull"
     fields = [
-      { field = "admission_date" },
-      { field = "hostdat", description = "Admission date at this facility", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
-      { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
-      { field = "cestdat", description = "Onset date of first/earliest symptom", source_date = "%d/%m/%Y", date = "%Y-%m-%d" },
+      { field = "admission_date", source_date = "%d/%m/%Y" },
+      { field = "hostdat", description = "Admission date at this facility", source_date = "%d/%m/%Y" },
+      { field = "dsstdat", description = "Date of enrolment", source_date = "%d/%m/%Y" },
+      { field = "cestdat", description = "Onset date of first/earliest symptom", source_date = "%d/%m/%Y" },
     ]
 
   [visit.icu_admission]
@@ -217,8 +209,11 @@
     ]
 
   [visit.icu_admission_dates]
-    field = "overall_icu_hostdat"
-    description = "Date of ICU admission:"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "overall_icu_hostdat", description = "Date of ICU admission" },
+    ]
 
   [visit.treatment_dialysis]
     description = "Dialysis"
@@ -559,7 +554,6 @@
 [visit.date_outcome]
   field = "dsstdtc"
   source_date = "%d/%m/%Y"
-  date = "%Y-%m-%d"
 
   # OBSERVATIONS
 
@@ -572,7 +566,7 @@
 
 [[observation]]
   name = "avpu"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   phase = "study"
   text = { field = "daily_avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
   if = { daily_avpu_vsyn = 1 }
@@ -593,7 +587,7 @@
 
 [[observation]]
   name = "cough"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   phase = "study"
   is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_cough_ceoccur_v2 = { "!=" = 3 } }
@@ -623,7 +617,7 @@
 [[observation]]
   name = "oxygen_saturation_percent"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   value = { field = "daily_oxy_vsorres" }
   if = { daily_oxy_vsyn = 1 }
 
@@ -645,7 +639,7 @@
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   value = { field = "daily_gcs_vsorres" }
   if = { daily_gcs_vsyn = 1 }
   #description = "Glasgow Coma Score (GCS/15)"
@@ -660,7 +654,7 @@
 [[observation]]
   name = "conjunctivitis"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_conjunct_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_conjunct_ceoccur_v2 = { "!=" = 3 } }
 
@@ -681,7 +675,7 @@
 [[observation]]
   name = "seizures"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_seizures_cecoccur_v2", ref = "Y/N/NK" }
   if = { daily_seizures_cecoccur_v2 = { "!=" = 3 } }
 
@@ -695,7 +689,7 @@
 [[observation]]
   name = "sore_throat"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_sorethroat_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_sorethroat_ceoccur_v2 = { "!=" = 3 } }
 
@@ -709,7 +703,7 @@
 [[observation]]
   name = "vomiting_nausea"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_vomit_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_vomit_ceoccur_v2 = { "!=" = 3 } }
 
@@ -730,7 +724,7 @@
 [[observation]]
   name = "altered_consciousness_confusion"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_confusion_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_confusion_ceoccur_v2 = { "!=" = 3 } }
 
@@ -744,7 +738,7 @@
 [[observation]]
   name = "chest_pain"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_chestpain_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_chestpain_ceoccur_v2 = { "!=" = 3 } }
 
@@ -779,7 +773,7 @@
 [[observation]]
   name = "shortness_of_breath"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_shortbreath_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_shortbreath_ceoccur_v2 = { "!=" = 3 } }
 
@@ -800,7 +794,7 @@
 [[observation]]
   name = "diarrhoea"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_diarrhoea_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_diarrhoea_ceoccur_v2 = { "!=" = 3 } }
 
@@ -856,7 +850,7 @@
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N/NK" }
   if = { daily_coughsput_ceoccur_v2 = { "!=" = 3 } }
 
@@ -870,7 +864,7 @@
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   value = { field = "diastolic_vsorres" }
   if = { diastolic_vsyn = 1 }
 
@@ -884,7 +878,7 @@
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   value = { field = "daily_hr_vsorres" }
   if = { daily_hr_vsyn = 1 }
 
@@ -898,7 +892,7 @@
 [[observation]]
   name = "respiratory_rate"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   value = { field = "daily_rr_vsorres" }
   if = { daily_rr_vsyn = 1 }
 
@@ -912,7 +906,7 @@
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   value = { field = "systolic_vsorres" }
   if = { systolic_vsyn = 1 }
 
@@ -940,7 +934,7 @@
 [[observation]]
   name = "severe_dehydration"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_dehydration_vsorres", values = { 1 = true, 0 = false } }
   if = { daily_dehydration_vsorres = { "!=" = 3 } }
 
@@ -954,7 +948,7 @@
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
   phase = "admission"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
   if = { daily_stercap_vsorres = { "!=" = 3 } }
 
@@ -977,6 +971,6 @@
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
-  date = { field = "daily_date", source_date = "%d/%m/%Y", date = "%Y-%m-%d" }
-  value = { field = "daily_temp_vsorres" }                                     # there is no source unit field and no conditional field
+  date = { field = "daily_date", source_date = "%d/%m/%Y" }
+  value = { field = "daily_temp_vsorres" }                  # there is no source unit field and no conditional field
   if = { daily_temp_vsyn = 1 }
