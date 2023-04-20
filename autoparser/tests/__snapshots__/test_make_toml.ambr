@@ -5,9 +5,6 @@
   name = "test"
   description = "test mappings"
   
-  [adtl.tables]
-  study = { kind = "constant" }
-  
   [adtl.tables.subject]
   kind = "groupBy"
   groupBy = "subject_id"
