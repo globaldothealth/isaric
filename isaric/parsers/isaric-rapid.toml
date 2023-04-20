@@ -240,13 +240,9 @@
   ]
 
 [adtl.tables]
-  study = { kind = "constant" }
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
   visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
-
-[study]
-  id = "isaric-rapid"
 
   ## SUBJECT
 
@@ -1538,7 +1534,9 @@
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } }]
+    fields = [
+      { field = "oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
+    ]
 
 [[observation]]
   name = "oxygen_flow_volume_max"
@@ -1553,4 +1551,6 @@
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "daily_oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } }]
+    fields = [
+      { field = "daily_oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
+    ]

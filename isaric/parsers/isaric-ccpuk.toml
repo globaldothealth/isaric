@@ -5,7 +5,6 @@
   description = "ISARIC CCPUK study"
 
   [adtl.tables]
-    study = { kind = "constant" }
     subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
     visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
     observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
@@ -37,11 +36,6 @@
   3 = "Some difficulty"
   4 = "Lots of difficulty"
   5 = "Unable to walk"
-
-[study]
-  id = "isaric-ccpuk"
-  date = "2021-01-01"
-  country_iso3 = "GBR"
 
   ## SUBJECT
 

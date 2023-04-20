@@ -6,7 +6,6 @@
   defaultDateFormat = "%d/%m/%Y"
 
   [adtl.tables]
-    study = { kind = "constant" }
 
     [adtl.tables.subject]
       kind = "groupBy"
@@ -228,10 +227,6 @@
     194 = "YEM"
     195 = "ZMB"
     196 = "ZWE"
-
-[study]
-  country_iso3 = "GHA"
-  study_id = "ccp-ghana"
 
 [subject]
   pathogen = "COVID-19"
