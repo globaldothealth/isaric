@@ -8,6 +8,23 @@
     "date",
     "name"
   ],
+  "oneOf": [
+    {
+      "required": [
+        "text"
+      ]
+    },
+    {
+      "required": [
+        "value"
+      ]
+    },
+    {
+      "required": [
+        "is_present"
+      ]
+    }
+  ],
   "properties": {
     "dataset_id": {
       "type": "string",

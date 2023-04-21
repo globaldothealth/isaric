@@ -683,8 +683,24 @@
         "required": [
           "phase",
           "name",
-          "date",
-          "if"
+          "date"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "text"
+            ]
+          },
+          {
+            "required": [
+              "value"
+            ]
+          },
+          {
+            "required": [
+              "is_present"
+            ]
+          }
         ],
         "properties": {
           "ref": {
