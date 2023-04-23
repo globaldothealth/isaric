@@ -35,5 +35,4 @@
     Home = "https://github.com/globaldothealth/isaric"
 
   [project.scripts]
-    autoparser-toml = "autoparser.make_toml:main"
-    autoparser-csv = "autoparser.csv_mapping:main"
+    autoparser = "autoparser.__main__:main"
