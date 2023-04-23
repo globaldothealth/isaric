@@ -34,7 +34,7 @@ then the default schema path should work out of the box.
 If you have [`pipx`](https://pypa.github.io/pipx/) installed (recommended, install using `brew install pipx` on macOS):
 
 ```shell
-pipx install 'git+https://github.com/globaldothealth/isaric@autoparser#egg=autoparser&subdirectory=autoparser'
+pipx install 'git+https://github.com/globaldothealth/isaric#egg=autoparser&subdirectory=autoparser'
 ```
 
 Alternatively you can use `pip`, replace `pipx` with `pip`, but this will
@@ -45,7 +45,11 @@ This will install `autoparser-csv` and `autoparser-toml`. If these are not
 found, run `pipx ensurepath` to fix, which inform the terminal about the
 installation location for the scripts.
 
-**Note**: Remove `@autoparser` once PR is merged into `main`
+**Alternatively**, one can run autoparser from a clone of the Git repository
+
+``shell
+python3 -m autoparser
+``
 
 ## Parser construction process
 
