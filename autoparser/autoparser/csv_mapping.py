@@ -161,9 +161,55 @@ def get_fields(config: Dict[str, Any], table: str) -> List[str]:
         }
 
 
+def accuracy(
+    table: str, parser_spec: Dict[str, Any], mapping: pd.DataFrame, accuracy_mode="any"
+) -> float:
+    "Returns proportion of first-choice mappings that are present in the parser"
+    if table not in parser_spec:
+        raise ValueError(f"Parser specification has no entries for table {table}")
+    if table == "observation":
+        raise NotImplementedError("Observation support not implemented yet")
+
+    def _get_fields(rule):
+        if "field" in rule:
+            return [rule["field"]]
+        if "combinedType" in rule:
+            return [r["field"] for r in rule["fields"]]
+
+    parser_mapping = {
+        attr: _get_fields(parser_spec[table][attr]) for attr in parser_spec[table]
+    }
+    # drop constant fields
+    parser_mapping = {k: v for k, v in parser_mapping.items() if v is not None}
+
+    if accuracy_mode == "any":
+        matches = mapping.groupby("schema_field")["field"].apply(list).to_dict()
+    elif accuracy_mode == "first":
+        matches = mapping.groupby("schema_field")["field"].first().to_dict()
+
+    correct_matches = 0
+    incorrect_matches = []
+    for attr in parser_mapping:
+        if (fields := matches.get(attr)) is None:
+            continue
+        if isinstance(fields, str):
+            if fields in parser_mapping[attr]:
+                correct_matches += 1
+            else:
+                incorrect_matches.append(attr)
+        elif isinstance(fields, list):
+            if set(fields) & set(parser_mapping[attr]):
+                correct_matches += 1
+            else:
+                incorrect_matches.append(attr)
+
+    return correct_matches / len(parser_mapping), incorrect_matches
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate intermediate CSV used by make_toml.py to create TOML"
+        description="Generate intermediate CSV used by make_toml.py (create-parser) to create TOML",
+        prog="autoparser create-mapping",
     )
     parser.add_argument("dictionary", help="Data dictionary to use")
     parser.add_argument(
@@ -183,6 +229,14 @@ def main():
     parser.add_argument(
         "-c", "--config", help=f"Configuration file to use (default={DEFAULT_CONFIG})"
     )
+    parser.add_argument("-k", "--check", help="Parser TOML to check accuracy against")
+    parser.add_argument(
+        "--accuracy-mode",
+        help="Accuracy mode: 'any' (default) checks whether any field matches, "
+        "'first' checks whether the first preference matches",
+        choices=["any", "first"],
+        default="any",
+    )
     args = parser.parse_args()
     with maybe(args.config, Path, default=Path(__file__).parent / DEFAULT_CONFIG).open(
         "rb"
@@ -194,6 +248,10 @@ def main():
             or Path.cwd()
         )
     tables = args.tables.split(",") if args.tables else config["schemas"].keys()
+    parser_spec = None
+    if args.check:
+        with open(args.check, "rb") as fp:
+            parser_spec = tomli.load(fp)
     for table in tables:
         df = matches_redcap(
             config,
@@ -201,7 +259,18 @@ def main():
             table,
             num_matches=args.num_matches,
         )
-        df.to_csv(f"{args.output}-{table}.csv", index=False)
+        if not args.check:
+            df.to_csv(f"{args.output}-{table}.csv", index=False)
+        else:
+            if table == "observation":
+                continue  # not implemented
+            acc, incorrect_matches = accuracy(
+                table, parser_spec, df, accuracy_mode=args.accuracy_mode
+            )
+            print(
+                f"Accuracy [{args.accuracy_mode}]  ({table}): {acc:.2%}, incorrect matches:"
+            )
+            print("\n".join("\t" + s for s in incorrect_matches))
 
 
 if __name__ == "__main__":
