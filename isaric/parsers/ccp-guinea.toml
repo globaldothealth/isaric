@@ -12,14 +12,14 @@
 
   [adtl.tables.visit]
     kind = "groupBy"
-    groupBy = "subject_id"
+    groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
 
   [adtl.tables.observation]
     kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "subjid", sensitive = true } }
+    common = { visit_id = { field = "record_id", sensitive = true } }
 
 [adtl.defs]
   "Y/N/NK" = { values = { 1 = true, 2 = false } }
@@ -411,7 +411,7 @@
   description = "Antibiotics"
 
 [visit.treatment_antiviral_type]
-  combinedType = "list"
+  combinedType = "set"
 
   [[visit.treatment_antiviral_type.fields]]
     field = "daily_antiviral_cmoth"
@@ -520,42 +520,43 @@
 [[observation]]
   name = "base_excess"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "care_date_t" }
   if = { base_excess = { "!=" = "" } }
-  text = { field = "base_excess", description = "Basic excess" }
+  value = { field = "base_excess", description = "Basic excess" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
-  if = { bleed_loc_v2 = { "!=" = "" } }
-  text = { field = "bleed_loc_v2", description = "In case of bleeding specify the site(s)" }
+  date = { field = "bleeding_v2_date" }
+  if = { bleeding_v2 = { "!=" = "" } }
+  is_present = { field = "bleeding_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
   phase = "admission"
+  start_date = { field = "bleeding_date" }
   date = { ref = "admissionDateHierarchy" }
-  if = { bleed_loc = { "!=" = "" } }
-  text = { field = "bleed_loc", description = "In case of bleeding specify the site(s)" }
+  if = { bleeding = { "!=" = "" } }
+  is_present = { field = "bleeding", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   if = { diastol_iso = { "!=" = "" } }
-  text = { field = "diastol_iso", description = "Diastolic blood pressure (BP diastolic)" }
+  value = { field = "diastol_iso", description = "Diastolic blood pressure (BP diastolic)" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "para_vitaux_date_t" }
   if = { diastol = { "!=" = "" } }
-  text = { field = "diastol", description = "Diastolic BP" }
+  value = { field = "diastol", description = "Diastolic BP" }
 
 [[observation]]
   name = "from_same_blood_gas_record_as_pao2"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "care_date_t" }
   if = { pcc02_source = { "!=" = "" } }
 
   [observation.is_present]
@@ -568,33 +569,33 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   if = { gcs_15 = { "!=" = "" } }
-  text = { field = "gcs_15", description = "Glasgow score" }
+  value = { field = "gcs_15", description = "Glasgow score" }
 
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "para_vitaux_date_t" }
   if = { gcs = { "!=" = "" } }
-  text = { field = "gcs", description = "Value Glasgow Score (SG/15)" }
+  value = { field = "gcs", description = "Value Glasgow Score (SG/15)" }
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   if = { pulse_iso = { "!=" = "" } }
-  text = { field = "pulse_iso", description = "Heart Rate (HR)" }
+  value = { field = "pulse_iso", description = "Heart Rate (HR)" }
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "para_vitaux_date_t" }
   if = { hr = { "!=" = "" } }
-  text = { field = "hr", description = "Heart Rate Value (HR)" }
+  value = { field = "hr", description = "Heart Rate Value (HR)" }
 
 [[observation]]
   name = "other_symptom"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "other_0_v2_date" }
   if = { other_0_v2 = { "!=" = "" } }
   text = { field = "other_0_v2", description = "Other symptom 1" }
 
@@ -602,6 +603,7 @@
   name = "other_symptom"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "other_date" }
   if = { other_0 = { "!=" = "" } }
   text = { field = "other_0", description = "Other symptom 1" }
 
@@ -609,6 +611,15 @@
   name = "other_symptom"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "other_1_date" }
+  if = { other_1 = { "!=" = "" } }
+  text = { field = "other_1", description = "Other symptom 2" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "other_2_date" }
   if = { other_2 = { "!=" = "" } }
   text = { field = "other_2", description = "Other symptom 3" }
 
