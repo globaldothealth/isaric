@@ -14,7 +14,7 @@ import pandas as pd
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from .util import maybe, DEFAULT_CONFIG
+from .util import maybe, parse_choices, DEFAULT_CONFIG
 
 
 def matches_redcap(
@@ -34,11 +34,21 @@ def matches_redcap(
         s = s.strip()
         return " ".join(lem.lemmatize(w) for w in s.split(sep=split))
 
+    def lemmatized_choices(s: str) -> str:
+        choices, _ = parse_choices(config, s)
+        if choices is None:
+            return " "
+        else:
+            return " " + " ".join(
+                lemmatized(c) for c in choices.values() if isinstance(c, str)
+            )
+
     if isinstance(data_dictionary, str):
         df = pd.read_csv(data_dictionary).rename(columns=column_mappings)[
             list(column_mappings.values())
         ]
         df["description"] = df.description.map(lemmatized)
+        df["lemmatized_choices"] = df.choices.map(lemmatized_choices)
 
     # Drop field types like 'banner' which are purely informative
     _allowed_field_types = config["categorical_types"] + config["text_types"]
@@ -51,11 +61,19 @@ def matches_redcap(
         ngram_range=(1, 2),
     )
     properties = [p for p in list(schema["properties"].keys()) if "_id" not in p]
-    descriptions = [lemmatized(attr, split="_") for attr in properties]
+    descriptions = [
+        " ".join(
+            [
+                lemmatized(attr, split="_"),
+                schema["properties"][attr].get("description", ""),
+            ]
+        )
+        for attr in properties
+    ]
 
     # Use the data dictionary to set up the vocabulary and do the initial TF-IDF
     # which is used to transform the field names
-    X = vec.fit_transform(df.description)
+    X = vec.fit_transform(df.description + df.lemmatized_choices)
     Y = vec.transform(descriptions)
 
     # Similarity
