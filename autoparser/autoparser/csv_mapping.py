@@ -11,6 +11,7 @@ from typing import Dict, Any, List, Union
 import tomli
 import numpy as np
 import pandas as pd
+from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from .util import maybe, DEFAULT_CONFIG
@@ -27,11 +28,17 @@ def matches_redcap(
     schema = get_fields(config, table)
     scores = config["scores"]
 
+    lem = WordNetLemmatizer()
+
+    def lemmatized(s, split=None):
+        s = s.strip()
+        return " ".join(lem.lemmatize(w) for w in s.split(sep=split))
+
     if isinstance(data_dictionary, str):
         df = pd.read_csv(data_dictionary).rename(columns=column_mappings)[
             list(column_mappings.values())
         ]
-        df["description"] = df.description.map(str.strip)
+        df["description"] = df.description.map(lemmatized)
 
     # Drop field types like 'banner' which are purely informative
     _allowed_field_types = config["categorical_types"] + config["text_types"]
@@ -44,7 +51,7 @@ def matches_redcap(
         ngram_range=(1, 2),
     )
     properties = [p for p in list(schema["properties"].keys()) if "_id" not in p]
-    descriptions = [" ".join(attr.split("_")) for attr in properties]
+    descriptions = [lemmatized(attr, split="_") for attr in properties]
 
     # Use the data dictionary to set up the vocabulary and do the initial TF-IDF
     # which is used to transform the field names
