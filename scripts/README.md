@@ -34,7 +34,34 @@ flag. The default generator is `serial`, to use UUIDs instead, pass
 As an example, running on the CCPUK RELSUB file gives
 
 ```shell
-$ python3 relsub.py CCPUK\ RELSUB.csv                               
+$ python3 relsub.py CCPUK\ RELSUB.csv
 relsub.py: wrote relsub.json
            11793 unique IDs across 23587 total
+```
+
+## `missing_fields.py`: lists missing fields
+
+The majority of the parser attributes are optional, as they may not
+always be present in each dataset. However, this makes it easy to miss
+fields which should be mapped, as there are no associated warnings for
+optional fields.
+
+This script checks either an individual parser, or all parsers in a folder,
+against the current schema to check which of the optional fields are missing.
+A summary table of the percentage of schema fields present in the parser is
+printed in the terminal, and a csv file showing whether each attribute individually
+is present (true) or absent (false) from the parser.
+
+This script requires Python, along with the pandas and tomli packages installable
+with the provided `requirements.txt` file. It can be run as follows
+```shell
+python3 scripts/checkfields/missing_fields.py <PATH TO PARSER FILE>
+```
+which will save an output file `check_fields.csv` containing a list of all
+possible attributes and whether or not they are present. All the parsers can
+be tested at once by adding a `--all` flag and providing a path to the folder, rather
+than a file, e.g.
+
+```shell
+python3 scripts/checkfields/missing_fields.py isaric/parsers --all
 ```
