@@ -543,8 +543,40 @@
 
   [[visit.treatment_steroids.fields]]
     field = "topical"
-    description = "Topical steroids(including eyes/ear drops)"
+    description = "Topical steroids (including eyes/ear drops)"
     values = { 1 = true, 0 = false }
+
+    # Observations
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "abd_pain_date" }
+  is_present = { field = "abd_pain", ref = "Y/N/NK" }
+  if.not.abd_pain = ""
+
+[[observation]]
+  name = "adenopathy"
+  phase = "study"
+  date = { field = "lymphadenopathy_v2_date" }
+  is_present = { field = "lymphadenopathy_v2", ref = "Y/N/NK" }
+  if.not.lymphadenopathy_v2 = ""
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "consciousness_date" }
+  is_present = { field = "consciousness", values = { 1 = true, 0 = false } }
+  if.not.consciousness = ""
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "study"
+  date = { field = "consciousness_v2_date" }
+  is_present = { field = "consciousness_v2", ref = "Y/N/NK" }
+  if.not.consciousness_v2 = ""
 
 [[observation]]
   name = "base_excess"
@@ -552,6 +584,279 @@
   date = { field = "soins_date_t" }
   if = { base_excess = { "!=" = "" } }
   value = { field = "base_excess", description = "Basic excess" }
+
+[[observation]]
+  name = "chest_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "chest_pain_date" }
+  is_present = { field = "chest_pain", values = { 1 = true, 0 = false } }
+  if.not.chest_pain = ""
+
+[[observation]]
+  name = "chest_pain"
+  phase = "study"
+  date = { field = "chest_pain_v2_date" }
+  is_present = { field = "chest_pain_v2", ref = "Y/N/NK" }
+  if.not.chest_pain_v2 = ""
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "conjunc_date" }
+  is_present = { field = "conjunc", values = { 1 = true, 0 = false } }
+  if.not.conjunc = ""
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "study"
+  date = { field = "conjunc_v2_date" }
+  is_present = { field = "conjunc_v2", ref = "Y/N/NK" }
+  if.not.conjunc = ""
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough", values = { 1 = true, 0 = false } },
+      { field = "dry_cough", values = { 1 = true, 0 = false } },
+      { field = "wet_cough", values = { 1 = true, 0 = false } },
+      { field = "blood_cough", values = { 1 = true, 0 = false } },
+    ]
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dry_cough_date" },
+      { field = "wet_cough_date" },
+      { field = "blood_cough_date" },
+    ]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "wet_cough_date" }
+  is_present = { field = "wet_cough", values = { 1 = true, 0 = false } }
+  if.not.wet_cough = ""
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "blood_cough_date" }
+  is_present = { field = "blood_cough", values = { 1 = true, 0 = false } }
+  if.not.blood_cough = ""
+
+[[observation]]
+  name = "cough"
+  phase = "study"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_v2", ref = "Y/N/NK" },
+      { field = "dry_cough_v2", ref = "Y/N/NK" },
+      { field = "wet_cough_v2", ref = "Y/N/NK" },
+      { field = "blood_cough_v2", ref = "Y/N/NK" },
+    ]
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dry_cough_v2_date" },
+      { field = "wet_cough_v2_date" },
+      { field = "blood_cough_v2_date" },
+    ]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  is_present = { field = "wet_cough_v2", ref = "Y/N/NK" }
+  date = { field = "wet_cough_v2_date" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "study"
+  is_present = { field = "blood_cough_v2", ref = "Y/N/NK" }
+  date = { field = "blood_cough_v2_date" }
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "admission"
+  is_present = { field = "diarrhea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "diarrhea_date" }
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "study"
+  is_present = { field = "diarrhea_v2", ref = "Y/N/NK" }
+  date = { field = "diarrhea_v2_date" }
+
+[[observation]]
+  name = "ear_pain"
+  phase = "admission"
+  is_present = { field = "ear_pain", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "ear_pain_date" }
+
+[[observation]]
+  name = "ear_pain"
+  phase = "study"
+  is_present = { field = "ear_pain_v2", ref = "Y/N/NK" }
+  date = { field = "ear_pain_v2_date" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "admission"
+  is_present = { field = "fatigue", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "fatigue_date" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "study"
+  is_present = { field = "fatigue_v2", ref = "Y/N/NK" }
+  date = { field = "fatigue_v2_date" }
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "admission"
+  is_present = { field = "anosmia", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "anosmia_date" }
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "study"
+  is_present = { field = "anosmia_v2", ref = "Y/N/NK" }
+  date = { field = "anosmia_v2_date" }
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "admission"
+  is_present = { field = "ageusia", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "ageusia_date" }
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "study"
+  is_present = { field = "ageusia_v2", ref = "Y/N/NK" }
+  date = { field = "ageusia_v2_date" }
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  phase = "study"
+  is_present = { field = "lowerchesdrawing", ref = "Y/N/NK" }
+  date = { field = "lowerchesdrawing_date" }
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "admission"
+  is_present = { field = "myalagia", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "myalagia_date" }
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "study"
+  is_present = { field = "myalagia_v2", ref = "Y/N/NK" }
+  date = { field = "myalagia_v2_date" }
+
+[[observation]]
+  name = "runny_nose"
+  phase = "admission"
+  is_present = { field = "rhinorrhea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "rhinorrhea_date" }
+
+[[observation]]
+  name = "runny_nose"
+  phase = "study"
+  is_present = { field = "rhinorrhea_v2", ref = "Y/N/NK" }
+  date = { field = "rhinorrhea_v2_date" }
+
+[[observation]]
+  name = "seizures"
+  phase = "admission"
+  is_present = { field = "seizures", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "seizures_date_s_and_s" }
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  is_present = { field = "seizures_v2", ref = "Y/N/NK" }
+  date = { field = "seizures_v2_date" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "admission"
+  is_present = { field = "dyspnea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "dyspnea_date" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "study"
+  is_present = { field = "dyspnea_v2", ref = "Y/N/NK" }
+  date = { field = "dyspnea_v2_date" }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "admission"
+  is_present = { field = "skin_rash", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "skin_rash_date" }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "study"
+  is_present = { field = "skin_rash_v2", ref = "Y/N/NK" }
+  date = { field = "skin_rash_v2_date" }
+
+[[observation]]
+  name = "sore_throat"
+  phase = "admission"
+  is_present = { field = "sore_throat", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "sore_throat_date" }
+
+[[observation]]
+  name = "sore_throat"
+  phase = "study"
+  is_present = { field = "sore_throat_v2", ref = "Y/N/NK" }
+  date = { field = "sore_throat_v2_date" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "admission"
+  is_present = { field = "nausea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "nausea_date" }
+
+[[observation]]
+  name = "wheezing"
+  phase = "admission"
+  is_present = { field = "wheezing", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "wheezing_date" }
+
+[[observation]]
+  name = "wheezing"
+  phase = "study"
+  is_present = { field = "wheezing_v2", ref = "Y/N/NK" }
+  date = { field = "wheezing_v2_date" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "study"
+  is_present = { field = "nausea_v2", ref = "Y/N/NK" }
+  date = { field = "nausea_v2_date" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
@@ -576,6 +881,13 @@
   value = { field = "diastol_iso", description = "Diastolic blood pressure (BP diastolic)" }
 
 [[observation]]
+  name = "clinical_classification_pneumonia_needing_oxygen"
+  phase = "study"
+  is_present = { field = "clipneu", ref = "Y/N/NK" }
+  date = { field = "clipneu_date" }
+  if.not.clipneu = ""
+
+[[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
   date = { field = "para_vitaux_date_t" }
@@ -583,7 +895,7 @@
   value = { field = "diastol", description = "Diastolic BP" }
 
 [[observation]]
-  name = "from_same_blood_gas_record_as_pao2"
+  name = "pcc02"
   phase = "study"
   date = { field = "soins_date_t" }
   if = { pcc02_source = { "!=" = "" } }
