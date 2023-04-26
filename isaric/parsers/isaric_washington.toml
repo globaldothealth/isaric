@@ -1,0 +1,585 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+name = "washington"
+description = "COVID-19 patient data for ISARIC in SCCM VIRUS format, University of Washington Medical Center Northwest"
+
+[adtl.tables.subject]
+kind = "groupBy"
+groupBy = "subject_id"
+aggregation = "lastNotNull"
+schema = "../../schemas/dev/subject.schema.json"
+
+[adtl.tables.visit]
+kind = "groupBy"
+groupBy = "visit_id"
+aggregation = "lastNotNull"
+schema = "../../schemas/dev/visit.schema.json"
+
+[adtl.tables.observation]
+kind = "oneToMany"
+aggregation = "lastNotNull"
+schema = "../../schemas/dev/observation.schema.json"
+
+[adtl.defs]
+"Y/N/NK" = { values = { 0 = false, 1 = true } }
+admission_date = { field = "ADMIT DATE" }
+
+[study] 
+id = "CVMIRIJ"
+country_iso3 = "USA"
+
+[subject]
+country_iso3 = "USA"
+pathogen = "COVID-19"
+
+[subject.subject_id]
+field = "patient_study_id"
+sensitive = true
+
+[subject.enrolment_date] # optional field
+field = "date_filling_first_form"
+
+[subject.admission_date] # fill here!
+ref = "admission_date"
+
+[subject.age] # need fixing here for age '>90' to consider a character ..
+field = "age"
+# no age unit?
+
+[subject.sex_at_birth]
+field = "sex"
+values = { 1 = "Male", 2 = "Female", 3 = "Intersex", 4 = "Transgender" }
+
+[subject.ethnicity]
+field = "race"
+combinedType = "set"
+excludeWhen = "none"
+values = { 1 = "American Indian or Alaska Native", 2 = "Asian American", 3 = "Black or African American", 4 = "Native Hawaiian or Other Pacific Islander", 5 = "White Caucasian", 7 = "East Asian (China, Hongkong, Japan, S. Korea etc.)", 8 = "South Asian (India, Pakistan, Sri Lanka etc.)", 9 = "West Asian (including Arabic)", 10 = "South East Asian (Philippines, Thailand, Malaysia, Singapore, VietNam etc.)", 11 = "Mixed Race", 12 = "Unknown", 6 = "Other" }
+
+[subject.works_microbiology_lab]
+field = "employed_as_a_healthcare_w"
+description = "Patient Employed as a Healthcare Worker or in a Microbiology Laboratory?"
+ref = "Y/N/NK"
+
+[subject.works_healthcare]
+field = "employed_as_a_healthcare_w"
+description = "Patient Employed as a Healthcare Worker or in a Microbiology Laboratory?"
+ref = "Y/N/NK"
+
+[subject.has_tuberculosis]
+field = "any_other_pos___4"
+ref = "Y/N/NK"
+
+[subject.has_dementia]
+field = "comorbidities___34"
+ref = "Y/N/NK"
+
+[subject.has_obesity]
+field = "comorbidities___30"
+ref = "Y/N/NK"
+
+[subject.has_hiv]
+combinedType = "any"
+fields = [
+    { field = "comorbidities___22", ref = "Y/N/NK" },
+    { field = "any_other_pos___1", ref = "Y/N/NK" }
+]
+
+[subject.has_hypertension]
+field = "comorbidities___3"
+ref = "Y/N/NK"
+
+[subject.has_malignant_neoplasm]
+field = "comorbidities___20"
+ref = "Y/N/NK"
+
+[subject.has_smoking]
+field = "social_history"
+values = { 1 = "Current Smoler", 2 = "Former Smoker", 3 = "Vaping", 4 = "Alcohol use disorder", 5 = "Substance use disorder", 0 = "Unknown/Not available" }
+
+[subject.has_asthma]
+field = "comorbidities___8"
+ref = "Y/N/NK"
+
+[subject.has_chronic_kidney_disease]
+field = "comorbidities___10"
+ref = "Y/N/NK"
+
+[subject.has_diabetes]
+field = "comorbidities___12"
+ref = "Y/N/NK"
+
+[subject.diabetes_type]
+field = "type_of_diabetes"
+
+[subject.diabetes_type.values]
+1 = "type-1"
+2 = "type-2"
+3 = "gestational"
+
+[subject.has_liver_disease]
+field = "comorbidities___14"
+ref = "Y/N/NK"
+
+[subject.has_malnutrition]
+field = "comorbidities___29"
+ref = "Y/N/NK"
+
+[subject.has_solid_organ_transplant]
+field = "comorbidities___21"
+ref = "Y/N/NK"
+
+[subject.has_hiv_art]
+field = "pre_hospital_medication___3"
+ref = "Y/N/NK"
+
+[subject.has_died] # ignores the person who died after discharge!  
+field = "hosp_status"
+description = "Hospital discharge status?"
+values = { 1 = true, 0 = false }
+
+[subject.icu_admitted]
+field = "admitted_to_icu"
+ref = "Y/N/NK"
+
+[visit]
+
+[visit.visit_id]
+field = "patient_study_id"
+sensitive = true
+
+[visit.subject_id]
+field = "patient_study_id"
+sensitive = true
+
+[visit.start_date] # fill here!
+ref = "admission_date"
+
+[visit.icu_admission]
+combinedType = "any"
+fields = [
+    { field = "admitted_to_icu", ref = "Y/N/NK" },
+    { field = "is_patient_admitted_to_icu", ref = "Y/N/NK" }
+]
+
+[visit.icu_admission_dates] # calculated from admission date + hospital day - CHECK IF THIS IS CORRECT?
+field = "admission_date"
+description = "icu admission date calculated from admission and hospital day"
+apply = { function = "endDate", params = ["day_to_icu"]}
+
+[visit.pathogen_test_date]
+field = "covid19_test_date"
+
+[visit.treatment_inotropes_vasopressors]
+field = "types_of_vasopressors___10"
+ref = "Y/N/NK"
+
+[visit.treatment_ecmo]
+field = "treatment_events___5"
+ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid]
+field = "medications___4"
+ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid_type] # text field
+field = "steroid_name_dose"
+description = "Please specify the corticosteroid name and dose"
+
+[visit.treatment_oxygen_therapy] # check this!
+combinedType = "any"
+excludeWhen = 'none'
+fields = [
+    { field = "oxygenation___1", ref = "Y/N/NK" },
+    { field = "oxygenation___2", ref = "Y/N/NK" },
+    { field = "oxygenation___3", ref = "Y/N/NK" },
+    { field = "oxygenation___4", ref = "Y/N/NK" },
+    { field = "oxygenation___5", ref = "Y/N/NK" },
+    { field = "oxygenation___6", ref = "Y/N/NK" },
+    { field = "oxygenation___11", ref = "Y/N/NK" }
+]
+
+[visit.treatment_prone_position]
+field = "treatment_events___1"
+ref = "Y/N/NK"
+
+[visit.treatment_invasive_ventilation]
+combinedType = "any"
+fields = [
+    { field = "oxygenation___2", ref = "Y/N/NK" },
+    { field = "oxygenation_methods_2___1", ref = "Y/N/NK" },
+]
+
+[visit.treatment_antifungal_agent]
+field = "medications___1"
+ref = "Y/N/NK"
+
+[visit.treatment_antivirals]
+field = "medications___2"
+ref = "Y/N/NK"
+
+[visit.treatment_antiviral_type]
+description = "Type of antiviral(s) used"
+combinedType = 'set'
+excludeWhen = 'none'
+fields = [
+    { field = "name_of_antiviral___1", values = { 1 = "Interferon alpha" } },
+    { field = "name_of_antiviral___2", values = { 1 = "Interferon beta" } },
+    { field = "name_of_antiviral___3", values = { 1 = "Lopinavir" } },
+    { field = "name_of_antiviral___4", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "name_of_antiviral___5", values = { 1 = "Remdesivir" } },
+    { field = "name_of_antiviral___6", values = { 1 = "Ribavirin" } },
+    { field = "name_of_antiviral___7", values = { 1 = "Ritonavir" } },
+    { field = "name_of_antiviral___8", values = { 1 = "Other" } }
+]
+
+[visit.treatment_antibiotics]
+field = "medications___9"
+ref = "Y/N/NK"
+
+[visit.treatment_anticoagulation]
+combinedType = "any"
+fields = [
+    { field = "anticoagulation_category___2", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___3", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___4", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___5", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___6", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___7", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___8", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___9", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___10", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___11", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___12", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___13", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___14", ref = "Y/N/NK" },
+    { field = "anticoagulation_category___21", ref = "Y/N/NK" },
+    { field = "medications___8", ref = "Y/N/NK" }
+]
+
+
+[visit.treatment_inhaled_nitric_oxide]
+field = "treatment_events___2"
+ref = "Y/N/NK"
+
+[visit.treatment_noninvasive_ventilation]
+combinedType = "any"
+fields = [
+    { field = "oxygenation___3", ref = "Y/N/NK" },
+    { field = "oxygenation_methods_2___2", ref = "Y/N/NK" },
+]
+
+[visit.treatment_high_flow_nasal_cannula]
+combinedType = "any"
+fields = [
+    { field = "oxygenation___1", ref = "Y/N/NK" },
+    { field = "oxygenation_methods_2___3", ref = "Y/N/NK" },
+]
+[visit.treatment_steroids]
+field = "medications___16" 
+ref = "Y/N/NK"
+
+[visit.treatment_intravenous_fluids]
+field = "totak_iv_fluid"
+
+[visit.treatment_nsaid]
+field = "medications___16" 
+ref = "Y/N/NK"
+
+[visit.treatment_neuraminidase]
+field = "name_of_antiviral___4" 
+ref = "Y/N/NK"
+
+[visit.treatment_cpr] # not sure about this!
+field = "good_death___1"
+ref = "Y/N/NK"
+
+[visit.treatment_tocilizumab]
+field = "mis_medications___1"
+ref = "Y/N/NK"
+
+[visit.treatment_immunoglobulins]
+field = "blood_products___6"
+ref = "Y/N/NK"
+
+[visit.outcome]
+field = "hosp_status"
+description = "Discharged alive or dead"
+values = { 1 = "Deceased", 0 = "Alive" }
+
+[visit.date_outcome] # calculate: hospital length of stay (hospital_los) + the admission date - CHECK THIS!
+field = "admission_date"
+description = "outcome date calculated from admission and hospital los"
+apply = { function = "endDate", params = ["hospital_los"]}
+
+
+[[observation]] 
+name = "avpu"
+date = "date_filling_first_form"
+phase = "study"
+text = { field = "avpu_score_v2___1", values = { 1 = "Alert" } }
+
+[[observation]] 
+name = "avpu"
+date = "date_filling_first_form"
+phase = "study"
+text = { field = "avpu_score_v2___2", values = { 1 = "Verbal" } }
+
+[[observation]] 
+name = "avpu"
+date = "date_filling_first_form" 
+phase = "study"
+text = { field = "avpu_score_v2___3", values = { 1 = "Pain" } }
+
+[[observation]] 
+name = "avpu"
+date = "date_filling_first_form" 
+phase = "study"
+text = { field = "avpu_score_v2___4", values = { 1 = "Unresponsive" } }
+
+[[observation]] 
+name = "diastolic_blood_pressure_mmHg"
+date = "date_filling_first_form"
+phase = "study" #?
+value = { field = "dbp_echo" }
+
+[[observation]] # - CHECK THIS!!!
+name = "from_same_blood_gas_record_as_pao2"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "pco2_from_same_blood_gas_r" }
+
+[[observation]] # - CHECK THIS!!!
+name = "from_same_blood_gas_record_as_pao2"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "ph_from_same_blood_gas_rec" }
+
+[[observation]] # - CHECK THIS!!!
+name = "from_same_blood_gas_record_as_pao2"
+date = "date_filling_first_form" 
+phase = "study"
+value = { field = "hco3_from_same_blood_gas_r" }
+
+[[observation]] 
+name = "glasgow_coma_score"
+date = "date_filling_first_form" 
+phase = "study"
+value = { field = "gcs_lowest_plods2" }
+
+[[observation]] 
+name = "abdominal_pain"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___1", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "altered_consciousness_confusion"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___8", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "anorexia"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___3", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "chest_pain"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___6", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "confusion"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___8", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "conjunctivitis"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___9", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "cough"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___10", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "cough_with_sputum_production"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___11", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "diarrhoea"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___12", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "fatigue_malaise"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___18", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "headache"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___16", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "hepatomegaly"
+date = "date_filling_first_form"
+phase = "study"
+is_present = { field = "complications___19", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "history_of_fever"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___15", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "loss_of_smell"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___4", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "loss_of_taste"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___2", ref = "Y/N/NK" }
+
+[[observation]] # check if correct!
+name = "lymphadenopathy"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___27", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "muscle_aches"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___19", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "seizures"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___23", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "shortness_of_breath"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___14", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "skin_rash"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___26", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "sore_throat"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___25", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "vomiting_nausea"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___21", ref = "Y/N/NK" }
+
+[[observation]] 
+name = "runny_nose"
+date = { ref = "admission_date" }
+phase = "admission"
+is_present = { field = "signs_and_symptoms_at_hosp___20", ref = "Y/N/NK" }
+
+[[observation]] # there are other fields with heart rate
+name = "heart_rate_bpm"
+date = { ref = "admission_date" }
+phase = "admission" # not sure?
+text = { field = "apache_heart_rate", values = { 1 = '< or = 39', 2 = '40 - 54', 3 = '55 - 69', 4 = '70 - 109', 5 = '110 - 139', 6 = '140 - 179', 7 = 'or > 180' } }
+
+[[observation]] # there are other fields with arterial blood pressure
+name = "mean_arterial_blood_pressure_mmHg"
+date = { ref = "admission_date" }
+phase = "admission"
+value = { field = "apache_map" }
+
+[[observation]] # check this!!!
+name = "other_symptom"
+date = { ref = "admission_date" }
+phase = "admission"
+value = { field = "signs_symptoms_others" }
+
+[[observation]] 
+name = "oxygen_saturation_percent"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "oxygen_saturation_spo2_v2" }
+
+[[observation]] 
+name = "pao2"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "apache_pao2" }
+
+[[observation]] 
+name = "pH"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "ph_from_same_blood_gas_rec" }
+
+[[observation]] 
+name = "respiratory_rate"
+date = "date_filling_first_form"
+phase = "study"
+is_present = { field = "apache_resp_rate", values = { 1 = '< or = 5', 2 = '6 - 9', 3 = '10 - 11', 4 = '12 - 24', 5 = '25 - 34', 6 = '35 - 49', 7 = '> or = 50' } }
+
+[[observation]] 
+name = "richmond_agitation-sedation_scale"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "richmond_agitation_sedatio_v2" }
+
+[[observation]] 
+name = "riker_sedation-agitation_scale"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "riker_sedation_agitation_s_v2" }
+
+[[observation]] 
+name = "systolic_blood_pressure_mmHg"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "sbp_echo" }
+
+[[observation]] 
+name = "temperature_celsius"
+date = "date_filling_first_form"
+phase = "study"
+text = { field = "temperature", values = { 1 = '≤37·3°C', 2 = '37·3-38.0°C', 3 = '38.1-39.0°C', 4 = '>39.0°C' } }
+
+[[observation]] 
+name = "total_fluid_output_ml"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "uo_v2" }
+
+[[observation]] 
+name = "transfer_from_other_facility"
+date = { ref = "admission_date" }
+phase = "admission"
+value = { field = "hospital_admission_source" }
