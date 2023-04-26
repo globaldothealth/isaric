@@ -364,9 +364,39 @@
   description = "Date of ICU admission:"
 
 [subject.pregnancy]
-  field = "upt_res"
-  description = "Urine Dipstick Pregnancy Test Result"
-  ref = "positive/negative"
+  field = "preg"
+  description = "Whether patient is pregnant or in post-partum period"
+  values = { 1 = true, 0 = false }
+
+[subject.pregnancy_post_partum]
+  field = "preg_2"
+  description = "Whether currently pregnant or in post-partum period"
+  values = { 1 = false, 2 = true }
+
+[subject.pregnancy_gestational_assessment_weeks]
+  field = "gest"
+  description = "Gestational age"
+  unit = "weeks"
+
+[subject.pregnancy_outcome]
+  field = "del_outcome"
+  values = { 0 = "still born", 1 = "live birth" }
+
+[subject.pregnancy_birth_weight_kg]
+  field = "birthweigh"
+  source_unit = { field = "birthweight_units", values = { 1 = "kg", 2 = "lbs" } }
+  unit = "kg"
+
+[subject.pregnancy_whether_breastfed]
+  field = "breastfed"
+  ref = "Y/N/NK"
+
+[subject.pregnancy_date_of_delivery]
+  field = "del_date"
+
+[subject.pregnancy_gestational_outcome]
+  field = "gest_out"
+  values = { 1 = "term_birth", 2 = "preterm_birth" }
 
 [subject.works_healthcare]
   field = "hth_wrk"
@@ -433,6 +463,30 @@
   description = "Antibiotics"
   values = { 1 = true, 0 = false }
 
+[visit.treatment_ace_inhibitors]
+  field = "daily_ace_cmoccur"
+  description = "Angiotensin converting enzyme (ACE) inhibitors?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_immunosuppressant]
+  field = "immunosuppressive_agents"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_antifungal_agent]
+  field = "daily_antifung_cmyn"
+  description = "Antifungal agent?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_arb]
+  field = "daily_arb_cmoccur"
+  description = "Angiotensin II receptor antagonists (ARBs)?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_antimalarial]
+  field = "daily_antimal_cmyn"
+  description = "Antimalarials?"
+  values = { 1 = true, 0 = false }
+
 [visit.treatment_antiviral_type]
   description = "Type of antiviral agent used"
   combinedType = "set"
@@ -454,9 +508,16 @@
   ]
 
 [visit.treatment_dexamethasone]
-  field = "dexamethasone"
-  description = "Dexamethasone"
-  values = { 1 = true, 0 = false }
+  combinedType = "any"
+  fields = [
+    { field = "dexamethasone", values = { 1 = true, 0 = false } },
+    { field = "daily_corticost_cmtrt___1", values = { 1 = true } },
+  ]
+
+[visit.treatment_high_flow_nasal_cannula]
+  field = "overall_oxygen_cmtype___2"
+  description = "Oxygen interface type - HF nasal cannula"
+  values = { 2 = true }
 
 [visit.treatment_dialysis]
   combinedType = "any"
@@ -476,10 +537,27 @@
   description = "Extracorporeal (ECMO) support"
   ref = "Y/N/NK"
 
-[visit.treatment_high_flow_nasal_cannula]
-  field = "can_oxy_ther"
-  description = "High flow oxygen therapy by nasal prongs?"
+[visit.treatment_corticosteroid]
+  field = "daily_corticost_cmyn"
+  description = "Corticosteroids"
   ref = "Y/N/NK"
+
+[visit.treatment_experimental_agent]
+  field = "daily_exper_cmyn"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_experimental_agent_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
+  ]
 
 [visit.treatment_inotropes_vasopressors]
   field = "vaso_or_inot"
@@ -487,12 +565,12 @@
   ref = "Y/N/NK"
 
 [visit.treatment_invasive_ventilation]
-  field = "inv_vent"
+  field = "overall_invasive_proccur"
   description = "Invasive ventilation?"
   ref = "Y/N/NK"
 
 [visit.treatment_noninvasive_ventilation]
-  field = "non_inv_vent"
+  field = "overall_noninvasive_proccur"
   description = "Non-invasive ventilation (eg BiPAP, CPAP)?"
   ref = "Y/N/NK"
 
@@ -506,21 +584,18 @@
   ]
 
 [visit.treatment_oxygen_therapy]
-  combinedType = "any"
-
-  [[visit.treatment_oxygen_therapy.fields]]
-    field = "o2_therapy_disch"
-    description = "Oxygen therapy"
-    values = { 1 = true, 0 = false }
-
-  [[visit.treatment_oxygen_therapy.fields]]
-    field = "can_oxy_ther"
-    description = "High flow oxygen therapy by nasal prongs?"
-    ref = "Y/N/NK"
+  field = "overall_oxygen_cmoccur"
+  description = "Oxygen therapy?"
+  ref = "Y/N/NK"
 
 [visit.treatment_prone_position]
   field = "overall_prone_prtrt"
   description = "Prone position"
+  ref = "Y/N/NK"
+
+[visit.treatment_inhaled_nitric_oxide]
+  field = "inhaled_nitric"
+  description = "Inhaled nitric oxide"
   ref = "Y/N/NK"
 
 [visit.treatment_steroids]
