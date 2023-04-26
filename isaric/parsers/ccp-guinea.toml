@@ -895,7 +895,7 @@
   value = { field = "diastol", description = "Diastolic BP" }
 
 [[observation]]
-  name = "pcc02"
+  name = "pcco2"
   phase = "study"
   date = { field = "soins_date_t" }
   if = { pcc02_source = { "!=" = "" } }
@@ -1008,6 +1008,7 @@
 
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "oxy_vsorresu", values = { 1 = "without-oxygen", 2 = "with-oxygen" } },
     ]
@@ -1021,6 +1022,7 @@
 
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "ox_type", values = { 1 = "without-oxygen", 2 = "with-oxygen" } },
     ]
