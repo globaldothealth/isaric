@@ -1108,19 +1108,15 @@
   phase = "study"
   date = { field = "icu_date" }
   value = { field = "pa02", description = "PaO2 at time of FiO2 above" }
+  [observation.context]
+      combinedType = "set"
+      excludeWhen = "none"
+      fields = [
+        {field = "pa02_samp_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" }}
+      ]
 
 [[observation]]
-  name = "pao2_sample_type"
-  phase = "study"
-  date = { field = "icu_date" }
-
-  [observation.text]
-    field = "pa02_samp_type"
-    description = "PaO2 sample type"
-    values = { 1 = "arterial", 2 = "venous", 3 = "capillary" }
-
-[[observation]]
-  name = "pcco2"
+  name = "pco2"
   date = { field = "icu_date" }
   phase = "study"
   value = { field = "pcc02" }
