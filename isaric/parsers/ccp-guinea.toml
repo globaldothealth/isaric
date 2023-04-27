@@ -578,9 +578,8 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "premeds_other_meds2", description = "Other treatment (3)" },
-    { field = "premeds_other_meds3", description = "Other treatment (4)" },
-    { field = "premeds_other_meds1", description = "Other treatment (2)" },
+    { field = "other_meds_1", description = "Other treatment" },
+    { field = "other_meds_2", description = "Other treatment" },
   ]
 
 [visit.treatment_oxygen_therapy]
@@ -1031,12 +1030,6 @@
   phase = "study"
   date = { field = "other_2_v2_date" }
   text = { field = "other_2_v2", description = "Other symptom 3" }
-
-[[observation]]
-  name = "other_symptom"
-  phase = "study"
-  date = { field = "treatment_date_t" }
-  text = { field = "premeds_other_meds2", description = "Other treatment (3)" }
 
 [[observation]]
   name = "oxygen_saturation_percent"
