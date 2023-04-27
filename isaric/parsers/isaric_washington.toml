@@ -291,6 +291,11 @@ ref = "Y/N/NK"
 field = "name_of_antiviral___4" 
 ref = "Y/N/NK"
 
+[visit.treatment_neuromuscular_blocking_agents]
+field = "nmb_given"
+description = "NeuroMuscular Blockers (NMB) Given?"
+values = { 0 = false, 1 = true, 2 = true, 3 = true, 4 = true, 5 = true, 6 = true, 7 = true }
+
 [visit.treatment_cpr] # not sure about this!
 field = "good_death___1"
 ref = "Y/N/NK"
@@ -341,7 +346,7 @@ text = { field = "avpu_score_v2___4", values = { 1 = "Unresponsive" } }
 [[observation]] 
 name = "diastolic_blood_pressure_mmHg"
 date = "date_filling_first_form"
-phase = "study" #?
+phase = "study"
 value = { field = "dbp_echo" }
 
 [[observation]] # - CHECK THIS!!!
@@ -458,7 +463,7 @@ date = { ref = "admission_date" }
 phase = "admission"
 is_present = { field = "signs_and_symptoms_at_hosp___2", ref = "Y/N/NK" }
 
-[[observation]] # check if correct!
+[[observation]]
 name = "lymphadenopathy"
 date = { ref = "admission_date" }
 phase = "admission"
@@ -506,17 +511,23 @@ date = { ref = "admission_date" }
 phase = "admission"
 is_present = { field = "signs_and_symptoms_at_hosp___20", ref = "Y/N/NK" }
 
-[[observation]] # there are other fields with heart rate
+[[observation]]
 name = "heart_rate_bpm"
-date = { ref = "admission_date" }
-phase = "admission" # not sure?
-text = { field = "apache_heart_rate", values = { 1 = '< or = 39', 2 = '40 - 54', 3 = '55 - 69', 4 = '70 - 109', 5 = '110 - 139', 6 = '140 - 179', 7 = 'or > 180' } }
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "heart_rate_highest" }
+
+[[observation]]
+name = "heart_rate_bpm"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "heart_rate_lo" } 
 
 [[observation]] # there are other fields with arterial blood pressure
 name = "mean_arterial_blood_pressure_mmHg"
-date = { ref = "admission_date" }
-phase = "admission"
-value = { field = "apache_map" }
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "map_low_plods2" }
 
 [[observation]] # check this!!!
 name = "other_symptom"
@@ -534,7 +545,13 @@ value = { field = "oxygen_saturation_spo2_v2" }
 name = "pao2"
 date = "date_filling_first_form"
 phase = "study"
-value = { field = "apache_pao2" }
+value = { field = "pao2_at_time_of_fio2_above" }
+
+[[observation]] 
+name = "pao2"
+date = "date_filling_first_form"
+phase = "study"
+value = { field = "pao2_lowest_plods2" }
 
 [[observation]] 
 name = "pH"
@@ -546,7 +563,13 @@ value = { field = "ph_from_same_blood_gas_rec" }
 name = "respiratory_rate"
 date = "date_filling_first_form"
 phase = "study"
-is_present = { field = "apache_resp_rate", values = { 1 = '< or = 5', 2 = '6 - 9', 3 = '10 - 11', 4 = '12 - 24', 5 = '25 - 34', 6 = '35 - 49', 7 = '> or = 50' } }
+is_present = { field = "rr" }
+
+[[observation]] 
+name = "respiratory_rate"
+date = "date_filling_first_form"
+phase = "study"
+is_present = { field = "rr_lo" }
 
 [[observation]] 
 name = "richmond_agitation-sedation_scale"
@@ -571,6 +594,12 @@ name = "temperature_celsius"
 date = "date_filling_first_form"
 phase = "study"
 text = { field = "temperature", values = { 1 = '≤37·3°C', 2 = '37·3-38.0°C', 3 = '38.1-39.0°C', 4 = '>39.0°C' } }
+
+[[observation]] 
+name = "temperature_celsius"
+date = "date_filling_first_form"
+phase = "study"
+text = { field = "temperature_lo", values = { 1 = '≤37·3°C', 2 = '37·3-38.0°C', 3 = '38.1-39.0°C', 4 = '>39.0°C' } }
 
 [[observation]] 
 name = "total_fluid_output_ml"
