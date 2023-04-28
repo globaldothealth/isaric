@@ -479,11 +479,12 @@
 [visit.outcome]
   field = "outcome"
   description = "Outcome"
-  values = { 1 = "discharged", 2 = "recovered", 3 = "transferred", 4 = "death", 5 = "discharged", 6 = "discharged" }
+  values = { 1 = "discharged", 2 = "recovered", 3 = "transferred", 4 = "death", 5 = "discharged", 6 = "palliative discharge" }
 
 [visit.pathogen_test_date]
   field = "path_date"
   description = "Pathogen test date"
+  # if = {field = "path_type", apply = {function = "searchString"}} - or text search. The majority are SARS cov 2 but there's TB in there so need the conditional.
 
 [visit.start_date]
   field = "add_date"
@@ -497,17 +498,21 @@
     description = "Angiotensin converting enzyme inhibitors (ACE inhibitors)?"
     ref = "Y/N/NK"
 
-  [[visit.treatment_ace_inhibitors.fields]]
-    field = "sec_ace"
-    description = "Second ACE inhibitor"
-    values = { 1 = true, 2 = false }
+    # [[visit.treatment_ace_inhibitors.fields]] - pre-admission meds
+    #   field = "sec_ace"
+    #   description = "Second ACE inhibitor"
+    #   values = { 1 = true, 2 = false }
 
 [visit.treatment_antibiotics]
   combinedType = "any"
   fields = [
+    { field = "daily_antibiotic_cmyn", description = "Antibiotic?", values = { 1 = true, 0 = false } },
+    { field = "meds_given", description = "Overall medications: Antibiotic?", values = { 2 = true } },
     { field = "disx269", description = "Other antibiotics", values = { 1 = true, 2 = false } },
     { field = "dis32", description = "Antibiotics received?", values = { 1 = true, 2 = false } },
   ]
+
+  # Antibiotic type given in sup_antibiotic_agent - but this is a messy free-text field.
 
 [visit.treatment_antifungal_agent]
   field = "daily_antifung_cmyn"
@@ -520,9 +525,12 @@
   ref = "Y/N/NK"
 
 [visit.treatment_antivirals]
-  field = "daily_antiviral_cmyn"
-  description = "Antiviral?"
-  ref = "Y/N/NK"
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_antiviral_cmyn", description = "Antiviral?", ref = "Y/N/NK" },
+    { field = "meds_given", description = "Overall medications: Antiviral?", values = { 1 = true } },
+  ]
 
 [visit.treatment_antiviral_type]
   description = "Type of antiviral(s) used"
@@ -537,9 +545,8 @@
     { field = "daily_antiviral_cmoth", if.all = [
       { daily_antiviral_cmtrt___6 = 1 },
       { daily_antiviral_cmyn = 1 },
-    ] }, # free text field
+    ] }, # free text field - also free text in sup_meds_antivirals.
   ]
-  if = { daily_antiviral_cmyn = 1 }
 
 [visit.treatment_neuraminidase]
   combinedType = 'any'
@@ -550,14 +557,21 @@
   ]
 
 [visit.treatment_arb]
-  field = "sec_arb_2"
-  description = "Second ARB inhibitor"
-  values = { 1 = true, 2 = false }
+  #   field = "sec_arb_2" - preadmission treatment
+  #   description = "Second ARB inhibitor"
+  #   values = { 1 = true, 2 = false }
+  field = "daily_arb_cmoccur"
+  description = "Angiotensin II receptor blockers (ARBs)?"
+  ref = "Y/N/NK"
 
 [visit.treatment_corticosteroid]
-  field = "daily_corticost_cmyn"
-  description = "Corticosteroid?"
-  ref = "Y/N/NK"
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_corticost_cmyn", description = "Corticosteroid?", ref = "Y/N/NK" },
+    { field = "meds_given", description = "Overall medications: Corticosteroid?", values = { 4 = true } },
+  ]
+
 
 [visit.treatment_corticosteroid_type]
   description = "Corticosteroid - if 'Other' corticosteroid, specify"
@@ -612,14 +626,18 @@
     { field = "daily_exper_cmoth", if.all = [
       { daily_exper_cmtype___7 = 1 },
       { daily_exper_cmyn = 1 },
-    ] }, # free text field
+    ] }, # free text field, mostly vit C
   ]
   if = { daily_exper_cmyn = 1 }
 
 [visit.treatment_high_flow_nasal_cannula]
-  field = "can_oxy_ther"
-  description = "High-flow nasal canula oxygen therapy"
-  ref = "Y/N/NK"
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "can_oxy_ther", description = "High-flow nasal canula oxygen therapy", ref = "Y/N/NK" },
+    { field = "overall_oxygen_cmtype___2", description = "Oxygen therapy interface: HF nasal cannula", ref = "Y/N/NK" },
+    { field = "daily_oxygen_cmtype_1", description = "Oxygen therapy interface: HF nasal cannula", ref = "Y/N/NK" },
+  ]
 
 [visit.treatment_inhaled_nitric_oxide]
   field = "nitric_oxide"
@@ -627,9 +645,13 @@
   ref = "Y/N/NK"
 
 [visit.treatment_inotropes_vasopressors]
-  field = "overall_inotrop_cmtrt"
-  description = "Inotropes/vasopressors?"
-  values = { 1 = true, 2 = false }
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_inotrop_cmtrt", description = "Inotropes/vasopressors?", values = { 1 = true, 2 = false } },
+    { field = "vaso_or_inot", description = "Any vasopressor/inotropic support?", ref = "Y/N/NK" },
+  ]
+
 
 [visit.treatment_intravenous_fluids]
   field = "daily_iv_fluids_cmyn"
@@ -660,9 +682,12 @@
   ref = "Y/N/NK"
 
 [visit.treatment_noninvasive_ventilation]
-  field = "overall_noninvasive_proccur"
-  description = "Non-invasive ventilation? <i>(e.g. BIPAP, CPAP)</i>"
-  values = { 1 = true, 2 = false }
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_noninvasive_proccur", description = "Non-invasive ventilation? <i>(e.g. BIPAP, CPAP)</i>", values = { 1 = true, 2 = false } },
+    { field = "non_inv_vent", description = "Non-Invasive ventilation?", ref = "Y/N/NK" },
+  ]
 
 [visit.treatment_nsaid]
   field = "daily_nsaid_cmoccur"
@@ -676,8 +701,8 @@
     { field = "other_meds", description = "Other Medication" },
     { field = "other_meds_3", description = "Other Medication" },
     { field = "other_meds_2", description = "Other Medication" },
-    { field = "premeds_other_meds1", description = "Other Medications (1)" },
-    { field = "premeds_other_meds2", description = "Other Medications (2)" },
+    # { field = "premeds_other_meds1", description = "Other Medications (1)" }, - preadmission medications
+    # { field = "premeds_other_meds2", description = "Other Medications (2)" },
   ]
 
 [visit.treatment_oxygen_therapy]
@@ -689,32 +714,94 @@
     values = { 1 = true, 2 = false }
 
   [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_oxygen_cmtype___1"
+    description = "Oxygen therapy?"
+    values = { 1 = true }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_oxygen_cmtype___2"
+    description = "Oxygen therapy?"
+    values = { 1 = true }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_oxygen_cmtype___3"
+    description = "Oxygen therapy?"
+    values = { 1 = true }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_oxygen_cmtype___4"
+    description = "Oxygen therapy?"
+    values = { 1 = true }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_oxygen_cmtype___5"
+    description = "Oxygen therapy?"
+    values = { 1 = true}
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_oxygen_cmtype_1"
+    description = "Oxygen therapy?"
+    values = { 1 = true, 2 = true, 3 = true, 4 = true, 5 = true }
+
+  [[visit.treatment_oxygen_therapy.fields]]
     field = "can_oxy_ther"
     description = "High-flow nasal canula oxygen therapy"
     ref = "Y/N/NK"
 
 [visit.treatment_prone_position]
-  field = "overall_prone_prtrt"
-  description = "Prone position?"
-  values = { 1 = true, 2 = false }
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_prone_prtrt", description = "Prone position?", values = { 1 = true, 2 = false } },
+    { field = "prone", description = "Prone in ICU?", ref = "Y/N/NK" },
+  ]
 
-[visit.treatment_steroids]
-  field = "disx254"
-  description = "Steroids"
-  values = { 1 = true, 2 = false }
+  # [visit.treatment_steroids] # can probably drop 'steroids' as corticosteroids are the same thing?
+  #   field = "disx254"
+  #   description = "Steroids"
+  #   values = { 1 = true, 2 = false }
+
+  # [[observation]] - no data
+  #   phase = "study"
+  #   name = "oxygen_flow_volume_max"
+  #   date.ref = "admissionDateHierarchy"
+  #   value.field = "admx269"
+  #   context = ["high-flow nasal cannula"]
+
+  # [[observation]]
+  #   phase = "admission"
+  #   name = "oxygen_flow_volume_max"
+  #   date.ref = "admissionDateHierarchy"
+  #   value.field = "disx39c"
+
+  # [observation.context]
+  #   combinedType = 'set'
+  #   excludeWhen = "none"
+  #   fields = [
+  #     { field = "daily_oxygen_cmtype_1", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
+  #   ]
+
+  # [[observation]]
+  #   phase = "study"
+  #   name = "oxygen_flow_volume_max"
+  #   date.field = "icu_date"
+  #   value.field = "disx39e"
+  #   context = ["high-flow nasal cannula"]
 
 [[observation]]
   phase = "study"
   name = "oxygen_flow_volume_max"
-  date.ref = "admissionDateHierarchy"
-  value.field = "admx269"
-  context = ["high-flow nasal cannula"]
+  date.field = "outcome_date"
 
-[[observation]]
-  phase = "admission"
-  name = "oxygen_flow_volume_max"
-  date.ref = "admissionDateHierarchy"
-  value.field = "disx39c"
+  [observation.text]  # This is a multi-select, but we're only recording the MAX value
+    combinedType = "firstNonNull"
+    excludeWhen = "None"
+    fields = [
+      {field = "overall_oxygen_cmdose___4", values = {1=">15 L/min", 0= "None", ""= "None"}}, # Stop-gap until if parsing improves
+      {field = "overall_oxygen_cmdose___3", values = {1="11-15 L/min", 0= "None", ""= "None"}},
+      {field = "overall_oxygen_cmdose___2", values = {1="6-10 L/min", 0= "None", ""= "None"}},
+      {field = "overall_oxygen_cmdose___1", values = {1="1-5 L/min", 0= "None", ""= "None"}}
+    ]
 
   [observation.context]
     combinedType = 'set'
@@ -723,12 +810,26 @@
       { field = "daily_oxygen_cmtype_1", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
     ]
 
+  [observation.if] # need to improve the auto-if for this,
+    any = [
+      { overall_oxygen_cmdose___4 = { "!=" = "" } },
+      { overall_oxygen_cmdose___3 = { "!=" = "" } },
+      { overall_oxygen_cmdose___2 = { "!=" = "" } },
+      { overall_oxygen_cmdose___1 = { "!=" = "" } },
+    ]
+
 [[observation]]
   phase = "study"
   name = "oxygen_flow_volume_max"
-  date.field = "icu_date"
-  value.field = "disx39e"
-  context = ["high-flow nasal cannula"]
+  date.field = "o2_date"
+  text = { field = "daily_oxygen_cmdose_1", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
+
+  [observation.context]
+    combinedType = 'set'
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_oxygen_cmtype_1", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
+    ]
 
 [[observation]]
   name = "abdominal_pain"
@@ -827,7 +928,21 @@
   name = "cough"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "dry_cough_v2", description = "Dry Cough", ref = "Y/N/NK" }
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dry_cough_v2", ref = "Y/N/NK" },
+      { field = "wet_cough_v2", ref = "Y/N/NK" },
+      { field = "blood_cough_v2", ref = "Y/N/NK" },
+    ]
+
+  [observation.if]
+    any = [
+      { dry_cough_v2 = { "!=" = "" } },
+      { wet_cough_v2 = { "!=" = "" } },
+      { blood_cough_v2 = { "!=" = "" } },
+    ]
 
 [[observation]]
   name = "cough"
@@ -1023,21 +1138,6 @@
   is_present = { field = "ageusia_v2", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "chest_pain"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "chest_pain_v2", description = "Chest pain", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "chest_pain"
-  phase = "pre-admission"
-  is_present = { field = "chest_pain", description = "Chest pain", ref = "Y/N/NK" }
-
-  [observation.date]
-    combinedType = "firstNonNull"
-    fields = [{ field = "chest_pain_date" }, { field = "add_date" }]
-
-[[observation]]
   name = "muscle_aches"
   phase = "pre-admission"
   is_present = { field = "myalagia", description = "Muscle aches (Myalgia)", ref = "Y/N/NK" }
@@ -1108,12 +1208,13 @@
   phase = "study"
   date = { field = "icu_date" }
   value = { field = "pa02", description = "PaO2 at time of FiO2 above" }
+
   [observation.context]
-      combinedType = "set"
-      excludeWhen = "none"
-      fields = [
-        {field = "pa02_samp_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" }}
-      ]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "pa02_samp_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
+    ]
 
 [[observation]]
   name = "pco2"
@@ -1128,15 +1229,15 @@
       { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } },
     ]
 
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { field = "overall_icu_hostdat" }
+# [[observation]] # - possibly remove this as an observation, it's a treatment.
+#   name = "renal_replacement_therapy_dialysis"
+#   phase = "study"
+#   date = { field = "overall_icu_hostdat" }
 
-  [observation.is_present]
-    field = "overall_rrt_prtrt"
-    description = "Renal replacement therapy (RRT) or dialysis?"
-    values = { 1 = true, 2 = false }
+#   [observation.is_present]
+#     field = "overall_rrt_prtrt"
+#     description = "Renal replacement therapy (RRT) or dialysis?"
+#     values = { 1 = true, 2 = false }
 
 [[observation]]
   name = "runny_nose"
@@ -1311,11 +1412,11 @@
   phase = "admission"
   is_present = { field = "lowerchesdrawing", ref = "Y/N/NK" }
 
-[[observation]]
-  name = "lymphadenopathy"
-  date = { field = "img_date" }
-  phase = 'study'
-  is_present = { field = "ass_cxr___1", values = { 1 = true }, description = "mediastinal masses/lymphadenopathy" }
+# [[observation]] # - this variable only relates to imaging finsings, not a clinical diagnosis/complication.
+#   name = "lymphadenopathy"
+#   date = { field = "img_date" }
+#   phase = 'study'
+#   is_present = { field = "ass_cxr___1", values = { 1 = true }, description = "mediastinal masses/lymphadenopathy" }
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
@@ -1323,14 +1424,32 @@
   phase = "study"
   is_present = { field = "caps", ref = "Y/N/NK", description = "Capillary refill time >2 seconds" }
 
+# [[observation]] - maybe new observation? refill less than 3?
+#   name = "sternal_capillary_refill_time_greater_2s"
+#   date = { ref = 'admissionDateHierarchy' }
+#   phase = "admission"
+#   is_present = { field = "caps_iso", ref = "Y/N/NK", description = "Capillary refill time <3 seconds" }
+
 [[observation]]
   name = "respiratory_rate"
   date = { field = 'vitals_date' }
   phase = 'study'
   value = { field = 'rr', description = "respiration", unit = 'cpm' } # min=16, max=40
 
+# [[observation]] - not in data
+#   name = "respiratory_rate"
+#   date = { ref = 'admissionDateHierarchy' }
+#   phase = 'admission'
+#   value = { field = 'rr_iso', description = "respiration", unit = 'cpm' } # min=16, max=40
+
 [[observation]]
   name = "heart_rate_bpm"
   phase = 'study'
   date = { field = "vitals_date" }
   value = { field = "hr", description = 'pulse' } #min=35, max=200
+
+# [[observation]] - not in data
+#   name = "heart_rate_bpm"
+#   phase = 'admission'
+#   date = { ref = 'admissionDateHierarchy' }
+#   value = { field = "hr_iso", description = 'pulse' } #min=35, max=200
