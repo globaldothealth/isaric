@@ -48,7 +48,7 @@
   4 = "Unable to walk"
 
 [subject]
-  study_id = "datcov-southafrica"
+  # study_id = "datcov-southafrica"
   country_iso3 = "ZAF"
   pathogen = "COVID-19"
 
@@ -199,10 +199,10 @@
     ref = "Y/N/NK"
     description = "Liver disease"
 
-  [subject.has_hiv_viral_suppression]
-    field = "HIV Viral Suppression"
-    values = { 'Yes' = true, 'No' = false }
-    # values = [nan, 'No', 'Unknown', 'Yes']
+    # [subject.has_hiv_viral_suppression]
+    #   field = "HIV Viral Suppression"
+    #   values = { 'Yes' = true, 'No' = false }
+    #   # values = [nan, 'No', 'Unknown', 'Yes']
 
   [subject.has_tuberculosis_past]
     field = "Tuberculosis Past"

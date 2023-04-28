@@ -247,7 +247,6 @@
   ## SUBJECT
 
 [subject]
-  study_id = "isaric-rapid"
   country_iso3 = { field = "country", ref = "countryMap" }
   pathogen = "COVID-19"
 
@@ -866,7 +865,7 @@
     2 = "hospitalised"
     3 = "transferred"
     4 = "death"
-    5 = "discharged"
+    5 = "palliative discharge"
 
 [visit.date_outcome]
   field = "dsstdtc"

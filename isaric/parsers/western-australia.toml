@@ -50,8 +50,7 @@
   5 = "Unable to walk"
 
 [subject]
-  study_id = "western-australia"
-  country_iso3 = "AUS"           # this should be a map
+  country_iso3 = "AUS"  # this should be a map
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -572,11 +571,11 @@
   field = "dsterm"
 
   [visit.outcome.values] # check correspondence of these values
-    1 = "recovered"    # discharged alive
+    1 = "recovered"            # discharged alive
     2 = "hospitalised"
     3 = "transferred"
     4 = "death"
-    5 = "discharged"   # palliative discharge
+    5 = "palliative discharge" # palliative discharge
 
 
 [visit.date_outcome]

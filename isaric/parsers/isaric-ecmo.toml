@@ -237,7 +237,6 @@
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
 [subject]
-  study_id = "isaric-ecmo"
   country_iso3 = { field = "country", ref = "countryMap" }
   pathogen = "COVID-19"
 
@@ -492,7 +491,7 @@
       2 = "hospitalised"
       3 = "transferred"
       4 = "death"
-      5 = "discharged"
+      5 = "palliative discharge"
 
 [visit.pathogen_test_date]
   field = "mbdat"

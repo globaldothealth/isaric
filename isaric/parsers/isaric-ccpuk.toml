@@ -40,7 +40,6 @@
   ## SUBJECT
 
 [subject]
-  study_id = "isaric-ccpuk"
   country_iso3 = "GBR"
   pathogen = "COVID-19"
 
@@ -501,7 +500,7 @@
       2 = "hospitalised"
       3 = "transferred"
       4 = "death"
-      5 = "discharged"
+      5 = "palliative discharge"
 
   [[visit.outcome.fields]]
     field = "dsterm_v2"
@@ -510,7 +509,7 @@
       1 = "discharged"
       3 = "transferred"
       4 = "death"
-      5 = "discharged"
+      5 = "palliative discharge"
 
       ## OBSERVATION
 
@@ -526,15 +525,17 @@
   date = { ref = "followupDateHierarchy" }
   phase = "followup"
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false } }
-    [observation.context]
-      combinedType = "set"
-      excludeWhen = "none"
-      fields = [{field = "flw_cough_type", values = {1 = "dry cough", 2 = "with phlegm"}}]
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_cough_type", values = { 1 = "dry cough", 2 = "with phlegm" } },
+    ]
 
 [[observation]]
   name = "cough"
   phase = "admission"
-  date = {ref = "admissionDateHierarchy"}
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     combinedType = "firstNonNull"
@@ -895,7 +896,7 @@
   [observation.context]
     combinedType = "set"
     fields = [
-      {field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" }}
+      { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
     ]
 
 [[observation]]

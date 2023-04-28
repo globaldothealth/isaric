@@ -430,8 +430,8 @@
     2 = "recovered"
     3 = "transferred"
     4 = "death"
-    5 = "discharged"  # released with home care
-    6 = "discharged"  # released with palliative care
+    5 = "discharged"           # released with home care
+    6 = "palliative discharge" # released with palliative care
 
 [visit.start_date]
   ref = "admissionDateHierarchy"
@@ -630,7 +630,7 @@
   is_present = { field = "abd_pain", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "adenopathy"
+  name = "lymphadenopathy"
   phase = "study"
   date = { field = "lymphadenopathy_v2_date" }
   is_present = { field = "lymphadenopathy_v2", ref = "Y/N/NK" }
