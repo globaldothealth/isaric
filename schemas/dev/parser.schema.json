@@ -399,10 +399,6 @@
           "description": "Apnoea",
           "$ref": "#/definitions/mapping"
         },
-        "has_hiv_viral_suppression": {
-          "description": "HIV viral suppression",
-          "$ref": "#/definitions/mapping"
-        },
         "has_inflammatory_bowel_disease": {
           "description": "Inflammatory bowel disease",
           "$ref": "#/definitions/mapping"

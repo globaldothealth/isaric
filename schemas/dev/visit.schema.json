@@ -329,7 +329,8 @@
         "hospitalised",
         "transferred",
         "recovered",
-        "discharged"
+        "discharged",
+        "palliative discharge"
       ],
       "description": "Outcome",
       "category": "outcome"
