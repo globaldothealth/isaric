@@ -184,6 +184,12 @@
       "description": "Experimental agent name",
       "category": "treatments"
     },
+    "treatment_experimental_agent_type_other": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Experimental agent name - other agents",
+      "category": "treatments"
+    },
     "treatment_inhaled_nitric_oxide": {
       "type": "boolean",
       "description": "Inhaled nitric oxide",

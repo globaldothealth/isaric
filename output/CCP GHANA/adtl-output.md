@@ -3,8 +3,8 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |2049   |2777   |73.784660% |
-|visit          |1952   |2777   |70.291682% |
-|observation    |215005 |604004 |35.596619% |
+|visit          |2299   |2777   |82.787180% |
+|observation    |459059 |604004 |76.002642% |
 
 ## subject
 
@@ -14,13 +14,11 @@
 ## visit
 
 * 323: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
-* 302: data.treatment_experimental_agent_type[0] must be one of ['Chloroquine', 'Hydroxychloroquine', 'Remdesivir', 'IL1 inhibitor', 'IL6 inhibitor', 'Convalescent plasma', 'Other']
 * 152: data.visit_id must be string
-* 34: data.treatment_experimental_agent_type[2] must be one of ['Chloroquine', 'Hydroxychloroquine', 'Remdesivir', 'IL1 inhibitor', 'IL6 inhibitor', 'Convalescent plasma', 'Other']
-* 12: data.treatment_experimental_agent_type[1] must be one of ['Chloroquine', 'Hydroxychloroquine', 'Remdesivir', 'IL1 inhibitor', 'IL6 inhibitor', 'Convalescent plasma', 'Other']
 * 2: data.treatment_antiviral_type[0] must be one of ['Ribavirin', 'Lopinavir/Ritonvir', 'Interferon alpha', 'Interferon beta', 'Chloroquine/Hydroxychloroquine', 'Oseltamivir (Tamiflu)', 'Zanamivir', 'Casirivimab/Imdevimab', 'Remdesivir', 'IL6 inhibitor', 'Neuraminidase inhibitor', 'Convalescent plasma', 'Anti-influenza antiviral', 'Other']
+* 1: data.treatment_other[0] must be string
 
 ## observation
 
-* 388998: data must contain ['phase', 'date', 'name'] properties
-* 1: data.text must be string
+* 144943: data must contain ['phase', 'date', 'name'] properties
+* 2: data.text must be string

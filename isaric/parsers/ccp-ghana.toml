@@ -26,7 +26,6 @@
 
 [adtl.defs]
   "Y/N/NK" = { values = { 0 = false, 1 = true } }
-  "still birth/live birth" = { values = { 0 = "still birth", 1 = "live birth" } }
   uid = { field = "record_id" }
 
   [adtl.defs.admissionDateHierarchy]
@@ -34,6 +33,7 @@
     fields = [
       { field = "add_date", description = "Admission date at this facility" },
       { field = "recruit_date", description = "Date of recruitment to study" },
+      { field = "signs_symps_date", description = "Date of signs&symptoms on admission form" },
     ]
 
   [adtl.defs.countryMap.values]
@@ -414,7 +414,7 @@
 [subject.pregnancy_outcome]
   field = "del_outcome"
   description = "Outcome of Pregnancy"
-  ref = "still birth/live birth"
+  values = { 0 = "still birth", 1 = "live birth" }
 
 [subject.pregnancy_whether_breastfed]
   combinedType = "any"
@@ -623,12 +623,20 @@
     { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
     { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
     { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { field = "daily_exper_cmoth", if.all = [
-      { daily_exper_cmtype___7 = 1 },
-      { daily_exper_cmyn = 1 },
-    ] }, # free text field, mostly vit C
+    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
+    # { field = "daily_exper_cmoth", if.all = [
+    #   { daily_exper_cmtype___7 = 1 },
+    #   { daily_exper_cmyn = 1 },
+    # ] }, # free text field, mostly vit C
   ]
-  if = { daily_exper_cmyn = 1 }
+  # if = { daily_exper_cmyn = 1 }
+
+[visit.treatment_experimental_agent_type_other]
+  combinedType = "set"
+  description = "Experimental agent = other - free text field"
+  fields = [
+    { field = "daily_exper_cmoth", if = { daily_exper_cmtype___7 = 1 } },
+  ]
 
 [visit.treatment_high_flow_nasal_cannula]
   combinedType = "any"
