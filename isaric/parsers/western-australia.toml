@@ -115,7 +115,7 @@
   [subject.has_hiv]
     combinedType = "any"
     fields = [
-      { field = "aidshiv_mhyn", values = { 1 = true, 2 = false, 4 = true } }, # , 3 = false
+      { field = "aidshiv_mhyn", values = { 1 = true, 2 = false, 4 = true } }, # , 3 = false (NK)
       { field = "hiv_mborres", values = { 1 = true, 0 = false } },
     ]
     description = "HIV"
@@ -132,7 +132,7 @@
 
   [subject.has_smoking]
     field = "smoking_mhyn"
-    description = "Current smoking"
+    description = "Current smoking? (Yes/No/Unknown)"
     values = { 1 = "yes" }
 
   [subject.has_asthma]
@@ -419,15 +419,15 @@
     { field = "exper_cmtype___7", values = { 1 = "Other" } },
   ]
 
-[visit.treatment_tocilizumab]
-  description = "Tocilizumab used?"
-  combinedType = "any"
-  excludeWhen = "none"
-  fields = [
-    { field = "overall_exper_cmtype___4", values = { 1 = true } },
-    { field = "daily_exper_cmtype___4", values = { 1 = true } },
-    { field = "exper_cmtype___4", values = { 1 = true } },
-  ]
+  # [visit.treatment_tocilizumab]
+  #   description = "Tocilizumab used?"
+  #   combinedType = "any"
+  #   excludeWhen = "none"
+  #   fields = [
+  #     { field = "overall_exper_cmtype___4", values = { 1 = true } },
+  #     { field = "daily_exper_cmtype___4", values = { 1 = true } },
+  #     { field = "exper_cmtype___4", values = { 1 = true } },
+  #   ]
 
 [visit.treatment_noninvasive_ventilation]
   description = "Noninvasive ventilation"
@@ -484,19 +484,16 @@
     field = "overall_corticost_cmtrt___1"
     description = "Dexamethasone used?"
     values = { 0 = false, 1 = true }
-    if = { overall_corticost_cmyn = 1 }
 
   [[visit.treatment_dexamethasone.fields]]
     field = "daily_corticost_cmtrt___1"
     description = "Dexamethasone used?"
     values = { 0 = false, 1 = true }
-    if = { daily_corticost_cmyn = 1 }
 
   [[visit.treatment_dexamethasone.fields]]
     field = "corticost_cmtrt___1"
     description = "Dexamethasone used?"
     values = { 0 = false, 1 = true }
-    if = { corticost_cmyn = 1 }
 
 [visit.treatment_high_flow_nasal_cannula]
   description = "High flow nasal cannula"
@@ -505,17 +502,14 @@
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "overall_oxygen_cmtype___2"
     values = { 0 = false, 1 = true }
-    if = { overall_oxygen_cmoccur = 1 }
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "daily_oxygen_cmtype"
     values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false }
-    if = { daily_oxygen_cmoccur = 1 }
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "oxygen_cmtype"
     values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false }
-    if = { oxygen_cmoccur = 1 }
 
 [visit.treatment_nsaid]
   description = "NSAID"
@@ -553,19 +547,16 @@
     field = "overall_antiviral_cmtrt___5"
     description = "Neuraminidase used?"
     values = { 1 = true, 0 = false }
-    if = { overall_antiviral_cmyn = 1 }
 
   [[visit.treatment_neuraminidase.fields]]
     field = "daily_antiviral_cmtrt___5"
     description = "Neuraminidase used?"
     values = { 1 = true, 0 = false }
-    if = { daily_antiviral_cmyn = 1 }
 
   [[visit.treatment_neuraminidase.fields]]
     field = "antiviral_cmtrt___5"
     description = "Neuraminidase used?"
     values = { 1 = true, 0 = false }
-    if = { antiviral_cmyn = 1 }
 
 [visit.outcome]
   field = "dsterm"
@@ -588,42 +579,41 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
-  if = { avpu_vsyn = 1 }
 
 [[observation]]
   name = "avpu"
   date = { field = "daily_date" }
   phase = "study"
   text = { field = "daily_avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
-  if = { daily_avpu_vsyn = 1 }
 
 [[observation]]
   name = "bleeding_haemorrhage"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
-  # if = { bleed_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "cough"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
-  # if = { cough_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "cough"
   date = { field = "daily_date" }
   phase = "study"
   is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N" }
-  # if = { daily_cough_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
-  name = "cough"
+  name = "cough" # This one is data taken from pre-admission, preferable to use cough_ceoccur_v2
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "symptoms_cough", values = { 1 = true, 0 = false } }
-  # if = { symptoms_cough = { "!=" = "" } }
+  if.all = [
+    { cough_ceoccur_v2 = { "!=" = 1 } },
+    { cough_ceoccur_v2 = { "!=" = 2 } },
+    { symptoms_cough = { "!=" = "" } },
+  ]
 
   # [[observation]] # oxy_vsorres is missing - but oxy_vsorresu isn't!
   #   name = "oxygen_saturation_percent"
@@ -659,14 +649,12 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "gcs_vsorres" }
-  if = { gcs_vsyn = 1 }
 
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_gcs_vsorres" }
-  if = { daily_gcs_vsyn = 1 }
   #description = "Glasgow Coma Score (GCS/15)"
 
 [[observation]]
@@ -674,21 +662,18 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "conjunct_ceoccur_v2", ref = "Y/N" }
-  # if = { conjunct_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "conjunctivitis"
   phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_conjunct_ceoccur_v2", ref = "Y/N" }
-  # if = { daily_conjunct_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "runny_nose"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "runnynose_ceoccur_v2", ref = "Y/N" }
-  # if = { runnynose_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "seizures"
@@ -769,6 +754,12 @@
   is_present = { field = "myalgia_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  name = "muscle_aches"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_myalgia_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
   name = "lymphadenopathy"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -800,7 +791,7 @@
 
 [[observation]]
   name = "diarrhoea"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_diarrhoea_ceoccur_v2", ref = "Y/N" }
 
@@ -829,6 +820,12 @@
   is_present = { field = "fever_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  if.all = [
+    { fever_ceoccur_v2 = { "!=" = 1 } },
+    { fever_ceoccur_v2 = { "!=" = 2 } },
+    { symptoms_fever = { "!=" = "" } },
+  ]
+
   name = "history_of_fever"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -857,56 +854,48 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "diabp_vsorres" }
-  if = { diabp_vsyn = 1 }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "diastolic_vsorres" }
-  if = { diastolic_vsyn = 1 }
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "hr_vsorres" }
-  if = { hr_vsyn = 1 }
 
 [[observation]]
   name = "heart_rate_bpm"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_hr_vsorres" }
-  if = { daily_hr_vsyn = 1 }
 
 [[observation]]
   name = "respiratory_rate"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "rr_vsorres" }
-  if = { rr_vsyn = 1 }
 
 [[observation]]
   name = "respiratory_rate"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_rr_vsorres" }
-  if = { daily_rr_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "sysbp_vsorres" }
-  if = { sysbp_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "systolic_vsorres" }
-  if = { systolic_vsyn = 1 }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
@@ -928,7 +917,7 @@
 
 [[observation]]
   name = "severe_dehydration"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_dehydration_vsorres", values = { 1 = true, 0 = false } }
 
@@ -940,7 +929,7 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
 
@@ -968,20 +957,18 @@
   date = { ref = "admissionDateHierarchy" }
   context = ["highest"]
   value = { field = "temp_vsorres" }        # there is no source unit field
-  if = { temp_vsyn = 1 }
 
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_temp_vsorres" } # there is no source unit field and no conditional field
-  if = { daily_temp_vsyn = 1 }
 
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  date = { field = "daily_date" }
-  phase = "study"
-  is_present = { field = "daily_rrt_prtrt", values = { 1 = true, 2 = false } }
+  # [[observation]]
+  #   name = "renal_replacement_therapy_dialysis"
+  #   date = { field = "daily_date" }
+  #   phase = "study"
+  #   is_present = { field = "daily_rrt_prtrt", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "mid_upper_arm_circumference_cm"
