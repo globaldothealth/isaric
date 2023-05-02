@@ -20,7 +20,7 @@
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "patient_study_id", sensitive = true }}
+    common = { visit_id = { field = "patient_study_id", sensitive = true } }
 
 [adtl.defs]
   "Y/N" = { values = { 0 = false, 1 = true } }
@@ -67,7 +67,7 @@
 
   [subject.subject_id]
     # field = "patient_study_id"
-    field = "icu_id"  # The ID needs to be on every row for this to work - the ICU ID is the one that repeats, so has been chosen here.
+    field = "icu_id" # The ID needs to be on every row for this to work - the ICU ID is the one that repeats, so has been chosen here.
     sensitive = true
 
   [subject.enrolment_date] # optional field
@@ -82,7 +82,7 @@
 
   [subject.sex_at_birth] # this is just 'sex' in the CRF - you can't be trans at birth, maybe we need some nuance here/ a different 'current_sex' variable or similar
     field = "sex"
-    values = { 1 = "male", 2 = "female", 3 = "intersex" }#, 4 = "transgender"
+    values = { 1 = "male", 2 = "female", 3 = "intersex" } #, 4 = "transgender"
 
   [subject.ethnicity]
     combinedType = "set"
@@ -115,7 +115,6 @@
 
   [subject.has_hiv]
     combinedType = "any"
-    excludeWhen = "None"
     fields = [
       { field = "comorbidities___22", ref = "Y/N" },
       { field = "any_other_pos___1", ref = "Y/N" },
@@ -175,10 +174,9 @@
 
   [subject.has_died]
     combinedType = "any"
-    excludeWhen = "None"
     fields = [
-        {field = "hosp_status", description = "Hospital discharge status?", values = { 1 = true, 0 = false }},
-        {field = "mort_28_days", description = "28 day mortality?", values = { 1 = true, 0 = false }}
+      { field = "hosp_status", description = "Hospital discharge status?", values = { 1 = true, 0 = false } },
+      { field = "mort_28_days", description = "28 day mortality?", values = { 1 = true, 0 = false } },
     ]
 
   [subject.icu_admitted]
@@ -379,13 +377,13 @@
   [observation.text]
     combinedType = "firstNonNull"
     fields = [
-        { field = "avpu_score_v2___1", values = { 1 = "Alert" } },
-        { field = "avpu_score_v2___2", values = { 1 = "Verbal" } },
-        { field = "avpu_score_v2___3", values = { 1 = "Pain" } },
-        { field = "avpu_score_v2___4", values = { 1 = "Unresponsive" } }
+      { field = "avpu_score_v2___1", values = { 1 = "Alert" } },
+      { field = "avpu_score_v2___2", values = { 1 = "Verbal" } },
+      { field = "avpu_score_v2___3", values = { 1 = "Pain" } },
+      { field = "avpu_score_v2___4", values = { 1 = "Unresponsive" } },
     ]
 
-    [observation.if] # need to improve the auto-if for this,
+  [observation.if] # need to improve the auto-if for this,
     any = [
       { avpu_score_v2___1 = 1 },
       { avpu_score_v2___2 = 1 },
@@ -434,7 +432,7 @@
     "hospital_day_core_e2",
   ] } }
   phase = "study"
-  value = { field = "pao2_lowest_plods2", source_unit="mmHg" }
+  value = { field = "pao2_lowest_plods2", source_unit = "mmHg" }
   context = ["Lowest daily reading"]
 
 [[observation]]
