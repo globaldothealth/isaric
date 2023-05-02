@@ -736,7 +736,7 @@
   [[visit.treatment_oxygen_therapy.fields]]
     field = "overall_oxygen_cmtype___5"
     description = "Oxygen therapy?"
-    values = { 1 = true}
+    values = { 1 = true }
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "daily_oxygen_cmtype_1"
@@ -793,14 +793,13 @@
   name = "oxygen_flow_volume_max"
   date.field = "outcome_date"
 
-  [observation.text]  # This is a multi-select, but we're only recording the MAX value
+  [observation.text] # This is a multi-select, but we're only recording the MAX value
     combinedType = "firstNonNull"
-    excludeWhen = "None"
     fields = [
-      {field = "overall_oxygen_cmdose___4", values = {1=">15 L/min", 0= "None", ""= "None"}}, # Stop-gap until if parsing improves
-      {field = "overall_oxygen_cmdose___3", values = {1="11-15 L/min", 0= "None", ""= "None"}},
-      {field = "overall_oxygen_cmdose___2", values = {1="6-10 L/min", 0= "None", ""= "None"}},
-      {field = "overall_oxygen_cmdose___1", values = {1="1-5 L/min", 0= "None", ""= "None"}}
+      { field = "overall_oxygen_cmdose___4", values = { 1 = ">15 L/min", 0 = "None", "" = "None" } },   # Stop-gap until if parsing improves
+      { field = "overall_oxygen_cmdose___3", values = { 1 = "11-15 L/min", 0 = "None", "" = "None" } },
+      { field = "overall_oxygen_cmdose___2", values = { 1 = "6-10 L/min", 0 = "None", "" = "None" } },
+      { field = "overall_oxygen_cmdose___1", values = { 1 = "1-5 L/min", 0 = "None", "" = "None" } },
     ]
 
   [observation.context]
@@ -1229,15 +1228,15 @@
       { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } },
     ]
 
-# [[observation]] # - possibly remove this as an observation, it's a treatment.
-#   name = "renal_replacement_therapy_dialysis"
-#   phase = "study"
-#   date = { field = "overall_icu_hostdat" }
+    # [[observation]] # - possibly remove this as an observation, it's a treatment.
+    #   name = "renal_replacement_therapy_dialysis"
+    #   phase = "study"
+    #   date = { field = "overall_icu_hostdat" }
 
-#   [observation.is_present]
-#     field = "overall_rrt_prtrt"
-#     description = "Renal replacement therapy (RRT) or dialysis?"
-#     values = { 1 = true, 2 = false }
+    #   [observation.is_present]
+    #     field = "overall_rrt_prtrt"
+    #     description = "Renal replacement therapy (RRT) or dialysis?"
+    #     values = { 1 = true, 2 = false }
 
 [[observation]]
   name = "runny_nose"
@@ -1412,11 +1411,11 @@
   phase = "admission"
   is_present = { field = "lowerchesdrawing", ref = "Y/N/NK" }
 
-# [[observation]] # - this variable only relates to imaging finsings, not a clinical diagnosis/complication.
-#   name = "lymphadenopathy"
-#   date = { field = "img_date" }
-#   phase = 'study'
-#   is_present = { field = "ass_cxr___1", values = { 1 = true }, description = "mediastinal masses/lymphadenopathy" }
+  # [[observation]] # - this variable only relates to imaging findings, not a clinical diagnosis/complication.
+  #   name = "lymphadenopathy"
+  #   date = { field = "img_date" }
+  #   phase = 'study'
+  #   is_present = { field = "ass_cxr___1", values = { 1 = true }, description = "mediastinal masses/lymphadenopathy" }
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
@@ -1424,11 +1423,11 @@
   phase = "study"
   is_present = { field = "caps", ref = "Y/N/NK", description = "Capillary refill time >2 seconds" }
 
-# [[observation]] - maybe new observation? refill less than 3?
-#   name = "sternal_capillary_refill_time_greater_2s"
-#   date = { ref = 'admissionDateHierarchy' }
-#   phase = "admission"
-#   is_present = { field = "caps_iso", ref = "Y/N/NK", description = "Capillary refill time <3 seconds" }
+  # [[observation]] - maybe new observation? refill less than 3?
+  #   name = "sternal_capillary_refill_time_greater_2s"
+  #   date = { ref = 'admissionDateHierarchy' }
+  #   phase = "admission"
+  #   is_present = { field = "caps_iso", ref = "Y/N/NK", description = "Capillary refill time <3 seconds" }
 
 [[observation]]
   name = "respiratory_rate"
@@ -1436,11 +1435,11 @@
   phase = 'study'
   value = { field = 'rr', description = "respiration", unit = 'cpm' } # min=16, max=40
 
-# [[observation]] - not in data
-#   name = "respiratory_rate"
-#   date = { ref = 'admissionDateHierarchy' }
-#   phase = 'admission'
-#   value = { field = 'rr_iso', description = "respiration", unit = 'cpm' } # min=16, max=40
+  # [[observation]] - not in data
+  #   name = "respiratory_rate"
+  #   date = { ref = 'admissionDateHierarchy' }
+  #   phase = 'admission'
+  #   value = { field = 'rr_iso', description = "respiration", unit = 'cpm' } # min=16, max=40
 
 [[observation]]
   name = "heart_rate_bpm"
@@ -1448,8 +1447,8 @@
   date = { field = "vitals_date" }
   value = { field = "hr", description = 'pulse' } #min=35, max=200
 
-# [[observation]] - not in data
-#   name = "heart_rate_bpm"
-#   phase = 'admission'
-#   date = { ref = 'admissionDateHierarchy' }
-#   value = { field = "hr_iso", description = 'pulse' } #min=35, max=200
+  # [[observation]] - not in data
+  #   name = "heart_rate_bpm"
+  #   phase = 'admission'
+  #   date = { ref = 'admissionDateHierarchy' }
+  #   value = { field = "hr_iso", description = 'pulse' } #min=35, max=200
