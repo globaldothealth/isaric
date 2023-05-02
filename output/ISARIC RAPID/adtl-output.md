@@ -2,13 +2,13 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |5392   |8061   |66.889964% |
+|subject        |5399   |8061   |66.976802% |
 |visit          |4911   |8061   |60.922962% |
-|observation    |366950 |390034 |94.081542% |
+|observation    |373176 |394863 |94.507715% |
 
 ## subject
 
-* 2667: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 2660: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
 * 1: data.age must be bigger than or equal to 0
 * 1: data.age must be smaller than or equal to 120
 
@@ -18,5 +18,5 @@
 
 ## observation
 
-* 23081: data must contain ['phase', 'date', 'name'] properties
+* 21684: data must contain ['phase', 'date', 'name'] properties
 * 3: data.value must be number

@@ -25,11 +25,12 @@ def check_table(table: str, schema: dict, parser: dict) -> dict:
         parser_fields = set(item["name"] for item in parser[table])
 
     mismatch = schema_fields - parser_fields
+    additional_fields = parser_fields - schema_fields
 
-    return mismatch
+    return mismatch, additional_fields
 
 
-def print_findings(name: str, missing: dict, lengths: dict):
+def print_findings(name: str, missing: dict, lengths: dict, extras: dict):
     """
     Write to terminal
     """
@@ -44,6 +45,19 @@ def print_findings(name: str, missing: dict, lengths: dict):
             f"|{(lengths[table]-len(missing[table]))/lengths[table]:%} |"
         )
     print()
+    if (
+        len(
+            list(extras["subject"])
+            + list(extras["visit"])
+            + list(extras["observation"])
+        )
+        > 0
+    ):
+        print("There are fields no longer present in the schema in this parser:")
+        print(
+            f"Subject:{extras['subject']}\nVisit:{extras['visit']}\nObservation:{extras['observation']}"
+        )
+        print()
 
 
 def missing_fields(parser_file: str, df: pd.DataFrame, schemas: tuple) -> pd.DataFrame:
@@ -53,12 +67,13 @@ def missing_fields(parser_file: str, df: pd.DataFrame, schemas: tuple) -> pd.Dat
         parser = tomli.load(pf)
 
     missing_fields = {}
+    additional_fields = {}
     parser_name = parser["adtl"]["name"]
 
     for table, name in zip(
         [subject, visit, observation], ["subject", "visit", "observation"]
     ):
-        missing_fields[name] = check_table(name, table, parser)
+        missing_fields[name], additional_fields[name] = check_table(name, table, parser)
 
     missing_list = (
         list(missing_fields["subject"])
@@ -83,6 +98,7 @@ def missing_fields(parser_file: str, df: pd.DataFrame, schemas: tuple) -> pd.Dat
             "visit": len(visit["properties"]),
             "observation": len(observation["properties"]["name"]["enum"]),
         },
+        additional_fields,
     )
 
     return df
@@ -134,7 +150,7 @@ def main():
         df = missing_fields(args.parser, df, (subject, visit, observation))
 
     # write to csv
-    df.to_csv("schemas/check_fields.csv", index=False)
+    df.to_csv("scripts/checkfields/check_fields.csv", index=False)
 
 
 if __name__ == "__main__":

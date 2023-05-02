@@ -1,0 +1,1141 @@
+[adtl]
+  name = ""
+  description = ""
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "groupBy"
+    groupBy = ""
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N/NK".values] # THIS CAN CHANGE BETWEEN DATASETS
+    1 = true
+    2 = false
+    3 = false
+
+    # other adtl.defs here ..
+
+# SUBJECT
+# required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  country_iso3 = ""
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = ""
+    description = ""
+    sensitive = true
+
+  [subject.dataset_id]
+    field = ""
+    description = ""
+
+  [subject.enrolment_date] # optional field
+    field = ""
+    description = ""
+
+  [subject.admission_date]
+    field = ""
+    description = ""
+
+  [subject.age]
+    field = ""
+    description = ""
+
+  [subject.sex_at_birth]
+    field = ""
+    description = ""
+
+    [subject.sex_at_birth.values] # THIS CAN CHANGE BETWEEN DATASETS
+      1 = "male"
+      2 = "female"
+      3 = "non_binary"
+
+[subject.ethnicity]
+  field = ""
+  description = ""
+
+[subject.works_microbiology_lab]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.works_healthcare]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.pregnancy]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.pregnancy_date_of_delivery]
+  field = ""
+  description = ""
+
+[subject.pregnancy_birth_weight_kg]
+  field = ""
+  description = ""
+
+[subject.pregnancy_outcome]
+  field = ""
+  description = ""
+
+[subject.pregnancy_gestational_outcome]
+  field = ""
+  description = ""
+
+  [subject.pregnancy_gestational_outcome.values]
+    1 = "term_birth"
+    2 = "preterm_birth"
+
+[subject.pregnancy_whether_breastfed]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.pregnancy_post_partum]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.pregnancy_gestational_assessment_weeks]
+  field = ""
+  description = ""
+
+[subject.has_chronic_hematologic_disease]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_asplenia]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_tuberculosis]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_dementia]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_obesity]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_rheumatologic_disorder]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_hiv]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_hypertension]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_malignant_neoplasm]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_smoking]
+  field = ""
+  description = ""
+
+  [subject.has_smoking.values]
+    1 = "yes"
+    2 = "former"
+    3 = "never"
+
+[subject.has_asthma]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_chronic_cardiac_disease]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_chronic_kidney_disease]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_diabetes]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.diabetes_type]
+  field = ""
+  description = ""
+
+  [subject.diabetes_type.values]
+    1 = "type-1"
+    2 = "type-2"
+    3 = "gestational"
+
+[subject.has_liver_disease]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_apnoea]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_inflammatory_bowel_disease]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_rare_disease_inborn_metabolism_error]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_solid_organ_transplant]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_tuberculosis_past]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_hiv_art]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_malnutrition]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_immunosuppression_therapy_treatment]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.has_comorbidity_other] # type - array
+  field = ""
+  description = ""
+
+[subject.has_died] # type - boolean
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+[subject.date_death]
+  field = ""
+  description = ""
+
+[subject.icu_admitted]
+  field = ""
+  description = ""
+  ref = "Y/N/NK"
+
+# VISIT
+# required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = ""
+
+  [visit.visit_id]
+    field = ""
+    description = ""
+    sensitive = true
+
+  [visit.subject_id]
+    field = ""
+    description = ""
+    sensitive = true
+
+  [visit.dataset_id]
+    field = ""
+    description = ""
+
+  [visit.start_date]
+    field = ""
+    description = ""
+
+  [visit.pathogen_test_date]
+    field = ""
+    description = ""
+
+  [visit.icu_admission]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.icu_admission_dates]
+    field = ""
+    description = ""
+
+  [visit.treatment_dialysis]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_inotropes_vasopressors]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_ecmo]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_corticosteroid]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_corticosteroid_type]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_oxygen_therapy]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_prone_position]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_invasive_ventilation]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antifungal_agent]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antivirals]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antiviral_type]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antibiotics]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_anticoagulation]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_experimental_agent]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_experimental_agent_type]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_inhaled_nitric_oxide]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_noninvasive_ventilation]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_ace_inhibitors]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_arb]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antimalarial]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_dexamethasone]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_high_flow_nasal_cannula]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_steroids]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_immunosuppressant]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_intravenous_fluids]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_nsaid]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_neuraminidase]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_oxygen_interface]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_cpr]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_offlabel]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_respiratory_support]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_tocilizumab]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_indication_anticoagulation]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_cardiovascular]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_colchicine]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_immunoglobulins]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_delirium]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_neuromuscular_blocking_agents]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_monoclonal_antibody]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_other]
+    field = ""
+    description = ""
+
+  [visit.treatment_oxygen_mechanical_support]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_pacing]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.outcome]
+    field = ""
+    description = ""
+
+    [visit.outcome.values] # check correspondence of these values
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "recovered"
+
+[visit.date_outcome]
+  field = ""
+  description = ""
+
+[visit.phase]
+  field = ""
+  description = ""
+
+  [visit.phase.values]
+    1 = "admission"
+    2 = "study"
+    3 = "followup"
+
+    # OBSERVATION
+    # required fields - phase, date, name
+
+[[observation]]
+  name = "avpu"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "clinical_classification_critical_illness_scale"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "clinical_classification_pneumonia_needing_oxygen"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "clinical_frailty_score"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "glasgow_coma_score"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = ""
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "anorexia"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "base_excess"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "chest_pain"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "confusion"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "cough"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "cyanosis"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "ear_pain"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "feeding_intolerance_peadiatrics"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "headache"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "hepatomegaly"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "inability_to_walk"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = ""
+  phase = ""
+  # OR is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  text = { field = "", values = {} }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "irritability_peadiatrics"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "joint_pain"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "lung_sounds"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "lymphadenopathy"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "renal_replacement_therapy_dialysis"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "runny_nose"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "seizures"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "severe_dehydration"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "skin_rash"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "skin_ulcers"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "sore_throat"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "time_of_admission"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "wheezing"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "heart_sounds"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "mean_arterial_blood_pressure_mmHg"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "mid_upper_arm_circumference_cm"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "other_symptom"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "pao2"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "pco2"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "pH"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "richmond_agitation-sedation_scale"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "riker_sedation-agitation_scale"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "total_fluid_output_ml"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
+  name = "transfer_from_other_facility"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+#----- extra ..
+[[observation]]
+  name = ""
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }

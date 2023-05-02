@@ -40,7 +40,6 @@
   ## SUBJECT
 
 [subject]
-  study_id = "isaric-ccpuk"
   country_iso3 = "GBR"
   pathogen = "COVID-19"
 
@@ -250,12 +249,20 @@
   ref = "Y/N/NK"
   description = "Solid organ transplant recipients:"
 
+[subject.has_died]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "dsterm", values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false }, description = "Outcome" },
+    { field = "dsterm_v2", values = { 1 = false, 3 = false, 4 = true, 5 = false }, description = "Final Outcome" },
+    { field = "flw_desceased_lost", values = { 1 = true }, description = "Patient dead on followup?" },
+  ]
+
 [subject.date_death]
   combinedType = "firstNonNull"
   fields = [
     { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
     { field = "dsstdtc_v2", description = "Outcome date", if = { dsterm_v2 = 4 } },
-    { field = "flw_date_death", description = "Date of death" },
+    { field = "flw_date_death", description = "Date of death", if = { flw_desceased_lost = 1 } },
   ]
 
 [subject.icu_admitted]
@@ -299,6 +306,15 @@
     fields = [
       { field = "icu_hoterm", ref = "Y/N/NK" },
       { field = "daily_hoterm", ref = "Y/N/NK" },
+    ]
+
+  [visit.icu_admission_dates]
+    description = "ICU admission date"
+    combinedType = "list"
+    excludeWhen = "none"
+    fields = [
+      { field = "icu_hostdat" },
+      # {field = "daily_dsstdat", if = {daily_hoterm = 1}}
     ]
 
   [visit.treatment_antibiotics]
@@ -484,7 +500,7 @@
       2 = "hospitalised"
       3 = "transferred"
       4 = "death"
-      5 = "discharged"
+      5 = "palliative discharge"
 
   [[visit.outcome.fields]]
     field = "dsterm_v2"
@@ -493,7 +509,7 @@
       1 = "discharged"
       3 = "transferred"
       4 = "death"
-      5 = "discharged"
+      5 = "palliative discharge"
 
       ## OBSERVATION
 
@@ -502,22 +518,39 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
-  if = { bleed_ceoccur_v2 = { "!=" = 3 } }
 
-[[observation]]
-  name = "cough"
-  date = { ref = "admissionDateHierarchy" }
-  phase = "admission"
-  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
-  if = { cough_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "cough"
   date = { ref = "followupDateHierarchy" }
   phase = "followup"
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false } }
-  if = { flw_cough = { "!=" = 99 } }
-  # Q. is 'is_present' restricted to boolean of type ref = "Y/N/NK" ?
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_cough_type", values = { 1 = "dry cough", 2 = "with phlegm" } },
+    ]
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+  [observation.if]
+    any = [
+      { cough_ceoccur_v2 = { "!=" = "" } },
+      { coughsput_ceoccur_v2 = { "!=" = "" } },
+      { coughhb_ceoccur_v2 = { "!=" = "" } },
+    ]
 
 [[observation]]
   name = "avpu"
@@ -554,301 +587,258 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "conjunct_ceoccur_v2", ref = "Y/N/NK" }
-  if = { conjunct_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "runny_nose"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "runnynose_ceoccur_v2", ref = "Y/N/NK" }
-  if = { runnynose_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "seizures"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "seizures_cecoccur_v2", ref = "Y/N/NK" }
-  if = { seizures_cecoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "sore_throat"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "sorethroat_ceoccur_v2", ref = "Y/N/NK" }
-  if = { sorethroat_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "vomiting_nausea"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "vomit_ceoccur_v2", ref = "Y/N/NK" }
-  if = { vomit_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "vomiting_nausea"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_nausea", values = { 1 = true, 0 = false } }
-  if = { flw_nausea = { "!=" = 99 } }
 
 [[observation]]
   name = "wheezing"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "wheeze_ceoccur_v2", ref = "Y/N/NK" }
-  if = { wheeze_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "altered_consciousness_confusion"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "confusion_ceoccur_v2", ref = "Y/N/NK" }
-  if = { confusion_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "chest_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "chestpain_ceoccur_v2", ref = "Y/N/NK" }
-  if = { chestpain_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" }
-  if = { jointpain_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "joint_pain"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_joint_pain", values = { 1 = true, 0 = false } }
-  if = { flw_joint_pain = { "!=" = 99 } }
 
 [[observation]]
   name = "muscle_aches"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" }
-  if = { myalgia_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "muscle_aches"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_muscle_pain", values = { 1 = true, 0 = false } }
-  if = { flw_muscle_pain = { "!=" = 99 } }
 
 [[observation]]
   name = "lymphadenopathy"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "lymp_ceoccur_v2", ref = "Y/N/NK" }
-  if = { lymp_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "shortness_of_breath"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "shortbreath_ceoccur_v2", ref = "Y/N/NK" }
-  if = { shortbreath_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "shortness_of_breath"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_breathless", values = { 1 = true, 0 = false } }
-  if = { flw_breathless = { "!=" = 99 } }
 
 [[observation]]
   name = "abdominal_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "abdopain_ceoccur_v2", ref = "Y/N/NK" }
-  if = { abdopain_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "diarrhoea"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "diarrhoea_ceoccur_v2", ref = "Y/N/NK" }
-  if = { diarrhoea_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "diarrhoea"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
-  if = { flw_diarrhoea = { "!=" = 99 } }
 
 [[observation]]
   name = "fatigue_malaise"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "fatigue_ceoccur_v2", ref = "Y/N/NK" }
-  if = { fatigue_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "headache"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "headache_ceoccur_v2", ref = "Y/N/NK" }
-  if = { headache_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "headache"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_headache", values = { 1 = true, 0 = false } }
-  if = { flw_headache = { "!=" = 99 } }
 
 [[observation]]
   name = "skin_rash"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "rash_ceoccur_v2", ref = "Y/N/NK" }
-  if = { rash_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "skin_rash"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_skin_rash", values = { 1 = true, 0 = false } }
-  if = { flw_skin_rash = { "!=" = 99 } }
 
 [[observation]]
   name = "history_of_fever"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "fever_ceoccur_v2", ref = "Y/N/NK" }
-  if = { fever_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "history_of_fever"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_fever", values = { 1 = true, 0 = false } }
-  if = { flw_fever = { "!=" = 99 } }
 
 [[observation]]
   name = "cough_with_haemoptysis"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
-  if = { coughhb_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
-  if = { coughsput_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "admission_diabp_vsorres" }
-  if = { diabp_vsyn = 1 }
+  # if = { diabp_vsyn = 1 }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   value = { field = "diastolic_vsorres" }
-  if = { diastolic_vsyn = 1 }
+  # if = { diastolic_vsyn = 1 }
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "hr_vsorres" }
-  if = { hr_vsyn = 1 }
+  # if = { hr_vsyn = 1 }
 
 [[observation]]
   name = "respiratory_rate"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "rr_vsorres" }
-  if = { rr_vsyn = 1 }
+  # if = { rr_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "sysbp_vsorres" }
-  if = { sysbp_vsyn = 1 }
+  # if = { sysbp_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "systolic_vsorres" }
-  if = { systolic_vsyn = 1 }
+  # if = { systolic_vsyn = 1 }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "lowerchest_ceoccur_v2", ref = "Y/N/NK" }
-  if = { lowerchest_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "skin_ulcers"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "skinulcers_ceoccur_v2", ref = "Y/N/NK" }
-  if = { skinulcers_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "severe_dehydration"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "dehydration_vsorres", ref = "Y/N/NK" }
-  if = { dehydration_vsorres = { "!=" = 3 } }
-
-  # TODO: not sure what this is
-  # [[observation]]
-  #   name = "capillary_refill"
-  #   phase = "admission"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   is_present = { field = "stercap_vsorres", ref = "Y/N/NK" }
-  #   if = { stercap_vsorres = { "!=" = 3 } }
 
 [[observation]]
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "anosmia_ceoccur_v2", ref = "Y/N/NK" }
-  if = { anosmia_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "loss_of_smell"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_loss_smell", values = { 1 = true, 0 = false } }
-  if = { flw_loss_smell = { "!=" = 99 } }
 
 [[observation]]
   name = "loss_of_taste"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" }
-  if = { ageusia_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "loss_of_taste"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
-  if = { flw_loss_taste = { "!=" = 99 } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  if.any = [{ flw_eq5d_mb_p = { "!=" = 1 } }, { flw_eq5d_mb = { "!=" = 1 } }]
+  # if.any = [{ flw_eq5d_mb_p = { "!=" = 1 } }, { flw_eq5d_mb = { "!=" = 1 } }]
 
   [observation.text]
     combinedType = "firstNonNull"
@@ -862,7 +852,6 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "earpain_ceoccur_v2", ref = "Y/N/NK" }
-  if = { earpain_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "clinical_frailty_score"
@@ -877,7 +866,6 @@
   phase = "study"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "rrt_prtrt", ref = "Y/N/NK" }
-  if = { rrt_prtrt = { "!=" = 3 } }
 
   # TODO: dialysis_hemofiltration is not in schema
   # [[observation]]
@@ -893,47 +881,50 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   context = ["maximum"]
-  if = { temp_vsyn = 1 }
 
 [[observation]]
   name = "temperature_celsius"
   value = { field = "daily_temp_vsorres", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  if = { daily_temp_vsorres = { "!=" = "" } }
-  # not sure about the 'if' here ...
 
 [[observation]]
   name = "pao2"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "mmHg" } }
-  if = { daily_pao2_lbyn = 1 }
+  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "kPa" } }
+  [observation.context]
+    combinedType = "set"
+    fields = [
+      { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
+    ]
+
+[[observation]]
+  name = "pco2"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_pco2_lborres", unit = "kPa", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   value = { field = "daily_meanart_vsorres" }
-  if = { daily_meanart_lbyn = 1 }
 
 [[observation]]
   name = "pH"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   value = { field = "daily_ph_lborres" }
-  if = { daily_ph_lbyn = 1 }
-
-[[observation]]
-  name = "pao2_sample_type"
-  phase = "study"
-  date = { field = "daily_dsstdat", description = "Date of assessment" }
-  text = { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } }
-  if = { daily_pao2_lbyn = 1 }
 
 [[observation]]
   name = "base_excess"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   is_present = { field = "daily_baseex_lborres", ref = "Y/N/NK" }
-  if = { daily_baseex_lborres = { "!=" = 3 } }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "stercap_vsorres", values = { 1 = true, 2 = false } }
