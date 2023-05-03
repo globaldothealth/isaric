@@ -74,6 +74,8 @@
       { field = "ethnic___6", values = { 1 = "Latin_American" } },
       { field = "ethnic___7", values = { 1 = "White" } },
       { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
+      { field = "ethnic___9", values = { 1 = "Other" } },
+      { field = "ethnic___10", values = { 1 = "Unknown" } },
     ]
 
   [subject.works_microbiology_lab]
@@ -249,6 +251,13 @@
   ref = "Y/N/NK"
   description = "Solid organ transplant recipients:"
 
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "otherrisktext", description = "Other relevant risk factor" },
+  ]
+
 [subject.has_died]
   combinedType = "firstNonNull"
   fields = [
@@ -349,7 +358,6 @@
       { field = "antiviral_cmtrt___11", values = { 1 = "Zanamivir" } },
       { field = "antiviral_cmtrt___12", values = { 1 = "Casirivimab/Imdevimab" } },
     ]
-    if = { antiviral_cmyn = 1 }
 
   [visit.treatment_corticosteroid]
     description = "Corticosteroid agent?"
@@ -361,7 +369,7 @@
     description = "Type of corticosteroid used"
     excludeWhen = "none"
     fields = [
-      { field = "corticost_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" }, if = { corticost_cmyn = 1 } },
+      { field = "corticost_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" } },
     ]
 
 
@@ -457,7 +465,7 @@
 [visit.treatment_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "other_cm", if = { other_cmyn = 1 } }]
+  fields = [{ field = "other_cm" }, { field = "daily_other_prtrt" }]
   description = "Other treatment"
 
 [visit.treatment_oxygen_therapy]
@@ -477,13 +485,11 @@
   description = "Treatment with Tocilizumab"
   field = "il6_cmtrt"
   values = { 1 = true, 2 = false, 3 = false, 10 = false }
-  if = { antiviral_cmtrt___9 = 1 }
 
 [visit.treatment_neuraminidase]
   description = "Treatment with Neuraminidase"
   field = "antiviral_cmtrt___5"
   values = { 1 = true, 0 = false }
-  if = { antiviral_cmyn = 1 }
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "daily_neuro_cmtrt"
@@ -539,6 +545,7 @@
 
   [observation.is_present]
     combinedType = "firstNonNull"
+    excludeWhen = "none"
     fields = [
       { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
       { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
@@ -547,9 +554,12 @@
 
   [observation.if]
     any = [
-      { cough_ceoccur_v2 = { "!=" = "" } },
-      { coughsput_ceoccur_v2 = { "!=" = "" } },
-      { coughhb_ceoccur_v2 = { "!=" = "" } },
+      { cough_ceoccur_v2 = 1 },
+      { cough_ceoccur_v2 = 2 },
+      { coughsput_ceoccur_v2 = 1 },
+      { coughsput_ceoccur_v2 = 2 },
+      { coughhb_ceoccur_v2 = 1 },
+      { coughhb_ceoccur_v2 = 2 },
     ]
 
 [[observation]]
@@ -557,14 +567,12 @@
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   phase = "study"
   text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
-  if = { avpu_vsorres = { "!=" = 5 } }
 
 [[observation]]
   name = "oxygen_saturation_percent"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "oxy_vsorres" }
-  if = { oxy_vsyn = 1 }
 
   [observation.context]
     field = "oxy_vsorresu"
@@ -579,7 +587,6 @@
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   value = { field = "daily_gcs_vsorres" }
-  if = { daily_gcs_lbyn = 1 }
   #description = "Glasgow Coma Score (GCS/15)"
 
 [[observation]]
@@ -755,42 +762,36 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "admission_diabp_vsorres" }
-  # if = { diabp_vsyn = 1 }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   value = { field = "diastolic_vsorres" }
-  # if = { diastolic_vsyn = 1 }
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "hr_vsorres" }
-  # if = { hr_vsyn = 1 }
 
 [[observation]]
   name = "respiratory_rate"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "rr_vsorres" }
-  # if = { rr_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "sysbp_vsorres" }
-  # if = { sysbp_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "systolic_vsorres" }
-  # if = { systolic_vsyn = 1 }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
@@ -838,7 +839,6 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  # if.any = [{ flw_eq5d_mb_p = { "!=" = 1 } }, { flw_eq5d_mb = { "!=" = 1 } }]
 
   [observation.text]
     combinedType = "firstNonNull"
@@ -846,6 +846,9 @@
       { field = "flw_eq5d_mb_p", ref = "inabilityWalk" },
       { field = "flw_eq5d_mb", ref = "inabilityWalk" },
     ]
+
+  [observation.if]
+    any = [{ flw_eq5d_mb_p = { "!=" = "" } }, { flw_eq5d_mb = { "!=" = "" } }]
 
 [[observation]]
   name = "ear_pain"
@@ -858,22 +861,13 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "clinical_frailty" }
-  if = { clinical_frailty = { "!=" = 10 } }
-  # not sure above is correct?!
+  if.all = [{ clinical_frailty = { "!=" = 10 } }, { clinical_frailty = { "!=" = "" } }]
 
 [[observation]]
   name = "renal_replacement_therapy_dialysis"
   phase = "study"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "rrt_prtrt", ref = "Y/N/NK" }
-
-  # TODO: dialysis_hemofiltration is not in schema
-  # [[observation]]
-  #   name = ""dialysis_hemofiltration""
-  #   phase = "study"
-  #   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  #   is_present = { field = "daily_rrt_cmtrt", ref = "Y/N/NK" }
-  #   if = { daily_rrt_cmtrt = { "!=" = 3 } }
 
 [[observation]]
   name = "temperature_celsius"
@@ -895,6 +889,7 @@
   value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "kPa" } }
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
     ]
@@ -928,3 +923,24 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "stercap_vsorres", values = { 1 = true, 2 = false } }
+
+
+[[observation]]
+  name = "other_symptom"
+  phase = "followup"
+  date = {field = "flw_survey_date"}
+  text = { field = "flw_diag_other", description = "Other condition?" }
+  context = ["New diagnosed condition"]
+
+[[observation]]
+  name = "other_symptom"
+  phase = "followup"
+  date = {field = "flw_survey_date"}
+  text = { field = "flw_new_symptoms", description = "Other NEW symptoms?" }
+  context = ["NEW symptom"]
+
+[[observation]]
+  name = "transfer_from_other_facility"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "hooccur", values = { 1 = true, 2 = true, 3 = false } }
