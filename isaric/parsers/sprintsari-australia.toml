@@ -27,7 +27,7 @@
   [adtl.defs.admissionDateHierarchy]
     combinedType = "firstNonNull"
     fields = [
-      { field = "hostdat", description = "Admission date at this facility" },
+      { field = "hostdat", description = "Admission date at this facility", source_date = "%Y-%m-%d %H:%M" },
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
     ]
 
@@ -55,6 +55,7 @@
 
   [subject.ethnicity]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "ethnic___1", values = { 1 = "Arab" } },
       { field = "ethnic___2", values = { 1 = "Black" } },
@@ -64,6 +65,8 @@
       { field = "ethnic___6", values = { 1 = "Latin_American" } },
       { field = "ethnic___7", values = { 1 = "Caucasian" } },
       { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
+      { field = "ethnic___9", values = { 1 = "Other" } },
+      { field = "ethnic___10", values = { 1 = "Unknown" } },
     ]
 
   [subject.works_healthcare]
@@ -109,6 +112,11 @@
   [subject.pregnancy_gestational_assessment_weeks]
     field = "egestage_rptestcd"
     description = "Gestational week assessment:"
+
+  [subject.pregnancy_post_partum]
+    field = "postpart_rptestcd"
+    values = { 1 = true, 0 = false }
+    description = "Post partum"
 
   [subject.pregnancy_gestational_outcome]
     field = "apsc_gestout"
@@ -208,6 +216,13 @@
     { field = "smok_comm_2", description = "Most common method of smoking used when the patient was smoking?", values = { 1 = "former", 2 = "former", 3 = "former", 4 = "former" }, if = { "smok_curr" = 0 } },
   ]
 
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [
+    { field = "smoking_mhyn", description = "other relevant risk factors" }, # free text field
+  ]
+
 [subject.icu_admitted]
   field = "hostdat_icu_admit"
   description = "Was the patient admitted into ICU?"
@@ -219,6 +234,7 @@
 
 [subject.date_death]
   field = "death_dt"
+  source_date = "Y-%m-%d %H:%M"
   description = "Date and time of death"
 
 [visit]
@@ -238,38 +254,39 @@
     ref = "Y/N"
 
   [visit.icu_admission_dates]
-    field = "hostdat_icu"
-    description = "Admission date and time at ICU"
+    combinedType = "set"
+    excludeWhen = "none"
 
-  [visit.pathogen_test_date]
-    field = "mbdat_cr"
-    description = "Collection date and time - coronavirus test 1"
-    if = { corona_mbcaty = 1 }
+    [[visit.icu_admission_dates.fields]]
+      field = "hostdat_icu"
+      source_date = "%Y-%m-%d %H:%M"
+      description = "Admission date and time at ICU"
 
-  [visit.start_date]
-    ref = "admissionDateHierarchy"
+[visit.pathogen_test_date]
+  field = "mbdat_cr"
+  description = "Collection date and time - coronavirus test 1"
+  source_date = "%Y-%m-%d %H:%M"
+  if = { corona_mbcaty = 1 }
 
-  [visit.treatment_antibiotics]
-    field = "antibiotic_cmyn"
-    description = "Antibiotic ?"
-    ref = "Y/N"
+[visit.start_date]
+  ref = "admissionDateHierarchy"
 
-  [visit.treatment_antivirals]
-    field = "antiviral_cmyn"
-    description = "Antiviral agent?"
-    ref = "Y/N"
+[visit.treatment_antibiotics]
+  field = "antibiotic_cmyn"
+  description = "Antibiotic ?"
+  ref = "Y/N"
 
-  [visit.treatment_antiviral_type]
-    field = "antiviral_cmtrt"
-    description = "IF YES to antiviral agent"
+[visit.treatment_antivirals]
+  field = "antiviral_cmyn"
+  description = "Antiviral agent?"
+  ref = "Y/N"
 
-    [visit.treatment_antiviral_type.values]
-      1 = "ribavirin"
-      2 = "lopinavir/ritonvir"
-      3 = "interferon alpha"
-      4 = "interferon beta"
-      5 = "neuraminidase inhibitors"
-      6 = "other"
+[visit.treatment_antiviral_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "antiviral_cmtrt", description = "IF YES to antiviral agent", values = { 1 = "Ribavirin", 2 = "Lopinavir/Ritonvir", 3 = "Interferon alpha", 4 = "Interferon beta", 5 = "Neuraminidase inhibitor", 6 = "Other" } },
+  ]
 
 [visit.treatment_corticosteroid]
   field = "corticost_cmyn"
@@ -336,6 +353,13 @@
   description = "Any vasopressor / inotropic support?"
   ref = "Y/N"
 
+[visit.treatment_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "drug_name", description = "Was given trial drug as part of COVID study" },
+  ]
+
 [visit.outcome]
   field = "dsterm"
   description = "Hospital Outcome:"
@@ -350,8 +374,8 @@
 [visit.date_outcome]
   combinedType = "firstNonNull"
   fields = [
-    { field = "death_dt", description = "date of death" },
-    { field = "dsstdtc", description = "Date and time of hospital discharge" },
+    { field = "death_dt", description = "date of death", source_date = "%Y-%m-%d %H:%M" },
+    { field = "dsstdtc", description = "Date and time of hospital discharge", source_date = "%Y-%m-%d %H:%M" },
   ]
 
 [[observation]]
@@ -379,7 +403,7 @@
   phase = "study"
   date = { field = "daily_dsstdat" }
 
-  [observation.text]
+  [observation.value]
     field = "daily_baseex_lborres"
     description = "Base excess. Document from same ABG with the worst P:F ratio"
 
@@ -424,6 +448,13 @@
       { field = "cough_ceoccur_v2", description = "Cough", values = { 1 = true, 2 = false } },
       { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", values = { 1 = true, 2 = false } },
       { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", values = { 1 = true, 2 = false } },
+    ]
+
+  [observation.if]
+    any = [
+      { cough_ceoccur_v2 = { "!=" = "" } },
+      { coughsput_ceoccur_v2 = { "!=" = "" } },
+      { coughhb_ceoccur_v2 = { "!=" = "" } },
     ]
 
 [[observation]]
@@ -610,6 +641,7 @@
 
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "oxy_vsorresu", values = { 1 = "room air", 2 = "oxygen therapy" } },
     ]
@@ -632,10 +664,18 @@
 
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
-      { field = "daily_pao2_lborresu", values = { 1 = 'Same blood gas record', 2 = 'Same blood gas record' } },                      # cheating slightly to get the context in
+      { field = "daily_pao2_lborresu", values = { 1 = "Same blood gas record", 2 = "Same blood gas record" } },                      # cheating slightly to get the context in
       { field = "daily_pao2_lbspec", values = { 1 = "arterial", 2 = "venous", 3 = "capillary" }, description = "PaO2 sample type" },
     ]
+
+[[observation]]
+  name = "pco2"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_pco2_lborres", description = "PaCO2", unit = "mmHg", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
+  context = ["Same blood gas record"]
 
 [[observation]]
   name = "respiratory_rate"
@@ -653,6 +693,12 @@
     field = "runnynose_ceoccur_v2"
     description = "Runny nose (Rhinorrhoea)"
     values = { 1 = true, 2 = false }
+
+[[observation]]
+  name = "seizures"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "seizures_cecoccur_v2", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "severe_dehydration"
@@ -746,7 +792,7 @@
   name = "total_fluid_output_ml"
   phase = "study"
   date = { field = "daily_dsstdat" }
-  text = { field = "daily_urine_lborres" }
+  value = { field = "daily_urine_lborres" }
   context = ["Urine output for 24 hour From 00:00 to 23:59"]
 
 [[observation]]
@@ -778,3 +824,9 @@
     field = "wheeze_ceoccur_v2"
     description = "Wheezing"
     values = { 1 = true, 2 = false }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  text = { field = "other_signs" }
