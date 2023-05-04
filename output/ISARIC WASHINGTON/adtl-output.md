@@ -2,13 +2,9 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |58     |65     |89.230769% |
+|subject        |65     |65     |100.000000% |
 |visit          |0      |65     |0.000000% |
 |observation    |1507   |1572   |95.865140% |
-
-## subject
-
-* 7: data.age must be number
 
 ## visit
 
