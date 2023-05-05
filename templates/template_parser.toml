@@ -27,8 +27,8 @@
 
     # other adtl.defs here ..
 
-# SUBJECT
-# required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+    # SUBJECT
+    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
   country_iso3 = ""
@@ -263,8 +263,8 @@
   description = ""
   ref = "Y/N/NK"
 
-# VISIT
-# required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
 [visit]
   country_iso3 = ""
@@ -431,11 +431,6 @@
     ref = "Y/N/NK"
 
   [visit.treatment_neuraminidase]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
-  [visit.treatment_oxygen_interface]
     field = ""
     description = ""
     ref = "Y/N/NK"

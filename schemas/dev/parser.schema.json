@@ -609,10 +609,6 @@
           "description": "Neuromuscular blocking agents",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_oxygen_interface": {
-          "description": "Oxygen interface",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_cpr": {
           "description": "Cpr",
           "$ref": "#/definitions/mapping"
