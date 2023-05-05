@@ -31,9 +31,13 @@ text_types = ["text"]
     "prefer not to say",
     "not specified",
     "not answered",
+    # french
+    "ne sait pas",
+    "inconnue",
+    "inconnues",
   ]
-  is_true = ["y", "yes", "t", "true"]
-  is_false = ["f", "false", "no", "n"]
+  is_true = ["y", "yes", "t", "true", "oui"]
+  is_false = ["f", "false", "no", "n", "non"]
 
   # stopwords are ignored while matching and building the TF-IDF matrix
   stopwords = [
