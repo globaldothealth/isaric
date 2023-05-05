@@ -333,11 +333,6 @@
   description = "Neuromuscular blocking agents?"
   ref = "Y/N"
 
-  # [visit.treatment_oxygen_interface] # CHECK: I think interface is just a description of how the oxygen was delivered, which suggests just an observation context rather than a visit attribute.
-
-  # [visit.treatment_oxygen_mechanical_support] # CHECK: Is this equivalent to the ventilation fields?
-
-
 [visit.treatment_oxygen_therapy]
   field = "daily_nasaloxy_cmtrt"
   description = "High-flow nasal canula oxygen therapy?"
@@ -346,11 +341,6 @@
 [visit.treatment_prone_position]
   field = "daily_prone_cmtrt"
   description = "Prone Positioning"
-  ref = "Y/N"
-
-[visit.treatment_respiratory_support]
-  field = "daily_inotrope_cmyn"
-  description = "Any vasopressor / inotropic support?"
   ref = "Y/N"
 
 [visit.treatment_other]
