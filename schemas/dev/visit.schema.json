@@ -255,11 +255,6 @@
       "description": "Neuromuscular blocking agents",
       "category": "treatments"
     },
-    "treatment_oxygen_interface": {
-      "type": "boolean",
-      "description": "Oxygen interface",
-      "category": "treatments"
-    },
     "treatment_cpr": {
       "type": "boolean",
       "description": "Cpr",
