@@ -1,17 +1,19 @@
 #:schema ../../schemas/dev/parser.schema.json
 
 [adtl]
-  name = "isaric_malaysia"
+  name = "ncov-malaysia"
+  description = "CVPRQTA MALAYSIACOVID for ISARIC july10"
+  defaultDateFormat = "%d/%m/%Y"
 
   [adtl.tables.subject]
     kind = "groupBy"
-    groupBy = "record_id"
+    groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
 
   [adtl.tables.visit]
     kind = "groupBy"
-    groupBy = "record_id"
+    groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
 
@@ -21,24 +23,19 @@
     common = { visit_id = { field = "record_id", sensitive = true } }
 
 [adtl.defs]
-    "Y/N" = { values = { 1 = true, 0 = false } }
+  "Y/N" = { values = { 1 = true, 0 = false } }
 
-[adtl.defs.admissionDateHierarchy]
+  [adtl.defs.admissionDateHierarchy]
+    field = "case_class_adm_date"
+    source_date = "%d/%m/%Y"
+
+  [adtl.defs.dailyDateHierarchy] # IS THIS CORRECT?
     combinedType = "firstNonNull"
     fields = [
-        { field = "adm_date", description = "Admission date at this facility", source_date = "%Y-%m-%d %H:%M" },
-        { field = "daily_day_admission", description = "Day of admission" },
-        { field = "case_class_adm_date", description = "Date of assessment:	"}
-    ]
-
-[adtl.defs.dailyDateHierarchy] # IS THIS CORRECT?
-    combinedType = "firstNonNull"
-    fields = [
-        { field = "daily_assess_date", description = "Date of assessment:" },
-        { field = "onset_date", description = "Onset date of first/earliest symptom:" }, 
-        { field = "adm_date", description = "Admission date at this facility", source_date = "%Y-%m-%d %H:%M" },
-        { field = "daily_day_admission", description = "Day of admission" },
-        { field = "case_class_adm_date", description = "Date of assessment:	"}
+      { field = "daily_assess_date", description = "Date of assessment:" },
+      { field = "onset_date", description = "Onset date of first/earliest symptom:" },
+      { field = "daily_day_admission", description = "Day of admission" },
+      { field = "case_class_adm_date", description = "Date of assessment:	" },
     ]
 
 
@@ -65,95 +62,99 @@
     values = { 1 = "male", 2 = "female" }
 
   [subject.ethnicity]
-    field = "ethnic"
-    values = { 1 = "Malay", 2 = "Chinese", 3 = "Indian", 4 = "Bajau", 5 = "Dusun", 6 = "Kadazan", 7 = "Murut", 8 = "Other Bumiputera Sabah", 9 = "Melayu Sarawak", 10 = "Melanau", 11 = "Kedayan", 12 = "Iban", 13 = "Bidayuh", 14 = "Other Bumiputera Sarawak", 15 = "Orang asli Semenanjung", 7777 = "other" }
-    
-  [subject.works_healthcare]
-    field = "health_worker"
-    description = "Employed as a Healthcare Worker?"
+    combinedType = "set"
+    excludeWhen = "none"
+
+    [[subject.ethnicity.fields]]
+      field = "ethnic"
+      values = { 1 = "Malay", 2 = "Chinese", 3 = "Indian", 4 = "Bajau", 5 = "Dusun", 6 = "Kadazan", 7 = "Murut", 8 = "Other Bumiputera Sabah", 9 = "Melayu Sarawak", 10 = "Melanau", 11 = "Kedayan", 12 = "Iban", 13 = "Bidayuh", 14 = "Other Bumiputera Sarawak", 15 = "Orang asli Semenanjung", 7777 = "other" }
+
+[subject.works_healthcare]
+  field = "health_worker"
+  description = "Employed as a Healthcare Worker?"
+  ref = "Y/N"
+
+[subject.works_microbiology_lab]
+  field = "lab_worker"
+  description = "Employed in a microbiology laboratory?"
+  ref = "Y/N"
+
+[subject.has_asthma]
+  field = "asthma"
+  description = "Asthma (physician diagnosed)"
+  ref = "Y/N"
+
+[subject.pregnancy]
+  field = "preg"
+  description = "Pregnant?"
+  ref = "Y/N"
+
+[subject.pregnancy_birth_weight_kg]
+  field = "apvs_weight"
+  description = "Birth weight"
+  unit = "kg"
+  source_unit = { field = "apvs_weightu", description = "Birth weight unit", values = { 1 = "kg", 2 = "lbs" } }
+
+[subject.pregnancy_date_of_delivery]
+  field = "dlvrdtc_rptestcd"
+  description = "Delivery date"
+
+[subject.pregnancy_gestational_assessment_weeks]
+  field = "gest_week"
+  description = "Gestational week assessment:"
+
+[subject.pregnancy_post_partum]
+  field = "postpart_rptestcd"
+  values = { 1 = true, 0 = false }
+  description = "Post partum"
+
+[subject.pregnancy_gestational_outcome]
+  field = "apsc_gestout"
+  description = "Gestational outcome"
+  values = { 1 = "term_birth", 2 = "preterm_birth" }
+
+[subject.pregnancy_outcome]
+  field = "pregout_rptestcd"
+  description = "Pregnancy outcome"
+  values = { 1 = "live birth", 2 = "still birth" }
+
+[subject.pregnancy_whether_breastfed]
+  field = "apsc_brfedind"
+  description = "Breastfed"
+  values = { 1 = true, 2 = false }
+
+[subject.has_chronic_cardiac_disease]
+  field = "c_cardiac"
+  description = "Chronic cardiac disease, including congenital heart disease (not hypertension)"
+  ref = "Y/N"
+
+[subject.has_chronic_hematologic_disease]
+  field = "c_hemato"
+  description = "Chronic hematologic disease"
+  ref = "Y/N"
+
+[subject.has_chronic_kidney_disease]
+  field = "ckd"
+  description = "Chronic kidney disease"
+  ref = "Y/N"
+
+[subject.has_dementia]
+  field = "dementia"
+  description = "Dementia"
+  ref = "Y/N"
+
+[subject.has_diabetes]
+  combinedType = "any"
+
+  [[subject.has_diabetes.fields]]
+    field = "dm_no_comp"
+    description = "4.6. Diabetes without complication"
     ref = "Y/N"
 
-  [subject.works_microbiology_lab]
-    field = "lab_worker"
-    description = "Employed in a microbiology laboratory?"
+  [[subject.has_diabetes.fields]]
+    field = "dm_comp"
+    description = "4.5. Diabetes with complication"
     ref = "Y/N"
-
-  [subject.has_asthma]
-    field = "asthma"
-    description = "Asthma (physician diagnosed)"
-    ref = "Y/N"
-
-  [subject.pregnancy]
-    field = "preg"
-    description = "Pregnant?"
-    ref = "Y/N"
-
-  [subject.pregnancy_birth_weight_kg]
-    field = "apvs_weight"
-    description = "Birth weight"
-    unit = "kg"
-    source_unit = { field = "apvs_weightu", description = "Birth weight unit", values = { 1 = "kg", 2 = "lbs" } }
-
-  [subject.pregnancy_date_of_delivery]
-    field = "dlvrdtc_rptestcd"
-    description = "Delivery date"
-
-  [subject.pregnancy_gestational_assessment_weeks]
-    field = "gest_week"
-    description = "Gestational week assessment:"
-
-  [subject.pregnancy_post_partum]
-    field = "postpart_rptestcd"
-    values = { 1 = true, 0 = false }
-    description = "Post partum"
-
-  [subject.pregnancy_gestational_outcome]
-    field = "apsc_gestout"
-    description = "Gestational outcome"
-    values = { 1 = "term_birth", 2 = "preterm_birth" }
-
-  [subject.pregnancy_outcome]
-    field = "pregout_rptestcd"
-    description = "Pregnancy outcome"
-    values = { 1 = "live birth", 2 = "still birth" }
-
-  [subject.pregnancy_whether_breastfed]
-    field = "apsc_brfedind"
-    description = "Breastfed"
-    values = { 1 = true, 2 = false }
-
-  [subject.has_chronic_cardiac_disease]
-    field = "c_cardiac"
-    description = "Chronic cardiac disease, including congenital heart disease (not hypertension)"
-    ref = "Y/N"
-
-  [subject.has_chronic_hematologic_disease]
-    field = "c_hemato"
-    description = "Chronic hematologic disease"
-    ref = "Y/N"
-
-  [subject.has_chronic_kidney_disease]
-    field = "ckd"
-    description = "Chronic kidney disease"
-    ref = "Y/N"
-
-  [subject.has_dementia]
-    field = "dementia"
-    description = "Dementia"
-    ref = "Y/N"
-
-  [subject.has_diabetes]
-    combinedType = "any"
-
-    [[subject.has_diabetes.fields]]
-      field = "dm_no_comp"
-      description = "4.6. Diabetes without complication"
-      ref = "Y/N"
-
-    [[subject.has_diabetes.fields]]
-      field = "dm_comp"
-      description = "4.5. Diabetes with complication"
-      ref = "Y/N"
 
 [subject.has_hiv]
   field = "hiv"
@@ -194,13 +195,13 @@
   ref = "Y/N"
 
 [subject.has_rheumatologic_disorder]
-  field = "rheumatology_mhyr"
-  description = "rheuma"
+  field = "rheuma"
+  description = "Rheumatologic disorder"
   ref = "Y/N"
 
 [subject.has_smoking]
   field = "smoke"
-  values = { 0 = "never", 1 = "current", 2 = "former" }
+  values = { 0 = "never", 1 = "yes", 2 = "former" }
 
 [subject.has_hypertension]
   field = "htn"
@@ -209,10 +210,11 @@
 [subject.has_apnoea]
   field = "apnoea_hx"
   ref = "Y/N"
-  	
-[subject.has_comorbidity_other]
-  field = "o_risk"
-  ref = "Y/N"
+
+  # TODO: must be array
+  # [subject.has_comorbidity_other]
+  #   field = "o_risk"
+  #   ref = "Y/N"
 
 [subject.icu_admitted]
   field = "type_icu"
@@ -225,6 +227,7 @@
 
 [subject.date_death] # IS THIS CORRECT?
   field = "outcome_date"
+  if = { type_outcome = 4 }
 
 [visit]
   country_iso3 = "MYS"
@@ -248,157 +251,157 @@
     fields = [
       { field = "icu_date" },
       { field = "icu2_date" }, # THIS IS FOR RE-ADMISSION EVENTS
-      { field = "icu3_date" } # THIS IS FOR RE-ADMISSION EVENTS
+      { field = "icu3_date" }, # THIS IS FOR RE-ADMISSION EVENTS
     ]
 
-[visit.pathogen_test_date]
-  field = "patho_test_date"
-  description = "If yes, specimen collected date?	"
-  # NOT SURE ABOUT THIS DATE - CHECK notes from SK
+  [visit.pathogen_test_date]
+    field = "patho_test_date"
+    description = "If yes, specimen collected date?	"
+    # NOT SURE ABOUT THIS DATE - CHECK notes from SK
 
-[visit.start_date]
-  ref = "admissionDateHierarchy"
+  [visit.start_date]
+    ref = "admissionDateHierarchy"
 
-[visit.treatment_antibiotics]
-  field = "mx_antibiotic"
-  description = "Antibiotic ?"
-  ref = "Y/N"
+  [visit.treatment_antibiotics]
+    field = "mx_antibiotic"
+    description = "Antibiotic ?"
+    ref = "Y/N"
 
-[visit.treatment_antibiotics_type]
-  field = "mx_antibiotic_type"
-  description = "Antibiotic type?"
+  [visit.treatment_antibiotics_type]
+    field = "mx_antibiotic_type"
+    description = "Antibiotic type?"
 
-[visit.treatment_antivirals]
-  field = "mx_antiviral"
-  description = "Antiviral agent?"
-  ref = "Y/N"
+  [visit.treatment_antivirals]
+    field = "mx_antiviral"
+    description = "Antiviral agent?"
+    ref = "Y/N"
 
-[visit.treatment_antiviral_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "mx_antiviral_type___1", values = { 1 = "Ribavirin" } },
-    { field = "mx_antiviral_type___2", values = { 1 = "Lopinavir/Ritonvir" } },
-    { field = "mx_antiviral_type___3", values = { 1 = "Interferon alpha" } },
-    { field = "mx_antiviral_type___4", values = { 1 = "Interferon beta" } },
-    { field = "mx_antiviral_type___5", values = { 1 = "Neuraminidase inhibitor" } },
-    { field = "mx_antiviral_type___6", values = { 1 = "Ritonavir" } },
-    { field = "mx_antiviral_type___7", values = { 1 = "Favipravir" } },
-    { field = "mx_antiviral_type___8", values = { 1 = "Atazanavir" } },
-    { field = "mx_antiviral_type___7777", values = { 1 = "Other" } },
-    { field = "o_mx_antiviral_type" } # IS THIS PART CORRECT?
-  ]
+  [visit.treatment_antiviral_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "mx_antiviral_type___1", values = { 1 = "Ribavirin" } },
+      { field = "mx_antiviral_type___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "mx_antiviral_type___3", values = { 1 = "Interferon alpha" } },
+      { field = "mx_antiviral_type___4", values = { 1 = "Interferon beta" } },
+      { field = "mx_antiviral_type___5", values = { 1 = "Neuraminidase inhibitor" } },
+      { field = "mx_antiviral_type___6", values = { 1 = "Ritonavir" } },
+      { field = "mx_antiviral_type___7", values = { 1 = "Favipravir" } },
+      { field = "mx_antiviral_type___8", values = { 1 = "Atazanavir" } },
+      { field = "mx_antiviral_type___7777", values = { 1 = "Other" } },
+      { field = "o_mx_antiviral_type" },                                               # IS THIS PART CORRECT?
+    ]
 
-[visit.treatment_corticosteroid]
-  field = "mx_immunosup"
-  description = "Corticosteroid ?"
-  ref = "Y/N"
+  [visit.treatment_corticosteroid]
+    field = "mx_immunosup"
+    description = "Corticosteroid ?"
+    ref = "Y/N"
 
-[visit.treatment_dialysis]
-  field = "dialysis_intervene"
-  description = "Dialysis / Hemofiltration?"
-  ref = "Y/N"
+  [visit.treatment_dialysis]
+    field = "dialysis_intervene"
+    description = "Dialysis / Hemofiltration?"
+    ref = "Y/N"
 
-[visit.treatment_ecmo]
-  field = "ecmo_vent"
-  description = "ECMO?"
-  ref = "Y/N"
+  [visit.treatment_ecmo]
+    field = "ecmo_vent"
+    description = "ECMO?"
+    ref = "Y/N"
 
-[visit.treatment_high_flow_nasal_cannula]
-  field = "daily_case_pneumonia_class"
-  description = "High-flow nasal canula oxygen therapy?"
-  values = { 1 = true }
+  [visit.treatment_high_flow_nasal_cannula]
+    description = "Oxygen interface - HFNC"
+    field = "oxy_interface"
+    values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false, 6 = false }
 
-[visit.treatment_inhaled_nitric_oxide]
-  field = "nitric_intervene"
-  description = "Inhaled Nitric Oxide ?"
-  ref = "Y/N"
+  [visit.treatment_inhaled_nitric_oxide]
+    field = "nitric_intervene"
+    description = "Inhaled Nitric Oxide ?"
+    ref = "Y/N"
 
-[visit.treatment_inotropes_vasopressors]
-  field = "vasopress_intervene"
-  description = "Any vasopressor / inotropic support?"
-  ref = "Y/N"
+  [visit.treatment_inotropes_vasopressors]
+    field = "vasopress_intervene"
+    description = "Any vasopressor / inotropic support?"
+    ref = "Y/N"
 
-[visit.treatment_invasive_ventilation]
-  field = "oxy_interface"
-  values = { 6 = true }
+  [visit.treatment_invasive_ventilation]
+    field = "oxy_interface"
+    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = false, 6 = true }
 
-[visit.treatment_noninvasive_ventilation]
-  field = "oxy_interface"
-  values = { 5 = true }
+  [visit.treatment_noninvasive_ventilation]
+    field = "oxy_interface"
+    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false }
 
-[visit.treatment_neuromuscular_blocking_agents]
-  field = "neuromuscular_intervene"
-  description = "Neuromuscular blocking agents?"
-  ref = "Y/N"
+  [visit.treatment_neuromuscular_blocking_agents]
+    field = "neuromuscular_intervene"
+    description = "Neuromuscular blocking agents?"
+    ref = "Y/N"
 
-[visit.treatment_oxygen_therapy]
-  field = "oxy_therapy"
-  description = "Oxygen therapy?"
-  ref = "Y/N"
+  [visit.treatment_oxygen_therapy]
+    field = "oxy_therapy"
+    description = "Oxygen therapy?"
+    ref = "Y/N"
 
-[visit.treatment_prone_position]
-  field = "prone_intervene	"
-  description = "Prone Positioning"
-  ref = "Y/N"
+  [visit.treatment_prone_position]
+    field = "prone_intervene"
+    description = "Prone Positioning"
+    ref = "Y/N"
 
-[visit.treatment_antimalarial]
-field = "mx_antimalarial"
-ref = "Y/N"
+  [visit.treatment_antimalarial]
+    field = "mx_antimalarial"
+    ref = "Y/N"
 
-[visit.treatment_antimalarial_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "mx_antimalarial_type___1", values = { 1 = "Chloroquine" } },
-    { field = "mx_antimalarial_type___2", values = { 1 = "Hydroxychloroquine" } },
-    { field = "mx_antimalarial_type___7777", values = { 1 = "Other" } },
-    { field = "o_mx_antimalarial_type" }
-  ]
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "mx_antimalarial_type___1", values = { 1 = "Chloroquine" } },
+      { field = "mx_antimalarial_type___2", values = { 1 = "Hydroxychloroquine" } },
+      { field = "mx_antimalarial_type___7777", values = { 1 = "Other" } },
+      { field = "o_mx_antimalarial_type" },
+    ]
 
-[visit.treatment_dexamethasone]
-  field = "mx_immunosup_type___1"
-  value = { 1 = true }
+  [visit.treatment_dexamethasone]
+    field = "mx_immunosup_type___1"
+    ref = "Y/N"
 
-[visit.treatment_immunosuppressant]
-  field = "mx_immunosup"
-  value = { 1 = true }
+  [visit.treatment_immunosuppressant]
+    field = "mx_immunosup"
+    ref = "Y/N"
 
-[visit.treatment_tocilizumab]
-  field = "mx_immunosup_type___3"
-  value = { 1 = true }
+  [visit.treatment_tocilizumab]
+    field = "mx_immunosup_type___3"
+    ref = "Y/N"
 
-[visit.treatment_delirium]
-  field = "mx_delirium"
-  ref = "Y/N"
+  [visit.treatment_delirium]
+    field = "mx_delirium"
+    ref = "Y/N"
 
-[visit.treatment_delirium_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "mx_delirium_type___1", values = { 1 = "Haloperidol" } },
-    { field = "mx_delirium_type___1", values = { 1 = "Olanzapine" } },
-    { field = "mx_delirium_type___1", values = { 1 = "Quetipine" } },
-    { field = "mx_delirium_type___1", values = { 1 = "other" } },
-    { field = "o_mx_delirium_type" }
-  ]
+  [visit.treatment_delirium_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "mx_delirium_type___1", values = { 1 = "Haloperidol" } },
+      { field = "mx_delirium_type___1", values = { 1 = "Olanzapine" } },
+      { field = "mx_delirium_type___1", values = { 1 = "Quetipine" } },
+      { field = "mx_delirium_type___1", values = { 1 = "other" } },
+      { field = "o_mx_delirium_type" },
+    ]
 
-[visit.treatment_oxygen_mechanical_support]
-  field = "daily_case_ill_class"
-  values = { 2 = true }
+  [visit.treatment_oxygen_mechanical_support]
+    field = "daily_case_ill_class"
+    values = { 2 = true }
 
-[visit.outcome]
-  field = "type_outcome"
-  description = "Hospital Outcome:"
+  [visit.outcome]
+    field = "type_outcome"
+    description = "Hospital Outcome"
 
-  [visit.outcome.values]
-    1 = "discharged"
-    2 = "hospitalization"
-    3 = "transferred"
-    4 = "death"
-    5 = "palliative discharge"
-    6 = "quarantined"
-    7 = "transferred"
+    [visit.outcome.values]
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "palliative discharge"
+      # 6 = "quarantined"  # not in schema currently
+      7 = "transferred"
 
 [visit.date_outcome]
   field = "outcome_date"
@@ -430,7 +433,7 @@ ref = "Y/N"
 [[observation]]
   name = "chest_pain"
   phase = "admission"
-  date = { field = "chest_pain_date	" }
+  date = { field = "chest_pain_date" }
 
   [observation.is_present]
     field = "chest_pain_hx"
@@ -610,14 +613,20 @@ ref = "Y/N"
   date = { ref = "dailyDateHierarchy" }
 
   [observation.value]
+    excludeWhen = "none"
+    combinedType = "firstNonNull" # TODO: check this - maybe these should be separate observations
+    fields = [
+      { field = "daily_pao2_data", unit = "mmHg", source_unit = { field = "daily_pao2_unit", values = { 1 = "kPa", 2 = "mmHg" } } },
+      { field = "pao_prone" },
+      { field = "h_pao_prone" },
+    ]
+
+  [observation.context]
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "daily_pao2_data", unit = "mmHg", source_unit = { field = "daily_pao2_unit", values = { 1 = "kPa", 2 = "mmHg" } } }, 
-      { field = "pao_prone" },
-      { field = "h_pao_prone" }
+      { field = "daily_pao2_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
     ]
-  context = [ "daily_pao2_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } ]
 
 [[observation]]
   name = "pco2"
@@ -690,7 +699,7 @@ ref = "Y/N"
   date = { ref = "dailyDateHierarchy" }
 
   [observation.value]
-    field = "t_sx	"
+    field = "t_sx"
     unit = "°C"
 
 [[observation]]
@@ -701,10 +710,7 @@ ref = "Y/N"
   [observation.value]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [
-      { field = "mx_urine_out" },
-      { field = "mx_fluid_out" }
-    ]
+    fields = [{ field = "mx_urine_out" }, { field = "mx_fluid_out" }]
 
 [[observation]]
   name = "transfer_from_other_facility"
@@ -734,17 +740,17 @@ ref = "Y/N"
     field = "wheeze_hx"
     ref = "Y/N"
 
-[[observation]] 
+[[observation]]
   name = "o2_flow_vol_max"
   date = { ref = "dailyDateHierarchy" }
   phase = "study"
   text = { field = "oxy_flow" }
 
 [[observation]]
-name = "heart_sounds"
-date = { ref = "dailyDateHierarchy" }
-phase = "study"
-text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
+  name = "heart_sounds"
+  date = { ref = "dailyDateHierarchy" }
+  phase = "study"
+  text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
 
 [[observation]]
   name = "renal_replacement_therapy_dialysis"
@@ -753,25 +759,25 @@ text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
   is_present = { field = "crrt_intervene", ref = "Y/N" }
 
 [[observation]]
-name = "lung_sounds"
-date = { ref = "dailyDateHierarchy" }
-phase = "study"
-text = { field = "lung_sound", values = { 0 = "normal", 1 = "abnormal" } }
+  name = "lung_sounds"
+  date = { ref = "dailyDateHierarchy" }
+  phase = "study"
+  text = { field = "lung_sound", values = { 0 = "normal", 1 = "abnormal" } }
 
 [[observation]]
-name = "irritability_peadiatrics"
-date = { ref = "admissionDateHierarchy" }
-phase = "admission"
-is_present = { field = "irri_hx	", ref = "Y/N" }
+  name = "irritability_peadiatrics"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "irri_hx", ref = "Y/N" }
 
 [[observation]]
-name = "feeding_intolerance_peadiatrics"
-date = { ref = "admissionDateHierarchy" }
-phase = "admission"
-is_present = { field = "feed_hx", ref = "Y/N" }
+  name = "feeding_intolerance_peadiatrics"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "feed_hx", ref = "Y/N" }
 
 [[observation]]
-name = "clinical_classification_pneumonia_needing_oxygen"
-date = { ref = "admissionDateHierarchy" }
-phase = "admission"
-is_present = { field = "type_cs_adm_outcome", values = { 0 = false, 1 = false, 2 = false, 3 = true, 4 = false, 5 = true, 6 = true, 7 = false, 8 = true, 9 = true } }
+  name = "clinical_classification_pneumonia_needing_oxygen"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "type_cs_adm_outcome", values = { 0 = false, 1 = false, 2 = false, 3 = true, 4 = false, 5 = true, 6 = true, 7 = false, 8 = true, 9 = true } }
