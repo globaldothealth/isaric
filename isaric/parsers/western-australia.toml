@@ -204,18 +204,18 @@
     description = "Subject ID"
     sensitive = true
 
-    # [visit.dataset_id]
-    #   field = ""
-    #   description = ""
-
   [visit.start_date]
     combinedType = "firstNonNull"
     fields = [
       { field = "admission_date" },
+      { field = "cestdat", description = "Onset date of first/earliest symptom" },
       { field = "hostdat", description = "Admission date at this facility" },
       { field = "dsstdat", description = "Date of enrolment" },
-      { field = "cestdat", description = "Onset date of first/earliest symptom" },
     ]
+
+  [visit.pathogen_test_date]
+    field = "date_of_confiurmation"
+    description = "covid swab result on admission - date of confirmation"
 
   [visit.icu_admission]
     description = "ICU or High Dependency admission"
@@ -300,7 +300,6 @@
     { field = "corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
     { field = "corticost_cmtrt___5", values = { 1 = "Other" } },
   ]
-  if.any = { corticost_cmyn = 1, daily_corticost_cmyn = 1, overall_corticost_cmyn = 1 } # is this correct?
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therepy"
@@ -419,16 +418,6 @@
     { field = "exper_cmtype___7", values = { 1 = "Other" } },
   ]
 
-  # [visit.treatment_tocilizumab]
-  #   description = "Tocilizumab used?"
-  #   combinedType = "any"
-  #   excludeWhen = "none"
-  #   fields = [
-  #     { field = "overall_exper_cmtype___4", values = { 1 = true } },
-  #     { field = "daily_exper_cmtype___4", values = { 1 = true } },
-  #     { field = "exper_cmtype___4", values = { 1 = true } },
-  #   ]
-
 [visit.treatment_noninvasive_ventilation]
   description = "Noninvasive ventilation"
   combinedType = "any"
@@ -476,25 +465,6 @@
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
   ]
 
-[visit.treatment_dexamethasone]
-  description = "Dexamethasone used?"
-  combinedType = "any"
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "overall_corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "daily_corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-
 [visit.treatment_high_flow_nasal_cannula]
   description = "High flow nasal cannula"
   combinedType = "any"
@@ -538,25 +508,6 @@
     { field = "daily_iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids?" },
     { field = "iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids on the first day of admission?" },
   ]
-
-[visit.treatment_neuraminidase]
-  description = "Antiviral type"
-  combinedType = "any"
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "overall_antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true, 0 = false }
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "daily_antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true, 0 = false }
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true, 0 = false }
 
 [visit.outcome]
   field = "dsterm"

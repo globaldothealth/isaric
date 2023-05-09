@@ -487,7 +487,7 @@
   # if = {field = "path_type", apply = {function = "searchString"}} - or text search. The majority are SARS cov 2 but there's TB in there so need the conditional.
 
 [visit.start_date]
-  field = "add_date"
+  ref = "admissionDateHierarchy"
   description = "Admission date at this facility"
 
 [visit.treatment_ace_inhibitors]
@@ -508,11 +508,14 @@
   fields = [
     { field = "daily_antibiotic_cmyn", description = "Antibiotic?", values = { 1 = true, 0 = false } },
     { field = "meds_given", description = "Overall medications: Antibiotic?", values = { 2 = true } },
-    { field = "disx269", description = "Other antibiotics", values = { 1 = true, 2 = false } },
-    { field = "dis32", description = "Antibiotics received?", values = { 1 = true, 2 = false } },
+    # { field = "disx269", description = "Other antibiotics", values = { 1 = true, 2 = false } },
+    # { field = "dis32", description = "Antibiotics received?", values = { 1 = true, 2 = false } },
   ]
 
-  # Antibiotic type given in sup_antibiotic_agent - but this is a messy free-text field.
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  description = "Antibiotic given - free text field"
+  fields = [{ field = "sup_antibiotic_agent" }]
 
 [visit.treatment_antifungal_agent]
   field = "daily_antifung_cmyn"
@@ -537,29 +540,20 @@
   combinedType = 'set'
   excludeWhen = 'none'
   fields = [
-    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavarin" } },
+    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
     { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
     { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitors" } },
     { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
-    { field = "daily_antiviral_cmoth", if.all = [
-      { daily_antiviral_cmtrt___6 = 1 },
-      { daily_antiviral_cmyn = 1 },
-    ] }, # free text field - also free text in sup_meds_antivirals.
+    { field = "sup_meds_antivirals", values = { 5 = "Neuraminidase inhibitors" } },
   ]
 
-[visit.treatment_neuraminidase]
-  combinedType = 'any'
-  description = "Was the patient treated with neuraminidase?"
-  fields = [
-    { field = "daily_antiviral_cmtrt___5", ref = "Y/N/NK", description = "" },
-    { field = "sup_meds_antivirals", values = { 5 = true }, description = "At any time during hospitalisation, did the patient recieve:" },
-  ]
+[visit.treatment_antiviral_type_other]
+  combinedType = "set"
+  description = "Antiviral agent = other - free text field"
+  fields = [{ field = "daily_antiviral_cmoth" }]
 
 [visit.treatment_arb]
-  #   field = "sec_arb_2" - preadmission treatment
-  #   description = "Second ARB inhibitor"
-  #   values = { 1 = true, 2 = false }
   field = "daily_arb_cmoccur"
   description = "Angiotensin II receptor blockers (ARBs)?"
   ref = "Y/N/NK"
@@ -572,7 +566,6 @@
     { field = "meds_given", description = "Overall medications: Corticosteroid?", values = { 4 = true } },
   ]
 
-
 [visit.treatment_corticosteroid_type]
   description = "Corticosteroid - if 'Other' corticosteroid, specify"
   combinedType = "set"
@@ -582,20 +575,13 @@
     { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
     { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
     { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
-    { field = "daily_corticost_cmoth", if.all = [
-      { daily_corticost_cmtrt___5 = 1 },
-      { daily_corticost_cmyn = 1 },
-    ] }, # free text field
   ]
-  if = { daily_exper_cmyn = 1 }
 
-[visit.treatment_dexamethasone]
-  field = "daily_corticost_cmtrt___1"
-  ref = "Y/N/NK"
-
-[visit.treatment_tocilizumab]
-  field = "disx251s"
-  values = { 3 = true }
+[visit.treatment_corticosteroid_type_other]
+  description = "Type of corticosteroid used"
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [{ field = "daily_corticost_cmoth" }]
 
 [visit.treatment_dialysis]
   field = "overall_rrt_prtrt"
@@ -624,19 +610,13 @@
     { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
     { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
     { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
-    # { field = "daily_exper_cmoth", if.all = [
-    #   { daily_exper_cmtype___7 = 1 },
-    #   { daily_exper_cmyn = 1 },
-    # ] }, # free text field, mostly vit C
+    { field = "disx251s", values = { 3 = "Tocilizumab" } },
   ]
-  # if = { daily_exper_cmyn = 1 }
 
 [visit.treatment_experimental_agent_type_other]
   combinedType = "set"
   description = "Experimental agent = other - free text field"
-  fields = [
-    { field = "daily_exper_cmoth", if = { daily_exper_cmtype___7 = 1 } },
-  ]
+  fields = [{ field = "daily_exper_cmoth" }]
 
 [visit.treatment_high_flow_nasal_cannula]
   combinedType = "any"
@@ -679,10 +659,10 @@
     description = "Invasive ventilation <i>(Any)</i>?"
     values = { 1 = true, 2 = false }
 
-[visit.treatment_monoclonal_antibody]
-  field = "disx253"
-  description = "Neutralizing monoclonal antibodies"
-  values = { 1 = true, 2 = false }
+    # [visit.treatment_monoclonal_antibody] # no data can be dropped
+    #   field = "disx253"
+    #   description = "Neutralizing monoclonal antibodies"
+    #   values = { 1 = true, 2 = false }
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "neuro_block"

@@ -240,7 +240,9 @@
   ]
 
 [adtl.tables]
-  subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
+  subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json", optional-fields = [
+    "ethnicity",
+  ] }
   visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
@@ -433,7 +435,6 @@
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
       { field = "flw_date_symptoms", description = "Roughly what day did you first experience symptoms of COVID-19?" },
       { field = "dsstdat", description = "Date of enrolment" },
-      { field = "flw_survey_date", description = "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)" },
     ]
 
   [visit.subject_id]
@@ -462,7 +463,7 @@
     [[visit.icu_admission.fields]]
       field = "ccm_a_icu_hoyn"
       description = "Current admission to ICU or other High Dependency Unit (HDU)?"
-      values = { 0 = false, 1 = true, 2 = true, 3 = false }
+      values = { 0 = false, 1 = true, 2 = true }
 
 [visit.treatment_ace_inhibitors]
   description = "Ace Inhibitors"
@@ -485,6 +486,32 @@
     { field = "overall_antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic?" },
     { field = "daily_antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic?" },
     { field = "antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic on the first day of admission?" },
+  ]
+
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  excludeWhen = 'false-like'
+  fields = [
+    { field = "overall_antibiotic_cmtype___1", values = { 1 = "Aminoglycosides" } },
+    { field = "overall_antibiotic_cmtype___2", values = { 1 = "Carbapenems" } },
+    { field = "overall_antibiotic_cmtype___3", values = { 1 = "Cephalosporins - 1st generation" } },
+    { field = "overall_antibiotic_cmtype___4", values = { 1 = "Cephalosporins - 2nd generation" } },
+    { field = "overall_antibiotic_cmtype___5", values = { 1 = "Cephalosporins - 3rd generation" } },
+    { field = "overall_antibiotic_cmtype___6", values = { 1 = "Cephalosporins - 4th generation" } },
+    { field = "overall_antibiotic_cmtype___7", values = { 1 = "Cephalosporins - 5th generation" } },
+    { field = "overall_antibiotic_cmtype___8", values = { 1 = "Glycopeptides" } },
+    { field = "overall_antibiotic_cmtype___9", values = { 1 = "Lincosamides" } },
+    { field = "overall_antibiotic_cmtype___10", values = { 1 = "Macrolides" } },
+    { field = "overall_antibiotic_cmtype___11", values = { 1 = "Nitrofurans" } },
+    { field = "overall_antibiotic_cmtype___12", values = { 1 = "Oxazolidinones" } },
+    { field = "overall_antibiotic_cmtype___13", values = { 1 = "Beta-lactam" } },
+    { field = "overall_antibiotic_cmtype___14", values = { 1 = "Beta-lactam/beta-lactamase inhibitor combination" } },
+    { field = "overall_antibiotic_cmtype___15", values = { 1 = "Quinolones/Fluoroquinolone" } },
+    { field = "overall_antibiotic_cmtype___16", values = { 1 = "Co-trimoxazole (trimethoprim-sulfamethoxazole)" } },
+    { field = "overall_antibiotic_cmtype___17", values = { 1 = "Flucloxacillin" } },
+    { field = "overall_antibiotic_cmtype___18", values = { 1 = "Tetracyclines" } },
+    { field = "overall_antibiotic_cmtype___19", values = { 1 = "Daptomycin" } },
+    { field = "overall_antibiotic_cmoth", description = "free text" },
   ]
 
 [visit.treatment_anticoagulation]
@@ -543,29 +570,17 @@
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
   ]
-  if = { antiviral_cmyn = 1 }
 
-[visit.treatment_neuraminidase]
-  description = "Antiviral type"
-  combinedType = "any"
+[visit.treatment_antiviral_type_other]
+  description = "Type of antiviral used - free text"
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [
+    { field = "antiviral_cmoth" },
+    { field = "overall_antiviral_cmoth" },
+    { field = "daily_antiviral_cmoth" },
+  ]
 
-  [[visit.treatment_neuraminidase.fields]]
-    field = "overall_antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true }
-    if = { overall_antiviral_cmyn = 1 }
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "daily_antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true }
-    if = { daily_antiviral_cmyn = 1 }
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true }
-    if = { antiviral_cmyn = 1 }
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "ccm_a_neuro_cmtrt"
@@ -584,12 +599,6 @@
     field = "arb_cmoccur"
     ref = "Y/N/NK"
     description = "Angiotensin II receptor blockers (ARBs) on the first day of admission?"
-
-[visit.treatment_cardiovascular]
-  field = "ccm_b_horeas___4"
-  description = "Cardiovascular complications?"
-  values = { 0 = false, 1 = true }
-  if = { ccm_b_icu_yn = 1 }
 
 [visit.treatment_corticosteroid]
   description = "Corticosteroid"
@@ -621,29 +630,16 @@
     { field = "corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
     { field = "corticost_cmtrt___5", values = { 1 = "Other" } },
   ]
-  if = { corticost_cmyn = 1 }
 
-[visit.treatment_dexamethasone]
-  description = "Dexamethasone used?"
-  combinedType = "any"
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "overall_corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-    if = { overall_corticost_cmyn = 1 }
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "daily_corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-    if = { daily_corticost_cmyn = 1 }
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-    if = { corticost_cmyn = 1 }
+[visit.treatment_corticosteroid_type_other]
+  description = "Type of corticosteroid used"
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [
+    { field = "corticost_cmoth" },
+    { field = "overall_corticost_cmoth" },
+    { field = "daily_corticost_cmoth" },
+  ]
 
 [visit.treatment_dialysis]
   description = "Dialysis"
@@ -710,29 +706,15 @@
     { field = "exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
     { field = "exper_cmtype___7", values = { 1 = "Other" } },
   ]
-  if = { exper_cmyn = 1 }
 
-[visit.treatment_tocilizumab]
-  description = "Experimental agents"
-  combinedType = "any"
-
-  [[visit.treatment_tocilizumab.fields]]
-    field = "overall_exper_cmtype___4"
-    description = "Tocilizumab?"
-    values = { 0 = false, 1 = true }
-    if = { overall_exper_cmyn = 1 }
-
-  [[visit.treatment_tocilizumab.fields]]
-    field = "daily_exper_cmtype___4"
-    description = "Tocilizumab?"
-    values = { 0 = false, 1 = true }
-    if = { daily_exper_cmyn = 1 }
-
-  [[visit.treatment_tocilizumab.fields]]
-    field = "exper_cmtype___4"
-    description = "Tocilizumab?"
-    values = { 0 = false, 1 = true }
-    if = { exper_cmyn = 1 }
+[visit.treatment_experimental_agent_type_other]
+  combinedType = "set"
+  description = "Experimental agent = other - free text field"
+  fields = [
+    { field = "overall_exper_cmoth" },
+    { field = "daily_exper_cmoth" },
+    { field = "exper_cmoth" },
+  ]
 
 [visit.treatment_inotropes_vasopressors]
   description = "Inotropes/vasopressors"
@@ -811,6 +793,7 @@
   excludeWhen = "none"
   fields = [{ field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } }]
   description = "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
+  # include others? most are in 'other please specify' for specific categories e.g. corticosteroid.
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therepy"
@@ -839,9 +822,15 @@
   description = "Inhaled nitric oxide?"
 
 [visit.treatment_high_flow_nasal_cannula]
-  field = "ccm_b_hhfnc_prtrt"
-  ref = "Y/N/NK"
-  description = "Humidified high flow nasal cannula (HHFNC)?"
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
+    { field = "overall_oxygen_cmtype___2", values = { 1 = true, 0 = false }, description = "Oxygen therapy? (interface)" },
+    { field = "daily_oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
+    { field = "oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
+  ]
+
 
 [visit.icu_admission_dates]
   description = "ICU admission date"
@@ -851,10 +840,6 @@
     { field = "overall_icu_hostdat", description = "ICU admission date" },
     { field = "ccm_b_icu_hodat", description = "ICU admission date" },
   ]
-
-[visit.pathogen_test_date]
-  field = "coll_date"
-  description = "Collection date"
 
 [visit.outcome]
   field = "dsterm"

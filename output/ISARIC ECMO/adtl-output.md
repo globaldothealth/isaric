@@ -3,16 +3,16 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |18905  |23313  |81.092095% |
-|visit          |8948   |23313  |38.382019% |
+|visit          |8944   |23313  |38.364861% |
 |observation    |1152489        |1303066        |88.444407% |
 
 ## subject
 
-* 4408: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 4408: data must contain ['admission_date', 'age', 'country_iso3', 'pathogen', 'sex_at_birth', 'subject_id'] properties
 
 ## visit
 
-* 14365: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
+* 14369: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
 
 ## observation
 

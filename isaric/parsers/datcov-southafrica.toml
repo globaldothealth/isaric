@@ -357,7 +357,7 @@
   ]
 
 [visit.treatment_invasive_ventilation]
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "Ever InvasiveVentilation", values = { 0 = false, 1 = true } },
     { field = "Admission Intervention.Ventilated", values = { FALSE = false, TRUE = true } }, # values = False,  True
@@ -389,6 +389,7 @@
     { field = "Medication during hospitalisation.InterferonBeta", values = { 1 = "Interferon beta" } },
     { field = "Medication during hospitalisation.Neuraminidase", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "Medication during hospitalisation.OtherAntiviralAdministered", values = { 1 = "Other" } },
+    { field = "Medication during hospitalisation.Tocilizumab", values = { 1 = "Tocilizumab" } },
   ]
 
 [visit.treatment_antibiotics]
@@ -406,7 +407,7 @@
   ]
 
 [visit.treatment_noninvasive_ventilation]
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "Admission Intervention.Ventilated", values = { FALSE = false, TRUE = true } },
     { field = "Intervention during hospitalisation.NonInvasiveVentilation", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
@@ -416,11 +417,6 @@
   field = "Admission Medications.AceInhibitor"
   values = { FALSE = false, TRUE = true }
 
-[visit.treatment_dexamethasone]
-  field = "Medication during hospitalisation.Dexamethasone"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
 [visit.treatment_high_flow_nasal_cannula]
   combinedType = "any"
   fields = [
@@ -428,12 +424,21 @@
     { field = "Intervention during hospitalisation.HighFlowNasalOxygen", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
   ]
 
-[visit.treatment_steroids]
+[visit.treatment_steroids] # should this just be corticosteroids? - they are 2 different things in the data dict, but only steroids are in the data.
   combinedType = "any"
   fields = [
     { field = "Ever Steroids", values = { 1 = true, 0 = false } },                         # values = [0, 1];
     { field = "Admission Medications.Steroids", values = { FALSE = false, TRUE = true } },
     { field = "Medication during hospitalisation.SteroidsAdministered", ref = "Y/N/NK" },  # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_corticosteroid_type]
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [
+    { field = "Medication during hospitalisation.Dexamethasone", values = { 1 = "Dexamethasone" } },
+    { field = "Medication during hospitalisation.Hydrocortisone", values = { 1 = "Hydrocortisone" } },
+    { field = "Medication during hospitalisation.OtherSteroids", values = { 1 = "Other" } },
   ]
 
 [visit.treatment_immunosuppressant]
@@ -444,18 +449,8 @@
     { field = "Admission Medications.Immunosuppressants", values = { FALSE = false, TRUE = true } },
   ]
 
-[visit.treatment_neuraminidase]
-  field = "Medication during hospitalisation.Neuraminidase"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
 [visit.treatment_cpr]
   field = "Intervention during hospitalisation.CPR"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
-[visit.treatment_tocilizumab]
-  field = "Medication during hospitalisation.Tocilizumab"
   ref = "Y/N/NK"
   # values = ['0', 'Unknown', '1']
 
@@ -465,6 +460,7 @@
     { field = "Ever CardiovascularSupport", values = { 1 = true, 0 = false } },
     { field = "Intervention during hospitalisation.CardiovascularSupport", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
   ]
+  # put MechanicalSupport in here? Contains ECMO as a subtype.
 
 [visit.treatment_colchicine]
   field = "Medication during hospitalisation.Colchicine"

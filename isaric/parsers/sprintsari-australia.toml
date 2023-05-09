@@ -288,6 +288,11 @@
     { field = "antiviral_cmtrt", description = "IF YES to antiviral agent", values = { 1 = "Ribavirin", 2 = "Lopinavir/Ritonvir", 3 = "Interferon alpha", 4 = "Interferon beta", 5 = "Neuraminidase inhibitor", 6 = "Other" } },
   ]
 
+[visit.treatment_antiviral_type_other]
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [{ field = "antiviral_cmtype" }]
+
 [visit.treatment_corticosteroid]
   field = "corticost_cmyn"
   description = "Corticosteroid ?"

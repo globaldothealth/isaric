@@ -103,6 +103,12 @@
       "description": "Corticosteroid type",
       "category": "treatments"
     },
+    "treatment_corticosteroid_type_other": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Corticosteroid name - others",
+      "category": "treatments"
+    },
     "treatment_oxygen_therapy": {
       "type": "boolean",
       "description": "Oxygen therapy",
@@ -145,6 +151,8 @@
           "Neuraminidase inhibitor",
           "Convalescent plasma",
           "Anti-influenza antiviral",
+          "Tocilizumab",
+          "Anakinra",
           "Other"
         ]
       },
@@ -152,9 +160,21 @@
       "description": "Antivirals administered",
       "category": "treatments"
     },
+    "treatment_antiviral_type_other": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antiviral name - other agents",
+      "category": "treatments"
+    },
     "treatment_antibiotics": {
       "type": "boolean",
       "description": "Antibiotics",
+      "category": "treatments"
+    },
+    "treatment_antibiotics_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antibiotics administered",
       "category": "treatments"
     },
     "treatment_anticoagulation": {
@@ -215,11 +235,6 @@
       "description": "Antimalarial",
       "category": "treatments"
     },
-    "treatment_dexamethasone": {
-      "type": "boolean",
-      "description": "Dexamethasone",
-      "category": "treatments"
-    },
     "treatment_high_flow_nasal_cannula": {
       "type": "boolean",
       "description": "High flow nasal cannula",
@@ -245,11 +260,6 @@
       "description": "Nsaid",
       "category": "treatments"
     },
-    "treatment_neuraminidase": {
-      "type": "boolean",
-      "description": "Neuraminidase",
-      "category": "treatments"
-    },
     "treatment_neuromuscular_blocking_agents": {
       "type": "boolean",
       "description": "Neuromuscular blocking agents",
@@ -268,11 +278,6 @@
     "treatment_respiratory_support": {
       "type": "boolean",
       "description": "Respiratory support",
-      "category": "treatments"
-    },
-    "treatment_tocilizumab": {
-      "type": "boolean",
-      "description": "Tocilizumab",
       "category": "treatments"
     },
     "treatment_indication_anticoagulation": {

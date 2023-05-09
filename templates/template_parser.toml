@@ -325,6 +325,11 @@
     description = ""
     ref = "Y/N/NK"
 
+  [visit.treatment_corticosteroid_type_other]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
   [visit.treatment_oxygen_therapy]
     field = ""
     description = ""
@@ -355,7 +360,17 @@
     description = ""
     ref = "Y/N/NK"
 
+  [visit.treatment_antiviral_type_other]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
   [visit.treatment_antibiotics]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antibiotics_type]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -371,6 +386,11 @@
     ref = "Y/N/NK"
 
   [visit.treatment_experimental_agent_type]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_experimental_agent_type_other]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -400,11 +420,6 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_dexamethasone]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_high_flow_nasal_cannula]
     field = ""
     description = ""
@@ -430,11 +445,6 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_neuraminidase]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_cpr]
     field = ""
     description = ""
@@ -446,11 +456,6 @@
     ref = "Y/N/NK"
 
   [visit.treatment_respiratory_support]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
-  [visit.treatment_tocilizumab]
     field = ""
     description = ""
     ref = "Y/N/NK"

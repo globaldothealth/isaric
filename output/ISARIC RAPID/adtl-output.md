@@ -8,7 +8,7 @@
 
 ## subject
 
-* 2660: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 2660: data must contain ['admission_date', 'age', 'country_iso3', 'pathogen', 'sex_at_birth', 'subject_id'] properties
 * 1: data.age must be bigger than or equal to 0
 * 1: data.age must be smaller than or equal to 120
 

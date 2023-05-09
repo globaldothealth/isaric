@@ -306,13 +306,18 @@
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
       { field = "flw_date_symptoms", description = "Roughly what day did you first experience symptoms of COVID-19?" },
       { field = "dsstdat", description = "Date of enrolment" },
-      { field = "daily_dsstdat", description = "Date of assessment" },
-      { field = "flw_survey_date", description = "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)" },
+      # { field = "daily_dsstdat", description = "Date of assessment" },
     ]
+
+  [visit.pathogen_test_date]
+    field = "mbdat_v2"
+    description = "Date sample obtained"
+    if = { mbtestcd_nsth = 1 }
 
   [visit.icu_admission]
     combinedType = "any"
     fields = [
+      { field = "icu_hostdat", apply = { function = "isNotNull" } },
       { field = "icu_hoterm", ref = "Y/N/NK" },
       { field = "daily_hoterm", ref = "Y/N/NK" },
     ]
@@ -323,13 +328,32 @@
     excludeWhen = "none"
     fields = [
       { field = "icu_hostdat" },
+      { field = "icu_hostdat2" },
+      { field = "icu_hostdat3" },
       # {field = "daily_dsstdat", if = {daily_hoterm = 1}}
     ]
 
   [visit.treatment_antibiotics]
+    combinedType = "any"
     description = "Antibiotic agent?"
-    field = "antibiotic_cmyn"
-    ref = "Y/N/NK"
+    fields = [
+      { field = "antibiotic_cmyn", ref = "Y/N/NK" },
+      { field = "antibiotic2_cmyn", ref = "Y/N/NK" },
+      { field = "antibiotic3_cmyn", ref = "Y/N/NK" },
+      { field = "antibiotic4_cmyn", ref = "Y/N/NK" },
+      { field = "antibiotic5_cmyn", ref = "Y/N/NK" },
+    ]
+
+  [visit.treatment_antibiotics_type]
+    combinedType = "set"
+    excludeWhen = 'false-like'
+    fields = [
+      { field = "antibiotic_cmtrt" },
+      { field = "antibiotic2_cmtrt" },
+      { field = "antibiotic3_cmtrt" },
+      { field = "antibiotic4_cmtrt" },
+      { field = "antibiotic5_cmtrt" },
+    ]
 
   [visit.treatment_antifungal_agent]
     description = "Antifungal agent?"
@@ -357,6 +381,20 @@
       { field = "antiviral_cmtrt___10", values = { 1 = "Oseltamivir (Tamiflu)" } },
       { field = "antiviral_cmtrt___11", values = { 1 = "Zanamivir" } },
       { field = "antiviral_cmtrt___12", values = { 1 = "Casirivimab/Imdevimab" } },
+      { field = "il6_cmtrt", values = { 1 = "Tocilizumab" } },
+      { field = "il6_cmtrt", values = { 2 = "Anakinra" } },
+    ]
+
+  [visit.treatment_antiviral_type_other]
+    description = "Type of antiviral agent used - other free text"
+    combinedType = "set"
+    excludeWhen = "false-like"
+    fields = [
+      { field = "othantiviral_cmtrt" },
+      { field = "othhantiviral2_cmtrt" },
+      { field = "othantiviral3_cmtrt" },
+      { field = "othantiviral4_cmtrt" },
+      { field = "othantiviral5_cmtrt" },
     ]
 
   [visit.treatment_corticosteroid]
@@ -370,154 +408,134 @@
     excludeWhen = "none"
     fields = [
       { field = "corticost_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" } },
+      { field = "corticost2_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" } },
+      { field = "corticost3_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" } },
+      { field = "corticost4_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" } },
+      { field = "corticost5_cmtrt_type", values = { 1 = "Methylprednisolone", 2 = "Prednisolone", 3 = "Dexamethasone", 88 = "Other" } },
+      { field = "dexamethasone", description = "Dexamethasone 6mg once per day?", values = { 1 = "Dexamethasone", 4 = "Dexamethasone", 5 = "Dexamethasone", 6 = "Dexamethasone" } },
     ]
 
+  [visit.treatment_corticosteroid_type_other]
+    description = "Type of corticosteroid used - other, free text"
+    combinedType = "set"
+    excludeWhen = "false-like"
+    fields = [
+      { field = "corticost_cmtrt" },
+      { field = "corticost2_cmtrt" },
+      { field = "corticost3_cmtrt" },
+      { field = "corticost4_cmtrt" },
+      { field = "corticost5_cmtrt" },
+    ]
 
-  [visit.treatment_dexamethasone]
-    description = "Treatment with Dexamethasone"
+  [visit.treatment_dialysis]
+    description = "Renal replacement therapy (RRT) or dialysis"
     combinedType = "any"
+    fields = [
+      { field = "rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy" },
+      { field = "daily_rrt_cmtrt", ref = "Y/N/NK", description = "Dialysis / Hemofiltration?" },
+    ]
 
-    [[visit.treatment_dexamethasone.fields]]
-      field = "corticost_cmtrt_type"
+  [visit.treatment_ecmo]
+    description = "Extracorporeal (ECMO) support"
+    combinedType = "any"
+    fields = [
+      { field = "extracorp_prtrt", ref = "Y/N/NK" },
+      { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    ]
 
-      [visit.treatment_dexamethasone.fields.values]
-        1 = false
-        2 = false
-        3 = true
-        88 = false
+  [visit.treatment_high_flow_nasal_cannula]
+    description = "High-flow nasal canula?"
+    combinedType = "any"
+    fields = [
+      { field = "oxygenhf_cmoccur", ref = "Y/N/NK" },
+      { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+    ]
 
-      [visit.treatment_dexamethasone.fields.if]
-        corticost_cmyn = 1
+  [visit.treatment_inhaled_nitric_oxide]
+    description = "Inhaled Nitric Oxide"
+    combinedType = "any"
+    fields = [
+      { field = "inhalednit_cmtrt", ref = "Y/N/NK" },
+      { field = "daily_nitritc_cmtrt", ref = "Y/N/NK" },
+    ]
 
-    [[visit.treatment_dexamethasone.fields]]
-      field = "dexamethasone"
-      description = "Dexamethasone 6mg once per day?"
+  [visit.treatment_inotropes_vasopressors]
+    description = "Inotropes / vasopressors"
+    combinedType = "any"
+    fields = [
+      { field = "inotrop_cmtrt", ref = "Y/N/NK" },
+      { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
+    ]
 
-      [visit.treatment_dexamethasone.fields.values]
-        1 = true
-        2 = false
-        3 = false
-        4 = true
-        5 = true
-        6 = true
+  [visit.treatment_invasive_ventilation]
+    description = "Invasive ventilation?"
+    combinedType = "any"
+    fields = [
+      { field = "invasive_proccur", ref = "Y/N/NK" },
+      { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_dialysis]
-  description = "Renal replacement therapy (RRT) or dialysis"
-  combinedType = "any"
-  fields = [
-    { field = "rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy" },
-    { field = "daily_rrt_cmtrt", ref = "Y/N/NK", description = "Dialysis / Hemofiltration?" },
-  ]
+  [visit.treatment_noninvasive_ventilation]
+    description = "Non-invasive ventilation"
+    combinedType = "any"
+    fields = [
+      { field = "noninvasive_proccur", ref = "Y/N/NK" },
+      { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_ecmo]
-  description = "Extracorporeal (ECMO) support"
-  combinedType = "any"
-  fields = [
-    { field = "extracorp_prtrt", ref = "Y/N/NK" },
-    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_offlabel]
+    description = "Off-label / Compassionate Use medications?"
+    field = "offlabel_cmyn"
+    ref = "Y/N/NK"
 
-[visit.treatment_high_flow_nasal_cannula]
-  description = "High-flow nasal canula?"
-  combinedType = "any"
-  fields = [
-    { field = "oxygenhf_cmoccur", ref = "Y/N/NK" },
-    { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "other_cm" }, { field = "daily_other_prtrt" }]
+    description = "Other treatment"
 
-[visit.treatment_inhaled_nitric_oxide]
-  description = "Inhaled Nitric Oxide"
-  combinedType = "any"
-  fields = [
-    { field = "inhalednit_cmtrt", ref = "Y/N/NK" },
-    { field = "daily_nitritc_cmtrt", ref = "Y/N/NK" },
-  ]
+    # other free text?
 
-[visit.treatment_inotropes_vasopressors]
-  description = "Inotropes / vasopressors"
-  combinedType = "any"
-  fields = [
-    { field = "inotrop_cmtrt", ref = "Y/N/NK" },
-    { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_oxygen_therapy]
+    description = "Oxygen therapy"
+    field = "oxygen_cmoccur"
+    ref = "Y/N/NK"
 
-[visit.treatment_invasive_ventilation]
-  description = "Invasive ventilation?"
-  combinedType = "any"
-  fields = [
-    { field = "invasive_proccur", ref = "Y/N/NK" },
-    { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_prone_position]
+    description = "Prone Positioning"
+    combinedType = "any"
+    fields = [
+      { field = "pronevent_prtrt", ref = "Y/N/NK", description = "Prone ventilation" },
+      { field = "daily_prone_cmtrt", ref = "Y/N/NK", description = "Prone positioning" },
+    ]
 
-[visit.treatment_noninvasive_ventilation]
-  description = "Non-invasive ventilation"
-  combinedType = "any"
-  fields = [
-    { field = "noninvasive_proccur", ref = "Y/N/NK" },
-    { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_neuromuscular_blocking_agents]
+    field = "daily_neuro_cmtrt"
+    ref = "Y/N/NK"
 
-[visit.treatment_offlabel]
-  description = "Off-label / Compassionate Use medications?"
-  field = "offlabel_cmyn"
-  ref = "Y/N/NK"
+  [visit.outcome]
+    combinedType = "firstNonNull"
 
-[visit.treatment_other]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [{ field = "other_cm" }, { field = "daily_other_prtrt" }]
-  description = "Other treatment"
+    [[visit.outcome.fields]]
+      field = "dsterm"
 
-[visit.treatment_oxygen_therapy]
-  description = "Oxygen therapy"
-  field = "oxygen_cmoccur"
-  ref = "Y/N/NK"
+      [visit.outcome.fields.values]
+        1 = "discharged"
+        2 = "hospitalised"
+        3 = "transferred"
+        4 = "death"
+        5 = "palliative discharge"
 
-[visit.treatment_prone_position]
-  description = "Prone Positioning"
-  combinedType = "any"
-  fields = [
-    { field = "pronevent_prtrt", ref = "Y/N/NK", description = "Prone ventilation" },
-    { field = "daily_prone_cmtrt", ref = "Y/N/NK", description = "Prone positioning" },
-  ]
+    [[visit.outcome.fields]]
+      field = "dsterm_v2"
 
-[visit.treatment_tocilizumab]
-  description = "Treatment with Tocilizumab"
-  field = "il6_cmtrt"
-  values = { 1 = true, 2 = false, 3 = false, 10 = false }
+      [visit.outcome.fields.values]
+        1 = "discharged"
+        3 = "transferred"
+        4 = "death"
+        5 = "palliative discharge"
 
-[visit.treatment_neuraminidase]
-  description = "Treatment with Neuraminidase"
-  field = "antiviral_cmtrt___5"
-  values = { 1 = true, 0 = false }
-
-[visit.treatment_neuromuscular_blocking_agents]
-  field = "daily_neuro_cmtrt"
-  ref = "Y/N/NK"
-
-[visit.outcome]
-  combinedType = "firstNonNull"
-
-  [[visit.outcome.fields]]
-    field = "dsterm"
-
-    [visit.outcome.fields.values]
-      1 = "discharged"
-      2 = "hospitalised"
-      3 = "transferred"
-      4 = "death"
-      5 = "palliative discharge"
-
-  [[visit.outcome.fields]]
-    field = "dsterm_v2"
-
-    [visit.outcome.fields.values]
-      1 = "discharged"
-      3 = "transferred"
-      4 = "death"
-      5 = "palliative discharge"
-
-      ## OBSERVATION
+        ## OBSERVATION
 
 [[observation]]
   name = "bleeding_haemorrhage"
@@ -861,7 +879,10 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "clinical_frailty" }
-  if.all = [{ clinical_frailty = { "!=" = 10 } }, { clinical_frailty = { "!=" = "" } }]
+  if.all = [
+    { clinical_frailty = { "!=" = 10 } },
+    { clinical_frailty = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "renal_replacement_therapy_dialysis"
@@ -928,14 +949,14 @@
 [[observation]]
   name = "other_symptom"
   phase = "followup"
-  date = {field = "flw_survey_date"}
+  date = { field = "flw_survey_date" }
   text = { field = "flw_diag_other", description = "Other condition?" }
   context = ["New diagnosed condition"]
 
 [[observation]]
   name = "other_symptom"
   phase = "followup"
-  date = {field = "flw_survey_date"}
+  date = { field = "flw_survey_date" }
   text = { field = "flw_new_symptoms", description = "Other NEW symptoms?" }
   context = ["NEW symptom"]
 

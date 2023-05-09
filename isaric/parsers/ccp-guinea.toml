@@ -463,6 +463,11 @@
   description = "Antibiotics"
   values = { 1 = true, 0 = false }
 
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  description = "Antibiotic given - free text field"
+  fields = [{ field = "daily_antibiot_cmyn_name" }]
+
 [visit.treatment_ace_inhibitors]
   field = "daily_ace_cmoccur"
   description = "Angiotensin converting enzyme (ACE) inhibitors?"
@@ -507,13 +512,6 @@
     { field = "daily_antiviral_cmyn", values = { 1 = true, 0 = false } },
   ]
 
-[visit.treatment_dexamethasone]
-  combinedType = "any"
-  fields = [
-    { field = "dexamethasone", values = { 1 = true, 0 = false } },
-    { field = "daily_corticost_cmtrt___1", values = { 1 = true } },
-  ]
-
 [visit.treatment_high_flow_nasal_cannula]
   field = "overall_oxygen_cmtype___2"
   description = "Oxygen interface type - HF nasal cannula"
@@ -542,6 +540,23 @@
   description = "Corticosteroids"
   ref = "Y/N/NK"
 
+[visit.treatment_corticosteroid_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "dexamethasone", values = { 1 = "Dexamthasone" } },
+    { field = "hydrocortisone", values = { 1 = "Hydrocortisone" } },
+    { field = "prednisone", values = { 1 = "Prednisone" } },
+    { field = "methylprednisolone", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmtrt___5", values = { 1 = "Other" } },
+  ]
+
+  # daily_corticost_cmoth is empty
+
 [visit.treatment_experimental_agent]
   field = "daily_exper_cmyn"
   values = { 1 = true, 0 = false }
@@ -558,6 +573,11 @@
     { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
     { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
   ]
+
+[visit.treatment_experimental_agent_type_other]
+  combinedType = "set"
+  description = "Experimental agent = other - free text field"
+  fields = [{ field = "daily_exper_cmoth" }]
 
 [visit.treatment_inotropes_vasopressors]
   field = "vaso_or_inot"

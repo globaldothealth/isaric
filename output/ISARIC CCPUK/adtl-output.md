@@ -3,7 +3,7 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |31457  |36754  |85.587963% |
-|visit          |30834  |36754  |83.892910% |
+|visit          |30810  |36754  |83.827611% |
 |observation    |1192364        |1202801        |99.132275% |
 
 ## subject
@@ -15,8 +15,10 @@
 
 ## visit
 
-* 5918: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
+* 5939: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
 * 2: data.date_outcome must be date
+* 2: data.start_date must be date
+* 1: data.pathogen_test_date must be date
 
 ## observation
 

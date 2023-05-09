@@ -3,7 +3,7 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |2049   |2777   |73.784660% |
-|visit          |2299   |2777   |82.787180% |
+|visit          |2306   |2777   |83.039251% |
 |observation    |459059 |604004 |76.002642% |
 
 ## subject
@@ -13,9 +13,8 @@
 
 ## visit
 
-* 323: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
+* 318: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
 * 152: data.visit_id must be string
-* 2: data.treatment_antiviral_type[0] must be one of ['Ribavirin', 'Lopinavir/Ritonvir', 'Interferon alpha', 'Interferon beta', 'Chloroquine/Hydroxychloroquine', 'Oseltamivir (Tamiflu)', 'Zanamivir', 'Casirivimab/Imdevimab', 'Remdesivir', 'IL6 inhibitor', 'Neuraminidase inhibitor', 'Convalescent plasma', 'Anti-influenza antiviral', 'Other']
 * 1: data.treatment_other[0] must be string
 
 ## observation

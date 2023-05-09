@@ -513,6 +513,10 @@
           "description": "Corticosteroid used",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_corticosteroid_type_other": {
+          "description": "Corticosteroid used",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_oxygen_therapy": {
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
@@ -537,7 +541,15 @@
           "description": "Type of antiviral used",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_antiviral_type_other": {
+          "description": "Type of antiviral used - Other agents",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_antibiotics": {
+          "description": "Antibiotics",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antibiotics_type": {
           "description": "Antibiotics",
           "$ref": "#/definitions/mapping"
         },
@@ -577,10 +589,6 @@
           "description": "Antimalarial",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_dexamethasone": {
-          "description": "Dexamethasone",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_high_flow_nasal_cannula": {
           "description": "High flow nasal cannula",
           "$ref": "#/definitions/mapping"
@@ -601,10 +609,6 @@
           "description": "Nsaid",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_neuraminidase": {
-          "description": "Neuraminidase",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_neuromuscular_blocking_agents": {
           "description": "Neuromuscular blocking agents",
           "$ref": "#/definitions/mapping"
@@ -619,10 +623,6 @@
         },
         "treatment_respiratory_support": {
           "description": "Respiratory support",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_tocilizumab": {
-          "description": "Tocilizumab",
           "$ref": "#/definitions/mapping"
         },
         "treatment_indication_anticoagulation": {

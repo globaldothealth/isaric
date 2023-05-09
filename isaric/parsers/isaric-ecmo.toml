@@ -232,7 +232,9 @@
   196 = "ZWE"
 
 [adtl.tables]
-  subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json" }
+  subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json", optional-fields = [
+    "ethnicity",
+  ] }
   visit = { kind = "groupBy", groupBy = "visit_id", aggregation = "lastNotNull", schema = "../../schemas/dev/visit.schema.json" }
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
@@ -478,8 +480,8 @@
       { field = "hostdat", description = "Admission date at this facility" },
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
       { field = "dsstdat", description = "Date of enrolment" },
-      { field = "daily_dsstdat", description = "Date of assessment" },
-      { field = "hostdat_transfer", description = "Admission date at transfer facility" },
+      # { field = "daily_dsstdat", description = "Date of assessment" },
+      # { field = "hostdat_transfer", description = "Admission date at transfer facility" },
     ]
 
   [visit.outcome]
@@ -496,11 +498,13 @@
 [visit.pathogen_test_date]
   field = "mbdat"
   description = "Pathogen testing sample collection date"
+  if.any = [{ resp_mbtestcd = 1 }, { blpcr_othlab_mbtestcd = 1 }]
 
 [visit.icu_admission]
   description = "ICU Admission"
   combinedType = "any"
   fields = [
+    { field = "icu_hostdat", description = "Date of ICU admission", apply = { function = "isNotNull" } },
     { field = "icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency Unit admission?" },
     { field = "daily_hoterm", ref = "Y/N/NK", description = "Admitted to intensive care, intensive therapy, intermediate care or high dependency unit?" },
   ]
@@ -534,11 +538,6 @@
     { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
   ]
 
-[visit.treatment_neuraminidase]
-  field = "antiviral_cmtrt___5"
-  values = { 1 = true }
-  if = { antiviral_cmyn = 1 }
-
 [visit.treatment_neuromuscular_blocking_agents]
   field = "daily_neuro_cmtrt"
   ref = "Y/N/NK"
@@ -547,6 +546,21 @@
   description = "Antibiotics?"
   field = "antibiotic_cmyn"
   ref = "Y/N/NK"
+
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  excludeWhen = 'false-like'
+  fields = [
+    { field = "antibiotic_cmtrt_1" },
+    { field = "antibiotic_cmtrt_2" },
+    { field = "antibiotic_cmtrt_3" },
+    { field = "antibiotic_cmtrt_4" },
+    { field = "antibiotic_cmtrt_5" },
+    { field = "antibiotic_cmtrt_6" },
+    { field = "antibiotic_cmtrt_7" },
+    { field = "antibiotic_cmtrt_8" },
+    { field = "antibiotic_cmtrt_9" },
+  ]
 
 [visit.treatment_antifungal_agent]
   description = "Antifungal agent?"
@@ -559,9 +573,11 @@
   excludeWhen = "none"
   fields = [
     { field = "othertx_cmtrt_1" },
-    { field = "othertx_cmtrt_3" },
+    { field = "othertx_cmtrt_2" },
     { field = "othertx_cmtrt_3" },
   ]
+
+  # other free text?
 
 [visit.treatment_dialysis]
   description = "Renal replacement therapy (RRT) or dialysis"
@@ -596,16 +612,18 @@
     { field = "steroid_other_cmtrt___4", values = { 1 = "Other" } },
   ]
 
-[visit.treatment_dexamethasone]
-  description = "Dexamethasone?"
-  field = "dexameth_cmyn"
-  ref = "Y/N/NK"
+[visit.treatment_corticosteroid_type_other]
+  description = "Type of corticosteroid used - other, free text"
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [{ field = "corticost_cmtrt" }]
 
 [visit.treatment_anticoagulation]
   description = "Anticoagulation?"
   combinedType = "any"
   fields = [
     { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
+    { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK" },
     # { field = "ef_anticoag", description = "Anticoagulation while on mechanical ventilation", values = { "yes" = true } },
   ]
 
