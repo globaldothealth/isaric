@@ -155,6 +155,13 @@ def make_toml_table(
             )
 
         else:  # combinedType
+            if isinstance(field_type, list):  # field can be of multiple types
+                if "array" in field_type:
+                    field_type = "array"
+                elif "boolean" in field_type:
+                    field_type = "boolean"
+                else:
+                    field_type = field_type[0]
             outmap[field] = {
                 "combinedType": {"array": "list", "boolean": "any"}.get(
                     field_type, "firstNonNull"
