@@ -42,17 +42,22 @@
       "category": "site-details"
     },
     "age": {
-      "type": "number",
+      "type": [
+        "number",
+        "string"
+      ],
       "description": "Age in years",
       "category": "demographics",
       "minimum": 0,
-      "maximum": 120
+      "maximum": 120,
+      "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
     "sex_at_birth": {
       "enum": [
         "male",
         "female",
-        "non_binary"
+        "non_binary",
+        "intersex"
       ],
       "description": "Sex at birth",
       "category": "demographics"
