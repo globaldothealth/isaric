@@ -7,11 +7,11 @@ source schema to the [ISARIC schema](../schemas/dev).
 
 It comprises two programs:
 
-1. **autoparser-csv**: Creates the initial mapping from the data dictionary and
+1. **autoparser create-mapping**: Creates the initial mapping from the data dictionary and
    ISARIC schema. The mapping is generated as a CSV file with the following
    [fields](#intermediate-csv-schema).
 
-2. **autoparser-toml**: Uses the intermediate CSV mapping to create the TOML file
+2. **autoparser create-parser**: Uses the intermediate CSV mapping to create the TOML file
    that can be used by adtl. Usually there are false matches in the intermediate
    mapping, which errs on including fields rather than excluding so that
    curators only have to delete the field mappings that are not relevant. After
@@ -41,7 +41,7 @@ Alternatively you can use `pip`, replace `pipx` with `pip`, but this will
 install autoparser's dependencies into your global Python environment which
 could cause issues with other packages.
 
-This will install `autoparser-csv` and `autoparser-toml`. If these are not
+This will install `autoparser`. If this is not
 found, run `pipx ensurepath` to fix, which inform the terminal about the
 installation location for the scripts.
 
@@ -65,7 +65,7 @@ python3 -m autoparser
    to generate mappings:
 
    ```shell
-   autoparser-csv <path to data dictionary> -o <parser-name>
+   autoparser create-mapping <path to data dictionary> -o <parser-name>
    ```
 
    Here, `-o` sets the output name, and will create
@@ -90,7 +90,7 @@ python3 -m autoparser
    For example:
 
    ```shell
-   autoparser-toml parser-subject.csv parser-visit.csv parser-observation.csv -n parser
+   autoparser create-toml parser-subject.csv parser-visit.csv parser-observation.csv -n parser
    ```
 
    will create `parser.toml` (specified using the `-n` flag) from the
