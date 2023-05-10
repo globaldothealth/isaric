@@ -1,0 +1,2546 @@
+[adtl]
+  name = "isaric-core.toml"
+  description = "isaric-core.toml"
+
+  [adtl.tables.study]
+    kind = "constant"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    schema = "../../schemas/dev/observation.schema.json"
+
+    [adtl.tables.observation.common.visit_id]
+      field = "subjid"
+      sensitive = true
+
+[adtl.defs."Y/N/NK".values]
+  1 = true
+  2 = false
+
+[adtl.defs.admissionDateHierachy]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "date", description = "Date" },
+    { field = "date_v2", description = "Date" },
+    { field = "icu_hostdat", description = "Date of ICU admission:" },
+  ]
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.admission_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "date", description = "Date" },
+      { field = "date_v2", description = "Date" },
+      { field = "icu_hostdat", description = "Date of ICU admission:" },
+    ]
+
+  [subject.age]
+    combinedType = "firstNonNull"
+
+    [[subject.age.fields]]
+      field = "age_estimateyears"
+      description = "Age"
+
+    [[subject.age.fields]]
+      field = "age_estimateyearsu"
+      description = "Age Unit"
+
+      [subject.age.fields.values]
+        1 = "months"
+        2 = "years"
+        3 = "days"
+
+[subject.country_iso3]
+  field = "othcountry"
+  description = "Other country"
+
+[subject.date_death]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "flw2_date_death", description = "If known, date of death" },
+    { field = "flw_date_death", description = "If known, date of death" },
+  ]
+
+[subject.diabetes_type]
+  combinedType = "firstNonNull"
+
+  [[subject.diabetes_type.fields]]
+    field = "diabetes_mhyn_2"
+    description = "<acronym title=\"Type 1 or Type 2 diabetes mellitus requiring oral or subcutaneous treatment. Please indicate whether type 1 or type 2.\">Diabetes Mellitus</acronym>"
+
+    [subject.diabetes_type.fields.values]
+      1 = "type-1"
+      4 = "type-2"
+      5 = "gestational"
+
+  [[subject.diabetes_type.fields]]
+    field = "diabetes_mhyn"
+    description = "4b.13. Diabetes without complication"
+
+    [subject.diabetes_type.fields.values]
+
+  [[subject.diabetes_type.fields]]
+    field = "diabetiscomp_mhyn"
+    description = "4b.12. Diabetes with complication"
+
+    [subject.diabetes_type.fields.values]
+
+[subject.enrolment_date]
+  combinedType = "firstNonNull"
+
+  [[subject.enrolment_date.fields]]
+    field = "dsstdat"
+    description = "<acronym title=\"Date of enrolment into the study or for in-patients is the date that COVID-19 wa first assessed a suspected or confirmed by a clinician.\">Enrolment date / first COVID-19 assessment date:</acronym>"
+
+  [[subject.enrolment_date.fields]]
+    field = "date_v2"
+    description = "Date"
+
+  [[subject.enrolment_date.fields]]
+    field = "date"
+    description = "Date"
+
+[subject.ethnicity]
+  combinedType = "list"
+
+  [[subject.ethnicity.fields]]
+    field = "flw_ethnicity"
+    description = "Ethnicity:"
+
+    [subject.ethnicity.fields.values]
+      1 = "white"
+      2 = "arab"
+      3 = "black"
+      4 = "east asian"
+      5 = "south asian"
+      6 = "west asian"
+      7 = "latin american"
+      8 = "other"
+
+  [[subject.ethnicity.fields]]
+    field = "flw2_ethnicity"
+    description = "Ethnicity:"
+
+    [subject.ethnicity.fields.values]
+      1 = "white"
+      2 = "arab"
+      3 = "black"
+      4 = "east asian"
+      5 = "south asian"
+      6 = "west asian"
+      7 = "latin american"
+      8 = "other"
+
+  [[subject.ethnicity.fields]]
+    field = "flw2_ethnicity_oth"
+    description = "Other ethnicity"
+
+  [[subject.ethnicity.fields]]
+    field = "flw_ethnicity_oth"
+    description = "Other ethnicity"
+
+[subject.has_asplenia]
+  field = "asplenia_mhyn"
+  description = "Please include any of splenectomy, non-functional spleen, and congenital asplenia."
+  ref = "Y/N/NK"
+
+[subject.has_asthma]
+  field = "asthma_mhyn"
+  description = "Clinician-diagnosed asthma"
+  ref = "Y/N/NK"
+
+[subject.has_chronic_cardiac_disease]
+  combinedType = "any"
+
+  [[subject.has_chronic_cardiac_disease.fields]]
+    field = "chroniccard_mhyn"
+    description = "<acronym title=\"Include any of coronary artery disease, heart failure, congenital heart disease, cardiomyopathy, rheumatic heart disease.\">Chronic cardiac disease <i>(not hypertension)</i></acronym>"
+    ref = "Y/N/NK"
+
+  [[subject.has_chronic_cardiac_disease.fields]]
+    field = "chronicpul_mhyn"
+    description = "<acronym title=\"Include any of chronic obstructive pulmonary disease (chronic bronchitis, chronic obstructive pulmonary disease (COPD), emphysema), cystic fibrosis, bronchiectasis, interstitial lung disease, pre-existing requirement for long term oxygen therapy. Do not include asthma.\">Chronic pulmonary disease <i>(not asthma)</i></acronym>"
+    ref = "Y/N/NK"
+
+[subject.has_chronic_kidney_disease]
+  field = "renal_mhyn"
+  description = "<acronym title=\"Please include any of clinician-diagnosed chronic kidney disease, chronic estimated glomerular filtration rate < 60mL/min/1.73m2, history of kidney transplantation\">Chronic kidney disease</acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_dementia]
+  field = "dementia_mhyn"
+  description = "<acronym title=\"This is defined a clinical diagnosis of dementia\">Dementia</acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_diabetes]
+  combinedType = "any"
+
+  [[subject.has_diabetes.fields]]
+    field = "diabetes_mhyn"
+    description = "4b.13. Diabetes without complication"
+    ref = "Y/N/NK"
+
+  [[subject.has_diabetes.fields]]
+    field = "diabetiscomp_mhyn"
+    description = "4b.12. Diabetes with complication"
+    ref = "Y/N/NK"
+
+  [[subject.has_diabetes.fields]]
+    field = "diabetes_mhyn_2"
+    description = "<acronym title=\"Type 1 or Type 2 diabetes mellitus requiring oral or subcutaneous treatment. Please indicate whether type 1 or type 2.\">Diabetes Mellitus</acronym>"
+
+    [subject.has_diabetes.fields.values]
+      1 = "yes - type 1"
+      4 = "yes - type 2"
+      5 = "yes - gestational"
+      2 = false
+
+  [[subject.has_diabetes.fields]]
+    field = "hba1c_mborres"
+    description = "<i>Diabetes Mellitus</i> - if YES, HbA1C result (within last 6 months)"
+
+[subject.has_hiv]
+  combinedType = "any"
+
+  [[subject.has_hiv.fields]]
+    field = "aidshiv_mhyn"
+    description = "4b.10. AIDS/HIV"
+    ref = "Y/N/NK"
+
+  [[subject.has_hiv.fields]]
+    field = "aidshiv_mhyn_2"
+    description = "<acronym title=\"History of laboratory-confirmed HIV infection. Indicate whether or not the patient is on ART (antiretroviral therapy)\">AIDS / HIV</acronym>"
+
+    [subject.has_hiv.fields.values]
+      1 = "yes - on art"
+      4 = "yes - not on art"
+      2 = false
+
+  [[subject.has_hiv.fields]]
+    field = "aidshiv_cd4"
+    description = "<i>AIDS / HIV</i> - if YES, most recent CD4 count"
+
+    [subject.has_hiv.fields.values]
+      1 = "< 200 cells/ul"
+      2 = "200 to < 500 cells/ul"
+      3 = "≥ 500 cells/ul"
+
+[subject.has_hiv_art]
+  field = "aidshiv_mhyn_2"
+  description = "<acronym title=\"History of laboratory-confirmed HIV infection. Indicate whether or not the patient is on ART (antiretroviral therapy)\">AIDS / HIV</acronym>"
+
+  [subject.has_hiv_art.values]
+    1 = "yes - on art"
+    4 = "yes - not on art"
+    2 = false
+
+[subject.has_hypertension]
+  field = "hypertension_mhyn"
+  description = "<acronym title=\"Elevated arterial blood pressure diagnosed clinically, >140mmHg systolic or >90mmHg diastolic.\">Hypertension</acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_liver_disease]
+  combinedType = "any"
+
+  [[subject.has_liver_disease.fields]]
+    field = "mildliv_mhyn"
+    description = "<acronym title=\"This is defined a cirrhosis without portal hypertension or chronic hepatitis\">Mild liver disease</acronym>"
+    ref = "Y/N/NK"
+
+  [[subject.has_liver_disease.fields]]
+    field = "modliver_mhyn"
+    description = "<acronym title=\"This is defined a cirrhosis with portal hypertension, with or without bleeding or a history of variceal bleeding\">Moderate or severe liver disease</acronym>"
+    ref = "Y/N/NK"
+
+[subject.has_malignant_neoplasm]
+  field = "malignantneo_mhyn"
+  description = "<acronym title=\"Current solid organ or haematological malignancy. Please do not include malignancy that have been declared 'cured' >=5 year ago with no evidence of ongoing disease. Do not include non-melanoma skin cancers. Do not include benign growth or dysplasia.\">Malignant neoplasm</acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_malnutrition]
+  field = "malnutrition_mhyn"
+  description = "<acronym title=\"Any clinically identified deficiency in intake, either of total energy or of specific nutrient that led to a dietetic intervention or referral prior to the onset of COVID-19 symptoms. Do not include people who needed supplementary nutrition solely due to reduced intake during their current illness episode.\">Malnutrition</acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_obesity]
+  field = "obesity_mhyn"
+  description = "<acronym title=\"This refers to patient for whom an attending clinician ha assessed them to be obese - ideally but not necessarily with an objective measurement of obesity, such a calculation of the body mass index (BMI of 30 or more) or measurement of abdominal girth.\">Obesity <i>(as defined by clinical staff)</i></acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_rheumatologic_disorder]
+  field = "rheumatology_mhyr"
+  description = "<acronym title=\"This is defined a an inflammatory and degenerative disease of connective tissue structures. It includes chronic arthropathy and arthritis, connective tissue disorder and vasculitides.\">Rheumatologic disorder</acronym>"
+  ref = "Y/N/NK"
+
+[subject.has_smoking]
+  field = "smoking_mhyn"
+  description = "<acronym title=\"Smoking at least one cigarette, cigar, pipe or equivalent per day before the onset of the current illness. Do not include smoke-free tobacco product such a chewed tobacco or electronic nicotine delivery devices.\">Smoking</acronym>"
+
+  [subject.has_smoking.values]
+    2 = "never"
+    3 = "former"
+
+[subject.has_tuberculosis]
+  field = "tb_mhyn"
+  description = "<acronym title=\"Patients currently receiving treatment for tuberculosis. Do not include latent tuberculosis.\">Tuberculosis</acronym>"
+  ref = "Y/N/NK"
+
+[subject.icu_admitted]
+  combinedType = "any"
+
+  [[subject.icu_admitted.fields]]
+    field = "flw2_icu"
+    description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
+
+    [subject.icu_admitted.fields.values]
+      1 = true
+      0 = false
+
+  [[subject.icu_admitted.fields]]
+    field = "flw_icu"
+    description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
+
+    [subject.icu_admitted.fields.values]
+      1 = true
+      0 = false
+      2 = "not sure"
+
+  [[subject.icu_admitted.fields]]
+    field = "ccm_b_icu_hodat"
+    description = "<acronym title=\"Date admitted to critical care ward\">ICU ADMISSION DATE</acronym>"
+
+  [[subject.icu_admitted.fields]]
+    field = "icu_hostdat"
+    description = "Date of ICU admission:"
+
+[subject.pregnancy]
+  field = "pregyn_rptestcd"
+  description = "Pregnant?"
+
+  [subject.pregnancy.values]
+    1 = true
+    0 = false
+
+[subject.pregnancy_birth_weight_kg]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "apvs_weight", description = "Birth weight" },
+    { field = "apvs_weight_vsorres", description = "4.8 Birth weight" },
+    { field = "apvs_weightu", description = "Birth weight unit", values = { 1 = "kg", 2 = "lbs" } },
+  ]
+
+[subject.pregnancy_date_of_delivery]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "dlvrdtc_rptestcd", description = "Delivery date:" },
+    { field = "edlvrdtc_rporres", description = "1.1 Expected estimated date of delivery:" },
+  ]
+
+[subject.pregnancy_gestational_assessment_weeks]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "egestage_rptestcd", description = "If YES: Gestational week assessment:" },
+    { field = "apsc_egestage_scorres", description = "4.6 Gestational age, weeks:" },
+  ]
+
+[subject.pregnancy_gestational_outcome]
+  combinedType = "firstNonNull"
+
+  [[subject.pregnancy_gestational_outcome.fields]]
+    field = "apsc_gestout"
+    description = "Gestational outcome"
+
+    [subject.pregnancy_gestational_outcome.fields.values]
+      1 = "term_birth"
+      2 = "preterm_birth"
+
+  [[subject.pregnancy_gestational_outcome.fields]]
+    field = "pregout_rptestcd"
+    description = "Pregnancy Outcome"
+
+    [subject.pregnancy_gestational_outcome.fields.values]
+      1 = "term_birth"
+      2 = "term_birth"
+
+[subject.pregnancy_outcome]
+  field = "pregout_rptestcd"
+  description = "Pregnancy Outcome"
+
+  [subject.pregnancy_outcome.values]
+    1 = "live birth"
+    2 = "still birth"
+
+[subject.pregnancy_post_partum]
+  field = "postpart_rptestcd"
+  description = "<acronym title=\"Defined a within six week of delivery. If the baby is positive for COVID-19 please complete a separate form for the baby a well.\">Post Partum? (within 6 week of delivery)</acronym>"
+
+  [subject.pregnancy_post_partum.values]
+    1 = true
+    0 = false
+
+[subject.pregnancy_whether_breastfed]
+  combinedType = "any"
+
+  [[subject.pregnancy_whether_breastfed.fields]]
+    field = "apsc_brfedindy"
+    description = "If YES"
+
+    [subject.pregnancy_whether_breastfed.fields.values]
+      1 = "currently breastfed"
+      2 = "breastfeeding discontinued"
+
+  [[subject.pregnancy_whether_breastfed.fields]]
+    field = "apsc_brfed"
+    description = "Breastfed?"
+
+    [subject.pregnancy_whether_breastfed.fields.values]
+      1 = "yes - currently breastfeeding"
+      2 = "yes - breastfeeding discontinued"
+      0 = false
+
+  [[subject.pregnancy_whether_breastfed.fields]]
+    field = "neounit_hoterm"
+    description = "4.10 Was the infant admitted to neonatal unit?"
+    ref = "Y/N/NK"
+
+[subject.sex_at_birth]
+  combinedType = "firstNonNull"
+
+  [[subject.sex_at_birth.fields]]
+    field = "sex"
+    description = "Sex at Birth:"
+
+    [subject.sex_at_birth.fields.values]
+      1 = "male"
+      2 = "female"
+
+  [[subject.sex_at_birth.fields]]
+    field = "flw_sex_at_birth"
+    description = "Sex at Birth:"
+
+    [subject.sex_at_birth.fields.values]
+      1 = "male"
+      2 = "female"
+      3 = "non_binary"
+
+  [[subject.sex_at_birth.fields]]
+    field = "flw2_sex_at_birth"
+    description = "Sex at Birth:"
+
+    [subject.sex_at_birth.fields.values]
+      1 = "male"
+      2 = "female"
+      3 = "non_binary"
+
+[subject.works_healthcare]
+  field = "healthwork_erterm"
+  description = "Employed a a healthcare worker?"
+  ref = "Y/N/NK"
+
+[subject.works_microbiology_lab]
+  field = "labwork_erterm"
+  description = "Employed in a microbiology laboratory?"
+  ref = "Y/N/NK"
+
+[visit.country_iso3]
+  field = "othcountry"
+  description = "Other country"
+
+[visit.date_outcome]
+  field = "dsstdtc"
+  description = "<acronym title=\"Please state the date for the outcome listed above.\">Outcome date</acronym>"
+
+[visit.icu_admission]
+  combinedType = "any"
+
+  [[visit.icu_admission.fields]]
+    field = "icu_hostdat"
+    description = "Date of ICU admission:"
+
+  [[visit.icu_admission.fields]]
+    field = "flw2_icu"
+    description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
+
+    [visit.icu_admission.fields.values]
+      1 = true
+      0 = false
+
+  [[visit.icu_admission.fields]]
+    field = "flw_icu"
+    description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
+
+    [visit.icu_admission.fields.values]
+      1 = true
+      0 = false
+      2 = "not sure"
+
+[visit.icu_admission_dates]
+  combinedType = "list"
+
+  [[visit.icu_admission_dates.fields]]
+    field = "icu_hostdat"
+    description = "Date of ICU admission:"
+
+  [[visit.icu_admission_dates.fields]]
+    field = "ccm_b_icu_hodat"
+    description = "<acronym title=\"Date admitted to critical care ward\">ICU ADMISSION DATE</acronym>"
+
+[visit.outcome]
+  field = "dsstdtc"
+  description = "<acronym title=\"Please state the date for the outcome listed above.\">Outcome date</acronym>"
+
+[visit.start_date]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "date_v2", description = "Date" },
+    { field = "date", description = "Date" },
+    { field = "daily_dsstdat", description = "DATE OF ASSESSMENT" },
+    { field = "daily_lbdat", description = "Date of assessment" },
+  ]
+
+[visit.treatment_antibiotics]
+  field = "antibiotic_cmdur_1"
+  description = "<i>Antibiotic Agent 1</i> - Duration:"
+
+[visit.treatment_antibiotics_type]
+  field = "antibiotic_cmdur_1"
+  description = "<i>Antibiotic Agent 1</i> - Duration:"
+
+[visit.treatment_anticoagulation]
+  combinedType = "any"
+
+  [[visit.treatment_anticoagulation.fields]]
+    field = "anticoag_cmyn"
+    description = "Anticoagulation?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_anticoagulation.fields]]
+    field = "ccm_b_heparint_cmyn"
+    description = "Heparin for systemic anticoagulation?"
+    ref = "Y/N/NK"
+
+[visit.treatment_antifungal_agent]
+  field = "antifung_cmyn"
+  description = "<acronym title=\"Antifungal agent\" refers to any agent(s) prescribed specifically to treat systemic or topical infection caused by fungi. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Antifungal agent?</acronym>"
+  ref = "Y/N/NK"
+
+[visit.treatment_antiviral_type]
+  field = "antiviral_cmyn"
+  description = "<acronym title=\"Record all antiviral administered from date of admission or during the hospitalisation. Record the total number of day the treatment wa given. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Antiviral or COVID-19 targeted agent?</acronym>"
+  ref = "Y/N/NK"
+
+[visit.treatment_antiviral_type_other]
+  field = "othertx_cmtrt_2"
+  description = "<i>Other Agent 2</i> - Agent:"
+
+[visit.treatment_antivirals]
+  field = "antiviral_cmyn"
+  description = "<acronym title=\"Record all antiviral administered from date of admission or during the hospitalisation. Record the total number of day the treatment wa given. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Antiviral or COVID-19 targeted agent?</acronym>"
+  ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid]
+  field = "corticost_cmtrt"
+  description = "<i>Corticosteroid</i> - if YES Oral or IV, please provide agent:"
+
+[visit.treatment_corticosteroid_type]
+  field = "corticost_cmtrt"
+  description = "<i>Corticosteroid</i> - if YES Oral or IV, please provide agent:"
+
+[visit.treatment_corticosteroid_type_other]
+  field = "steroid_other_cmyn"
+  description = "Other corticosteroid?"
+  ref = "Y/N/NK"
+
+[visit.treatment_dialysis]
+  combinedType = "any"
+  fields = [
+    { field = "renal_proccur", description = "7.3.3. Dialysis / renal treatment?", ref = "Y/N/NK" },
+    { field = "ccm_b_renal_prtrt", description = "Dialysis/Hemofiltration?", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_ecmo]
+  combinedType = "any"
+
+  [[visit.treatment_ecmo.fields]]
+    field = "extracorp_prtrt"
+    description = "Extracorporeal support (ECMO)?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_ecmo.fields]]
+    field = "daily_ecmo_prtrt"
+    description = "Extra corporeal life support (ECLS / ECMO)?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_ecmo.fields]]
+    field = "daily_ecmo_prtype"
+    description = "<i>Extra corporeal life support (ECLS / ECMO)</i> - if YES:"
+
+    [visit.treatment_ecmo.fields.values]
+      1 = "v-v  (veno-venous)"
+      2 = "a-v  (arterio-venous)"
+      5 = "v-a  (veno-arterial)"
+      3 = "central"
+
+  [[visit.treatment_ecmo.fields]]
+    field = "extracorp_prdur"
+    description = "<i>Extracorporeal (ECMO) support</i> - if YES, total duration:"
+
+[visit.treatment_experimental_agent]
+  field = "othertx_cmyn"
+  description = "Other treatment administered for COVID-19 including experimental or compassionate use?"
+  ref = "Y/N/NK"
+
+[visit.treatment_experimental_agent_type]
+  field = "othertx_cmyn"
+  description = "Other treatment administered for COVID-19 including experimental or compassionate use?"
+  ref = "Y/N/NK"
+
+[visit.treatment_high_flow_nasal_cannula]
+  combinedType = "any"
+
+  [[visit.treatment_high_flow_nasal_cannula.fields]]
+    field = "ccm_b_hhfnc_prtrt"
+    description = "Humidified high flow nasal cannula (HHFNC)?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_high_flow_nasal_cannula.fields]]
+    field = "nasal_highflow_proccur"
+    description = "High flow nasal oxygen"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_high_flow_nasal_cannula.fields]]
+    field = "daily_nasaloxy_cmtrt"
+    description = "High-flow nasal canula oxygen therapy?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_high_flow_nasal_cannula.fields]]
+    field = "nasal_highflow_prdur"
+    description = "<i>High flow nasal oxygen</i>, if YES, total duration:"
+
+[visit.treatment_indication_anticoagulation]
+  field = "anticoag_cmyn"
+  description = "Anticoagulation?"
+  ref = "Y/N/NK"
+
+[visit.treatment_inhaled_nitric_oxide]
+  combinedType = "any"
+  fields = [
+    { field = "inhalednit_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
+    { field = "daily_nitritc_cmtrt", description = "Inhaled Nitric Oxide ?", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_inotropes_vasopressors]
+  combinedType = "any"
+
+  [[visit.treatment_inotropes_vasopressors.fields]]
+    field = "inotrop_cmtrt"
+    description = "<acronym title=\"A vasopressor is a pharmaceutical agent that cause vasoconstriction. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Inotropes / vasopressors?</acronym>"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_inotropes_vasopressors.fields]]
+    field = "daily_inotrope_cmyn"
+    description = "<acronym title=\"A vasopressor is a pharmaceutical agent that cause vasoconstriction. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Any vasopressor / inotropic support?</acronym>"
+    ref = "Y/N/NK"
+
+[visit.treatment_invasive_ventilation]
+  combinedType = "any"
+
+  [[visit.treatment_invasive_ventilation.fields]]
+    field = "ccm_b_invasive_prtype_oth"
+    description = "<i>Invasive ventilation</i> - if Other, specify:"
+
+  [[visit.treatment_invasive_ventilation.fields]]
+    field = "invasive_prdur"
+    description = "<i>Invasive ventilation</i> - if YES, total duration:"
+
+  [[visit.treatment_invasive_ventilation.fields]]
+    field = "daily_invasive_prtrt"
+    description = "<acronym title=\"Invasive ventilation mean that patient ha undergone tracheal intubation, for the purpose of invasive mechanical ventilation. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Invasive ventilation?</acronym>"
+    ref = "Y/N/NK"
+
+[visit.treatment_neuromuscular_blocking_agents]
+  field = "daily_neuro_cmtrt"
+  description = "Neuromuscular blocking agents?"
+  ref = "Y/N/NK"
+
+[visit.treatment_noninvasive_ventilation]
+  field = "ccm_b_noninvasive_prtrt"
+  description = "Non-invasive ventilation <i>(Any)</i>?"
+  ref = "Y/N/NK"
+
+[visit.treatment_other]
+  combinedType = "list"
+  fields = [
+    { field = "othertx_cmtrt_1", description = "<i>Other Agent 1</i> - Agent:" },
+    { field = "othertx_cmtrt_3", description = "<i>Other Agent 3</i> - Agent:" },
+    { field = "othertx_cmtrt_2", description = "<i>Other Agent 2</i> - Agent:" },
+    { field = "othertx_cmdur_1", description = "<i>Other Agent 1</i> - Duration:" },
+  ]
+
+[visit.treatment_oxygen_therapy]
+  combinedType = "any"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_nasaloxy_cmtrt"
+    description = "High-flow nasal canula oxygen therapy?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "oxygen_cmdur"
+    description = "<i>Any Oxygen therapy</i> - if YES, total duration:"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "oxygen_proccur"
+    description = "<acronym title=\"Includes, NIV or home ventilation (respiratory support/treatment).\">Post discharge treatment: Oxygen therapy?</acronym>"
+    ref = "Y/N/NK"
+
+[visit.treatment_prone_position]
+  combinedType = "any"
+
+  [[visit.treatment_prone_position.fields]]
+    field = "pronevent_prtrt"
+    description = "<acronym title=\"Prone ventilation refers to ventilation with the patient lying in the prone position. If the patient received prone ventilation at any time during their hospital stay, please tick YES and indicate the total duration in days.\">Prone Positioning?</acronym>"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_prone_position.fields]]
+    field = "daily_prone_cmtrt"
+    description = "<acronym title=\"Prone ventilation refers to ventilation with the patient lying in the prone position. If the patient received prone ventilation at any time during their hospital stay, please tick YES and indicate the total duration in days.\">Prone Positioning?</acronym>"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_prone_position.fields]]
+    field = "ccm_b_pronevent_prtrt"
+    description = "Prone Positioning?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_prone_position.fields]]
+    field = "ccm_b_prone_prdur"
+    description = "<i>Prone positioning</i> - if YES, total duration:"
+
+  [[visit.treatment_prone_position.fields]]
+    field = "daily_prone_cmtype"
+    description = "<i>Prone Positioning</i>, if YES"
+
+    [visit.treatment_prone_position.fields.values]
+      1 = "during invasive ventilation"
+      2 = "whilst self-ventilating"
+
+  [[visit.treatment_prone_position.fields]]
+    field = "prone_prdur"
+    description = "<i>Prone positioning</i> - if YES, total duration:"
+
+[visit.treatment_respiratory_support]
+  combinedType = "any"
+
+  [[visit.treatment_respiratory_support.fields]]
+    field = "oxygen_proccur"
+    description = "<acronym title=\"Includes, NIV or home ventilation (respiratory support/treatment).\">Post discharge treatment: Oxygen therapy?</acronym>"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_respiratory_support.fields]]
+    field = "extracorp_prtrt"
+    description = "Extracorporeal support (ECMO)?"
+    ref = "Y/N/NK"
+
+[visit.treatment_steroids]
+  field = "corticost_cmyn"
+  description = "<acronym title=\"Corticosteroids\" (commonly referred to a \"steroids\") refers to all type of therapeutic corticosteroid, made in the adrenal cortex (the outer part of the adrenal gland). They are also made in the laboratory. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Corticosteroid?</acronym>"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.abdopain_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "abdopain_ceoccur_v2"
+  description = "Abdominal pain"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_stomach]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_stomach"
+  description = "Stomach/abdominal pain"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_stomach_pain]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_stomach_pain"
+  description = "Stomach/abdominal pain"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_eq5d_pd_5l_uk_eng]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_eq5d_pd_5l_uk_eng"
+  description = "PAIN / DISCOMFORT"
+
+  [observation.is_present.values]
+    1 = "i have no pain or discomfort"
+    2 = "i have slight pain or discomfort"
+    3 = "i have moderate pain or discomfort"
+    4 = "i have severe pain or discomfort"
+    5 = "i have extreme pain or discomfort"
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.confusion_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "confusion_ceoccur_v2"
+  description = "Altered consciousness / confusion"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "anorexia"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.anorexia_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "anorexia_ceoccur_v2"
+  description = "Anorexia"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "avpu"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.avpu_vsorres]
+    "!=" = ""
+
+[observation.is_present]
+  field = "avpu_vsorres"
+  description = "<acronym title=\"Alert - responding to voice - responding to pain - unresponsive: please state the least responsive condition of the patient during the calendar day (not counting normal sleep). Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">AVPU</acronym>"
+
+  [observation.is_present.values]
+    1 = "alert"
+    2 = "verbal"
+    3 = "pain"
+    4 = "unresponsive"
+
+[[observation]]
+  name = "base_excess"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_baseex_lborres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_baseex_lborres"
+  description = "Base excess"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.bleed_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "bleed_ceoccur_v2"
+  description = "Bleeding (Haemorrhage)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.bleed_cetermy_v2]
+    "!=" = ""
+
+[observation.text]
+  field = "bleed_cetermy_v2"
+  description = "<i>Bleeding (Haemorrhage)</i> - if YES, specify site(s):"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_bleeding]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_bleeding"
+  description = "Bleeding"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_bleeding_site]
+    "!=" = ""
+
+[observation.text]
+  field = "flw_bleeding_site"
+  description = "If yes, please specify bleeding site"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.bleed_ceterm_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "bleed_ceterm_v2"
+  description = "4a.23. If Bleeding (others)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "chest_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_chest_pains]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_chest_pains"
+  description = "Chest pain"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "chest_pain"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.chestpain_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "chestpain_ceoccur_v2"
+  description = "Chest pain"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "chest_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_chest_pains]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_chest_pains"
+  description = "Chest pain"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "clinical_frailty_score"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.ccm_b_cfs_rsyn]
+    "!=" = "2"
+
+[observation.is_present]
+  field = "ccm_b_cfs_rsyn"
+  description = "Clinical Frailty Score (CFS/9) available?"
+
+  [observation.is_present.values]
+    1 = true
+
+[[observation]]
+  name = "confusion"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_confusion]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_confusion"
+  description = "Confusion/lack of concentration"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "confusion"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_confusion]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_confusion"
+  description = "Confusion/lack of concentration"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.conjunct_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "conjunct_ceoccur_v2"
+  description = "Conjunctivitis"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.cough_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "cough_ceoccur_v2"
+  description = "Cough"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_cough]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_cough"
+  description = "Persistent cough"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_pers_cough_y]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_pers_cough_y"
+  description = "If yes to persistent cough, please specify"
+
+  [observation.is_present.values]
+    1 = "dry cough"
+    2 = "cough with phlegm"
+    3 = "not sure"
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_pers_cough]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_pers_cough"
+  description = "Persistent cough"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_pers_cough_dry]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_pers_cough_dry"
+  description = "Persistent cough (dry)"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_pers_cough_ph]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_pers_cough_ph"
+  description = "Persistent cough (with phlegm)"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.coughhb_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "coughhb_ceoccur_v2"
+  description = "4a.2.2 Cough: bloody sputum / haemoptysis"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.coughsput_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "coughsput_ceoccur_v2"
+  description = "4a.2.1 Cough: with sputum production"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_pers_cough_ph]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_pers_cough_ph"
+  description = "Persistent cough (with phlegm)"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.diarrhoea_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "diarrhoea_ceoccur_v2"
+  description = "Diarrhoea"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_diarrhoea]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_diarrhoea"
+  description = "Diarrhoea"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_diarrhoea]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_diarrhoea"
+  description = "Diarrhoea"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.diastolic_vsyn]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "diastolic_vsyn"
+  description = "Diastolic Blood Pressure available?"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.diabp_vsyn]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "diabp_vsyn"
+  description = "Diastolic blood pressure on admission available?"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.admission_diabp_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "admission_diabp_vsorres"
+  description = "<acronym title=\"Please enter the diastolic blood pressure measured in millimetre of mercury (mmHg), in the relevant sections. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Diastolic blood pressure</acronym>"
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.diastolic_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "diastolic_vsorres"
+  description = "<acronym title=\"Please enter the diastolic blood pressure measured in millimetre of mercury (mmHg), in the relevant sections. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Diastolic Pressure</acronym>"
+
+[[observation]]
+  name = "ear_pain"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.earpain_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "earpain_ceoccur_v2"
+  description = "4a.5. Ear pain"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.fatigue_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "fatigue_ceoccur_v2"
+  description = "Fatigue / Malaise"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_fatigue]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_fatigue"
+  description = "Fatigue"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_fatigue]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_fatigue"
+  description = "Fatigue"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "glasgow_coma_score"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_gcs_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_gcs_vsorres"
+  description = "<acronym title=\"Please state the lowest GCS recorded. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Glasgow Coma Score (GCS / 15):</acronym>"
+
+[[observation]]
+  name = "headache"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.headache_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "headache_ceoccur_v2"
+  description = "Headache"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "headache"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_headache]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_headache"
+  description = "Headache"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "headache"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_headache]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_headache"
+  description = "Headache"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.hr_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "hr_vsorres"
+  description = "<acronym title=\"Enter the heart rate measured in beat per minute. This may be measured manually or by electronic monitoring.\">Heart Rate</acronym>"
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_hr_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_hr_vsorres"
+  description = "<acronym title=\"Enter the heart rate measured in beat per minute. This may be measured manually or by electronic monitoring.\">Heart Rate</acronym>"
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.fever_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "fever_ceoccur_v2"
+  description = "History of fever"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "inability_to_walk"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.inablewalk_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "inablewalk_ceoccur_v2"
+  description = "Inability to walk"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_eq5d_mb_5l_uk_eng_2]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_eq5d_mb_5l_uk_eng_2"
+  description = "MOBILITY"
+
+  [observation.is_present.values]
+    1 = "i have no problems in walking about"
+    2 = "i have slight problems in walking about"
+    3 = "i have moderate problems in walking about"
+    4 = "i have severe problems in walking about"
+    5 = "i am unable to walk about"
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_eq5d_mb_5l_uk_eng_2]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_eq5d_mb_5l_uk_eng_2"
+  description = "GETTING ABOUT"
+
+  [observation.is_present.values]
+    1 = "i have no problems in walking about"
+    2 = "i have slight problems in walking about"
+    3 = "i have moderate problems in walking about"
+    4 = "i have severe problems in walking about"
+    5 = "i am unable to walk about"
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_eq5d_mb_5l_uk_eng]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_eq5d_mb_5l_uk_eng"
+  description = "GETTING ABOUT"
+
+  [observation.is_present.values]
+    1 = "i had no problems in walking about"
+    2 = "i had slight problems in walking about"
+    3 = "i had moderate problems in walking about"
+    4 = "i had severe problems in walking about"
+    5 = "i was unable to walk about"
+
+[[observation]]
+  name = "joint_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_joint_pain]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_joint_pain"
+  description = "Joint pain or swelling"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "joint_pain"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.jointpain_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "jointpain_ceoccur_v2"
+  description = "Joint pain (Arthralgia)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "joint_pain"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_joint_pain]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_joint_pain"
+  description = "Joint pain or swelling"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_loss_of_smell]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_loss_of_smell"
+  description = "Loss of smell"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_loss_smell]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_loss_smell"
+  description = "Loss of smell"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.anosmia_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "anosmia_ceoccur_v2"
+  description = "Loss of smell (Anosmia)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_loss_of_taste]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_loss_of_taste"
+  description = "Loss of taste"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_loss_taste]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_loss_taste"
+  description = "Loss of taste"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.ageusia_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "ageusia_ceoccur_v2"
+  description = "Loss of taste (Ageusia)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.lowerchest_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "lowerchest_ceoccur_v2"
+  description = "Lower chest wall indrawing"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "lymphadenopathy"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.lymp_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "lymp_ceoccur_v2"
+  description = "Lymphadenopathy"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "mean_arterial_blood_pressure_mmHg"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_meanart_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_meanart_vsorres"
+  description = "Mean Arterial Pressure:"
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.myalgia_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "myalgia_ceoccur_v2"
+  description = "Muscle ache (Myalgia)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_muscle_pain]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_muscle_pain"
+  description = "Persistent muscle pain"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_muscle_pain]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_muscle_pain"
+  description = "Persistent muscle pain"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.other_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "other_ceoccur_v2"
+  description = "Other sign or symptom"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.other_cetermy_v2]
+    "!=" = ""
+
+[observation.text]
+  field = "other_cetermy_v2"
+  description = "<i>Other sign or symptom</i> - if YES, specify:"
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.oxygen_cmdose]
+    "!=" = "5"
+
+[observation.is_present]
+  field = "oxygen_cmdose"
+  description = "Maximum O<sub>2</sub> flow volume:"
+
+  [observation.is_present.values]
+    1 = "<2 l/min"
+    6 = "2-5 l/min"
+    2 = "6-10 l/min"
+    3 = "11-15 l/min"
+    4 = ">15 l/min"
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.oxy_vsorresu]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "oxy_vsorresu"
+  description = "Oxygen saturation on:"
+
+  [observation.is_present.values]
+    1 = "room air"
+    2 = "oxygen therapy"
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_oxy_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_oxy_vsorres"
+  description = "<acronym title=\"For all patients, irrespective of ventilation or supplemental oxygen requirement, please enter the percentage oxygen saturation. This may be measured by pulse oximetry or by arterial blood gas analysis\">Oxygen saturation SaO<sub>2</sub></acronym>"
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.oxy_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "oxy_vsorres"
+  description = "<acronym title=\"For all patients, irrespective of ventilation or supplemental oxygen requirement, please enter the percentage oxygen saturation (the percentage of haemoglobin binding site in the bloodstream occupied by oxygen) at the time of admission. This may be measured by pulse oximetry or by arterial blood gas analysis.\">Oxygen saturation</acronym>"
+
+[[observation]]
+  name = "pH"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_ph_lborres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_ph_lborres"
+  description = "pH"
+
+[[observation]]
+  name = "respiratory_rate"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.rr_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "rr_vsorres"
+  description = "<acronym title=\"Enter the respiratory rate in breath per minute. Manual rather than electronic measurement is preferred where possible (this is achieved by counting the number of breath for one minute, counting how many time the chest rise within this time period). Record the highest respiratory rate documented on admission. \">Respiratory Rate</acronym>"
+
+[[observation]]
+  name = "respiratory_rate"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_rr_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_rr_vsorres"
+  description = "<acronym title=\"Enter the respiratory rate in breath per minute. Manual rather than electronic measurement is preferred where possible (this is achieved by counting the number of breath for one minute, counting how many time the chest rise within this time period). If both abnormal low and high rate observed, record the abnormally high rate.\">Respiratory Rate</acronym>"
+
+[[observation]]
+  name = "richmond_agitation-sedation_scale"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.rass_sas_vsyn]
+    "!=" = "3"
+
+[observation.value]
+  field = "rass_sas_vsyn"
+  description = "Richmond Agitation-Sedation Scale (RASS) or Riker Sedation-Agitation Scale (SAS) available?"
+
+  [observation.value.values]
+    1 = "yes - rass available"
+    4 = "yes - sas available"
+    2 = false
+
+[[observation]]
+  name = "richmond_agitation-sedation_scale"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.rass_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "rass_vsorres"
+  description = "<acronym title=\"RASS - If done, enter the lowest calculated value (between -5 and 4) on the date of assessment.\">Richmond Agitation-Sedation Scale (RASS) </acronym>"
+
+[[observation]]
+  name = "riker_sedation-agitation_scale"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.sas_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "sas_vsorres"
+  description = "<acronym title=\"SAS - If done, enter the lowest calculated value (between 1 and 7) on the date of assessment.\">Riker Sedation-Agitation Scale (SAS) </acronym>"
+
+[[observation]]
+  name = "runny_nose"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.runnynose_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "runnynose_ceoccur_v2"
+  description = "Runny nose (Rhinorrhoea)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "severe_dehydration"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.dehydration_vsorres]
+    "!=" = 3
+
+[observation.is_present]
+  field = "dehydration_vsorres"
+  description = "Severe dehydration:"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_short_breath]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_short_breath"
+  description = "Shortness of breath/breathlessness"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.shortbreath_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "shortbreath_ceoccur_v2"
+  description = "Shortness of breath (Dyspnea)"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_short_breath]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_short_breath"
+  description = "Shortness of breath/breathlessness"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_breathless_now]
+    "!=" = ""
+
+[observation.value]
+  field = "flw_breathless_now"
+  description = "(Breathless) Within the last 24 hour"
+
+  [observation.value.values]
+    1 = "not troubled by breathlessness except on strenuous exercise"
+    2 = "short of breath when hurrying or when walking up a slight hill"
+    3 = "walk slower than most people of my age because of breathlessness"
+    4 = "stop for breath after walking 100 yards/ 90-100 metres"
+    5 = "too breathless to leave the house"
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_breathless_now]
+    "!=" = ""
+
+[observation.value]
+  field = "flw2_breathless_now"
+  description = "(Breathless) Within the last 24 hour"
+
+  [observation.value.values]
+    1 = "not troubled by breathlessness except on strenuous exercise"
+    2 = "short of breath when hurrying or when walking up a slight hill"
+    3 = "walk slower than most people of my age because of breathlessness"
+    4 = "stop for breath after walking 100 yards/ 90-100 metres"
+    5 = "too breathless to leave the house"
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_breathless_pre_c19]
+    "!=" = ""
+
+[observation.value]
+  field = "flw_breathless_pre_c19"
+  description = "(Breathless) Before your COVID-19 illness"
+
+  [observation.value.values]
+    1 = "not troubled by breathlessness except on strenuous exercise"
+    2 = "short of breath when hurrying or when walking up a slight hill"
+    3 = "walked slower than most people of my age because of breathlessness"
+    4 = "stopped for breath after walking 100 yards/ 90-100 meters"
+    5 = "too breathless to leave the house"
+
+[[observation]]
+  name = "skin_rash"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.rash_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "rash_ceoccur_v2"
+  description = "Skin rash"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "skin_rash"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_skin_rash]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_skin_rash"
+  description = "Skin rash"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "skin_ulcers"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.skinulcers_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "skinulcers_ceoccur_v2"
+  description = "4a.20. Skin ulcer"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "sore_throat"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.sorethroat_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "sorethroat_ceoccur_v2"
+  description = "Sore throat"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.stercap_vsyn]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "stercap_vsyn"
+  description = "Sternal capillary refill time on admission available?"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.stercap_vsorres]
+    "!=" = 3
+
+[observation.is_present]
+  field = "stercap_vsorres"
+  description = "<acronym title=\"Sternal capillary refill time is measured by pressing on the sternum for five second with a finger or thumb until the underlying skin turn white and then noting the time in second needed for the colour to return once the pressure is released. \">Sternal capillary refill time >2 second ?</acronym>"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_stercap_vsorres]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "daily_stercap_vsorres"
+  description = "<acronym title=\"Measured by pressing on the sternum for five second with a finger or thumb until the underlying skin turn white and then noting the time in second needed for the colour to return once the pressure is released. \">Sternal capillary refill time >2 seconds?</acronym>"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.sysbp_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "sysbp_vsorres"
+  description = "<acronym title=\"Please enter the systolic blood pressure measured in millimetre of mercury (mmHg), in the relevant sections. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Systolic blood pressure</acronym>"
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.systolic_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "systolic_vsorres"
+  description = "<acronym title=\"Please enter the systolic blood pressure measured in millimetre of mercury (mmHg), in the relevant sections. Complete definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Systolic Pressure</acronym>"
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_temp_vsyn]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "daily_temp_vsyn"
+  description = "Temperature available?"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_temp_vsorresu]
+    "!=" = ""
+
+[observation.is_present]
+  field = "daily_temp_vsorresu"
+  description = "Temperature Unit"
+
+  [observation.is_present.values]
+    1 = "°c"
+    2 = "°f"
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.temp_vsorresu]
+    "!=" = ""
+
+[observation.is_present]
+  field = "temp_vsorresu"
+  description = "Temperature Units"
+
+  [observation.is_present.values]
+    1 = "°c"
+    2 = "°f"
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.temp_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "temp_vsorres"
+  description = "<acronym title=\"Please enter the peripheral body temperature (rectal if < 3 months) in the space provided and indicate the unit of measurement, either degree Celsius (°C) or Fahrenheit (°F). \">Temperature</acronym>"
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "study"
+
+  [observation.date]
+    ref = "dailyDateHierarchy"
+
+  [observation.if.daily_temp_vsorres]
+    "!=" = ""
+
+[observation.text]
+  field = "daily_temp_vsorres"
+  description = "<acronym title=\"Please enter the peripheral body temperature (rectal if < 3 months) in the space provided and indicate the unit of measurement, either degree Celsius (°C) or Fahrenheit (°F)\">Highest temperature</acronym>"
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.temp_vsyn]
+    "!=" = "3"
+
+[observation.is_present]
+  field = "temp_vsyn"
+  description = "Temperature on admission available?"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "time_of_admission"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.hosttim]
+    "!=" = ""
+
+[observation.text]
+  field = "hosttim"
+  description = "2.3 Admission time at this facility"
+
+[[observation]]
+  name = "transfer_from_other_facility"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.hooccur]
+    "!=" = "4"
+
+[observation.is_present]
+  field = "hooccur"
+  description = "2.4 Transfer from other facility?"
+
+  [observation.is_present.values]
+    1 = "yes-facility is a study site"
+    2 = "yes-facility is not a study site"
+    3 = false
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.vomit_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "vomit_ceoccur_v2"
+  description = "Vomiting / Nausea"
+  ref = "Y/N/NK"
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw_nausea]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw_nausea"
+  description = "Nausea/vomiting"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+    2 = "not sure"
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+
+  [observation.date]
+    ref = "followupDateHierarchy"
+
+  [observation.if.flw2_feeling_sick]
+    "!=" = ""
+
+[observation.is_present]
+  field = "flw2_feeling_sick"
+  description = "Feeling sick/vomiting"
+
+  [observation.is_present.values]
+    1 = true
+    0 = false
+
+[[observation]]
+  name = "wheezing"
+  phase = "admission"
+
+  [observation.date]
+    ref = "admissionDateHierachy"
+
+  [observation.if.wheeze_ceoccur_v2]
+    "!=" = 3
+
+[observation.is_present]
+  field = "wheeze_ceoccur_v2"
+  description = "Wheezing"
+  ref = "Y/N/NK"
