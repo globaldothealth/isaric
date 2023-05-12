@@ -55,12 +55,26 @@
     },
     "date": {
       "type": "string",
-      "format": "date",
+      "anyOf": [
+        {
+          "format": "date"
+        },
+        {
+          "format": "date-time"
+        }
+      ],
       "description": "Date of observation, or end date of observation period"
     },
     "start_date": {
       "type": "string",
-      "format": "date",
+      "anyOf": [
+        {
+          "format": "date"
+        },
+        {
+          "format": "date-time"
+        }
+      ],
       "description": "Start date of observation duration"
     },
     "duration_type": {
