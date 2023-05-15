@@ -495,6 +495,18 @@
   description = "Employed in a microbiology laboratory?"
   ref = "Y/N/NK"
 
+[subject.has_immunosuppression_therapy_treatment]
+  field = "pre_nonoralsteroid_cmoccur"
+  description = "Other immunosuppressant agents (not oral steroids)"
+  ref = "Y/N/NK"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "otherrisktext", description = "Other relevant risk factor(s)" },
+  ]
+
 [subject.has_died]
   combinedType = "any"
   excludeWhen = "none"
@@ -1338,6 +1350,25 @@
   value = { field = "daily_oxy_vsorres", description = "percentage oxygen saturation" }
 
 [[observation]]
+  name = "pao2"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_pao2_lborres", unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Capillary", 3 = "Venous", 4 = "Unknown" } },
+    ]
+
+[[observation]]
+  name = "pco2"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_pco2_lborres", unit = "mmHg", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
+
+[[observation]]
   name = "pH"
   phase = "study"
   date = { field = "daily_dsstdat" }
@@ -1372,6 +1403,30 @@
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
   is_present = { field = "runnynose_ceoccur_v2", description = "Runny nose (Rhinorrhoea)", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  phase = "admission"
+  date = { ref = "admissionDateHierachy" }
+  is_present = { field = "seizures_cecoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  is_present = { field = "seizure_ceterm", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_seizures", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  is_present = { field = "flw2_seizures", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "severe_dehydration"
