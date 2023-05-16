@@ -2,13 +2,13 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |37778  |52934  |71.368119% |
+|subject        |42576  |52934  |80.432236% |
 |visit          |45587  |52934  |86.120452% |
 |observation    |3615315        |3693324        |97.887838% |
 
 ## subject
 
-* 15155: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 10357: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
 * 1: data.has_comorbidity_other[0] must be string
 
 ## visit

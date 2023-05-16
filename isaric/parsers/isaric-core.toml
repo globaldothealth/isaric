@@ -286,6 +286,8 @@
       { field = "ethnic___7", values = { 1 = "white" } },
       { field = "ethnic___8", values = { 1 = "Aboriginal/First Nations" } },
       { field = "ethnic___9", values = { 1 = "Other" } },
+      { field = "ethnic___10", values = { 1 = "Unknown" } },
+      { field = "other_ethnic" },
       { field = "flw_ethnicity", ref = "ethnicityMap" },
       { field = "flw2_ethnicity", ref = "ethnicityMap" },
       { field = "flw_ethnicity_oth" },
