@@ -591,6 +591,10 @@
           "description": "Antimalarial",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_antimalarial_type": {
+          "description": "Antimalarial",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_high_flow_nasal_cannula": {
           "description": "High flow nasal cannula",
           "$ref": "#/definitions/mapping"
