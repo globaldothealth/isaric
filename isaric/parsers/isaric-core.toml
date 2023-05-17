@@ -428,10 +428,12 @@
   [[subject.icu_admitted.fields]]
     field = "ccm_b_icu_hodat"
     description = "<acronym title=\"Date admitted to critical care ward\">ICU ADMISSION DATE</acronym>"
+    apply = { function = "isNotNull" }
 
   [[subject.icu_admitted.fields]]
     field = "icu_hostdat"
     description = "Date of ICU admission:"
+    apply = { function = "isNotNull" }
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"
@@ -612,14 +614,6 @@
     { field = "antibiotic_cmtrt_9" },
   ]
 
-[visit.treatment_anticoagulation]
-  combinedType = "any"
-  excludeWhen = "none"
-  fields = [
-    { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
-    { field = "ccm_b_heparint_cmyn", description = "Heparin for anticoagulation?", ref = "Y/N/NK" },
-  ]
-
 [visit.treatment_antifungal_agent]
   field = "antifung_cmyn"
   description = "Antifungal agent refers to any agent(s) prescribed specifically to treat systemic or topical infection caused by fungi."
@@ -776,6 +770,7 @@
 
 [visit.treatment_oxygen_therapy]
   combinedType = "any"
+  excludeWhen = "none"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "daily_nasaloxy_cmtrt"
@@ -783,17 +778,37 @@
     ref = "Y/N/NK"
 
   [[visit.treatment_oxygen_therapy.fields]]
-    field = "oxygen_cmdur"
-    description = "<i>Any Oxygen therapy</i> - if YES, total duration:"
-
-  [[visit.treatment_oxygen_therapy.fields]]
-    field = "oxygen_proccur"
-    description = "<acronym title=\"Includes, NIV or home ventilation (respiratory support/treatment).\">Post discharge treatment: Oxygen therapy?</acronym>"
+    field = "daily_noninvasive_prtrt"
+    description = "Non-invasive ventialtion"
     ref = "Y/N/NK"
 
   [[visit.treatment_oxygen_therapy.fields]]
-    field = "ccm_b_hhfnc_prtrt"
-    description = "Humidified high flow nasal cannula (HHFNC)?"
+    field = "daily_invasive_prtrt"
+    description = "Invasive ventialtion"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_prone_cmtrt"
+    description = "Prone ventilation"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_ecmo_prtrt"
+    description = "ECMO"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "oxygen_cmoccur"
+    description = "Any Oxygen therapy:"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "noninvasive_proccur"
+    description = "Non-invasive ventilation"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "invasive_proccur"
+    description = "Invasive ventilation"
     ref = "Y/N/NK"
 
   [[visit.treatment_oxygen_therapy.fields]]
@@ -802,8 +817,33 @@
     ref = "Y/N/NK"
 
   [[visit.treatment_oxygen_therapy.fields]]
-    field = "daily_nasaloxy_cmtrt"
-    description = "High-flow nasal canula oxygen therapy?"
+    field = "pronevent_prtrt"
+    description = "Prone ventilation"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "extracorp_prtrt"
+    description = "Extracorporeal support (ECMO)"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "ccm_b_invasive_prtrt"
+    description = "Invasive ventilation?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "ccm_b_noninvasive_prtrt"
+    description = "Humidified high flow nasal cannula (HHFNC)?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "ccm_b_hhfnc_prtrt"
+    description = "Humidified high flow nasal cannula (HHFNC)?"
+    ref = "Y/N/NK"
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "ccm_b_mechvent_prtrt"
+    description = "Mechanical Ventilation?"
     ref = "Y/N/NK"
 
 [visit.treatment_high_flow_nasal_cannula]
@@ -830,10 +870,14 @@
     { field = "ccm_b_noninvasive_prtrt", ref = "Y/N/NK" },
   ]
 
-[visit.treatment_indication_anticoagulation]
-  field = "anticoag_cmyn"
-  description = "Anticoagulation?"
-  ref = "Y/N/NK"
+[visit.treatment_anticoagulation]
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
+    { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK" },
+    { field = "ccm_b_heparint_cmyn", description = "Heparin", ref = "Y/N/NK" },
+  ]
 
 [visit.treatment_inhaled_nitric_oxide]
   combinedType = "any"
@@ -881,14 +925,6 @@
     field = "ccm_b_pronevent_prtrt"
     description = "Prone Positioning?"
     ref = "Y/N/NK"
-
-    # [[visit.treatment_prone_position.fields]]
-    #   field = "daily_prone_cmtype"
-    #   description = "<i>Prone Positioning</i>, if YES"
-
-    #   [visit.treatment_prone_position.fields.values]
-    #     1 = "during invasive ventilation"
-    #     2 = "whilst self-ventilating"
 
 [visit.date_outcome]
   field = "dsstdtc"
