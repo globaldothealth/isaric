@@ -118,6 +118,8 @@
                 "list",
                 "any",
                 "all",
+                "min",
+                "max",
                 "firstNonNull",
                 "set"
               ],
