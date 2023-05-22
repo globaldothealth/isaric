@@ -3,6 +3,7 @@
 [adtl]
   name = "isaric-core"
   description = "isaric-core"
+  skipFieldPattern = "flw.*"
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -331,9 +332,8 @@
   combinedType = "any"
   excludeWhen = "none"
   fields = [
-    { field = "diabetes_mhyn", description = "4b.13. Diabetes without complication", ref = "Y/N/NK" },
-    { field = "diabetiscomp_mhyn", description = "4b.12. Diabetes with complication", ref = "Y/N/NK" },
-    { field = "diabetes_mhyn_2", description = "Type 1 or Type 2 diabetes mellitus requiring oral or subcutaneous treatment.", apply = { function = "isNotNull" } },
+    { fieldPattern = "diabetes_mhyn.*", description = "4b.13. Diabetes without complication", values = { 1 = true, 2 = false, 4 = true, 5 = true } },
+    { field = "diabetiscomp_mhyn", description = "4b.12. Diabetes with complication", ref = "Y/N/NK", "can_skip" = true },
   ]
 
 [subject.diabetes_type]
@@ -345,8 +345,8 @@
   combinedType = "any"
   excludeWhen = "none"
   fields = [
-    { field = "aidshiv_mhyn", description = "4b.10. AIDS/HIV", ref = "Y/N/NK" },
-    { field = "aidshiv_mhyn_2", description = "History of laboratory-confirmed HIV infection", values = { 1 = true, 4 = true, 2 = false } },
+    { field = "aidshiv_mhyn", description = "4b.10. AIDS/HIV", ref = "Y/N/NK", "can_skip" = true },
+    { fieldPattern = "aidshiv_mhyn.*", description = "History of laboratory-confirmed HIV infection", values = { 1 = true, 4 = true, 2 = false } },
   ]
 
 [subject.has_hiv_art]
@@ -485,8 +485,8 @@
   excludeWhen = "none"
   fields = [
     { field = "apsc_brfed", description = "Breastfed?", values = { 1 = true, 2 = true, 0 = false } },
-    { field = "apsc_brfedind", description = "1.7.3 Breastfed", ref = "Y/N/NK" },
-    { field = "apsc_brfedindy", description = "If YES", values = { 1 = true, 2 = true } },
+    { field = "apsc_brfedind", description = "1.7.3 Breastfed", ref = "Y/N/NK", "can_skip" = true },
+    { field = "apsc_brfedindy", description = "If YES", values = { 1 = true, 2 = true }, "can_skip" = true },
   ]
 
 [subject.works_healthcare]
@@ -628,7 +628,7 @@
     { field = "antiviral_cmtrt___2", values = { 1 = true } },
     { field = "antiviral_cmtrt___3", values = { 1 = true } },
     { field = "antiviral_cmtrt___4", values = { 1 = true } },
-    { field = "antiviral_cmtrt___5", values = { 1 = true } },
+    { field = "antiviral_cmtrt___5", values = { 1 = true }, "can_skip" = true },
     { field = "antiviral_cmtrt___6", values = { 1 = true } },
     { field = "antiviral_cmtrt___7", values = { 1 = true } },
     { field = "antiviral_cmtrt___8", values = { 1 = true } },
@@ -675,7 +675,7 @@
     { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
-    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" }, "can_skip" = true },
     { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" } },
     { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
     { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
@@ -737,7 +737,7 @@
 [visit.treatment_dialysis]
   combinedType = "any"
   fields = [
-    { field = "renal_proccur", description = "7.3.3. Dialysis / renal treatment?", ref = "Y/N/NK" },
+    { field = "renal_proccur", description = "7.3.3. Dialysis / renal treatment?", ref = "Y/N/NK", "can_skip" = true },
     { field = "ccm_b_renal_prtrt", description = "Dialysis/Hemofiltration?", ref = "Y/N/NK" },
   ]
 
@@ -875,7 +875,7 @@
   excludeWhen = "none"
   fields = [
     { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
-    { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK" },
+    { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK", "can_skip" = true },
     { field = "ccm_b_heparint_cmyn", description = "Heparin", ref = "Y/N/NK" },
   ]
 
@@ -955,27 +955,6 @@
   date = { field = "flw2_survey_date" }
   is_present = { field = "flw2_stomach", values = { 1 = true, 0 = false } }
 
-  # [[observation]]
-  #   name = "abdominal_pain"
-  #   phase = "followup"
-
-  #   [observation.date]
-  #     ref = "followupDateHierarchy"
-
-  #   [observation.if.flw_eq5d_pd_5l_uk_eng]
-  #     "!=" = ""
-
-  # [observation.is_present]
-  #   field = "flw_eq5d_pd_5l_uk_eng"
-  #   description = "PAIN / DISCOMFORT"
-
-  #   [observation.is_present.values]
-  #     1 = "i have no pain or discomfort"
-  #     2 = "i have slight pain or discomfort"
-  #     3 = "i have moderate pain or discomfort"
-  #     4 = "i have severe pain or discomfort"
-  #     5 = "i have extreme pain or discomfort"
-
 [[observation]]
   name = "altered_consciousness_confusion"
   phase = "admission"
@@ -1027,7 +1006,7 @@
   name = "bleeding"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "bleed_ceterm_v2", description = "Bleeding (others)", ref = "Y/N/NK" }
+  is_present = { field = "bleed_ceterm_v2", description = "Bleeding (others)", ref = "Y/N/NK", "can_skip" = true }
 
 [[observation]]
   name = "bleeding"
@@ -1081,9 +1060,9 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "cough_ceoccur_v2", description = "Cough", ref = "Y/N/NK" },
-      { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK" },
-      { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", ref = "Y/N/NK" },
+      { field = "cough_ceoccur_v2", description = "Cough", ref = "Y/N/NK", "can_skip" = true },
+      { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK", "can_skip" = true },
+      { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", ref = "Y/N/NK", "can_skip" = true },
       { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = true, 2 = true, 3 = true, 0 = false } },
     ]
 
@@ -1123,7 +1102,7 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK", "can_skip" = true },
       { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = false, 2 = true, 3 = false, 0 = false } },
     ]
 
@@ -1148,7 +1127,7 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", ref = "Y/N/NK" },
+      { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", ref = "Y/N/NK", "can_skip" = true },
       { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = false, 2 = false, 3 = true, 0 = false } },
     ]
 
@@ -1186,7 +1165,7 @@
   name = "ear_pain"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "earpain_ceoccur_v2", description = "4a.5. Ear pain", ref = "Y/N/NK" }
+  is_present = { field = "earpain_ceoccur_v2", description = "4a.5. Ear pain", ref = "Y/N/NK", "can_skip" = true }
 
 [[observation]]
   name = "fatigue_malaise"
@@ -1430,11 +1409,11 @@
   date = { field = "daily_dsstdat" }
   value = { field = "rass_vsorres", apply = { function = "getFloat" }, description = "RASS calculated between -5 and 4" }
 
-[[observation]]
-  name = "riker_sedation-agitation_scale"
-  phase = "study"
-  date = { field = "daily_dsstdat" }
-  value = { field = "sas_vsorres", description = "SAS calculated between 1 and 7" }
+  # [[observation]]
+  #   name = "riker_sedation-agitation_scale"
+  #   phase = "study"
+  #   date = { field = "daily_dsstdat" }
+  #   value = { field = "sas_vsorres", description = "SAS calculated between 1 and 7" }
 
 [[observation]]
   name = "runny_nose"
@@ -1470,7 +1449,7 @@
   name = "severe_dehydration"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "dehydration_vsorres", description = "Severe dehydration:", ref = "Y/N/NK" }
+  is_present = { field = "dehydration_vsorres", description = "Severe dehydration:", ref = "Y/N/NK", "can_skip" = true }
 
 [[observation]]
   name = "shortness_of_breath"
@@ -1490,48 +1469,6 @@
   date = { ref = "admissionDateHierachy" }
   is_present = { field = "shortbreath_ceoccur_v2", description = "Shortness of breath (Dyspnea)", ref = "Y/N/NK" }
 
-  # [[observation]]
-  #   name = "shortness_of_breath"
-  #   phase = "followup"
-
-  #   [observation.date]
-  #     ref = "followupDateHierarchy"
-
-  #   [observation.if.flw_breathless_now]
-  #     "!=" = ""
-
-  # [observation.value]
-  #   field = "flw_breathless_now"
-  #   description = "(Breathless) Within the last 24 hour"
-
-  #   [observation.value.values]
-  #     1 = "not troubled by breathlessness except on strenuous exercise"
-  #     2 = "short of breath when hurrying or when walking up a slight hill"
-  #     3 = "walk slower than most people of my age because of breathlessness"
-  #     4 = "stop for breath after walking 100 yards/ 90-100 metres"
-  #     5 = "too breathless to leave the house"
-
-  # [[observation]]
-  #   name = "shortness_of_breath"
-  #   phase = "followup"
-
-  #   [observation.date]
-  #     ref = "followupDateHierarchy"
-
-  #   [observation.if.flw2_breathless_now]
-  #     "!=" = ""
-
-  # [observation.value]
-  #   field = "flw2_breathless_now"
-  #   description = "(Breathless) Within the last 24 hour"
-
-  #   [observation.value.values]
-  #     1 = "not troubled by breathlessness except on strenuous exercise"
-  #     2 = "short of breath when hurrying or when walking up a slight hill"
-  #     3 = "walk slower than most people of my age because of breathlessness"
-  #     4 = "stop for breath after walking 100 yards/ 90-100 metres"
-  #     5 = "too breathless to leave the house"
-
 [[observation]]
   name = "skin_rash"
   phase = "admission"
@@ -1548,7 +1485,7 @@
   name = "skin_ulcers"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "skinulcers_ceoccur_v2", description = "4a.20. Skin ulcer", ref = "Y/N/NK" }
+  is_present = { field = "skinulcers_ceoccur_v2", description = "4a.20. Skin ulcer", ref = "Y/N/NK", "can_skip" = true }
 
 [[observation]]
   name = "sore_throat"
@@ -1598,7 +1535,7 @@
   name = "transfer_from_other_facility"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "hooccur", values = { 1 = true, 2 = true, 3 = false } }
+  is_present = { field = "hooccur", values = { 1 = true, 2 = true, 3 = false }, "can_skip" = true }
 
 [[observation]]
   name = "vomiting_nausea"
