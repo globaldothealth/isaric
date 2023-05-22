@@ -330,7 +330,6 @@
 
 [subject.has_diabetes]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { fieldPattern = "diabetes_mhyn.*", description = "4b.13. Diabetes without complication", values = { 1 = true, 2 = false, 4 = true, 5 = true } },
     { field = "diabetiscomp_mhyn", description = "4b.12. Diabetes with complication", ref = "Y/N/NK", "can_skip" = true },
@@ -343,7 +342,6 @@
 
 [subject.has_hiv]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { field = "aidshiv_mhyn", description = "4b.10. AIDS/HIV", ref = "Y/N/NK", "can_skip" = true },
     { fieldPattern = "aidshiv_mhyn.*", description = "History of laboratory-confirmed HIV infection", values = { 1 = true, 4 = true, 2 = false } },
@@ -482,7 +480,6 @@
 
 [subject.pregnancy_whether_breastfed]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { field = "apsc_brfed", description = "Breastfed?", values = { 1 = true, 2 = true, 0 = false } },
     { field = "apsc_brfedind", description = "1.7.3 Breastfed", ref = "Y/N/NK", "can_skip" = true },
@@ -513,7 +510,6 @@
 
 [subject.has_died]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { field = "dsterm", values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false } },
     { field = "flw_deceased_yn", values = { 1 = true, 0 = false } },
@@ -585,7 +581,6 @@
 
 [visit.treatment_antibiotics]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { field = "antibiotic_cmyn", ref = "Y/N/NK" },
     { field = "antibiotic_cmtrt_1", apply = { function = "isNotNull" } },
@@ -717,7 +712,6 @@
 
 [visit.treatment_corticosteroid]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { field = "corticost_cmyn", ref = "Y/N/NK" },                         # check - true should override the falses, not just the empty values.
     { field = "dexameth_cmyn", ref = "Y/N/NK" },
@@ -770,7 +764,6 @@
 
 [visit.treatment_oxygen_therapy]
   combinedType = "any"
-  excludeWhen = "none"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "daily_nasaloxy_cmtrt"
@@ -872,7 +865,6 @@
 
 [visit.treatment_anticoagulation]
   combinedType = "any"
-  excludeWhen = "none"
   fields = [
     { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
     { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK", "can_skip" = true },
@@ -1058,7 +1050,6 @@
 
   [observation.is_present]
     combinedType = "any"
-    excludeWhen = "none"
     fields = [
       { field = "cough_ceoccur_v2", description = "Cough", ref = "Y/N/NK", "can_skip" = true },
       { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK", "can_skip" = true },
@@ -1073,7 +1064,6 @@
 
   [observation.is_present]
     combinedType = "any"
-    excludeWhen = "none"
     fields = [
       { field = "flw_pers_cough", description = "Persistant cough", values = { 1 = true, 0 = false } },
       { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = true, 2 = true } },
@@ -1086,7 +1076,6 @@
 
   [observation.is_present]
     combinedType = "any"
-    excludeWhen = "none"
     fields = [
       { field = "flw2_cough", description = "Persistant cough", values = { 1 = true, 0 = false } },
       { field = "flw2_pers_cough_dry", description = "Persistent cough (dry)", values = { 1 = true, 0 = false } },
@@ -1100,7 +1089,6 @@
 
   [observation.is_present]
     combinedType = "any"
-    excludeWhen = "none"
     fields = [
       { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK", "can_skip" = true },
       { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = false, 2 = true, 3 = false, 0 = false } },
@@ -1125,7 +1113,6 @@
 
   [observation.is_present]
     combinedType = "any"
-    excludeWhen = "none"
     fields = [
       { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", ref = "Y/N/NK", "can_skip" = true },
       { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = false, 2 = false, 3 = true, 0 = false } },
