@@ -94,9 +94,8 @@
               }
             },
             "can_skip": {
-              "type": "boolean",
-              "description": "Indicates to the parser whether the field can be skipped without throwing an error if missing in the data.",
-              "default": false
+              "const": "true",
+              "description": "Indicates to the parser whether the field can be skipped without throwing an error if missing in the data."
             }
           }
         }

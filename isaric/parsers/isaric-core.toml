@@ -39,6 +39,18 @@
   7 = "latin american"
   8 = "other"
 
+[adtl.defs."ethnicityMapItaly".values]
+  1 = "arab"
+  2 = "black"
+  3 = "east asian"
+  4 = "south asian"
+  5 = "west asian"
+  6 = "latin american"
+  7 = "white"
+  8 = "aboriginal/first_nations"
+  10 = "other"
+  11 = "Unknown"
+
 [adtl.defs.admissionDateHierachy]
   combinedType = "firstNonNull"
   fields = [
@@ -278,16 +290,17 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "ethnic___1", values = { 1 = "arab" } },
-      { field = "ethnic___2", values = { 1 = "black" } },
-      { field = "ethnic___3", values = { 1 = "east asian" } },
-      { field = "ethnic___4", values = { 1 = "south asian" } },
-      { field = "ethnic___5", values = { 1 = "west asian" } },
-      { field = "ethnic___6", values = { 1 = "latin american" } },
-      { field = "ethnic___7", values = { 1 = "white" } },
-      { field = "ethnic___8", values = { 1 = "Aboriginal/First Nations" } },
-      { field = "ethnic___9", values = { 1 = "Other" } },
-      { field = "ethnic___10", values = { 1 = "Unknown" } },
+      { field = "ethnic", ref = "ethnicityMapItaly", can_skip = true },
+      { field = "ethnic___1", values = { 1 = "arab" }, can_skip = true },
+      { field = "ethnic___2", values = { 1 = "black" }, can_skip = true },
+      { field = "ethnic___3", values = { 1 = "east asian" }, can_skip = true },
+      { field = "ethnic___4", values = { 1 = "south asian" }, can_skip = true },
+      { field = "ethnic___5", values = { 1 = "west asian" }, can_skip = true },
+      { field = "ethnic___6", values = { 1 = "latin american" }, can_skip = true },
+      { field = "ethnic___7", values = { 1 = "white" }, can_skip = true },
+      { field = "ethnic___8", values = { 1 = "Aboriginal/First Nations" }, can_skip = true },
+      { field = "ethnic___9", values = { 1 = "Other" }, can_skip = true },
+      { field = "ethnic___10", values = { 1 = "Unknown" }, can_skip = true },
       { field = "other_ethnic" },
       { field = "flw_ethnicity", ref = "ethnicityMap" },
       { field = "flw2_ethnicity", ref = "ethnicityMap" },
@@ -442,22 +455,22 @@
   combinedType = "firstNonNull"
   fields = [
     { field = "apvs_weight", description = "Birth weight", source_unit = { field = "apvs_weightu", values = { 1 = "kg", 2 = "lbs" } }, unit = "kg" },
-    { field = "apvs_weight_vsorres", description = "4.8 Birth weight", source_unit = "grams", unit = "kg" },
+    { field = "apvs_weight_vsorres", description = "4.8 Birth weight", source_unit = "grams", unit = "kg", can_skip = true },
   ]
 
 [subject.pregnancy_date_of_delivery]
   combinedType = "firstNonNull"
   fields = [
     { field = "dlvrdtc_rptestcd", description = "Delivery date:" },
-    { field = "edlvrdtc_rporres", description = "1.1 Expected estimated date of delivery:" },
-    { field = "dlvr_cestdat", description = "Delivery during admission? If yes, date:" },
+    { field = "edlvrdtc_rporres", description = "1.1 Expected estimated date of delivery:", can_skip = true },
+    { field = "dlvr_cestdat", description = "Delivery during admission? If yes, date:", can_skip = true },
   ]
 
 [subject.pregnancy_gestational_assessment_weeks]
   combinedType = "firstNonNull"
   fields = [
     { field = "egestage_rptestcd", description = "If YES: Gestational week assessment:" },
-    { field = "apsc_egestage_scorres", description = "4.6 Gestational age, weeks:" },
+    { field = "apsc_egestage_scorres", description = "4.6 Gestational age, weeks:", can_skip = true },
   ]
 
 [subject.pregnancy_gestational_outcome]
@@ -583,30 +596,32 @@
   combinedType = "any"
   fields = [
     { field = "antibiotic_cmyn", ref = "Y/N/NK" },
-    { field = "antibiotic_cmtrt_1", apply = { function = "isNotNull" } },
+    { field = "antibiotic_cmtrt", apply = { function = "isNotNull" }, can_skip = true },
+    { field = "antibiotic_cmtrt_1", apply = { function = "isNotNull" }, can_skip = true },
     { field = "antibiotic_cmtrt_2", apply = { function = "isNotNull" } },
     { field = "antibiotic_cmtrt_3", apply = { function = "isNotNull" } },
-    { field = "antibiotic_cmtrt_4", apply = { function = "isNotNull" } },
-    { field = "antibiotic_cmtrt_5", apply = { function = "isNotNull" } },
-    { field = "antibiotic_cmtrt_6", apply = { function = "isNotNull" } },
-    { field = "antibiotic_cmtrt_7", apply = { function = "isNotNull" } },
-    { field = "antibiotic_cmtrt_8", apply = { function = "isNotNull" } },
-    { field = "antibiotic_cmtrt_9", apply = { function = "isNotNull" } },
+    { field = "antibiotic_cmtrt_4", apply = { function = "isNotNull" }, can_skip = true },
+    { field = "antibiotic_cmtrt_5", apply = { function = "isNotNull" }, can_skip = true },
+    { field = "antibiotic_cmtrt_6", apply = { function = "isNotNull" }, can_skip = true },
+    { field = "antibiotic_cmtrt_7", apply = { function = "isNotNull" }, can_skip = true },
+    { field = "antibiotic_cmtrt_8", apply = { function = "isNotNull" }, can_skip = true },
+    { field = "antibiotic_cmtrt_9", apply = { function = "isNotNull" }, can_skip = true },
   ]
 
 [visit.treatment_antibiotics_type]
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "antibiotic_cmtrt_1" },
+    { field = "antibiotic_cmtrt", can_skip = true },
+    { field = "antibiotic_cmtrt_1", can_skip = true },
     { field = "antibiotic_cmtrt_2" },
     { field = "antibiotic_cmtrt_3" },
-    { field = "antibiotic_cmtrt_4" },
-    { field = "antibiotic_cmtrt_5" },
-    { field = "antibiotic_cmtrt_6" },
-    { field = "antibiotic_cmtrt_7" },
-    { field = "antibiotic_cmtrt_8" },
-    { field = "antibiotic_cmtrt_9" },
+    { field = "antibiotic_cmtrt_4", can_skip = true },
+    { field = "antibiotic_cmtrt_5", can_skip = true },
+    { field = "antibiotic_cmtrt_6", can_skip = true },
+    { field = "antibiotic_cmtrt_7", can_skip = true },
+    { field = "antibiotic_cmtrt_8", can_skip = true },
+    { field = "antibiotic_cmtrt_9", can_skip = true },
   ]
 
 [visit.treatment_antifungal_agent]
@@ -619,17 +634,18 @@
   # excludeWhen = "none"
   fields = [
     { field = "antiviral_cmyn", ref = "Y/N/NK" },
-    { field = "antiviral_cmtrt___1", values = { 1 = true } },
-    { field = "antiviral_cmtrt___2", values = { 1 = true } },
-    { field = "antiviral_cmtrt___3", values = { 1 = true } },
-    { field = "antiviral_cmtrt___4", values = { 1 = true } },
+    { field = "antiviral_cmtrt", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___1", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___2", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___3", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___4", values = { 1 = true }, "can_skip" = true },
     { field = "antiviral_cmtrt___5", values = { 1 = true }, "can_skip" = true },
-    { field = "antiviral_cmtrt___6", values = { 1 = true } },
-    { field = "antiviral_cmtrt___7", values = { 1 = true } },
-    { field = "antiviral_cmtrt___8", values = { 1 = true } },
-    { field = "antiviral_cmtrt___9", values = { 1 = true } },
-    { field = "antiviral_cmtrt___10", values = { 1 = true } },
-    { field = "antiviral_cmtrt___11", values = { 1 = true } },
+    { field = "antiviral_cmtrt___6", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___7", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___8", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___9", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___10", values = { 1 = true }, "can_skip" = true },
+    { field = "antiviral_cmtrt___11", values = { 1 = true }, "can_skip" = true },
     { field = "ribar_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       'true',
     ] } },
@@ -641,7 +657,7 @@
     ] } },
     { field = "intera_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       'true',
-    ] } },
+    ] }, "can_skip" = true },
     { field = "interb_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       'true',
     ] } },
@@ -650,13 +666,13 @@
     ] } },
     { field = "il6_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       'true',
-    ] } },
+    ] }, "can_skip" = true },
     { field = "cplasma_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       'true',
-    ] } },
+    ] }, "can_skip" = true },
     { field = "antiflu_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       'true',
-    ] } },
+    ] }, "can_skip" = true },
     { field = "antiviral_cmtype", apply = { function = "textIfNotNull", params = [
       'true',
     ] } },
@@ -666,16 +682,16 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
-    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
-    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" }, "can_skip" = true },
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" }, "can_skip" = true },
-    { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" } },
-    { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
-    { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
-    { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" } },
-    { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
+    { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" }, "can_skip" = true },
+    { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" }, "can_skip" = true },
     { field = "ribar_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       "Ribavirin",
     ] } },
@@ -687,7 +703,7 @@
     ] } },
     { field = "intera_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       "Interferon alpha",
-    ] } },
+    ] }, "can_skip" = true },
     { field = "interb_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       "Interferon beta",
     ] } },
@@ -696,13 +712,13 @@
     ] } },
     { field = "il6_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       "IL6 inhibitor",
-    ] } },
+    ] }, "can_skip" = true },
     { field = "cplasma_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       "Convalescent plasma",
-    ] } },
+    ] }, "can_skip" = true },
     { field = "antiflu_antiviral_cmdat", apply = { function = "textIfNotNull", params = [
       "Anti-influenza antiviral",
-    ] } },
+    ] }, "can_skip" = true },
   ]
 
 [visit.treatment_antiviral_type_other]
@@ -713,20 +729,25 @@
 [visit.treatment_corticosteroid]
   combinedType = "any"
   fields = [
-    { field = "corticost_cmyn", ref = "Y/N/NK" },                         # check - true should override the falses, not just the empty values.
-    { field = "dexameth_cmyn", ref = "Y/N/NK" },
-    { field = "steroid_other_cmyn", apply = { function = "isNotNull" } },
+    { field = "corticost_cmyn", ref = "Y/N/NK" },                                            # check - true should override the falses, not just the empty values.
+    { field = "dexameth_cmyn", ref = "Y/N/NK", "can_skip" = true },
+    { field = "steroid_other_cmyn", apply = { function = "isNotNull" }, "can_skip" = true },
   ]
 
 [visit.treatment_corticosteroid_type]
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "dexameth_cmyn", values = { 1 = "Dexamethasone" } },
-    { field = "steroid_other_cmtrt___1", values = { 1 = "Prednisolone" } },
-    { field = "steroid_other_cmtrt___2", values = { 1 = "Hydrocortisone" } },
-    { field = "steroid_other_cmtrt___3", values = { 1 = "Methylprednisolone" } },
+    { field = "dexameth_cmyn", values = { 1 = "Dexamethasone" }, "can_skip" = true },
+    { field = "steroid_other_cmtrt___1", values = { 1 = "Prednisolone" }, "can_skip" = true },
+    { field = "steroid_other_cmtrt___2", values = { 1 = "Hydrocortisone" }, "can_skip" = true },
+    { field = "steroid_other_cmtrt___3", values = { 1 = "Methylprednisolone" }, "can_skip" = true },
   ]
+
+[visit.treatment_corticosteroid_type_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "corticost_cmtrt", "can_skip" = true }]
 
 [visit.treatment_dialysis]
   combinedType = "any"
@@ -739,7 +760,7 @@
   combinedType = "any"
 
   [[visit.treatment_ecmo.fields]]
-    field = "extracorp_prtrt"
+    fieldPattern = "extracorp_prtr.*"
     description = "Extracorporeal support (ECMO)?"
     ref = "Y/N/NK"
 
@@ -808,6 +829,7 @@
     field = "nasal_highflow_proccur"
     description = "High flow nasal oxygen"
     ref = "Y/N/NK"
+    can_skip = true
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "pronevent_prtrt"
@@ -815,7 +837,7 @@
     ref = "Y/N/NK"
 
   [[visit.treatment_oxygen_therapy.fields]]
-    field = "extracorp_prtrt"
+    fieldPattern = "extracorp_prtr.*"
     description = "Extracorporeal support (ECMO)"
     ref = "Y/N/NK"
 
@@ -843,7 +865,7 @@
   combinedType = "any"
   fields = [
     { field = "ccm_b_hhfnc_prtrt", description = "Humidified high flow nasal cannula (HHFNC)?", ref = "Y/N/NK" },
-    { field = "nasal_highflow_proccur", description = "High flow nasal oxygen", ref = "Y/N/NK" },
+    { field = "nasal_highflow_proccur", description = "High flow nasal oxygen", ref = "Y/N/NK", "can_skip" = true },
     { field = "daily_nasaloxy_cmtrt", description = "High-flow nasal canula oxygen therapy?", ref = "Y/N/NK" },
   ]
 
@@ -866,7 +888,7 @@
 [visit.treatment_anticoagulation]
   combinedType = "any"
   fields = [
-    { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
+    { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK", "can_skip" = true },
     { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK", "can_skip" = true },
     { field = "ccm_b_heparint_cmyn", description = "Heparin", ref = "Y/N/NK" },
   ]
@@ -896,7 +918,7 @@
   excludeWhen = "none"
   fields = [
     { field = "othertx_cmtrt_1", description = "<i>Other Agent 1</i> - Agent:" },
-    { field = "othertx_cmtrt_3", description = "<i>Other Agent 3</i> - Agent:" },
+    { field = "othertx_cmtrt_3", description = "<i>Other Agent 3</i> - Agent:", "can_skip" = true },
     { field = "othertx_cmtrt_2", description = "<i>Other Agent 2</i> - Agent:" },
   ]
 
@@ -933,7 +955,7 @@
   name = "abdominal_pain"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "abdopain_ceoccur_v2", values = { 1 = true, 2 = false } }
+  is_present = { field = "abdopain_ceoccur_v2", values = { 1 = true, 2 = false }, can_skip = true }
 
 [[observation]]
   name = "abdominal_pain"
@@ -987,7 +1009,7 @@
   name = "bleeding_haemorrhage"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "bleed_ceoccur_v2", description = "Bleeding (Haemorrhage)", ref = "Y/N/NK" }
+  is_present = { field = "bleed_ceoccur_v2", description = "Bleeding (Haemorrhage)", ref = "Y/N/NK", can_skip = true }
 
   [observation.context]
     combinedType = "set"
@@ -1546,4 +1568,4 @@
   name = "wheezing"
   phase = "admission"
   date = { ref = "admissionDateHierachy" }
-  is_present = { field = "wheeze_ceoccur_v2", description = "Wheezing", ref = "Y/N/NK" }
+  is_present = { field = "wheeze_ceoccur_v2", description = "Wheezing", ref = "Y/N/NK", can_skip = true }
