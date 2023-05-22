@@ -831,6 +831,7 @@
               "confusion",
               "conjunctivitis",
               "cough",
+              "cough_dry",
               "cough_with_haemoptysis",
               "cough_with_sputum_production",
               "cyanosis",
