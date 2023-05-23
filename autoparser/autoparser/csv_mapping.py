@@ -44,9 +44,14 @@ def matches_redcap(
             )
 
     if isinstance(data_dictionary, str):
-        df = pd.read_csv(data_dictionary).rename(columns=column_mappings)[
-            list(column_mappings.values())
-        ]
+        data_dictionary = Path(data_dictionary)
+        if data_dictionary.suffix == ".csv":
+            df = pd.read_csv(data_dictionary)
+        elif data_dictionary.suffix == ".xlsx":
+            df = pd.read_excel(data_dictionary)
+        else:
+            raise ValueError(f"Unsupported format (not CSV or XLSX): {data_dictionary}")
+        df = df.rename(columns=column_mappings)[list(column_mappings.values())]
         df["description"] = df.description.map(lemmatized)
         df["lemmatized_choices"] = df.choices.map(lemmatized_choices)
 
