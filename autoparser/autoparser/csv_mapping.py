@@ -141,7 +141,7 @@ def matches_redcap(
                 else scores["date-mismatch"]
             )
         if (
-            "follow" in row["category"]
+            "follow" in row.get("category", "")
         ):  # de-emphasise followup, usually only required in observation
             score += scores["is-followup"]
         words = row["schema_field"].split("_")
