@@ -423,7 +423,7 @@
 [[observation]]
   name = "bleeding_haemorrhage"
   phase = "admission"
-  date = { field = "bleed_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "bleed_hx"
@@ -433,7 +433,7 @@
 [[observation]]
   name = "chest_pain"
   phase = "admission"
-  date = { field = "chest_pain_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "chest_pain_hx"
@@ -443,7 +443,7 @@
 [[observation]]
   name = "conjunctivitis"
   phase = "admission"
-  date = { field = "conjunctivitis_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "conjunctivitis_hx"
@@ -453,7 +453,7 @@
 [[observation]]
   name = "cough"
   phase = "admission"
-  date = { field = "cough_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "cough_hx"
@@ -472,7 +472,7 @@
 [[observation]]
   name = "diarrhoea"
   phase = "admission"
-  date = { field = "diarrhoea_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "diarrhoea_hx"
@@ -491,7 +491,7 @@
 [[observation]]
   name = "ear_pain"
   phase = "admission"
-  date = { field = "ear_pain_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "ear_pain_hx"
@@ -501,7 +501,7 @@
 [[observation]]
   name = "fatigue_malaise"
   phase = "admission"
-  date = { field = "fatigue_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "fatigue_hx"
@@ -511,7 +511,7 @@
 [[observation]]
   name = "headache"
   phase = "admission"
-  date = { field = "headache_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "headache_hx"
@@ -521,7 +521,7 @@
 [[observation]]
   name = "history_of_fever"
   phase = "admission"
-  date = { field = "fever_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "fever_hx"
@@ -561,7 +561,7 @@
 [[observation]]
   name = "lower_chest_wall_indrawing"
   phase = "admission"
-  date = { field = "chest_pain_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "chest_pain_hx"
@@ -647,7 +647,7 @@
 [[observation]]
   name = "seizures"
   phase = "admission"
-  date = { field = "seizure_date" }
+  date = { ref = "admissionDateHierarchy" }
   is_present = { field = "seizure_hx", ref = "Y/N" }
 
 [[observation]]
@@ -672,7 +672,7 @@
 [[observation]]
   name = "skin_ulcers"
   phase = "admission"
-  date = { field = "skinulcers_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "skinulcers_hx"
@@ -724,7 +724,7 @@
 [[observation]]
   name = "vomiting_nausea"
   phase = "admission"
-  date = { field = "vomit_nausea_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "vomit_nausea_hx"
@@ -734,7 +734,7 @@
 [[observation]]
   name = "wheezing"
   phase = "admission"
-  date = { field = "wheeze_date" }
+  date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
     field = "wheeze_hx"
