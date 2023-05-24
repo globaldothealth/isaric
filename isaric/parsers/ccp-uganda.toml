@@ -15,22 +15,21 @@ aggregation = "lastNotNull"
 schema = "../../schemas/dev/visit.schema.json"
 
 [adtl.tables.observation]
-kind = "groupBy"
-groupBy = ""
-aggregation = "lastNotNull"
+kind = "oneToMany"
 schema = "../../schemas/dev/observation.schema.json"
+common = { visit_id = { field = "record_id", sensitive = true } }
 
-[adtl.defs."Y/N/NK".values]
+[adtl.defs."Y/N".values]
 1 = true
 0 = false
-999 = false
 
 [adtl.defs.admissionDateHierarchy]
 combinedType = "firstNonNull"
 fields = [
     { field = "add_date", description = "Admission date at this facility" },
     { field = "hospitalization_date", description = "Date of hospitalization" },
-    { field = "onset_date", description = "Date of onset of symptoms (within 10days)" }
+    { field = "onset_date", description = "Date of onset of symptoms (within 10days)" },
+    { field = "signs_symps_date" }
 ]
 
 
@@ -45,7 +44,6 @@ pathogen = "COVID-19"
 [subject.subject_id]
 field = "record_id"
 sensitive = true
-
 
 [subject.admission_date]
 field = "add_date"
@@ -70,8 +68,11 @@ field = "occupation"
 values = { 1 = false, 2 = false, 3 = false,  4 = false, 5 = true, 6 = false, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
 
 [subject.pregnancy]
-field = "pregnany"
-values = { 1 = true, 0 = false, 2 = false }
+combinedType = "any"
+fields = [
+    { field = "pregnany", values = { 1 = true, 0 = false } },
+    { field = "preg", values = { 1 = true } }
+]
 
 [subject.pregnancy_date_of_delivery]
 field = "del_date"
@@ -92,9 +93,11 @@ description = "What was the gestational outcome?"
 values = {1 = "Pre-Term birth (< 37wk GA)",2 = "Term birth (≥37wk GA)" }
 
 [subject.pregnancy_whether_breastfed]
-field = "breastfed"
-description = "Was the child breastfed?"
-ref = "Y/N/NK"
+combinedType = "any"
+fields = [
+    { field = "breastfed", description = "Was the child breastfed?", ref = "Y/N" },
+    { field = "curr_breatfeed", ref = "Y/N" }
+]
 
 [subject.pregnancy_post_partum]
 field = "preg"
@@ -107,24 +110,22 @@ description = "Gestational age"
 
 [subject.has_chronic_hematologic_disease]
 field = "hem_dse"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_hiv] # might not need all fields
 combinedType = "any"
 fields = [
     { field = "hiv_aids", description = "Known history of HIV/AIDS", ref = "Y/N/NK" },
-    { field = "rct_hiv", description = "Results of rapid testing for HIV:", ref = "Y/N/NK" },
-    { field = "hivreg_no", description = "what is HIV clinic registration number?", apply = { function = "isNotNull" } }
-
+    { field = "rct_hiv", description = "Results of rapid testing for HIV:", ref = "Y/N/NK" }
 ]
 
 [subject.has_hypertension]
 field = "hypertens"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_malignant_neoplasm]
 field = "neopla"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_smoking]
 combinedType = "firstNonNull"
@@ -135,23 +136,23 @@ fields = [
 
 [subject.has_asthma]
 field = "asthma"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_chronic_kidney_disease]
 field = "kidney_dse"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_diabetes]
 field = "diab"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_liver_disease]
 field = "liver_dse"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_hiv_art]
 field = "art"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [subject.has_immunosuppression_therapy_treatment]
 field = "other_imm_supps_premed"
@@ -163,12 +164,12 @@ values = { 1 = false, 2 = true, 3 = false, 4 = false }
 
 [subject.date_death]
 field = "outcome_date"
-if = { "outcome" = 4 }
+if = { "outcome" = 2 }
 
 [subject.icu_admitted]
 combinedType = "any"
 fields = [
-    { field = "overall_icu_hoterm", ref = "Y/N/NK" },
+    { field = "overall_icu_hoterm", ref = "Y/N" },
     { field = "on_admn", values = { 1 = true, 0 = false }, description = "Current admission to ICU/ITU/IMC/HDU?" },
     { field = "overall_icu_hostdat", apply = { function = "isNotNull" } },
     { field = "icu_date", apply = { function = "isNotNull" } }
@@ -203,7 +204,7 @@ fields = [
 [visit.icu_admission]
 combinedType = "any"
 fields = [
-    { field = "overall_icu_hoterm", ref = "Y/N/NK" },
+    { field = "overall_icu_hoterm", ref = "Y/N" },
     { field = "on_admn", values = { 1 = true, 0 = false }, description = "Current admission to ICU/ITU/IMC/HDU?" }
 ]
 
@@ -214,7 +215,7 @@ description = "Date of ICU admission:"
 [visit.treatment_dialysis]
 combinedType = "any"
 fields = [
-    { field = "overall_rrt_hem", description = "Dialysis/Hemofiltration?", ref = "Y/N/NK" },
+    { field = "overall_rrt_hem", description = "Dialysis/Hemofiltration?", ref = "Y/N" },
     { field = "dialys", description = "Dialysis/Hemofiltration?", values = {1 = true, 0 = false } }
 ]
 
@@ -255,8 +256,11 @@ fields = [
 ]
 
 [visit.treatment_antivirals]
-field = "meds_given"
-values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false, 8 = false, 9 = false }
+combinedType = "any
+fields = [
+    { field = "meds_given", values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false, 8 = false, 9 = false } },
+    { field = "sup_meds_antivirals", apply = { function = "isNotNull" } }
+]
 
 [visit.treatment_antibiotics]
 combinedType = "any"
@@ -295,7 +299,7 @@ fields = [
 
 [visit.treatment_antimalarial]
 field = "daily_antimal"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [visit.treatment_high_flow_nasal_cannula]
 field = "can_oxy_ther"
@@ -303,7 +307,7 @@ values = { 1 = true, 0 = false }
 
 [visit.treatment_intravenous_fluids]
 field = "daily_iv_fluids"
-ref = "Y/N/NK"
+ref = "Y/N"
 
 [visit.treatment_neuraminidase]
 field = "sup_meds_antivirals"
@@ -322,7 +326,7 @@ fields = [
 
 [visit.outcome]
 field = "outcome"
-values = { 1 = "Alive at discharge", 2 = "Death", 3 = "Ran away/unknown", 4 = "Referred/Transferred" }
+values = { 1 = "discharged", 2 = "death", 4 = "transferred" }
 
 [visit.date_outcome]
 field = "outcome_date"
@@ -347,7 +351,7 @@ text = { field = "avpu_study", values = { 1 = "ALERT", 2 = "Only responsive to V
 name = "clinical_classification_pneumonia_needing_oxygen"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "clipneu", ref = "Y/N/NK" }
+is_present = { field = "clipneu", ref = "Y/N" }
 
 [[observation]]
 name = "diastolic_blood_pressure_mmHg"
@@ -390,19 +394,19 @@ value = { field = "gcs_val" }
 name = "abdominal_pain"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "abd_pain", ref = "Y/N/NK" }
+is_present = { field = "abd_pain", ref = "Y/N" }
 
 [[observation]]
 name = "altered_consciousness_confusion"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "consciousness", ref = "Y/N/NK" }
+is_present = { field = "consciousness", ref = "Y/N" }
 
 [[observation]]
 name = "altered_consciousness_confusion"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "confused", ref = "Y/N/NK" }
+is_present = { field = "confused", ref = "Y/N" }
 
 [[observation]]
 name = "base_excess"
@@ -414,37 +418,37 @@ value = { field = "base_excess" }
 name = "bleeding_haemorrhage"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "bleed", ref = "Y/N/NK" }
+is_present = { field = "bleed", ref = "Y/N" }
 
 [[observation]]
 name = "bleeding_haemorrhage"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "bleeding", ref = "Y/N/NK" }
+is_present = { field = "bleeding", ref = "Y/N" }
 
 [[observation]]
 name = "chest_pain"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "chest_pain", ref = "Y/N/NK" }
+is_present = { field = "chest_pain", ref = "Y/N" }
 
 [[observation]]
 name = "chest_pain"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "chest", ref = "Y/N/NK" }
+is_present = { field = "chest", ref = "Y/N" }
 
 [[observation]]
 name = "conjunctivitis"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "conjunc", ref = "Y/N/NK" }
+is_present = { field = "conjunc", ref = "Y/N" }
 
 [[observation]]
 name = "conjunctivitis"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "conjunct", ref = "Y/N/NK" }
+is_present = { field = "conjunct", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
@@ -461,12 +465,12 @@ is_present = { field = "conjunct", ref = "Y/N/NK" }
   [observation.is_present]
     combinedType = "firstNonNull"
     fields = [
-      { field = "cough", ref = "Y/N/NK" },
-      { field = "dry_cough", ref = "Y/N/NK" },
-      { field = "cof", ref = "Y/N/NK" },
+      { field = "cough", ref = "Y/N" },
+      { field = "dry_cough", ref = "Y/N" },
+      { field = "cof", ref = "Y/N" },
       { field = "sick_symp", values = { 1 = false, 2 = true, 3 = false, 4 = false } },
-      { field = "wet_cough", ref = "Y/N/NK" },
-      { field = "blood_cough", ref = "Y/N/NK" },
+      { field = "wet_cough", ref = "Y/N" },
+      { field = "blood_cough", ref = "Y/N" },
     ]
 
   [observation.if]
@@ -483,13 +487,13 @@ is_present = { field = "conjunct", ref = "Y/N/NK" }
 name = "cough_with_haemoptysis"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "blood_cough", ref = "Y/N/NK" }
+is_present = { field = "blood_cough", ref = "Y/N" }
 
 [[observation]]
 name = "cough_with_sputum_production"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "wet_cough", ref = "Y/N/NK" }
+is_present = { field = "wet_cough", ref = "Y/N" }
 
 [[observation]]
 name = "diarrhoea"
@@ -501,49 +505,49 @@ is_present = { field = "sick_symp", values = { 1 = false, 2 = false, 3 = true, 4
 name = "diarrhoea"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "diarrhea", ref = "Y/N/NK" }
+is_present = { field = "diarrhea", ref = "Y/N" }
 
 [[observation]]
 name = "diarrhoea"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "diarr", ref = "Y/N/NK" }
+is_present = { field = "diarr", ref = "Y/N" }
 
 [[observation]]
 name = "ear_pain"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "ear_pain_v2", ref = "Y/N/NK" }
+is_present = { field = "ear_pain_v2", ref = "Y/N" }
 
 [[observation]]
 name = "ear_pain"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "ear_pain", ref = "Y/N/NK" }
+is_present = { field = "ear_pain", ref = "Y/N" }
 
 [[observation]]
 name = "fatigue_malaise"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "fatigue", ref = "Y/N/NK" }
+is_present = { field = "fatigue", ref = "Y/N" }
 
 [[observation]]
 name = "fatigue_malaise"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "fatig", ref = "Y/N/NK" }
+is_present = { field = "fatig", ref = "Y/N" }
 
 [[observation]]
 name = "headache"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "headache", ref = "Y/N/NK" }
+is_present = { field = "headache", ref = "Y/N" }
 
 [[observation]]
 name = "headache"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "head", ref = "Y/N/NK" }
+is_present = { field = "head", ref = "Y/N" }
 
 [[observation]]
 name = "history_of_fever"
@@ -555,13 +559,13 @@ is_present = { field = "sick_symp", values = { 1 = true, 2 = false, 3 = false, 4
 name = "history_of_fever"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "fever", ref = "Y/N/NK" }
+is_present = { field = "fever", ref = "Y/N" }
 
 [[observation]]
 name = "history_of_fever"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "fever_hist", ref = "Y/N/NK" }
+is_present = { field = "fever_hist", ref = "Y/N" }
 
 [[observation]]
 name = "inability_to_walk"
@@ -581,67 +585,67 @@ is_present = { field = "assist_study", values = { 1 = true, 0 = false } }
 name = "joint_pain"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "joint", ref = "Y/N/NK" }
+is_present = { field = "joint", ref = "Y/N" }
 
 [[observation]]
 name = "joint_pain"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "jt_ache", ref = "Y/N/NK" }
+is_present = { field = "jt_ache", ref = "Y/N" }
 
 [[observation]]
 name = "joint_pain"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "jt_pain", ref = "Y/N/NK" }
+is_present = { field = "jt_pain", ref = "Y/N" }
 
 [[observation]]
 name = "loss_of_smell"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "anosmia", ref = "Y/N/NK" }
+is_present = { field = "anosmia", ref = "Y/N" }
 
 [[observation]]
 name = "loss_of_smell"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "smell", ref = "Y/N/NK" }
+is_present = { field = "smell", ref = "Y/N" }
 
 [[observation]]
 name = "loss_of_taste"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "ageusia", ref = "Y/N/NK" }
+is_present = { field = "ageusia", ref = "Y/N" }
 
 [[observation]]
 name = "loss_of_taste"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "taste", ref = "Y/N/NK" }
+is_present = { field = "taste", ref = "Y/N" }
 
 [[observation]]
 name = "lower_chest_wall_indrawing"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "indraw", ref = "Y/N/NK" }
+is_present = { field = "indraw", ref = "Y/N" }
 
 [[observation]]
 name = "lower_chest_wall_indrawing"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "lowerchesdrawing", ref = "Y/N/NK" }
+is_present = { field = "lowerchesdrawing", ref = "Y/N" }
 
 [[observation]]
 name = "muscle_aches"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "myalgia", ref = "Y/N/NK" }
+is_present = { field = "myalgia", ref = "Y/N" }
 
 [[observation]]
 name = "muscle_aches"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "muscle", ref = "Y/N/NK" }
+is_present = { field = "muscle", ref = "Y/N" }
 
 [[observation]]
 name = "renal_replacement_therapy_dialysis"
@@ -665,67 +669,67 @@ is_present = { field = "overall_rrt_hem", values = { 1 = true, 0 = false, 3 = fa
 name = "runny_nose"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "rhinorrhea", ref = "Y/N/NK" }
+is_present = { field = "rhinorrhea", ref = "Y/N" }
 
 [[observation]]
 name = "runny_nose"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "runny_nose", ref = "Y/N/NK" }
+is_present = { field = "runny_nose", ref = "Y/N" }
 
 [[observation]]
 name = "seizures"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "seizures", ref = "Y/N/NK" }
+is_present = { field = "seizures", ref = "Y/N" }
 
 [[observation]]
 name = "shortness_of_breath"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "dyspnea", ref = "Y/N/NK" }
+is_present = { field = "dyspnea", ref = "Y/N" }
 
 [[observation]]
 name = "shortness_of_breath"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "breath", ref = "Y/N/NK" }
+is_present = { field = "breath", ref = "Y/N" }
 
 [[observation]]
 name = "skin_rash"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "skin_rash", ref = "Y/N/NK" }
+is_present = { field = "skin_rash", ref = "Y/N" }
 
 [[observation]]
 name = "skin_rash"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "rash_skin", ref = "Y/N/NK" }
+is_present = { field = "rash_skin", ref = "Y/N" }
 
 [[observation]]
 name = "skin_ulcers"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "skin_ulcers", ref = "Y/N/NK" }
+is_present = { field = "skin_ulcers", ref = "Y/N" }
 
 [[observation]]
 name = "skin_ulcers"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "ulcer_skin", ref = "Y/N/NK" }
+is_present = { field = "ulcer_skin", ref = "Y/N" }
 
 [[observation]]
 name = "sore_throat"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "sore_throat", ref = "Y/N/NK" }
+is_present = { field = "sore_throat", ref = "Y/N" }
 
 [[observation]]
 name = "sore_throat"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "throat", ref = "Y/N/NK" }
+is_present = { field = "throat", ref = "Y/N" }
 
 [[observation]]
 name = "sternal_capillary_refill_time_greater_2s"
@@ -749,49 +753,49 @@ value = { field = "add_time" }
 name = "vomiting_nausea"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "vomi", ref = "Y/N/NK" }
+is_present = { field = "vomi", ref = "Y/N" }
 
 [[observation]]
 name = "vomiting_nausea"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "nausea", ref = "Y/N/NK" }
+is_present = { field = "nausea", ref = "Y/N" }
 
 [[observation]]
 name = "wheezing"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "wheez", ref = "Y/N/NK" }
+is_present = { field = "wheez", ref = "Y/N" }
 
 [[observation]]
 name = "wheezing"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "wheezing", ref = "Y/N/NK" }
+is_present = { field = "wheezing", ref = "Y/N" }
 
 [[observation]]
 name = "heart_rate_bpm"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "pulse_iso", ref = "Y/N/NK" }
+is_present = { field = "pulse_iso", ref = "Y/N" }
 
 [[observation]]
 name = "heart_rate_bpm"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "hr", ref = "Y/N/NK" }
+is_present = { field = "hr", ref = "Y/N" }
 
 [[observation]]
 name = "heart_rate_bpm"
 date = { field = "vitals_date" }
 phase = "study"
-is_present = { field = "hr_study", ref = "Y/N/NK" }
+is_present = { field = "hr_study", ref = "Y/N" }
 
 [[observation]]
 name = "other_symptom"
 date = { field = "signs_symps_date" }
 phase = "admission"
-is_present = { field = "covid_symp", ref = "Y/N/NK" }
+is_present = { field = "covid_symp", ref = "Y/N" }
 
 [[observation]]
 name = "oxygen_saturation_percent"
@@ -892,4 +896,4 @@ value = { field = "daily_iv_fluids" }
 name = "transfer_from_other_facility"
 date = { field = "hospitalization_date" }
 phase = "study"
-is_present = { field = "", ref = "Y/N/NK" }
+is_present = { field = "", ref = "Y/N" }
