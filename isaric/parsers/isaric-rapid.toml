@@ -865,6 +865,15 @@
   is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "bleeding"
+  date = { ref = "followupDateHierarchy" }
+  phase = "followup"
+  is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false }, description = "Bleeding" }
+  [observation.context]
+    combinedType = "set"
+    fields = [{ field = "flw_bleeding_site" }]
+
+[[observation]]
   name = "cough"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"

@@ -413,6 +413,12 @@
     values = { 1 = true, 2 = false }
 
 [[observation]]
+  name = "bleeding"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "bleed_ceterm_v2", ref = "Y/N/NK", description = "Bleeding (others)" }
+
+[[observation]]
   name = "chest_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }

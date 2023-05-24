@@ -920,12 +920,12 @@
 
 [[observation]]
   date = { field = "flw_survey_date" }
-  name = "bleeding_haemorrhage"
+  name = "bleeding"
   phase = "followup"
   is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false } }
 
 [[observation]]
-  name = "bleeding_haemorrhage"
+  name = "bleeding"
   date = { field = "flw2_survey_date_{n}" }
   phase = "followup"
   is_present = { field = "flw2_bleeding_{n}", values = { 1 = true, 0 = false } }

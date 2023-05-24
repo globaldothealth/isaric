@@ -718,10 +718,10 @@
   is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "bleeding_haemorrhage"
+  name = "bleeding"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "bleed_cetermy_v2", ref = "Y/N/NK" }
+  is_present = { field = "bleed_ceterm_v2", ref = "Y/N/NK", description = "Bleeding (other)" }
 
 [[observation]]
   name = "cough"
