@@ -31,7 +31,7 @@ def matches_redcap(
     lem = WordNetLemmatizer()
 
     def lemmatized(s, split=None):
-        s = s.strip()
+        s = str(s).strip()
         return " ".join(lem.lemmatize(w) for w in s.split(sep=split))
 
     def lemmatized_choices(s: str) -> str:
