@@ -101,7 +101,7 @@ def main():
         delimiter=args.delimiter,
     )
     with open(args.output, "w") as fp:
-        json.dump(matches, fp, indent=2, sort_keys=True)
+        json.dump({"relsub": {"values": matches}}, fp, indent=2, sort_keys=True)
     print("relsub.py: wrote", args.output)
     print(
         f"           {len(set(matches.values()))} unique IDs across {len(matches)} total"
