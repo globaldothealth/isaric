@@ -14,7 +14,10 @@
   ],
   "properties": {
     "subject_id": {
-      "type": "string",
+      "type": [
+        "string",
+        "integer"
+      ],
       "description": "Unique ID of subject",
       "category": "metadata"
     },
