@@ -910,19 +910,6 @@
 
 [[observation]]
   name = "cough"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "dry_cough_v2", ref = "Y/N/NK" },
-      { field = "wet_cough_v2", ref = "Y/N/NK" },
-      { field = "blood_cough_v2", ref = "Y/N/NK" },
-    ]
-
-[[observation]]
-  name = "cough"
   phase = "pre-admission"
   date = { field = "add_date" }
   duration_type = "event"
@@ -936,7 +923,7 @@
     ]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "cough", ref = "Y/N/NK" },
       { field = "dry_cough", ref = "Y/N/NK" },
@@ -945,24 +932,11 @@
     ]
 
 [[observation]]
-  name = "cough_with_haemoptysis"
+  name = "cough_dry"
   phase = "pre-admission"
-  start_date = { field = "blood_cough_date" }
-  date = { field = "add_date" }
-  duration_type = "event"
-  is_present = { field = "blood_cough", description = "Bloody sputum/haemoptysis", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
+  start_date = { field = "dry_cough_date" }
   date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "blood_cough_v2", description = "Bloody sputum/haemoptysis", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "wet_cough_v2", description = "Cough with sputum production", ref = "Y/N/NK" }
+  is_present = { field = "dry_cough", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -973,11 +947,44 @@
   is_present = { field = "wet_cough", description = "Cough with sputum production", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "cough_dry"
+  name = "cough_with_haemoptysis"
   phase = "pre-admission"
-  start_date = { field = "dry_cough_date" }
+  start_date = { field = "blood_cough_date" }
+  date = { field = "add_date" }
+  duration_type = "event"
+  is_present = { field = "blood_cough", description = "Bloody sputum/haemoptysis", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "dry_cough" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_v2", ref = "Y/N/NK" },
+      { field = "dry_cough_v2", ref = "Y/N/NK" },
+      { field = "wet_cough_v2", ref = "Y/N/NK" },
+      { field = "blood_cough_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "dry_cough_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "wet_cough_v2", description = "Cough with sputum production", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "blood_cough_v2", description = "Bloody sputum/haemoptysis", ref = "Y/N/NK" }
 
 [[observation]]
   name = "diarrhoea"

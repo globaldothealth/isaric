@@ -724,7 +724,7 @@
 [[observation]]
   name = "cough_dry"
   phase = "pre-admission"
-  start_date = { field = "dry-cough_date" }
+  start_date = { field = "dry_cough_date" }
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "dry_cough", values = { 1 = true, 0 = false } }
 

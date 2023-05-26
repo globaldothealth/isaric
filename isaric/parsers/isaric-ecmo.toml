@@ -727,14 +727,47 @@
   name = "cough"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "cough_ceoccur_v2_2", values = { 1 = true, 2 = true, 3 = true, 0 = false } },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
+    ]
 
 [[observation]]
-  name = "cough"
-  date = { ref = "admissionDateHierarchy" }
+  name = "cough_dry"
   phase = "admission"
-  is_present = { field = "cough_ceoccur_v2_2", values = { 1 = true, 2 = true, 3 = true, 0 = false } }
-  # description = "Cough"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "cough_ceoccur_v2_2", values = { 1 = true, 2 = false, 3 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "cough_ceoccur_v2_2", values = { 1 = false, 2 = true, 3 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "cough_ceoccur_v2_2", values = { 1 = false, 2 = false, 3 = true, 0 = false } },
+    ]
 
 [[observation]]
   name = "avpu"
