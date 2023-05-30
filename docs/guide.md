@@ -19,9 +19,17 @@ If mapping to a text field, you can map to 'Unknown' if desired - this may be ad
 
 Date hierarchies provide a list of date fields to search through in order to provide a value. They should only be used to fill fields which are required by the schema; otherwise, if a date has not been provided, the field should remain empty.
 
-Dates should be provided in order of most -> least specific; in general, this will inversely correspond to least -> most likely to be provided in the data. If the most specific/relevant date is also the most commonly filled field, a date hierarchy may not be appropriate.
+Dates should be provided in order of most -> least specific; in general, this will inversely correspond to least -> most likely to be provided in the data. If the most specific/relevant date is also the most commonly filled field, a date hierarchy may not be appropriate. For example:
 
-TODO: Examples?
+```
+[adtl.defs.admissionDateHierarchy]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "hostdat", description = "Admission date at this facility" },
+    { field = "cestdat", description = "Onset date of first/earliest symptom" },
+    { field = "dsstdat", description = "Date of enrolment" },
+  ]
+```
 
 ## combinedTypes
 
