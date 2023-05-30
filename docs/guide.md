@@ -187,7 +187,7 @@ General notes on naming conventions:
 
 **country_iso3**: Text. Alpha-3 country code of the <ins>study site. </ins> NOTE TO DEVS: If this relates to study site only, it shouldn't be in the subject table.
 
-**enrolment_date**: Date. Date of subject enrollement into the study.
+**enrolment_date**: Date. Date of subject enrolement into the study.
 
 **admission_date**: Date. Date of admission to site NOTE TO DEVS: Move this to visit & combine with start_date?
 
@@ -201,7 +201,7 @@ General notes on naming conventions:
 
 **ethnicity**: Text. Subject's ethnicity.
 
-**pathogen**: Text. Pathogen subject is being studied for.
+<a name="pathogen"></a>**pathogen**: Text. Pathogen subject is being studied for.
 
 **pregnancy**: Bool. Is the subject currently pregnant?
 
@@ -263,7 +263,7 @@ General notes on naming conventions:
   * type-2
   * gestational
 
-**has_liver_disease**: Bool. Does the subject have liver disease? (Note - this usually combined mild + moderate liver diease)
+**has_liver_disease**: Bool. Does the subject have liver disease? (Note - this usually combines mild + moderate liver diease)
 
 **has_apnoea**: Bool. Does the subject have apnoea?
 
@@ -273,11 +273,11 @@ General notes on naming conventions:
 
 **has_solid_organ_transplant** Bool. Has the subject undergone a solid organ transplant? (Note - include bone marrow transplants here)
 
-**has_immunosuppression_therapy** Bool. Is the subject chronically immunosuppressed?
+<a name="immunosuppressed"></a>**has_immunosuppression_therapy** Bool. Is the subject chronically immunosuppressed?
 
 **has_comorbidity_other**: Set. Any other comorbidity - free text field.
 
-**has_died**: Bool. Has the subject died? Can take data from both hospitalisation and follow-up surveys, and includes non-covid related deaths where specified (as in many studies the cause of death is unknown).
+**has_died**: Bool. Has the subject died since being enroled in the study? Can take data from both hospitalisation and follow-up surveys, and includes non-covid related deaths where specified (as in many studies the cause of death is unknown).
 
 **date_death**: Date. Takes date from outcome date/date of death (if outcome records death)/death reported at followup.
 
@@ -288,7 +288,7 @@ Contains data specific to the visit, including details on which treatments the s
 
 ### Superset, general level indicators:
 
-**treatment_oxygen_therapy**: Indicates at least one type of oxygen therapy and/or respiratory support has been administered. Subsets are:
+**treatment_oxygen_therapy**: Indicates at least one type of oxygen therapy and/or respiratory support has been administered. Subsets (all boolean indicators) are:
 + *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 + *treatment_high_flow_nasal_cannula*
 + *treatment_noninvasive_ventilation* - Ventilation via e.g., BIPAP/CPAP mask
@@ -298,9 +298,9 @@ Contains data specific to the visit, including details on which treatments the s
 
 ### General drug types
 The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *experimental_agent* all have a set of three hierarchical attributes, e.g. for antivirals:
-+ **treatment_antiviral**: Boolean; if antivirals have been administered during the visit
-+ **treatment_antiviral_type**: Set; lists all the different types of antiviral administered. Should only be used where values are mapped, as there is a restricted list of accepted values defined in the schema - i.e. do not map a free text field here.
-+ **treatment_antiviral_type_other**: Set; for free text fields listing the names of antivirals used.
++ **treatment_antiviral**: Bool. If antivirals have been administered during the visit
++ **treatment_antiviral_type**: Set. Lists all the different types of antiviral administered. Should only be used where values are mapped, as there is a restricted list of accepted values defined in the schema - i.e. do not map a free text field here.
++ **treatment_antiviral_type_other**: Set. For free text fields listing the names of antivirals used.
 
 ### other fields
 
@@ -314,7 +314,7 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **start_date**: Date. Start date of the visit - usually date of admission to hospital.
 
-**pathogen_test_date**: Date. Date of test (date done, not date of result) for the pathogen specified in the subject table HYPERLINK HERE.
+**pathogen_test_date**: Date. Date of test (date done, not date of result) for the pathogen specified in the [subject table](pathogen).
 
 **icu_admission**: Bool. Admitted to ICU in this visit?
 
@@ -336,7 +336,7 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **treatment_antimalarial**: Bool. Treated with antimalarials?
 
-**treatment_immunosuppressant**: Bool. Treated with immunosuppresants? (Note - this is specific to this visit. If the subject was on immunosuppresants for a chronic condition prior to admission, this should be recorded under HYPERLINK immunosupressed in the subject table as a comorbidity.)
+**treatment_immunosuppressant**: Bool. Treated with immunosuppresants? (Note - this is specific to this visit. If the subject was on immunosuppresants for a chronic condition prior to admission, this should be recorded under [has_immunosuppression_therapy](immunosuppressed) in the subject table as a comorbidity.)
 
 **treatment_intravenous_fluids**: Bool. Did the subject recieve IV fluids during the visit?
 
@@ -348,13 +348,13 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **treatment_offlabel**: Bool. Was the subject treated with off-label medications, e.g. for compassionate use?
 
-**treatment_cardiovascular**: Bool. Did the subject recieve cardiovascular support, e.g., Pacing, Intropic support, mechanical (e.g. ecmo, intra-aeortic balloon pump), cpr NOTE TO DEVS: Consider making this a superset in the same manner as oxygen_therapy
+**treatment_cardiovascular**: Bool. Did the subject recieve cardiovascular support, e.g., Pacing, Intropic support, mechanical (e.g. ecmo, intra-aeortic balloon pump), cpr. NOTE TO DEVS: Consider making this a superset in the same manner as oxygen_therapy
 
 **treatment_colchine**: Bool. Was the pateint treated with Colchine?
 
 **treatment_immunoglobulins**: Bool. Did the subject recieve immunoglobulins?
 
-**treatment_delirium** - NOTE do we still have this? delirium is an observation
+**treatment_delirium** - NOTE TO DEVS do we still have this? delirium is an observation ( I think this comes from the traffic light doc's `medication for delirium` - but this only occurs in one study.)
 
 **treatment_monoclonal_antibody**: Bool. Was the subject treated with monoclonal antibodies?
 
