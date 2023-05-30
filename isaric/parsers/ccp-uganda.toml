@@ -432,13 +432,12 @@
 [[observation]]
   name = "diarrhoea"
   date = { field = "onset_date" }
+  start_date = { field = "onset_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
   duration_type = "event"
   phase = "admission"
   is_present = { field = "sick_symp___3", values = { 1 = true, 0 = false } }
-
-  [observation.start_date.apply]
-    function = "startDate"
-    params = [14]
 
 [[observation]]
   name = "diarrhoea"
