@@ -37,9 +37,12 @@ the options. As an example, to transform the REDCap data to the ISARIC schema
 for the CCPUK study:
 
 ```shell
-adtl isaric/parsers/isaric-ccpuk.toml data.csv -o output
+adtl isaric/parsers/isaric-ccpuk.toml data.csv
 ```
 
+This will create a file `isaric-ccpuk-{table}.csv` for each table specified in
+the specification file. The file prefix (`isaric-ccpuk`) can be changed by
+passing the `-o` (`--output`) flag.
 If a schema is specified for a particular table in the parser file, then adtl
 uses it for validation. Validation status (true/false) and error messages are
 reported in the `adtl_valid` and `adtl_error` columns in the output

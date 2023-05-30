@@ -1,0 +1,1132 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "ccp-guinea"
+  description = "ccp-guinea"
+  defaultDateFormat = "%d/%m/%Y %H:%M"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ["ethnicity"]
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "record_id", sensitive = true } }
+
+[adtl.defs]
+  "Y/N/NK" = { values = { 1 = true, 2 = false } }
+  "positive/negative" = { values = { 1 = "positive", 2 = "negative" } }
+
+  [adtl.defs.admissionDateHierarchy]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "signes_date_t", description = "Admission signs form date" },
+      { field = "demo_date_t", description = "Demographics form date" },
+    ]
+
+  [adtl.defs.countryMap.values]
+    1 = "AFG"
+    2 = "ALB"
+    3 = "DZA"
+    4 = "AND"
+    5 = "AGO"
+    6 = "ATG"
+    7 = "ARG"
+    8 = "ARM"
+    9 = "AUS"
+    10 = "AUT"
+    11 = "AZE"
+    12 = "BHS"
+    13 = "BHR"
+    14 = "BGD"
+    15 = "BRB"
+    16 = "BLR"
+    17 = "BEL"
+    18 = "BLZ"
+    19 = "BEN"
+    20 = "BTN"
+    21 = "BOL"
+    22 = "BIH"
+    23 = "BWA"
+    24 = "BRA"
+    25 = "BRN"
+    26 = "BGR"
+    27 = "BFA"
+    28 = "BDI"
+    29 = "KHM"
+    30 = "CMR"
+    31 = "CAN"
+    32 = "CPV"
+    33 = "CAF"
+    34 = "TCD"
+    35 = "CHL"
+    36 = "CHN"
+    37 = "COL"
+    38 = "COM"
+    39 = "COG"
+    40 = "COD"
+    41 = "CRI"
+    42 = "HRV"
+    43 = "CUB"
+    44 = "CYP"
+    45 = "CZE"
+    46 = "DNK"
+    47 = "DJI"
+    48 = "DMA"
+    49 = "DOM"
+    50 = "TLS"
+    51 = "ECU"
+    52 = "EGY"
+    53 = "SLV"
+    54 = "GNQ"
+    55 = "ERI"
+    56 = "EST"
+    57 = "ETH"
+    58 = "FJI"
+    59 = "FIN"
+    60 = "FRA"
+    61 = "GAB"
+    62 = "GMB"
+    63 = "GEO"
+    64 = "DEU"
+    65 = "GHA"
+    66 = "GRC"
+    67 = "GRD"
+    68 = "GTM"
+    69 = "GIN"
+    70 = "GNB"
+    71 = "GUY"
+    72 = "HTI"
+    73 = "HND"
+    74 = "HUN"
+    75 = "ISL"
+    76 = "IND"
+    77 = "IDN"
+    78 = "IRN"
+    79 = "IRQ"
+    80 = "IRL"
+    81 = "ISR"
+    82 = "ITA"
+    83 = "CIV"
+    84 = "JAM"
+    85 = "JPN"
+    86 = "JOR"
+    87 = "KAZ"
+    88 = "KEN"
+    89 = "KIR"
+    90 = "PRK"
+    91 = "KOR"
+    92 = "XXK"
+    93 = "KWT"
+    94 = "KGZ"
+    95 = "LAO"
+    96 = "LVA"
+    97 = "LBN"
+    98 = "LSO"
+    99 = "LBR"
+    100 = "LBY"
+    101 = "LIE"
+    102 = "LTU"
+    103 = "LUX"
+    104 = "MKD"
+    105 = "MDG"
+    106 = "MWI"
+    107 = "MYS"
+    108 = "MDV"
+    109 = "MLI"
+    110 = "MLT"
+    111 = "MHL"
+    112 = "MRT"
+    113 = "MUS"
+    114 = "MEX"
+    115 = "FSM"
+    116 = "MDA"
+    117 = "MCO"
+    118 = "MNG"
+    119 = "MNE"
+    120 = "MAR"
+    121 = "MOZ"
+    122 = "MMR"
+    123 = "NAM"
+    124 = "NRU"
+    125 = "NPL"
+    126 = "NLD"
+    127 = "NZL"
+    128 = "NIC"
+    129 = "NER"
+    130 = "NGA"
+    131 = "NOR"
+    132 = "OMN"
+    133 = "PAK"
+    134 = "PLW"
+    135 = "PAN"
+    136 = "PNG"
+    137 = "PRY"
+    138 = "PER"
+    139 = "PHL"
+    140 = "POL"
+    141 = "PRT"
+    142 = "QAT"
+    143 = "ROU"
+    144 = "RUS"
+    145 = "RWA"
+    146 = "KNA"
+    147 = "LCA"
+    148 = "VCT"
+    149 = "WSM"
+    150 = "SMR"
+    151 = "STP"
+    152 = "SAU"
+    153 = "SEN"
+    154 = "SRB"
+    155 = "SYC"
+    156 = "SLE"
+    157 = "SGP"
+    158 = "SVK"
+    159 = "SVN"
+    160 = "SLB"
+    161 = "SOM"
+    162 = "ZAF"
+    163 = "SSD"
+    164 = "ESP"
+    165 = "LKA"
+    166 = "SDN"
+    167 = "SUR"
+    168 = "SWZ"
+    169 = "SWE"
+    170 = "CHE"
+    171 = "SYR"
+    172 = "TWN"
+    173 = "TJK"
+    174 = "TZA"
+    175 = "THA"
+    176 = "TGO"
+    177 = "TON"
+    178 = "TTO"
+    179 = "TUN"
+    180 = "TUR"
+    181 = "TKM"
+    182 = "TUV"
+    183 = "UGA"
+    184 = "UKR"
+    185 = "ARE"
+    186 = "GBR"
+    187 = "USA"
+    188 = "URY"
+    189 = "UZB"
+    190 = "VUT"
+    191 = "VAT"
+    192 = "VEN"
+    193 = "VNM"
+    194 = "YEM"
+    195 = "ZMB"
+    196 = "ZWE"
+
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "record_id"
+    sensitive = true
+
+  [subject.admission_date]
+    ref = "admissionDateHierarchy"
+
+  [subject.enrolment_date]
+    field = "recruit_date"
+
+  [subject.country_iso3]
+    field = "country"
+    ref = "countryMap"
+
+  [subject.sex_at_birth]
+    field = "sex"
+    values = { 0 = "female", 1 = "male" }
+
+  [subject.age]
+    field = "age"
+    description = "Age"
+    source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
+    unit = "years"
+
+  [subject.ethnicity]
+    combinedType = "set"
+    excludeWhen = "none"
+
+    [[subject.ethnicity.fields]]
+      field = "ethnicity"
+
+      [subject.ethnicity.fields.values]
+        1 = "Arabic"
+        2 = "Black"
+        3 = "South_Asian"
+        4 = "East_Asian"
+        5 = "West_Asian"
+        6 = "Latin_American"
+        7 = "White"
+        8 = "Aboriginal_First_Nations"
+
+[subject.has_asthma]
+  field = "asthma"
+  description = "Asthma (diagnosed by a physician)"
+  ref = "Y/N/NK"
+
+[subject.has_chronic_cardiac_disease]
+  field = "cardiac"
+  description = "Chronic heart disease, including congenital heart disease (not hypertension)"
+  ref = "Y/N/NK"
+
+[subject.has_chronic_hematologic_disease]
+  field = "hem_dse"
+  description = "Chronic blood disease"
+  ref = "Y/N/NK"
+
+[subject.has_chronic_kidney_disease]
+  combinedType = "any"
+
+  [[subject.has_chronic_kidney_disease.fields]]
+    field = "ckd"
+    description = "Chronic kidney disease"
+    ref = "Y/N/NK"
+
+  [[subject.has_chronic_kidney_disease.fields]]
+    field = "dialysis_disch"
+    description = "Dialysis/kidney treatment"
+    values = { 1 = true, 0 = false }
+
+[subject.has_dementia]
+  field = "dement"
+  description = "Dementia"
+  ref = "Y/N/NK"
+
+[subject.has_diabetes]
+  combinedType = "any"
+  fields = [
+    { field = "diab", description = "Diabetes", ref = "Y/N/NK" },
+    { field = "diab_comp", description = "Diabetes without complication", ref = "Y/N/NK" },
+  ]
+
+[subject.has_hiv]
+  field = "hiv"
+  description = "HIV/AIDS"
+  ref = "Y/N/NK"
+
+[subject.has_hypertension]
+  field = "hypertension"
+  description = "Hypertension"
+  ref = "Y/N/NK"
+
+[subject.has_liver_disease]
+  combinedType = "any"
+  fields = [
+    { field = "hep_dse_mild", description = "Mild liver disease", ref = "Y/N/NK" },
+    { field = "hep_dse_mod_sev", description = "Moderate or severe liver disease", ref = "Y/N/NK" },
+  ]
+
+[subject.has_malignant_neoplasm]
+  field = "neopla"
+  description = "Malignant tumor"
+  ref = "Y/N/NK"
+
+[subject.has_malnutrition]
+  field = "malnu"
+  description = "Malnutrition"
+  ref = "Y/N/NK"
+
+[subject.has_obesity]
+  field = "obesity"
+  description = "Obesity (as defined by caregiver)"
+  ref = "Y/N/NK"
+
+[subject.has_solid_organ_transplant]
+  field = "organ_rec"
+  description = "Transplanted (organ or bone marrow)"
+  ref = "Y/N/NK"
+
+[subject.has_tuberculosis]
+  field = "tuberculosis"
+  description = "Tuberculosis"
+  ref = "Y/N/NK"
+
+[subject.icu_admitted]
+  field = "overall_icu_hostdat"
+  description = "Date of ICU admission:"
+
+[subject.pregnancy]
+  field = "preg"
+  description = "Whether patient is pregnant or in post-partum period"
+  values = { 1 = true, 0 = false }
+
+[subject.pregnancy_post_partum]
+  field = "preg_2"
+  description = "Whether currently pregnant or in post-partum period"
+  values = { 1 = false, 2 = true }
+
+[subject.pregnancy_gestational_assessment_weeks]
+  field = "gest"
+  description = "Gestational age"
+  unit = "weeks"
+
+[subject.pregnancy_outcome]
+  field = "del_outcome"
+  values = { 0 = "still born", 1 = "live birth" }
+
+[subject.pregnancy_birth_weight_kg]
+  field = "birthweigh"
+  source_unit = { field = "birthweight_units", values = { 1 = "kg", 2 = "lbs" } }
+  unit = "kg"
+
+[subject.pregnancy_whether_breastfed]
+  field = "breastfed"
+  ref = "Y/N/NK"
+
+[subject.pregnancy_date_of_delivery]
+  field = "del_date"
+
+[subject.pregnancy_gestational_outcome]
+  field = "gest_out"
+  values = { 1 = "term_birth", 2 = "preterm_birth" }
+
+[subject.works_healthcare]
+  field = "hth_wrk"
+  description = "Employed as a health worker?"
+  values = { 1 = true, 0 = false }
+
+[subject.works_microbiology_lab]
+  field = "microb"
+  description = "Employee of a microbiology laboratory"
+  values = { 1 = true, 0 = false }
+
+  # VISIT
+
+[visit.subject_id]
+  field = "record_id"
+  sensitive = true
+
+[visit.visit_id]
+  field = "record_id"
+  sensitive = true
+
+[visit.country_iso3]
+  field = "country"
+  ref = "countryMap"
+
+[visit.outcome]
+  field = "outcome"
+
+  [visit.outcome.values]
+    1 = "discharged"
+    2 = "recovered"
+    3 = "transferred"
+    4 = "death"
+    5 = "discharged"           # released with home care
+    6 = "palliative discharge" # released with palliative care
+
+[visit.start_date]
+  ref = "admissionDateHierarchy"
+
+[visit.date_outcome]
+  field = "outcome_date"
+  source_date = "%d/%m/%Y"
+
+[visit.icu_admission]
+  combinedType = "any"
+  fields = [
+    { field = "overall_icu_hostdat", description = "Date of ICU admission:" },
+    { field = "overall_icu_hoendat", description = "Date of ICU discharge:" },
+  ]
+
+[visit.icu_admission_dates]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "overall_icu_hostdat", description = "Date of ICU admission" },
+  ]
+
+[visit.pathogen_test_date]
+  field = "path_date"
+  description = "Test date"
+
+[visit.treatment_antibiotics]
+  field = "daily_antibiotic_cmyn"
+  description = "Antibiotics"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  description = "Antibiotic given - free text field"
+  fields = [{ field = "daily_antibiot_cmyn_name" }]
+
+[visit.treatment_ace_inhibitors]
+  field = "daily_ace_cmoccur"
+  description = "Angiotensin converting enzyme (ACE) inhibitors?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_immunosuppressant]
+  field = "immunosuppressive_agents"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_antifungal_agent]
+  field = "daily_antifung_cmyn"
+  description = "Antifungal agent?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_arb]
+  field = "daily_arb_cmoccur"
+  description = "Angiotensin II receptor antagonists (ARBs)?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_antimalarial]
+  field = "daily_antimal_cmyn"
+  description = "Antimalarials?"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_antiviral_type]
+  description = "Type of antiviral agent used"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
+  ]
+
+[visit.treatment_antivirals]
+  combinedType = "any"
+  fields = [
+    { field = "other_ant_viral_prmd", ref = "Y/N/NK" },
+    { field = "daily_antiviral_cmyn", values = { 1 = true, 0 = false } },
+  ]
+
+[visit.treatment_high_flow_nasal_cannula]
+  field = "overall_oxygen_cmtype___2"
+  description = "Oxygen interface type - HF nasal cannula"
+  values = { 2 = true }
+
+[visit.treatment_dialysis]
+  combinedType = "any"
+
+  [[visit.treatment_dialysis.fields]]
+    field = "dialysis_disch"
+    description = "Dialysis/kidney treatment"
+    values = { 1 = true, 0 = false }
+
+  [[visit.treatment_dialysis.fields]]
+    field = "dialy_hemo"
+    description = "Dialysis/Hemofiltration?"
+    ref = "Y/N/NK"
+
+[visit.treatment_ecmo]
+  field = "overall_extracorp_prtrt"
+  description = "Extracorporeal (ECMO) support"
+  ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid]
+  field = "daily_corticost_cmyn"
+  description = "Corticosteroids"
+  ref = "Y/N/NK"
+
+[visit.treatment_corticosteroid_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "dexamethasone", values = { 1 = "Dexamthasone" } },
+    { field = "hydrocortisone", values = { 1 = "Hydrocortisone" } },
+    { field = "prednisone", values = { 1 = "Prednisone" } },
+    { field = "methylprednisolone", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { field = "daily_corticost_cmtrt___5", values = { 1 = "Other" } },
+  ]
+
+  # daily_corticost_cmoth is empty
+
+[visit.treatment_experimental_agent]
+  field = "daily_exper_cmyn"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_experimental_agent_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
+  ]
+
+[visit.treatment_experimental_agent_type_other]
+  combinedType = "set"
+  description = "Experimental agent = other - free text field"
+  fields = [{ field = "daily_exper_cmoth" }]
+
+[visit.treatment_inotropes_vasopressors]
+  field = "vaso_or_inot"
+  description = "Any administration of vasopressor/inotrope?"
+  ref = "Y/N/NK"
+
+[visit.treatment_invasive_ventilation]
+  field = "overall_invasive_proccur"
+  description = "Invasive ventilation?"
+  ref = "Y/N/NK"
+
+[visit.treatment_noninvasive_ventilation]
+  field = "overall_noninvasive_proccur"
+  description = "Non-invasive ventilation (eg BiPAP, CPAP)?"
+  ref = "Y/N/NK"
+
+[visit.treatment_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "other_meds_1", description = "Other treatment" },
+    { field = "other_meds_2", description = "Other treatment" },
+  ]
+
+[visit.treatment_oxygen_therapy]
+  field = "overall_oxygen_cmoccur"
+  description = "Oxygen therapy?"
+  ref = "Y/N/NK"
+
+[visit.treatment_prone_position]
+  field = "overall_prone_prtrt"
+  description = "Prone position"
+  ref = "Y/N/NK"
+
+[visit.treatment_inhaled_nitric_oxide]
+  field = "inhaled_nitric"
+  description = "Inhaled nitric oxide"
+  ref = "Y/N/NK"
+
+[visit.treatment_steroids]
+  combinedType = "any"
+
+  [[visit.treatment_steroids.fields]]
+    field = "systemic_steroids"
+    description = "System steroid"
+    values = { 1 = true, 0 = false }
+
+  [[visit.treatment_steroids.fields]]
+    field = "other_systemic"
+    description = "Other systemic steroid"
+    values = { 1 = true, 0 = false }
+
+  [[visit.treatment_steroids.fields]]
+    field = "inhale_steroids"
+    description = "Inhalational/Nebulized steroid"
+    values = { 1 = true, 0 = false }
+
+  [[visit.treatment_steroids.fields]]
+    field = "topical"
+    description = "Topical steroids (including eyes/ear drops)"
+    values = { 1 = true, 0 = false }
+
+    # Observations
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "abd_pain_date" }
+  is_present = { field = "abd_pain", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "lymphadenopathy"
+  phase = "study"
+  date = { field = "lymphadenopathy_v2_date" }
+  is_present = { field = "lymphadenopathy_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "consciousness_date" }
+  is_present = { field = "consciousness", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "study"
+  date = { field = "consciousness_v2_date" }
+  is_present = { field = "consciousness_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "base_excess"
+  phase = "study"
+  date = { field = "soins_date_t" }
+  value = { field = "base_excess", description = "Basic excess" }
+
+[[observation]]
+  name = "chest_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "chest_pain_date" }
+  is_present = { field = "chest_pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "chest_pain"
+  phase = "study"
+  date = { field = "chest_pain_v2_date" }
+  is_present = { field = "chest_pain_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "conjunc_date" }
+  is_present = { field = "conjunc", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "study"
+  date = { field = "conjunc_v2_date" }
+  is_present = { field = "conjunc_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough", values = { 1 = true, 0 = false } },
+      { field = "dry_cough", values = { 1 = true, 0 = false } },
+      { field = "wet_cough", values = { 1 = true, 0 = false } },
+      { field = "blood_cough", values = { 1 = true, 0 = false } },
+    ]
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dry_cough_date" },
+      { field = "wet_cough_date" },
+      { field = "blood_cough_date" },
+    ]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "wet_cough_date" }
+  is_present = { field = "wet_cough", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "blood_cough_date" }
+  is_present = { field = "blood_cough", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough"
+  phase = "study"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_v2", ref = "Y/N/NK" },
+      { field = "dry_cough_v2", ref = "Y/N/NK" },
+      { field = "wet_cough_v2", ref = "Y/N/NK" },
+      { field = "blood_cough_v2", ref = "Y/N/NK" },
+    ]
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dry_cough_v2_date" },
+      { field = "wet_cough_v2_date" },
+      { field = "blood_cough_v2_date" },
+    ]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  is_present = { field = "wet_cough_v2", ref = "Y/N/NK" }
+  date = { field = "wet_cough_v2_date" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "study"
+  is_present = { field = "blood_cough_v2", ref = "Y/N/NK" }
+  date = { field = "blood_cough_v2_date" }
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "admission"
+  is_present = { field = "diarrhea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "diarrhea_date" }
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "study"
+  is_present = { field = "diarrhea_v2", ref = "Y/N/NK" }
+  date = { field = "diarrhea_v2_date" }
+
+[[observation]]
+  name = "ear_pain"
+  phase = "admission"
+  is_present = { field = "ear_pain", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "ear_pain_date" }
+
+[[observation]]
+  name = "ear_pain"
+  phase = "study"
+  is_present = { field = "ear_pain_v2", ref = "Y/N/NK" }
+  date = { field = "ear_pain_v2_date" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "admission"
+  is_present = { field = "fatigue", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "fatigue_date" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "study"
+  is_present = { field = "fatigue_v2", ref = "Y/N/NK" }
+  date = { field = "fatigue_v2_date" }
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "admission"
+  is_present = { field = "anosmia", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "anosmia_date" }
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "study"
+  is_present = { field = "anosmia_v2", ref = "Y/N/NK" }
+  date = { field = "anosmia_v2_date" }
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "admission"
+  is_present = { field = "ageusia", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "ageusia_date" }
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "study"
+  is_present = { field = "ageusia_v2", ref = "Y/N/NK" }
+  date = { field = "ageusia_v2_date" }
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  phase = "study"
+  is_present = { field = "lowerchesdrawing", ref = "Y/N/NK" }
+  date = { field = "lowerchesdrawing_date" }
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "admission"
+  is_present = { field = "myalagia", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "myalagia_date" }
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "study"
+  is_present = { field = "myalagia_v2", ref = "Y/N/NK" }
+  date = { field = "myalagia_v2_date" }
+
+[[observation]]
+  name = "runny_nose"
+  phase = "admission"
+  is_present = { field = "rhinorrhea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "rhinorrhea_date" }
+
+[[observation]]
+  name = "runny_nose"
+  phase = "study"
+  is_present = { field = "rhinorrhea_v2", ref = "Y/N/NK" }
+  date = { field = "rhinorrhea_v2_date" }
+
+[[observation]]
+  name = "seizures"
+  phase = "admission"
+  is_present = { field = "seizures", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "seizures_date_s_and_s" }
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  is_present = { field = "seizures_v2", ref = "Y/N/NK" }
+  date = { field = "seizures_v2_date" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "admission"
+  is_present = { field = "dyspnea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "dyspnea_date" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "study"
+  is_present = { field = "dyspnea_v2", ref = "Y/N/NK" }
+  date = { field = "dyspnea_v2_date" }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "admission"
+  is_present = { field = "skin_rash", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "skin_rash_date" }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "study"
+  is_present = { field = "skin_rash_v2", ref = "Y/N/NK" }
+  date = { field = "skin_rash_v2_date" }
+
+[[observation]]
+  name = "sore_throat"
+  phase = "admission"
+  is_present = { field = "sore_throat", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "sore_throat_date" }
+
+[[observation]]
+  name = "sore_throat"
+  phase = "study"
+  is_present = { field = "sore_throat_v2", ref = "Y/N/NK" }
+  date = { field = "sore_throat_v2_date" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "admission"
+  is_present = { field = "nausea", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "nausea_date" }
+
+[[observation]]
+  name = "wheezing"
+  phase = "admission"
+  is_present = { field = "wheezing", values = { 1 = true, 0 = false } }
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "wheezing_date" }
+
+[[observation]]
+  name = "wheezing"
+  phase = "study"
+  is_present = { field = "wheezing_v2", ref = "Y/N/NK" }
+  date = { field = "wheezing_v2_date" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "study"
+  is_present = { field = "nausea_v2", ref = "Y/N/NK" }
+  date = { field = "nausea_v2_date" }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "study"
+  date = { field = "bleeding_v2_date" }
+  is_present = { field = "bleeding_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "admission"
+  start_date = { field = "bleeding_date" }
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "bleeding", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "admission"
+  date = { field = "constantes_date_t" }
+  value = { field = "diastol_iso", description = "Diastolic blood pressure (BP diastolic)" }
+
+[[observation]]
+  name = "clinical_classification_pneumonia_needing_oxygen"
+  phase = "study"
+  is_present = { field = "clipneu", ref = "Y/N/NK" }
+  date = { field = "clipneu_date" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "diastol", description = "Diastolic BP" }
+
+[[observation]]
+  name = "pco2"
+  phase = "study"
+  date = { field = "soins_date_t" }
+
+  [observation.is_present]
+    field = "pcc02_source"
+    description = "From the same blood gas recording a PaO2"
+    values = { 1 = true, 0 = false }
+
+[[observation]]
+  name = "glasgow_coma_score"
+  phase = "admission"
+  date = { field = "constantes_date_t" }
+  value = { field = "gcs_15", description = "Glasgow score" }
+
+[[observation]]
+  name = "glasgow_coma_score"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "gcs", description = "Value Glasgow Score (SG/15)" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  value = { field = "pulse_iso", description = "Heart Rate (HR)" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "hr", description = "Heart Rate Value (HR)" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  date = { field = "other_0_v2_date" }
+  text = { field = "other_0_v2", description = "Other symptom 1" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "other_date" }
+  text = { field = "other_0", description = "Other symptom 1" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "other_1_date" }
+  text = { field = "other_1", description = "Other symptom 2" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "other_2_date" }
+  text = { field = "other_2", description = "Other symptom 3" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  date = { field = "other_0_v2_date" }
+  text = { field = "other_0_v2", description = "Other symptom 1" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  date = { field = "other_1_v2_date" }
+  text = { field = "other_1_v2", description = "Other symptom 2" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  date = { field = "other_2_v2_date" }
+  text = { field = "other_2_v2", description = "Other symptom 3" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "admission"
+  date = { field = "constantes_date_t" }
+  value = { field = "oxygen_saturation", description = "Oxygen saturation" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "admission"
+  date = { field = "o2_date" }
+  value = { field = "oxy_vsorres", description = "Oxygen saturation" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "oxy_vsorresu", values = { 1 = "without-oxygen", 2 = "with-oxygen" } },
+    ]
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "o2_sate", description = "Oxygen saturation" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ox_type", values = { 1 = "without-oxygen", 2 = "with-oxygen" } },
+    ]
+
+[[observation]]
+  name = "pH"
+  phase = "study"
+  date = { field = "laboratoire_date_t" }
+  value = { field = "urine_ph", description = "Urine pH" }
+
+[[observation]]
+  name = "renal_replacement_therapy_dialysis"
+  phase = "study"
+  date = { field = "soins_date_t" }
+  is_present = { field = "dialy_hemo", description = "Dialysis/Hemofiltration?", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "respiratory_rate"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "rr", description = "Respiratory rate (RR)" }
+
+[[observation]]
+  name = "respiratory_rate"
+  phase = "admission"
+  date = { field = "constantes_date_t" }
+  value = { field = "rr_iso", description = "Respiratory rate (RR)" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  phase = "admission"
+  date = { field = "constantes_date_t" }
+  value = { field = "systol_iso", description = "Systolic blood pressure (BP systolic)" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "systol", description = "Systolic BP" }
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "admission"
+  date = { field = "constantes_date_t" }
+  value = { field = "temperature_iso", description = "Temperature" }
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "study"
+  date = { field = "para_vitaux_date_t" }
+  value = { field = "temperature", description = "Value Temperature" }

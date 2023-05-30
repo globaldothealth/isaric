@@ -10,7 +10,10 @@
     "fieldMapping": {
       "oneOf": [
         {
-          "type": "string",
+          "type": [
+            "string",
+            "boolean"
+          ],
           "description": "A constant mapping"
         },
         {
@@ -115,7 +118,10 @@
                 "list",
                 "any",
                 "all",
-                "firstNonNull"
+                "min",
+                "max",
+                "firstNonNull",
+                "set"
               ],
               "description": "Specifies a combined type using of the supported combinations"
             },
@@ -165,6 +171,10 @@
         "defs": {
           "type": "object",
           "description": "Re-usable definitions"
+        },
+        "defaultDateFormat": {
+          "type": "string",
+          "description": "Default source date format, applied to fields with 'date' in name or format: date in the schema"
         },
         "tables": {
           "type": "object",
@@ -217,6 +227,13 @@
                 "schema": {
                   "type": "string",
                   "description": "JSON Schema to use for parser validation"
+                },
+                "optional-fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Fields which are ordinarily required, but should be optional for this parser"
                 }
               }
             }
@@ -230,7 +247,7 @@
       "required": [
         "subject_id",
         "country_iso3",
-        "enrolment_date",
+        "admission_date",
         "age",
         "sex_at_birth",
         "ethnicity",
@@ -348,6 +365,10 @@
           "description": "Malignant neoplasm",
           "$ref": "#/definitions/mapping"
         },
+        "has_malnutrition": {
+          "description": "Malnutrition",
+          "$ref": "#/definitions/mapping"
+        },
         "has_smoking": {
           "description": "History of smoking",
           "$ref": "#/definitions/mapping"
@@ -378,10 +399,6 @@
         },
         "has_apnoea": {
           "description": "Apnoea",
-          "$ref": "#/definitions/mapping"
-        },
-        "has_hiv_viral_suppression": {
-          "description": "HIV viral suppression",
           "$ref": "#/definitions/mapping"
         },
         "has_inflammatory_bowel_disease": {
@@ -494,6 +511,14 @@
           "description": "Corticosteroid",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_corticosteroid_type": {
+          "description": "Corticosteroid used",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_corticosteroid_type_other": {
+          "description": "Corticosteroid used",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_oxygen_therapy": {
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
@@ -514,7 +539,19 @@
           "description": "Antivirals",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_antiviral_type": {
+          "description": "Type of antiviral used",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antiviral_type_other": {
+          "description": "Type of antiviral used - Other agents",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_antibiotics": {
+          "description": "Antibiotics",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antibiotics_type": {
           "description": "Antibiotics",
           "$ref": "#/definitions/mapping"
         },
@@ -524,6 +561,14 @@
         },
         "treatment_experimental_agent": {
           "description": "Experimental agent",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_experimental_agent_type": {
+          "description": "Type of experimental agent used",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_experimental_agent_type_other": {
+          "description": "Type of experimental agent used - Other agents",
           "$ref": "#/definitions/mapping"
         },
         "treatment_inhaled_nitric_oxide": {
@@ -546,10 +591,6 @@
           "description": "Antimalarial",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_dexamethasone": {
-          "description": "Dexamethasone",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_high_flow_nasal_cannula": {
           "description": "High flow nasal cannula",
           "$ref": "#/definitions/mapping"
@@ -570,12 +611,8 @@
           "description": "Nsaid",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_neuraminidase": {
-          "description": "Neuraminidase",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_oxygen_interface": {
-          "description": "Oxygen interface",
+        "treatment_neuromuscular_blocking_agents": {
+          "description": "Neuromuscular blocking agents",
           "$ref": "#/definitions/mapping"
         },
         "treatment_cpr": {
@@ -588,10 +625,6 @@
         },
         "treatment_respiratory_support": {
           "description": "Respiratory support",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_tocilizumab": {
-          "description": "Tocilizumab",
           "$ref": "#/definitions/mapping"
         },
         "treatment_indication_anticoagulation": {
@@ -630,10 +663,6 @@
           "description": "Pacing",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_o2_flow_vol_max": {
-          "description": "O2 flow vol max",
-          "$ref": "#/definitions/mapping"
-        },
         "outcome": {
           "description": "Outcome",
           "$ref": "#/definitions/mapping"
@@ -652,8 +681,24 @@
         "required": [
           "phase",
           "name",
-          "date",
-          "if"
+          "date"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "text"
+            ]
+          },
+          {
+            "required": [
+              "value"
+            ]
+          },
+          {
+            "required": [
+              "is_present"
+            ]
+          }
         ],
         "properties": {
           "ref": {
@@ -663,6 +708,7 @@
           "phase": {
             "description": "Phase of study",
             "enum": [
+              "pre-admission",
               "admission",
               "study",
               "followup"
@@ -670,6 +716,7 @@
             "x-taplo": {
               "docs": {
                 "enumValues": [
+                  "Strictly before admission",
                   "Taken at or before admission",
                   "Observation during study period",
                   "Recorded in followup survey"
@@ -679,11 +726,11 @@
           },
           "date": {
             "description": "Date of observation, or end date of observation period",
-            "$ref": "#/definitions/fieldMapping"
+            "$ref": "#/definitions/mapping"
           },
           "start_date": {
             "description": "Start date of observation duration",
-            "$ref": "#/definitions/fieldMapping"
+            "$ref": "#/definitions/mapping"
           },
           "duration_type": {
             "description": "Duration type of observation",
@@ -708,13 +755,44 @@
             "type": "object",
             "description": "Condition under which row is emitted"
           },
+          "for": {
+            "type": "object",
+            "description": "For expression for repeating blocks",
+            "patternProperties": {
+              ".*": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "range"
+                    ],
+                    "properties": {
+                      "range": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        },
+                        "description": "Range of values [start, end] inclusive",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "uniqueItems": true
+                      }
+                    }
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              }
+            }
+          },
           "text": {
             "description": "Value of the observation (text)",
             "$ref": "#/definitions/mapping"
           },
           "is_present": {
             "description": "Whether the observation denotes presence (*true*) or absence (*false*)",
-            "$ref": "#/definitions/fieldMapping"
+            "$ref": "#/definitions/mapping"
           },
           "context": {
             "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement",
@@ -738,7 +816,6 @@
               "clinical_classification_pneumonia_needing_oxygen",
               "clinical_frailty_score",
               "diastolic_blood_pressure_mmHg",
-              "from_same_blood_gas_record_as_pao2",
               "glasgow_coma_score",
               "abdominal_pain",
               "adenopathy",
@@ -761,16 +838,16 @@
               "hepatomegaly",
               "history_of_fever",
               "inability_to_walk",
+              "inability_to_walk_scale",
               "irritability_peadiatrics",
               "joint_pain",
               "loss_of_smell",
               "loss_of_taste",
+              "loss_of_smell_or_taste",
               "lower_chest_wall_indrawing",
               "lung_sounds",
               "lymphadenopathy",
-              "malnutrition",
               "muscle_aches",
-              "neuromuscular_blocking_agents",
               "renal_replacement_therapy_dialysis",
               "runny_nose",
               "seizures",
@@ -790,8 +867,9 @@
               "other_symptom",
               "oxygen_o2hb",
               "oxygen_saturation_percent",
+              "oxygen_flow_volume_max",
               "pao2",
-              "pao2_sample_type",
+              "pco2",
               "pH",
               "respiratory_rate",
               "richmond_agitation-sedation_scale",

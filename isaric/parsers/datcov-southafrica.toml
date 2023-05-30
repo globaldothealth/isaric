@@ -1,0 +1,1007 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "datcov-southafrica"
+  description = "South Africa DATCOV study"
+
+  [adtl.tables.subject]
+    kind = "oneToOne"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "oneToOne"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    0 = false
+
+[adtl.defs.subjectId]
+  combinedType = "firstNonNull"
+  fields = [{ field = "PatientId" }, { field = "NICDCaseID" }]
+  sensitive = true
+
+[adtl.defs.admissionDateHierarchy]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "Adm Date.AdmissionDate", source_date = "%m/%d/%y" },
+    { field = "date_of_admis_datcov" },
+    { field = "flw_hospital_admit", description = "Roughly what date were you first admitted to hospital?" },
+  ]
+
+[adtl.defs.inabilityWalk.values]
+  1 = "No difficulty"
+  2 = "Some difficulty"
+  3 = "Some difficulty"
+  4 = "Lots of difficulty"
+  5 = "Unable to walk"
+
+[adtl.defs.inabilityWalkToday.values]
+  1 = "No difficulty"
+  2 = "Some difficulty"
+  3 = "Lots of difficulty"
+  4 = "Unable to walk"
+
+[subject]
+  # study_id = "datcov-southafrica"
+  country_iso3 = "ZAF"
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    ref = "subjectId"
+
+  [subject.enrolment_date]
+    ref = "admissionDateHierarchy"
+
+  [subject.age]
+    field = "Age"
+
+  [subject.sex_at_birth]
+    field = "BirthSex"
+    description = "Sex at birth"
+    values = { Male = "male", Female = "female" }
+
+  [subject.ethnicity]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "EthnicGroup" },                                                                 # text / check box field for the acute infection data; # values in the data: ['Black African', 'Coloured', 'Unknown', 'Indian', 'White', 'Other']
+      { field = "ethnic", values = { 1 = "Black", 2 = "White", 3 = "Indian", 4 = "Coloured" } },
+    ]
+
+  [subject.admission_date]
+    ref = "admissionDateHierarchy"
+
+  [subject.works_healthcare]
+    combinedType = "any"
+    fields = [
+      { field = "HealthcareWorker", values = { true = true, false = false } }, # values in the data: ['true', 'false']
+      { field = "healthwork_erterm", values = { 1 = true, 0 = false } },
+    ]
+    description = "Is the patient a healthcare worker?"
+
+  [subject.works_microbiology_lab]
+    field = "healthwork_type"
+    values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 6 = false, 7 = false, 8 = false, 9 = false, 10 = false }
+    description = "Is the patient a healthcare worker?"
+
+  [subject.pregnancy] # pregnancy fields not in the data?
+    field = "PregnancyStatus"
+    description = "If female patient, select pregnancy status"
+    values = { 'Yes' = true, 'No' = false }
+
+  [subject.has_chronic_hematologic_disease]
+    field = "flw_ongoing_chronic_list___12"
+    description = "Diagnosed, ongoing condition before COVID-19 diagnosis: Blood disorder"
+    ref = "Y/N/NK"
+
+  [subject.has_asplenia]
+    field = "flw_ongoing_chronic_list___10"
+    ref = "Y/N/NK"
+    description = "Asplenia"
+
+  [subject.has_tuberculosis]
+    combinedType = "any"
+    fields = [
+      { field = "Tuberculosis Active", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
+      { field = "flw_ongoing_chronic_list___20", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_dementia]
+    field = "flw_ongoing_chronic_list___15"
+    ref = "Y/N/NK"
+    description = "Dementia"
+
+  [subject.has_rheumatologic_disorder]
+    field = "flw_ongoing_chronic_list___13"
+    ref = "Y/N/NK"
+    description = "Rhemumatologic disorder"
+
+  [subject.has_hiv]
+    combinedType = "any"
+    fields = [
+      { field = "HIV Positive", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'Yes', nan]}
+      { field = "flw_ongoing_chronic_list___16", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_obesity]
+    field = "Obesity"
+    values = { 'Yes' = true, 'No' = false }
+    # values = ['No', 'Unknown', 'Yes', nan]
+
+  [subject.has_hypertension]
+    combinedType = "any"
+    fields = [
+      { field = "Hypertension", values = { 'Yes' = true, 'No' = false } },
+      { field = "flw_ongoing_chronic_list___2", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_malignant_neoplasm]
+    combinedType = "any"
+    fields = [
+      { field = "Malignancy", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'UNKNOWN', 'Yes', nan]
+      { field = "flw_ongoing_chronic_list___11", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_smoking]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "yes", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
+      { field = "flw_smok_before", values = { 1 = "former", 2 = "yes", 3 = "never" } },
+    ]
+
+  [subject.has_asthma]
+    combinedType = "any"
+    fields = [
+      { field = "Asthma", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
+      { field = "flw_ongoing_chronic_list___3", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_chronic_cardiac_disease]
+    combinedType = "any"
+    fields = [
+      { field = "Cardiac Disease", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'UNKNOWN', 'Yes', nan]
+      { field = "flw_ongoing_chronic_list___1", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_chronic_kidney_disease]
+    combinedType = "any"
+    fields = [
+      { field = "Chronic Renal Failure", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'UNKNOWN', 'Yes', nan] }
+      { field = "flw_ongoing_chronic_list___8", ref = "Y/N/NK" },
+    ]
+
+  [subject.has_diabetes]
+    combinedType = "any"
+    fields = [
+      { field = "Diabetes", values = { 'Yes' = true, 'No' = false } },                                  # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
+      { field = "flw_ongoing_chronic_list___5", ref = "Y/N/NK", description = "Diabetes Type 1" },
+      { field = "flw_ongoing_chronic_list___6", ref = "Y/N/NK", description = "Diabetes Type 2" },
+      { field = "flw_ongoing_chronic_list___7", ref = "Y/N/NK", description = "Diabetes Gestational" },
+    ]
+    # can we assume diabetes as a disease was there before COVID? and so the followup data applies here?
+
+  [subject.diabetes_type]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_ongoing_chronic_list___5", values = { 1 = "type-1" } },
+      { field = "flw_ongoing_chronic_list___6", values = { 1 = "type-2" } },
+      { field = "flw_ongoing_chronic_list___7", values = { 1 = "gestational" } },
+    ]
+
+  [subject.has_liver_disease]
+    field = "flw_ongoing_chronic_list___9"
+    ref = "Y/N/NK"
+    description = "Liver disease"
+
+    # [subject.has_hiv_viral_suppression]
+    #   field = "HIV Viral Suppression"
+    #   values = { 'Yes' = true, 'No' = false }
+    #   # values = [nan, 'No', 'Unknown', 'Yes']
+
+  [subject.has_tuberculosis_past]
+    field = "Tuberculosis Past"
+    values = { 'Yes' = true, 'No' = false }
+    # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
+
+  [subject.has_hiv_art]
+    field = "HIV On ART"
+    values = { 'Yes' = true, 'No' = false }
+    # values = [nan, 'Yes', 'Unknown', 'No']
+
+  [subject.has_immunosuppression_therapy_treatment]
+    field = "Admission Medications.Immunosuppressants"
+    values = { TRUE = true, FALSE = false }
+
+  [subject.has_died]
+    combinedType = "any"
+    fields = [
+      { field = "Discharge Status", values = { 'Discharged alive' = false, 'Transfer to other facility' = false, 'Died' = true, 'Died (non-COVID)' = true, 'In Hospital' = false, 'Discharged Alive' = false } },
+      { field = "Died After Discharge", values = { 'False' = false, 'True' = true } },
+      { field = "flw2_patient_status_1", values = { 1 = true, 0 = false, 2 = false, 4 = false } },
+      { field = "flw2_patient_status_2", values = { 1 = true, 0 = false, 2 = false, 4 = false } },
+      { field = "flw2_patient_status_3", values = { 1 = true, 0 = false, 2 = false, 4 = false } },
+      { field = "flw2_patient_status_4", values = { 1 = true, 0 = false, 2 = false, 4 = false } },
+      { field = "flw2_patient_status_5", values = { 1 = true, 0 = false, 2 = false, 4 = false } },
+      { field = "dsterm", description = "Death occurred", values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = true, 6 = false } },                                                                          # 5 = 'Died (non-COVID)'
+    ]
+
+  [subject.date_death]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "date_of_outcome_datcov", if.any = [
+        { "Discharge Status" = 'Died' },
+        { "Discharge Status" = 'Died (non-COVID)' },
+      ] }, # how to include 'if discharge status is died?'
+      { field = "Date Of Death", source_date = "%m/%d/%y", if = { "Died After Discharge" = 'True' } },
+      { field = "flw2_deceased_1", if = { "flw2_patient_status_1" = 4 } },
+      { field = "flw2_deceased_2", if = { "flw2_patient_status_2" = 4 } },
+      { field = "flw2_deceased_3", if = { "flw2_patient_status_3" = 4 } },
+      { field = "flw2_deceased_4", if = { "flw2_patient_status_4" = 4 } },
+      { field = "flw2_deceased_5", if = { "flw2_patient_status_5" = 4 } },
+    ]
+
+  [subject.icu_admitted]
+    combinedType = "any"
+    fields = [
+      { field = "Ever ICU", values = { 0 = false, 1 = true } },
+      { field = "Intervention during hospitalisation.IcuAdmission", ref = "Y/N/NK" },                                                                        # values in data = ['0', 'Unknown', '1']
+      { field = "flw_icu", description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?", values = { 0 = false, 1 = true } },
+    ]
+
+[visit]
+  country_iso3 = "ZAF"
+
+  [visit.subject_id]
+    ref = "subjectId"
+
+  [visit.visit_id] # to be determined, use subject id for now
+    ref = "subjectId"
+
+  [visit.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Adm Date.AdmissionDate", source_date = "%m/%d/%y" },
+      { field = "date_of_admis_datcov" },
+      { field = "flw_hospital_admit" },
+      { field = "flw_date_symptoms" },
+      { field = "flw_date_symptoms_2" },
+      { field = "flw2_date_symptoms_2_1" },                           # Q. SHOULD WE INCLUDE 'flw2_' fields here?
+      { field = "flw2_date_symptoms_2_2" },
+      { field = "flw2_date_symptoms_2_3" },
+      { field = "flw2_date_symptoms_2_4" },
+      { field = "flw2_date_symptoms_2_5" },
+    ]
+
+  [visit.outcome]
+    combinedType = "firstNonNull"
+
+    [[visit.outcome.fields]]
+      field = "Discharge Status"
+
+      [visit.outcome.fields.values]
+        "Discharged alive" = "discharged"
+        "Died" = "death"
+        "Transfer to other facility" = "transferred"
+        "In Hospital" = "hospitalised"
+        "Died (non-COVID)" = "death"                 # TODO: currently not in schema, marking as death
+
+    [[visit.outcome.fields]]
+      field = "dsterm"
+      values = { 1 = "discharged", 2 = "hospitalised", 3 = "transferred", 4 = "death", 5 = "death" }
+
+[visit.date_outcome]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "OutcomeDate", source_date = "%m/%d/%y" },
+    { field = "date_of_outcome_datcov" },
+  ]
+
+[visit.pathogen_test_date]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "PosSpecColDate", source_date = "%m/%d/%y" },
+    { field = "PosSpecRecDate", source_date = "%m/%d/%y" },
+    { field = "PosSpecRepDate", source_date = "%m/%d/%y" },
+  ]
+
+[visit.icu_admission] # Q. SHOULD WE INCLUDE 'flw2_icu_' fields here?
+  combinedType = "any"
+  fields = [
+    { field = "Ever ICU", values = { 0 = false, 1 = true } },
+    { field = "Intervention during hospitalisation.IcuAdmission", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+    { field = "flw_icu", values = { 0 = false, 1 = true } },
+  ]
+
+[visit.icu_admission_dates]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "Intervention during hospitalisation.IcuAdmissionDate", source_date = "%m/%d/%y" },
+  ]
+
+[visit.treatment_dialysis]
+  combinedType = "any"
+  fields = [
+    { field = "Ever RenalDialysis", values = { 0 = false, 1 = true } },
+    { field = "Intervention during hospitalisation.RenalDialysis", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_inotropes_vasopressors]
+  field = "Intervention during hospitalisation.IntropicSupport"
+  ref = "Y/N/NK"
+  # values = ['0', 'Unknown', '1']
+
+[visit.treatment_ecmo]
+  field = "Ever ECMO"
+  values = { 0 = false, 1 = true }
+
+[visit.treatment_oxygen_therapy]
+  combinedType = "any"
+  fields = [
+    { field = "Ever on oxygen", values = { 0 = false, 1 = true } },
+    { field = "Admission Intervention.OnOxygen", values = { FALSE = false, TRUE = true } },
+    { field = "Intervention during hospitalisation.SupplementalOxygen", ref = "Y/N/NK" },   # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_prone_position]
+  combinedType = "any"
+  fields = [
+    { field = "Ever ProneVentilation", values = { 0 = false, 1 = true } },
+    { field = "Intervention during hospitalisation.ProneVentilation", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_invasive_ventilation]
+  combinedType = "any"
+  fields = [
+    { field = "Ever InvasiveVentilation", values = { 0 = false, 1 = true } },
+    { field = "Admission Intervention.Ventilated", values = { FALSE = false, TRUE = true } }, # values = False,  True
+    { field = "Intervention during hospitalisation.InvasiveVentilation", ref = "Y/N/NK" },    # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_antifungal_agent]
+  combinedType = "any"
+  fields = [
+    { field = "Ever Antifungals", values = { 1 = true, 0 = false } },
+    { field = "Medication during hospitalisation.AntifungalAgentAdministered", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_antivirals]
+  combinedType = "any"
+  fields = [
+    { field = "Ever Antivirals", values = { 1 = true, 0 = false } },
+    { field = "Medication during hospitalisation.AntiviralAgentAdministered", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_antiviral_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "Medication during hospitalisation.Ribavirin", values = { 1 = "Ribavirin" } },
+    { field = "Medication during hospitalisation.Remdesivir", values = { 1 = "Remdesivir" } },
+    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "Medication during hospitalisation.InterferonAlpha", values = { 1 = "Interferon alpha" } },
+    { field = "Medication during hospitalisation.InterferonBeta", values = { 1 = "Interferon beta" } },
+    { field = "Medication during hospitalisation.Neuraminidase", values = { 1 = "Neuraminidase inhibitor" } },
+    { field = "Medication during hospitalisation.OtherAntiviralAdministered", values = { 1 = "Other" } },
+    { field = "Medication during hospitalisation.Tocilizumab", values = { 1 = "Tocilizumab" } },
+  ]
+
+[visit.treatment_antibiotics]
+  combinedType = "any"
+  fields = [
+    { field = "Ever Antibiotics", values = { 1 = true, 0 = false } },
+    { field = "Medication during hospitalisation.AntibioticsAdministered", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_anticoagulation]
+  combinedType = "any"
+  fields = [
+    { field = "Ever Anticoagulants", values = { 1 = true, 0 = false } },
+    { field = "Medication during hospitalisation.Anticoagulants", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_noninvasive_ventilation]
+  combinedType = "any"
+  fields = [
+    { field = "Admission Intervention.Ventilated", values = { FALSE = false, TRUE = true } },
+    { field = "Intervention during hospitalisation.NonInvasiveVentilation", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_ace_inhibitors]
+  field = "Admission Medications.AceInhibitor"
+  values = { FALSE = false, TRUE = true }
+
+[visit.treatment_high_flow_nasal_cannula]
+  combinedType = "any"
+  fields = [
+    { field = "Ever HighFlowNasalOxygen", values = { 1 = true, 0 = false } },
+    { field = "Intervention during hospitalisation.HighFlowNasalOxygen", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_steroids] # should this just be corticosteroids? - they are 2 different things in the data dict, but only steroids are in the data.
+  combinedType = "any"
+  fields = [
+    { field = "Ever Steroids", values = { 1 = true, 0 = false } },                         # values = [0, 1];
+    { field = "Admission Medications.Steroids", values = { FALSE = false, TRUE = true } },
+    { field = "Medication during hospitalisation.SteroidsAdministered", ref = "Y/N/NK" },  # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_corticosteroid_type]
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [
+    { field = "Medication during hospitalisation.Dexamethasone", values = { 1 = "Dexamethasone" } },
+    { field = "Medication during hospitalisation.Hydrocortisone", values = { 1 = "Hydrocortisone" } },
+    { field = "Medication during hospitalisation.OtherSteroids", values = { 1 = "Other" } },
+  ]
+
+[visit.treatment_immunosuppressant]
+  combinedType = "any"
+  fields = [
+    { field = "Ever ImmunosuppressiveDrugs", values = { 1 = true, 0 = false } },
+    { field = "Medication during hospitalisation.ImmunosuppressantAdministered", ref = "Y/N/NK" },   # values = ['0', 'Unknown', '1']
+    { field = "Admission Medications.Immunosuppressants", values = { FALSE = false, TRUE = true } },
+  ]
+
+[visit.treatment_cpr]
+  field = "Intervention during hospitalisation.CPR"
+  ref = "Y/N/NK"
+  # values = ['0', 'Unknown', '1']
+
+[visit.treatment_cardiovascular]
+  combinedType = "any"
+  fields = [
+    { field = "Ever CardiovascularSupport", values = { 1 = true, 0 = false } },
+    { field = "Intervention during hospitalisation.CardiovascularSupport", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+  # put MechanicalSupport in here? Contains ECMO as a subtype.
+
+[visit.treatment_colchicine]
+  field = "Medication during hospitalisation.Colchicine"
+  ref = "Y/N/NK"
+  # values = ['0', 'Unknown', '1']
+
+[visit.treatment_immunoglobulins]
+  combinedType = "any"
+  fields = [
+    { field = "Ever Immunoglobulin", values = { 1 = true, 0 = false } },
+    { field = "Medication during hospitalisation.ImmunoglobulinsAdministered", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_nsaid]
+  field = "Ever NonSteroidal"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_oxygen_mechanical_support]
+  field = "Intervention during hospitalisation.MechanicalSupport"
+  ref = "Y/N/NK"
+  # values = ['0', 'Unknown', '1']
+
+[visit.treatment_pacing]
+  field = "Intervention during hospitalisation.Pacing"
+  ref = "Y/N/NK"
+  # values = ['0', 'Unknown', '1']
+
+  # OBSERVATION - required (phase, name, if and date)
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Fever", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_fever_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "history_of_fever"
+  phase = "followup"
+  is_present = { field = "flw_fever", values = { 0 = false, 1 = true } } # values = ['0', '1', '2']
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "history_of_fever"
+  phase = "followup"
+  is_present = { field = "flw_fev", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_fever_{n}", values = { 0 = false, 1 = true } } # values = ['0', '1', '2']
+  if.any = [{ "flw2_fever_{n}" = 1 }, { "flw2_fever_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_fev_{n}", values = { 0 = false, 1 = true } } # values = ['0', '1', '2']
+  if.any = [{ "flw2_fev_{n}" = 1 }, { "flw2_fev_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Cough", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_cough_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_coughsput_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_coughhb_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.BreathShortness", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_shortbreath_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "shortness_of_breath"
+  phase = "followup"
+  is_present = { field = "flw_short_breth", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_short_breath_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_short_breath_{n}" = 0 }, { "flw2_short_breath_{n}" = 1 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.MuscleAches", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_myalgia_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "muscle_aches"
+  phase = "followup"
+  is_present = { field = "flw_muscle_pain", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Fatigue", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_fatigue_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "fatigue_malaise"
+  phase = "followup"
+  is_present = { field = "flw_fat_mal", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_fat_mal_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_fat_mal_{n}" = 1 }, { "flw2_fat_mal_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "headache"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Headache", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "headache"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_headache_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "headache"
+  phase = "followup"
+  is_present = { field = "flw_headache", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "headache"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_headache_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_headache_{n}" = 1 }, { "flw2_headache_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Confusion", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "confusion"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_confusion_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "confusion"
+  phase = "followup"
+  is_present = { field = "flw_confusion", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "confusion"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_confusion_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_confusion_{n}" = 1 }, { "flw2_confusion_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "anorexia"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_appetite_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "anorexia"
+  phase = "followup"
+  is_present = { field = "cu_appetite", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "anorexia"
+  phase = "followup"
+  is_present = { field = "flw_appetite", values = { 0 = false, 1 = true } }
+  if.any = [{ flw_appetite = 1 }, { flw_appetite = 0 }]
+
+[[observation]]
+  name = "anorexia"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_appetite_{n}", values = { 0 = false, 1 = true } }
+  if.any = [{ "flw2_appetite_{n}" = 1 }, { "flw2_appetite_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Vomiting", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_vomit_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "vomiting_nausea"
+  phase = "followup"
+  is_present = { field = "flw_feeling_sick", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_feeling_sick_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_feeling_sick_{n}" = 1 }, { "flw2_feeling_sick_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Admission Symptoms.Diarrhoea", ref = "Y/N/NK" } # values = ['0', 'Unknown', '1']
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_diarrhoea_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "diarrhoea"
+  phase = "followup"
+  is_present = { field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_diarrhoea_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_diarrhoea_{n}" = 1 }, { "flw2_diarrhoea_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "mid_upper_arm_circumference_cm"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  value = { field = "Mid-Upper-Arm Circumference" }
+
+[[observation]]
+  name = "sore_throat"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_sorethroat_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "runny_nose"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_runnynose_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "wheezing"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_wheeze_ceoccur_2", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "chest_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_chestpain_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "chest_pain"
+  phase = "followup"
+  is_present = { field = "flw_chest_pains", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "chest_pain"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_chest_pains_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_chest_pains_{n}" = 1 }, { "flw2_chest_pains_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "joint_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_jointpain_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "joint_pain"
+  phase = "followup"
+  is_present = { field = "flw_joint_pain", values = { 1 = true, 0 = false } }
+  if.any = [{ flw_joint_pain = 1 }, { flw_joint_pain = 0 }]
+
+[[observation]]
+  name = "joint_pain"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_joint_pain_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_joint_pain_{n}" = 1 }, { "flw2_joint_pain_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "inability_to_walk"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_inablewalk_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "inability_to_walk_scale"
+  phase = "followup"
+  text = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "inability_to_walk_scale"
+  phase = "followup"
+  text = { field = "flw_walking_today", ref = "inabilityWalkToday" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  text = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
+  if.not = { "flw2_eq5d_mb_5l_uk_eng_2_{n}" = "" }
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  text = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
+  if.not = { "flw2_walking_today_{n}" = "" }
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "seizures"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_seizures_cecoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = 'flw_survey_date' }
+  name = "seizures"
+  phase = "followup"
+  is_present = { field = "flw_seizures", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "seizures"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_seizures_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_seizures_{n}" = 1 }, { "flw2_seizures_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_abdopain_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_conjunct_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_rash_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "skin_rash"
+  phase = "followup"
+  is_present = { field = "flw_skin_rash", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_skin_rash_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_skin_rash_{n}" = 1 }, { "flw2_skin_rash_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "skin_ulcers"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_skinulcers_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "flw_bleed_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "bleeding_haemorrhage"
+  phase = "followup"
+  is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = { field = "flw2_survey_date_{n}" }
+  phase = "followup"
+  is_present = { field = "flw2_bleeding_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_bleeding_{n}" = 1 }, { "flw2_bleeding_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_smell_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "loss_of_smell"
+  phase = "followup"
+  is_present = { field = "cu_smell", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "loss_of_smell"
+  phase = "followup"
+  is_present = { field = "flw_loss_of_smell", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_loss_of_smell_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_loss_of_smell_{n}" = 1 }, { "flw2_loss_of_smell_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_taste_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "loss_of_taste"
+  phase = "followup"
+  is_present = { field = "cu_taste", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "loss_of_taste"
+  phase = "followup"
+  is_present = { field = "flw_loss_of_taste", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_loss_of_taste_{n}", values = { 1 = true, 0 = false } }
+  if.any = [{ "flw2_loss_of_taste_{n}" = 1 }, { "flw2_loss_of_taste_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "flw_lowerchest_ceoccur_2", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "renal_replacement_therapy_dialysis"
+  phase = "study"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "Intervention during hospitalisation.RenalDialysis", values = { 1 = true, 0 = false } }
+
+  # [[observation]]
+  #   name = "severe_dehydration"
+  #   # free text, mostly in
+  #   Admission Risk.OtherRiskDetails
+  #   Complication prior to discharge.OtherComplication
+
+  # [[observation]]
+  #   name = "lymphadenopathy"
+  #   # free text, sometimes appears under 'new symptoms'

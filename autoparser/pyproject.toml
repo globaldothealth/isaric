@@ -1,0 +1,40 @@
+[build-system]
+  requires = ['setuptools>=40.8.0']
+  build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+  packages = ["autoparser"]
+
+  [tool.setuptools.package-data]
+    autoparser = ["config/*.toml"]
+
+[project]
+  name = "autoparser"
+  version = "0.1"
+  description = """autoparser generates ISARIC parsers as TOML files which
+  are processed by adtl to transform files from the source schema
+"""
+  authors = [
+    { name = "Abhishek Dasgupta", email = "abhishek.dasgupta@dtc.ox.ac.uk" },
+  ]
+  license = { file = "LICENSE" }
+  requires-python = ">=3.8"
+  readme = "README.md"
+  classifiers = ["License :: OSI Approved :: MIT License"]
+  dependencies = [
+    "tomli>=2.0.0",
+    "numpy>=1.0.0",
+    "pandas==1.5.*",
+    "scikit-learn>=1.0.0",
+    "nltk>=3.8",
+    "openpyxl>=3.1.0",
+  ]
+
+  [project.optional-dependencies]
+    test = ["pytest", "pytest-cov", "syrupy==4.*"]
+
+  [project.urls]
+    Home = "https://github.com/globaldothealth/isaric"
+
+  [project.scripts]
+    autoparser = "autoparser.__main__:main"

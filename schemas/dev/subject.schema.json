@@ -6,7 +6,7 @@
   "required": [
     "subject_id",
     "country_iso3",
-    "enrolment_date",
+    "admission_date",
     "age",
     "sex_at_birth",
     "ethnicity",
@@ -42,17 +42,22 @@
       "category": "site-details"
     },
     "age": {
-      "type": "number",
+      "type": [
+        "number",
+        "string"
+      ],
       "description": "Age in years",
       "category": "demographics",
-      "exclusiveMinimum": 0,
-      "maximum": 120
+      "minimum": 0,
+      "maximum": 120,
+      "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
     "sex_at_birth": {
       "enum": [
         "male",
         "female",
-        "non_binary"
+        "non_binary",
+        "intersex"
       ],
       "description": "Sex at birth",
       "category": "demographics"
@@ -60,18 +65,9 @@
     "ethnicity": {
       "type": "array",
       "items": {
-        "enum": [
-          "Arab",
-          "Black",
-          "East_Asian",
-          "South_Asian",
-          "West_Asian",
-          "Latin_American",
-          "White",
-          "Aboriginal_First_Nations",
-          "Other"
-        ]
+        "type": "string"
       },
+      "uniqueItems": true,
       "description": "Ethnicity",
       "category": "demographics"
     },
@@ -179,6 +175,11 @@
       "description": "Malignant neoplasm",
       "category": "comorbidities"
     },
+    "has_malnutrition": {
+      "type": "boolean",
+      "description": "Malnutrition",
+      "category": "comorbidities"
+    },
     "has_smoking": {
       "enum": [
         "yes",
@@ -227,11 +228,6 @@
       "description": "Apnoea",
       "category": "comorbidities"
     },
-    "has_hiv_viral_suppression": {
-      "type": "boolean",
-      "description": "HIV viral suppression",
-      "category": "comorbidities"
-    },
     "has_inflammatory_bowel_disease": {
       "type": "boolean",
       "description": "Inflammatory bowel disease",
@@ -267,6 +263,7 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Other comorbidities",
       "category": "comorbidities"
     },

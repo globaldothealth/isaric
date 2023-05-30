@@ -5,14 +5,42 @@ Flag in CI if parser fails validation
 import sys
 import json
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Any
 
 import tomli
 import fastjsonschema
 
 
+def make_fields_optional(
+    schema: dict[str, Any], optional_fields: dict[str, list[str] | None]
+) -> dict[str, Any]:
+    "Remove optional fields from required list in parser schema"
+    for table in optional_fields:
+        if table in ["subject", "visit"]:
+            schema["properties"][table]["required"] = list(
+                set(schema["properties"][table]["required"])
+                - set(optional_fields[table] or [])
+            )
+        elif table == "observation":
+            schema["properties"][table]["items"]["required"] = list(
+                set(schema["properties"][table]["items"]["required"])
+                - set(optional_fields[table] or [])
+            )
+        else:
+            continue
+
+    return schema
+
+
 def validate(file: str) -> Tuple[str, bool, str]:
     "Validates file and returns a tuple of whether file is valid and a string error message"
+
+    with open(file, "rb") as fp:
+        data = tomli.load(fp)
+        optional_fields = {
+            table: data["adtl"]["tables"][table].get("optional-fields")
+            for table in data["adtl"]["tables"]
+        }
     schema_header = Path(file).read_text().split()[:2]
     if (
         schema_header[0] == "#:schema"
@@ -22,12 +50,11 @@ def validate(file: str) -> Tuple[str, bool, str]:
         if not schema_file_path.exists():
             raise FileNotFoundError(f"Schema file not found at: {schema_file_path}")
         with schema_file_path.open() as fp:
-            schema_validate = fastjsonschema.compile(json.load(fp))
+            schema = make_fields_optional(json.load(fp), optional_fields)
+            schema_validate = fastjsonschema.compile(schema)
     else:
         return file, False, "no schema found"
 
-    with open(file, "rb") as fp:
-        data = tomli.load(fp)
     try:
         schema_validate(data)
     except fastjsonschema.exceptions.JsonSchemaValueException as e:

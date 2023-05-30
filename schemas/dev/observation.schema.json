@@ -8,6 +8,23 @@
     "date",
     "name"
   ],
+  "oneOf": [
+    {
+      "required": [
+        "text"
+      ]
+    },
+    {
+      "required": [
+        "value"
+      ]
+    },
+    {
+      "required": [
+        "is_present"
+      ]
+    }
+  ],
   "properties": {
     "dataset_id": {
       "type": "string",
@@ -29,6 +46,7 @@
     },
     "phase": {
       "enum": [
+        "pre-admission",
         "admission",
         "study",
         "followup"
@@ -37,12 +55,26 @@
     },
     "date": {
       "type": "string",
-      "format": "date",
+      "anyOf": [
+        {
+          "format": "date"
+        },
+        {
+          "format": "date-time"
+        }
+      ],
       "description": "Date of observation, or end date of observation period"
     },
     "start_date": {
       "type": "string",
-      "format": "date",
+      "anyOf": [
+        {
+          "format": "date"
+        },
+        {
+          "format": "date-time"
+        }
+      ],
       "description": "Start date of observation duration"
     },
     "duration_type": {
@@ -70,19 +102,18 @@
       "items": {
         "type": "string"
       },
+      "uniqueItems": true,
       "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement"
     },
     "name": {
       "enum": [
         "avpu",
-        "clinical_classification_critical_illness_scale_",
+        "clinical_classification_critical_illness_scale",
         "clinical_classification_pneumonia_needing_oxygen",
         "clinical_frailty_score",
         "diastolic_blood_pressure_mmHg",
-        "from_same_blood_gas_record_as_pao2",
         "glasgow_coma_score",
         "abdominal_pain",
-        "adenopathy",
         "altered_consciousness_confusion",
         "anorexia",
         "base_excess",
@@ -102,16 +133,16 @@
         "hepatomegaly",
         "history_of_fever",
         "inability_to_walk",
+        "inability_to_walk_scale",
         "irritability_peadiatrics",
         "joint_pain",
         "loss_of_smell",
         "loss_of_taste",
+        "loss_of_smell_or_taste",
         "lower_chest_wall_indrawing",
         "lung_sounds",
         "lymphadenopathy",
-        "malnutrition",
         "muscle_aches",
-        "neuromuscular_blocking_agents",
         "renal_replacement_therapy_dialysis",
         "runny_nose",
         "seizures",
@@ -131,8 +162,9 @@
         "other_symptom",
         "oxygen_o2hb",
         "oxygen_saturation_percent",
+        "oxygen_flow_volume_max",
         "pao2",
-        "pao2_sample_type",
+        "pco2",
         "pH",
         "respiratory_rate",
         "richmond_agitation-sedation_scale",
@@ -147,7 +179,9 @@
   },
   "dependencies": {
     "start_date": {
-      "required": "duration_type"
+      "required": [
+        "duration_type"
+      ]
     }
   }
 }
