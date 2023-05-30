@@ -175,7 +175,7 @@ General notes on naming conventions:
 
 **subject_id**: Text. Unique ID for the subject (NOTE: currently this is the same as the visit ID, prior to implementation of RELSUB matching).
 
-**dataset_id**: Text. Refers to the specifc ID/Version of the dataset being used (Note to devs: should this be study metadata instead?)
+**dataset_id**: Text. Refers to the specifc ID/Version of the dataset being used (NOTE TO DEVS: should this be study metadata instead?)
 
 **country_iso3**: Text. Alpha-3 country code of the <ins>study site. </ins> NOTE TO DEVS: If this relates to study site only, it shouldn't be in the subject table.
 
@@ -281,7 +281,7 @@ Contains data specific to the visit, including details on which treatments the s
 ### Superset, general level indicators:
 
 **treatment_oxygen_therapy**: Indicates at least one type of oxygen therapy and/or respiratory support has been administered. Subsets are:
-+ *treatment_oxygen_mask_unspecified* - Note to devs: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
++ *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 + *treatment_high_flow_nasal_cannula*
 + *treatment_noninvasive_ventilation* - Ventilation via e.g., BIPAP/CPAP mask
 + *treatment_invasive_ventilation* - Intubation. Includes deprecated 'mechanical_support' attribute
@@ -300,7 +300,7 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **subject_id**: Text. Unique ID for the subject (NOTE: currently this is the same as the visit ID, prior to implementation of RELSUB matching).
 
-**dataset_id**: Text. Refers to the specifc ID/Version of the dataset being used (Note to devs: should this be study metadata instead?)
+**dataset_id**: Text. Refers to the specifc ID/Version of the dataset being used (NOTE TO DEVS: should this be study metadata instead?)
 
 **country_iso3**: Text. Alpha-3 country code of the <ins>study site. </ins>
 
@@ -400,6 +400,130 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
     ]
 ```
 
+### Other fields
+
+**avpu**: Text. Where is the subject on the AVPU conciousness scale (Alert, Voice, Pain, Unresponsive)
+
+**abdominal_pain**: Bool.
+
+**altered_conciousness_confusion**: Bool. If field only records confusion, not altered conciousness, use [confusion](confusion)
+
+**anorexia**: Bool.
+
+**base_excess**: Value. Difference between observed and normal buffer base concentration for oxygenated blood.
+
+**bleeding**: Bool. For bleeding (other) observations. If field is described as bleeding (haemorrhage) or similar, use *bleeding_haemorrhage*.
+
+**bleeding_haemorrhage**: Bool.
+
+**chest_pain**: Bool.
+
+**clinical_classification_critical_illness_scale**: Currently Unused. Traffic-light suggests only in one parser, suggest editing or removal.
+
+**clinical_classification_pneumonia_needing_oxygen**: Bool. NOTE TO DEVS - Only used once (guinea), only one according to traffic light doc - suggest edit to just pneumonia complication, with context for viral/bacterial.
+
+**clinical_frailty_score**: Value. [Frailty scale](https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/rockwood_cfs.pdf)
+
+<a name="confusion"></a> **confusion**: Bool.
+
+**conjunctavitis**: Bool.
+
+**cyanosis**: Bool. Presence of cyanosis (blue/purple hue to skin)
+
+**diarrhoea**: Bool.
+
+**diastolic_blood_pressure_mmHg**: Value.
+
+**systolic_blood_pressure_mmHg**: Value.
+
+**mean_arterial_blood_pressure_mmHg**: Value.
+
+**ear_pain**: Bool.
+
+**fatigue_malaise**: Bool.
+
+**feeding_intolerence_peadiatrics** Bool. Unused.
+
+**glasgow_coma_score**: Value. [Coma scale](https://www.glasgowcomascale.org)
+
+**headache**: Bool.
+
+**heart_rate_bmp**: Value.
+
+**heart_sounds**: Bool.
+
+**hepatomegaly** Bool. Enlarged liver? (Unused)
+
+**history_of_fever** Bool. Recently feverish? For admission/followup where the subject self-reports.
+
 <a name="inability_to_walk"></a> **inability_to_walk**: boolean indicator. Where a relevant field contains a scale, rather than boolean Y/N responses, use [inability_to_walk_scale](inability_to_walk_scale).
 
 <a name="inability_to_walk_scale"></a>**inability_to_walk_scale**: Use a 1-4 scale to indicate the degree of difficulty a subject has walking. Values should map to: *1-No difficulty, 2-Some difficulty, 3-Lots of difficulty, 4-Unable to walk*. If the field contains a greater number of options, they should be mapped onto a 1-4 scale, rounding down. E.g., for a 1-5 scale of: *1-no inability, 2-slight inability, 3-moderate inability, 4-severe inability, 5-unable*, option 3 (moderate inability) should be rounded down and mapped to *2-some difficulty* in the 1-4 scale. If a relevant field instead contains a boolean Y/N response, use [inability_to_walk](#inability_to_walk) instead.
+
+**irritability_peadiatrics**: Bool. Unused.
+
+**joint_pain**: Bool.
+
+**loss_of_smell**: Bool. If loss of smell/taste, use combined attribute below.
+
+**loss_of_smell_or_taste**: Bool. For where smell/taste loss is combined.
+
+**loss_of_taste**: Bool.
+
+**lower_chest_wall_indrawing**: Bool.
+
+**lung_sounds**: Bool. Unused.
+
+**lymphadenopathy**: Bool. Combines adenopathy and lymphadenopathy.
+
+**mid_upper_arm_circumference_cm**: Value.
+
+**muscle_aches**: Bool.
+
+**other_symptom**: Set (Text). List any other symptoms, or free text fields describing symptoms, here.
+
+**oxygen_o2hb**: Unused, not sure what it relates to.
+
+**oxygen_flow_volume_max**: Value. If the subject recieved O2 therapy, record the maximum flow volume.
+
+**oxygen_saturation_percent**: Value. Use context to note whether observation was made on room air, on while on oxygen.
+
+**pao2**: Value. Use context to record whether this is an arterial, venous or capillary measurement if data is provided. NOTE TO DEVS - We should pick/ consult on a default unit for pao2/pco2.
+
+**pco2**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pH* observation.
+
+**pH**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pco2* observation.
+
+**respiratory_rate**: Value.
+
+**richmond_agitation-sedation_scale**: Value.
+
+**riker_sedation-agitation_scale**: Value.
+
+**runny_nose**: Bool.
+
+**seizures**: Bool.
+
+**severe_dehydration**: Bool. Clinically diagnosed only.
+
+**shortness_of_breath**: Bool.
+
+**skin_rash**: Bool.
+
+**skin_ulcers**: Bool.
+
+**sore_throat**: Bool.
+
+**sternal_capillary_refill_time_greater_2s**: Bool. May need to use conditional statements if the refill time is given rather than a yes/no response.
+
+**temperature_celsius**: Value
+
+**time_of_admission**: Text (date). NOTE TO DEVS - Does this belong in the observations/complications table? Better in the visit table?
+
+**total_fluid_output_ml**: Value.
+
+**transfer_from_another_facility**: Bool. NOTE TO DEVS - Does this belong in the observations/complications table? Better in the visit table?
+
+**vomiting_nausea**: Bool.
+
+**wheezing**: Bool.
