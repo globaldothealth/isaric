@@ -273,7 +273,7 @@ General notes on naming conventions:
 
 **has_solid_organ_transplant** Bool. Has the subject undergone a solid organ transplant? (Note - include bone marrow transplants here)
 
-<a name="immunosuppressed"></a>**has_immunosuppression_therapy** Bool. Is the subject chronically immunosuppressed?
+<a name="immunosuppressed"></a>**has_immunosuppression_therapy_treatment** Bool. Is the subject chronically immunosuppressed? NOTE TO DEVS: In many cases this is being mapped as a pre-admission med -i.e. 'immunosuppressant agent'. In which case it shouldn't be a co-morbidity, but a preadmission med (which we're not doing atm). Suggest changing this to 'has_immunosuppression' to indicate someone who is immunosupressed either because of a medical condition or because they are taking immunosuppressants, then in the future pre-admission meds mapping we include a specific field for 'taking immunosuppressants'.
 
 **has_comorbidity_other**: Set. Any other comorbidity - free text field.
 
