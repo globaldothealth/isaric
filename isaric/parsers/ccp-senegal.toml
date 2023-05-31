@@ -48,6 +48,7 @@
 [subject]
   country_iso3 = "SEN"
   pathogen = "COVID-19"
+  enrolment_date = { field = "dsstdat" }
 
   [subject.subject_id]
     field = "record_id"
@@ -179,6 +180,13 @@
   description = "Pregnancy gestational outcome"
   values = { 1 = "term_birth", 2 = "preterm_birth" }
 
+[subject.pregnancy_whether_breastfed]
+  combinedType = "any"
+  fields = [
+    { field = "allaitante", ref = "Y/N/NK" },
+    { field = "apsc_brfedind", ref = "Y/N/NK" },
+  ]
+
 [subject.pregnancy_outcome]
   field = "pregout_rptestcd"
   description = "Pregnancy"
@@ -206,6 +214,11 @@
   field = "labwork_erterm"
   ref = "Y/N/NK"
 
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "otherrisktext", if.other_mhyn = 1 }]
+
   # visit
 
 [visit]
@@ -221,6 +234,14 @@
 
   [visit.start_date]
     ref = "admissionDate"
+
+  [visit.icu_admission]
+    field = "daily_hoterm"
+    ref = "Y/N/NK"
+
+  [visit.treatment_prone_position]
+    field = "daily_prone_cmtrt"
+    ref = "Y/N/NK"
 
   [visit.outcome]
     field = "dsterm"
@@ -238,11 +259,12 @@
   description = "Outcome date"
 
 [visit.treatment_dialysis]
-  combinedType = "any"
-  fields = [
-    { field = "daily_rrt_cmtrt", ref = "Y/N/NK" },
-    { field = "renal_proccur", ref = "Y/N/NK" },
-  ]
+  # do not use renal_proccur as it is from discharge treatment section
+  field = "daily_rrt_cmtrt"
+  ref = "Y/N/NK"
+
+[visit.pathogen_test_date]
+  field = "mb_avthosp_dat"
 
 [visit.treatment_ecmo]
   field = "daily_ecmo_prtrt"
@@ -302,6 +324,34 @@
       TINIDAZOLE = true
       "TOBREX COLLYRE" = true
 
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+
+  [[visit.treatment_antibiotics_type.fields]]
+    fieldPattern = "tmt_pdthosp_nom.*"
+
+    [visit.treatment_antibiotics_type.fields.values]
+      "ACIDE CLAVULANIQUE" = "Clauvanic acid"
+      AMOXICILLINE = "Amoxicillin"
+      APEXIME = "Apexime"
+      AZICURE = "Azicure"
+      AZITHROMYCINE = "Azithromycine"
+      C-TRI = "C-TRI"
+      "C.TRI" = "C-TRI"
+      CEFTRIAXONE = "Ceftriaxone"
+      CIPROFLOXACINE = "Ciprofloxacine"
+      IMIPENEME = "Imipeneme"
+      NOVOCLIN = "Novoclin"
+      TINIDAZOLE = "Tinidazole"
+      "TOBREX COLLYRE" = "Tobramycin"
+
+[visit.treatment_experimental_agent_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { fieldPattern = "tmt_pdthosp_nom.*", values = { HYDROXYCHLOROQUINE = "Hydroxychloroquine" } },
+  ]
+
 [visit.treatment_antifungal_agent]
   combinedType = "any"
 
@@ -337,6 +387,7 @@
     { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
     { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
     { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
+    { fieldPattern = ".*oxygenotherapy_prec.*", values = { 1 = true, 2 = true } },
   ]
 
   # observation
