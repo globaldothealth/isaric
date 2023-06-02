@@ -318,6 +318,8 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **icu_admission_dates**: List: List of admission date(s) to ICU.
 
+**transfer_from_other_facility**: Bool. Was the subject transferred to this site from another facility?
+
 **treatment_dialysis**: Bool. Did the subject receive dialysis during this visit?
 
 **treatment_inotropes_vasopressors**: Bool. Treatment with vasopressors during this visit?
@@ -525,8 +527,6 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
 **temperature_celsius**: Value
 
 **total_fluid_output_ml**: Value.
-
-**transfer_from_another_facility**: Bool. NOTE TO DEVS - Does this belong in the observations/complications table? Better in the visit table?
 
 **vomiting_nausea**: Bool.
 

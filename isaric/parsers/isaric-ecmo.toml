@@ -515,6 +515,10 @@
   excludeWhen = "none"
   fields = [{ field = "icu_hostdat" }]
 
+[visit.transfer_from_other_facility]
+  field = "hooccur"
+  values = { 1 = true, 2 = true, 3 = false }
+
 [visit.treatment_antivirals]
   field = "antiviral_cmyn"
   ref = "Y/N/NK"

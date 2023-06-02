@@ -473,6 +473,10 @@
     field = "overall_icu_hostdat"
     description = "Date of ICU admission:"
 
+[visit.transfer_from_other_facility]
+  field = "rpt_date"
+  apply = { function = "isNotNull" }
+
 [visit.outcome]
   field = "outcome"
   description = "Outcome"
@@ -1368,13 +1372,6 @@
   phase = "study"
   date = { field = "vitals_date" }
   value = { field = "temperature", description = "Temperature" }
-
-[[observation]]
-  name = "transfer_from_other_facility"
-  phase = "study"
-  date = { field = "rpt_date" }
-  if = { rpt_date = { "!=" = "" } }
-  is_present = true
 
 [[observation]]
   name = "vomiting_nausea"

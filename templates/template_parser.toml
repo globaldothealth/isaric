@@ -299,6 +299,11 @@
     field = ""
     description = ""
 
+  [visit.transfer_from_other_facility]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
   [visit.treatment_dialysis]
     field = ""
     description = ""
@@ -1104,15 +1109,6 @@
 
 [[observation]]
   name = "total_fluid_output_ml"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "transfer_from_other_facility"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }

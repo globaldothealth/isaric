@@ -490,6 +490,10 @@
           "description": "Date(s) of admission to ICU",
           "$ref": "#/definitions/mapping"
         },
+        "transfer_from_other_facility": {
+          "description": "Admitted to ICU in this visit",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_dialysis": {
           "description": "Dialysis",
           "$ref": "#/definitions/mapping"
@@ -870,8 +874,7 @@
               "riker_sedation-agitation_scale",
               "systolic_blood_pressure_mmHg",
               "temperature_celsius",
-              "total_fluid_output_ml",
-              "transfer_from_other_facility"
+              "total_fluid_output_ml"
             ]
           }
         }

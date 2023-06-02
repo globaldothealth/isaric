@@ -262,6 +262,11 @@
       source_date = "%Y-%m-%d %H:%M"
       description = "Admission date and time at ICU"
 
+[visit.transfer_from_other_facility]
+  field = "hooccur"
+  description = "Transfer from other facility?"
+  values = { 1 = true, 2 = true, 3 = false }
+
 [visit.pathogen_test_date]
   field = "mbdat_cr"
   description = "Collection date and time - coronavirus test 1"
@@ -782,16 +787,6 @@
   date = { field = "daily_dsstdat" }
   value = { field = "daily_urine_lborres" }
   context = ["Urine output for 24 hour From 00:00 to 23:59"]
-
-[[observation]]
-  name = "transfer_from_other_facility"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "hooccur"
-    description = "Transfer from other facility?"
-    values = { 1 = true, 2 = true, 3 = false }
 
 [[observation]]
   name = "vomiting_nausea"

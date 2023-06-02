@@ -334,6 +334,10 @@
       # {field = "daily_dsstdat", if = {daily_hoterm = 1}}
     ]
 
+  [visit.transfer_from_other_facility]
+    field = "hooccur"
+    values = { 1 = true, 2 = true, 3 = false }
+
   [visit.treatment_antibiotics]
     combinedType = "any"
     description = "Antibiotic agent?"
@@ -960,12 +964,6 @@
   date = { field = "flw_survey_date" }
   text = { field = "flw_new_symptoms", description = "Other NEW symptoms?" }
   context = ["NEW symptom"]
-
-[[observation]]
-  name = "transfer_from_other_facility"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "hooccur", values = { 1 = true, 2 = true, 3 = false } }
 
 [[observation]]
   name = "pneumonia"

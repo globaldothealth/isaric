@@ -68,6 +68,11 @@
       "uniqueItems": true,
       "description": "Date(s) of admission to ICU"
     },
+    "transfer_from_other_facility": {
+      "type": "boolean",
+      "description": "Transferred to site from another facility",
+      "category": "treatments"
+    },
     "treatment_dialysis": {
       "type": "boolean",
       "description": "Dialysis",

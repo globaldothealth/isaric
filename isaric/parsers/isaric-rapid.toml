@@ -466,6 +466,10 @@
       description = "Current admission to ICU or other High Dependency Unit (HDU)?"
       values = { 0 = false, 1 = true, 2 = true }
 
+[visit.transfer_from_other_facility]
+  field = "hoyn"
+  values = { 1 = false, 2 = true, 0 = false }
+
 [visit.treatment_ace_inhibitors]
   description = "Ace Inhibitors"
   combinedType = "any"

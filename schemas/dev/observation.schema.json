@@ -170,8 +170,7 @@
         "riker_sedation-agitation_scale",
         "systolic_blood_pressure_mmHg",
         "temperature_celsius",
-        "total_fluid_output_ml",
-        "transfer_from_other_facility"
+        "total_fluid_output_ml"
       ],
       "description": "Observation name"
     }

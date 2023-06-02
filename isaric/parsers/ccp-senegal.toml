@@ -239,6 +239,10 @@
     field = "daily_hoterm"
     ref = "Y/N/NK"
 
+  [visit.transfer_from_other_facility]
+    field = "hooccur"
+    values = { 1 = true, 2 = true, 3 = false }
+
   [visit.treatment_prone_position]
     field = "daily_prone_cmtrt"
     ref = "Y/N/NK"
