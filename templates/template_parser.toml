@@ -1040,7 +1040,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1049,7 +1049,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }

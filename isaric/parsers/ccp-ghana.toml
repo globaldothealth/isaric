@@ -1216,10 +1216,10 @@
   value = { field = "ph", description = "pH" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "icu_date" }
-  value = { field = "pa02", description = "PaO2 at time of FiO2 above" }
+  value = { field = "pa02", description = "PaO2 at time of FiO2 above", unit = "mmHg", source_unit = { field = "pa02_type", values = { 1 = "kPa", 2 = "mmHg" } } }
 
   [observation.context]
     combinedType = "set"
@@ -1229,27 +1229,16 @@
     ]
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   date = { field = "icu_date" }
   phase = "study"
-  value = { field = "pcc02" }
+  value = { field = "pcc02", unit = "mmHg", source_unit = { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } } }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
     fields = [
       { field = "pcc02_source", values = { 1 = "From same blood gas record as PaO2" } },
-      { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } },
     ]
-
-    # [[observation]] # - possibly remove this as an observation, it's a treatment.
-    #   name = "renal_replacement_therapy_dialysis"
-    #   phase = "study"
-    #   date = { field = "overall_icu_hostdat" }
-
-    #   [observation.is_present]
-    #     field = "overall_rrt_prtrt"
-    #     description = "Renal replacement therapy (RRT) or dialysis?"
-    #     values = { 1 = true, 2 = false }
 
 [[observation]]
   name = "runny_nose"

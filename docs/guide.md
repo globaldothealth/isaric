@@ -492,9 +492,9 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
 
 **oxygen_saturation_percent**: Value. Use context to note whether observation was made on room air, on while on oxygen.
 
-**pao2**: Value. Use context to record whether this is an arterial, venous or capillary measurement if data is provided. NOTE TO DEVS - We should pick/ consult on a default unit for pao2/pco2.
+**pao2_mmHg**: Value. Use context to record whether this is an arterial, venous or capillary measurement if data is provided. Use mmHg as the default unit.
 
-**pco2**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pH* observation.
+**pco2_mmHg**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pH* observation.
 
 **pH**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pco2* observation.
 

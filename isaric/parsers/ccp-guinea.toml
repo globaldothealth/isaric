@@ -997,16 +997,6 @@
   value = { field = "diastol", description = "Diastolic BP" }
 
 [[observation]]
-  name = "pco2"
-  phase = "study"
-  date = { field = "soins_date_t" }
-
-  [observation.is_present]
-    field = "pcc02_source"
-    description = "From the same blood gas recording a PaO2"
-    values = { 1 = true, 0 = false }
-
-[[observation]]
   name = "glasgow_coma_score"
   phase = "admission"
   date = { field = "constantes_date_t" }

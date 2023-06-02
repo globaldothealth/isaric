@@ -1441,10 +1441,10 @@
   value = { field = "daily_temp_vsorres" } # there is no source unit field
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "ccm_a_dat" }
-  value = { field = "ccm_a_pao2_lborres", unit = "kPa", source_unit = { field = "ccm_a_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" } }
+  value = { field = "ccm_a_pao2_lborres", unit = "mmHg", source_unit = { field = "ccm_a_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" } }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
@@ -1453,10 +1453,10 @@
     ]
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   phase = "study"
   date = { field = "ccm_a_dat" }
-  value = { field = "ccm_a_pco2_lborres", unit = "kPa", source_unit = { field = "ccm_a_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PCO2 unit" } }
+  value = { field = "ccm_a_pco2_lborres", unit = "mmHg", source_unit = { field = "ccm_a_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PCO2 unit" } }
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"

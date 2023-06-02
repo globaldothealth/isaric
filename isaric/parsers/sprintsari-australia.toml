@@ -652,10 +652,10 @@
     description = "pH Document from same ABG with the worst P:F ratio"
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat" }
-  value = { field = "daily_pao2_lborres", description = "PaO2", unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
+  value = { field = "daily_pao2_lborres", description = "pao2_mmHg", unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
 
   [observation.context]
     combinedType = "set"
@@ -666,7 +666,7 @@
     ]
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat" }
   value = { field = "daily_pco2_lborres", description = "PaCO2", unit = "mmHg", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }

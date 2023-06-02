@@ -1052,10 +1052,10 @@
   value = { field = "daily_temp_vsorres", unit = "°C", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
-  value = { field = "daily_pao2_lborres", apply = { function = "getFloat" }, unit = "kPa", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" } }
+  value = { field = "daily_pao2_lborres", apply = { function = "getFloat" }, unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" } }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"

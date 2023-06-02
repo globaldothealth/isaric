@@ -905,10 +905,10 @@
   date = { field = "daily_dsstdat", description = "Date of assessment" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "kPa" } }
+  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "mmHg" } }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
@@ -917,10 +917,10 @@
     ]
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat" }
-  value = { field = "daily_pco2_lborres", unit = "kPa", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
+  value = { field = "daily_pco2_lborres", unit = "mmHg", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
