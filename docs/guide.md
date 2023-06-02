@@ -185,8 +185,6 @@ General notes on naming conventions:
 
 **dataset_id**: Text. Refers to the specifc ID/Version of the dataset being used (NOTE TO DEVS: should this be study metadata instead?)
 
-**country_iso3**: Text. Alpha-3 country code of the <ins>study site. </ins> NOTE TO DEVS: If this relates to study site only, it shouldn't be in the subject table.
-
 **enrolment_date**: Date. Date of subject enrolement into the study.
 
 **admission_date**: Date. Date of admission to site NOTE TO DEVS: Move this to visit & combine with start_date?

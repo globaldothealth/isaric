@@ -49,7 +49,6 @@
 
 [subject]
   # study_id = "datcov-southafrica"
-  country_iso3 = "ZAF"
   pathogen = "COVID-19"
 
   [subject.subject_id]

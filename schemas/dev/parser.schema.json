@@ -246,7 +246,6 @@
       "type": "object",
       "required": [
         "subject_id",
-        "country_iso3",
         "admission_date",
         "age",
         "sex_at_birth",
@@ -260,10 +259,6 @@
         },
         "study_id": {
           "type": "string"
-        },
-        "country_iso3": {
-          "description": "ISO 3166-1 alpha-3 country code of study site",
-          "$ref": "#/definitions/mapping"
         },
         "enrolment_date": {
           "description": "Date of enrolment in the study",

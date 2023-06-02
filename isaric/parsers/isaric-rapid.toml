@@ -249,7 +249,6 @@
   ## SUBJECT
 
 [subject]
-  country_iso3 = { field = "country", ref = "countryMap" }
   pathogen = "COVID-19"
 
   [subject.sex_at_birth]

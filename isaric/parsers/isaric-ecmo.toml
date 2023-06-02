@@ -239,7 +239,6 @@
   observation = { kind = "oneToMany", schema = "../../schemas/dev/observation.schema.json", common = { visit_id = { field = "subjid", sensitive = true } } }
 
 [subject]
-  country_iso3 = { field = "country", ref = "countryMap" }
   pathogen = "COVID-19"
 
   [subject.sex_at_birth]

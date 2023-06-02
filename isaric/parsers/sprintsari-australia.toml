@@ -33,7 +33,6 @@
 
 [subject]
   pathogen = "COVID-19"
-  country_iso3 = "AUS"
 
   [subject.subject_id]
     field = "subjid"

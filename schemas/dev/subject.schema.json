@@ -5,7 +5,6 @@
   "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
   "required": [
     "subject_id",
-    "country_iso3",
     "admission_date",
     "age",
     "sex_at_birth",
@@ -22,12 +21,6 @@
       "type": "string",
       "description": "Dataset ID, refers to a specific version",
       "category": "metadata"
-    },
-    "country_iso3": {
-      "type": "string",
-      "pattern": "^[A-Z]{3}$",
-      "description": "ISO 3166-1 alpha-3 country code of study site",
-      "category": "site-details"
     },
     "enrolment_date": {
       "type": "string",

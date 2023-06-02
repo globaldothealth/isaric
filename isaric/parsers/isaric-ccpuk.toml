@@ -40,7 +40,6 @@
   ## SUBJECT
 
 [subject]
-  country_iso3 = "GBR"
   pathogen = "COVID-19"
 
   [subject.sex_at_birth]

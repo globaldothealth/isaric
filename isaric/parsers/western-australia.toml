@@ -50,7 +50,6 @@
   5 = "Unable to walk"
 
 [subject]
-  country_iso3 = "AUS"  # this should be a map
   pathogen = "COVID-19"
 
   [subject.subject_id]

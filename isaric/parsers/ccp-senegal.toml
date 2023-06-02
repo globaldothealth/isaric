@@ -46,7 +46,6 @@
   field = "daily_dsstdat"
 
 [subject]
-  country_iso3 = "SEN"
   pathogen = "COVID-19"
   enrolment_date = { field = "dsstdat" }
 

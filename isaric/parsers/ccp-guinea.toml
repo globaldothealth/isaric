@@ -246,10 +246,6 @@
   [subject.enrolment_date]
     field = "recruit_date"
 
-  [subject.country_iso3]
-    field = "country"
-    ref = "countryMap"
-
   [subject.sex_at_birth]
     field = "sex"
     values = { 0 = "female", 1 = "male" }

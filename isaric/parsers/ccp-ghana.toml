@@ -237,10 +237,6 @@
 [subject]
   pathogen = "COVID-19"
 
-  [subject.country_iso3]
-    field = "country"
-    ref = "countryMap"
-
   [subject.subject_id]
     ref = "uid"
 
