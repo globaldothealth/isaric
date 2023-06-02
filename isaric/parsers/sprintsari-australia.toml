@@ -825,3 +825,21 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   text = { field = "other_signs" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "viralpneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "bactpneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['bacterial']

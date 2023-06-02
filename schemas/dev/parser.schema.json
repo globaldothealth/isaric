@@ -639,7 +639,7 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_delirium": {
-          "description": "Delirium",
+          "description": "Treatment for delirium",
           "$ref": "#/definitions/mapping"
         },
         "treatment_monoclonal_antibody": {
@@ -808,7 +808,7 @@
             "enum": [
               "avpu",
               "clinical_classification_critical_illness_scale_",
-              "clinical_classification_pneumonia_needing_oxygen",
+              "pneumonia",
               "clinical_frailty_score",
               "diastolic_blood_pressure_mmHg",
               "glasgow_coma_score",

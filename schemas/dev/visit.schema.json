@@ -302,7 +302,7 @@
     },
     "treatment_delirium": {
       "type": "boolean",
-      "description": "Delirium",
+      "description": "treatment for delirium",
       "category": "treatments"
     },
     "treatment_monoclonal_antibody": {

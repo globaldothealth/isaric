@@ -1118,3 +1118,30 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "earpain_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "viralpneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "bactpneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "cryptogenic_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['cryptogenic organizing pneumonia (POC)']

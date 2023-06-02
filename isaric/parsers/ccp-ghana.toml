@@ -1137,6 +1137,34 @@
   is_present = { field = "myalagia_v2", description = "Muscle aches (Myalgia)", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "clipneu", ref = "Y/N/NK" }
+  date = { field = "signs_symps_date" }
+  context = ['clinical diagnosis']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "viral_pneumo", ref = "Y/N/NK" }
+  date = { field = "comp_date" }
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "bact_pneumo", ref = "Y/N/NK" }
+  date = { field = "comp_date" }
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "cop", ref = "Y/N/NK" }
+  date = { field = "comp_date" }
+  context = ['cryptogenic organizing pneumonia (POC)']
+
+[[observation]]
   name = "other_symptom"
   phase = "pre-admission"
   text = { field = "other_0", description = "Other sign/symptom" }

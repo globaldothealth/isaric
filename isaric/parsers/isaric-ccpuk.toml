@@ -966,3 +966,30 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "hooccur", values = { 1 = true, 2 = true, 3 = false } }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "vrialpneu_ceoccur", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "bactpneu_ceoccur", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "cryptogenic_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['cryptogenic organizing pneumonia (POC)']

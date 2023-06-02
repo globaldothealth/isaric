@@ -963,10 +963,32 @@
   value = { field = "diastol_iso", description = "Diastolic blood pressure (BP diastolic)" }
 
 [[observation]]
-  name = "clinical_classification_pneumonia_needing_oxygen"
+  name = "pneumonia"
   phase = "study"
   is_present = { field = "clipneu", ref = "Y/N/NK" }
   date = { field = "clipneu_date" }
+  context = ['clinical diagnosis']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "viral_pneumo", ref = "Y/N/NK" }
+  date = { field = "viral_pneumo_date" }
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "bact_pneumo", ref = "Y/N/NK" }
+  date = { field = "bact_pneumo_date" }
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "cop", ref = "Y/N/NK" }
+  date = { field = "cop_date" }
+  context = ['cryptogenic organizing pneumonia (POC)']
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"

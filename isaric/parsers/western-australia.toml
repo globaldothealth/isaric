@@ -923,3 +923,11 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "muac_vsorres", source_unit = "mm", unit = "cm" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "pneu_ceterm", ref = "Y/N" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"

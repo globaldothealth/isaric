@@ -1524,3 +1524,11 @@
   phase = "study"
   date = { field = "ccm_a_dat" }
   value = { field = "ccm_a_sas_vsorres", apply = { function = "getFloat" } }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "pneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"

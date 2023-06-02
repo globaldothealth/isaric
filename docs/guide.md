@@ -282,7 +282,7 @@ General notes on naming conventions:
 **icu_admitted**: Bool. Has the subject been admitted to ICU at any time since study enrolment?
 
 ## Visit
-Contains data specific to the visit, including details on which treatments the subject recieved.
+Contains data specific to the visit, including details on which treatments the subject received.
 
 ### Superset, general level indicators:
 
@@ -318,7 +318,7 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **icu_admission_dates**: List: List of admission date(s) to ICU.
 
-**treatment_dialysis**: Bool. Did the subject recieve dialysis during this visit?
+**treatment_dialysis**: Bool. Did the subject receive dialysis during this visit?
 
 **treatment_inotropes_vasopressors**: Bool. Treatment with vasopressors during this visit?
 
@@ -336,29 +336,29 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid* and *exp
 
 **treatment_immunosuppressant**: Bool. Treated with immunosuppresants? (Note - this is specific to this visit. If the subject was on immunosuppresants for a chronic condition prior to admission, this should be recorded under [has_immunosuppression_therapy](immunosuppressed) in the subject table as a comorbidity.)
 
-**treatment_intravenous_fluids**: Bool. Did the subject recieve IV fluids during the visit?
+**treatment_intravenous_fluids**: Bool. Did the subject receive IV fluids during the visit?
 
 **treatment_nsaid**: Bool. Was the subject treated with non-steroidal meds during the visit?
 
 **treatment_neuromuscular_blocking_agents**: Bool. Was the subject treated with neuromuscular blocking agents during the visit?
 
-**treatment_cpr**: Bool. Did the subject recieve CPR?
+**treatment_cpr**: Bool. Did the subject receive CPR?
 
 **treatment_offlabel**: Bool. Was the subject treated with off-label medications, e.g. for compassionate use?
 
-**treatment_cardiovascular**: Bool. Did the subject recieve cardiovascular support, e.g., Pacing, Intropic support, mechanical (e.g. ecmo, intra-aeortic balloon pump), cpr. NOTE TO DEVS: Consider making this a superset in the same manner as oxygen_therapy
+**treatment_cardiovascular**: Bool. Did the subject receive cardiovascular support, e.g., Pacing, Intropic support, mechanical (e.g. ecmo, intra-aeortic balloon pump), cpr. NOTE TO DEVS: Consider making this a superset in the same manner as oxygen_therapy
 
 **treatment_colchine**: Bool. Was the pateint treated with Colchine?
 
-**treatment_immunoglobulins**: Bool. Did the subject recieve immunoglobulins?
+**treatment_immunoglobulins**: Bool. Did the subject receive immunoglobulins?
 
-**treatment_delirium** - NOTE TO DEVS do we still have this? delirium is an observation ( I think this comes from the traffic light doc's `medication for delirium` - but this only occurs in one study.)
+**treatment_delirium** Bool. Did the subject receive treatment for delirium?
 
 **treatment_monoclonal_antibody**: Bool. Was the subject treated with monoclonal antibodies?
 
 **treatment_other**: Set. Any other treatments, or treatments recorded as free text fields, should be recorded here.
 
-**treatment_pacing**: Bool. Did the subject recieve heart pacing during the visit?
+**treatment_pacing**: Bool. Did the subject receive heart pacing during the visit?
 
 **outcome** Text. Outcome of the visit, one of:
   + death
@@ -426,8 +426,6 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
 
 **clinical_classification_critical_illness_scale**: Currently Unused. Traffic-light suggests only in one parser, suggest editing or removal.
 
-**clinical_classification_pneumonia_needing_oxygen**: Bool. NOTE TO DEVS - Only used once (guinea), only one according to traffic light doc - suggest edit to just pneumonia complication, with context for viral/bacterial.
-
 **clinical_frailty_score**: Value. [Frailty scale](https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/rockwood_cfs.pdf)
 
 <a name="confusion"></a> **confusion**: Bool.
@@ -490,7 +488,7 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
 
 **oxygen_o2hb**: Unused, not sure what it relates to.
 
-**oxygen_flow_volume_max**: Value. If the subject recieved O2 therapy, record the maximum flow volume.
+**oxygen_flow_volume_max**: Value. If the subject received O2 therapy, record the maximum flow volume.
 
 **oxygen_saturation_percent**: Value. Use context to note whether observation was made on room air, on while on oxygen.
 
@@ -499,6 +497,8 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
 **pco2**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pH* observation.
 
 **pH**: Value. Use context to note if this is from the same blood gas record as the *pao2*/*pco2* observation.
+
+**pneumonia**: Bool. Use context to note if bacterial, viral or COP, and if the patient requires oxygen as a result (if specified in that field, don't assume that if the patient is recorded as being on oxygen elsewhere, it is related to this record of pneumonia).
 
 **respiratory_rate**: Value.
 

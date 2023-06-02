@@ -1005,3 +1005,31 @@
   # [[observation]]
   #   name = "lymphadenopathy"
   #   # free text, sometimes appears under 'new symptoms'
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "pneumonia"
+  phase = "followup"
+  is_present = { field = "flw_comp_pneum", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "pneumonia"
+  phase = "followup"
+  is_present = { field = "flw_comp_pcpneum", values = { 1 = true, 0 = false } }
+  context = ['post-COVID pneumonia']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_comp_pneum_{n}", values = { 1 = true, 0 = false } }
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_comp_pcpneum_{n}", values = { 1 = true, 0 = false } }
+  for.n.range = [1, 5]
+  context = ['post-COVID pneumonia']

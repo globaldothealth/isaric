@@ -554,7 +554,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "clinical_classification_pneumonia_needing_oxygen"
+  name = "pneumonia"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
