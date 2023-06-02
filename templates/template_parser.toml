@@ -941,15 +941,6 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "time_of_admission"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
   name = "vomiting_nausea"
   date = ""
   phase = ""

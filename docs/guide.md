@@ -524,8 +524,6 @@ Should be a combinedType = "any", listing all the cough fields for the correspon
 
 **temperature_celsius**: Value
 
-**time_of_admission**: Text (date). NOTE TO DEVS - Does this belong in the observations/complications table? Better in the visit table?
-
 **total_fluid_output_ml**: Value.
 
 **transfer_from_another_facility**: Bool. NOTE TO DEVS - Does this belong in the observations/complications table? Better in the visit table?

@@ -776,13 +776,6 @@
     unit = "°C"
     source_unit = { field = "temp_vsorresu", description = "Temperature Units", values = { 1 = "°C", 2 = "°F" } }
 
-    # [[observation]] - check if we have a time format
-    # name = "time_of_admission"
-    # phase = "study"
-    # date = { ref = "dailyDateHierarchy" }
-    # if = { hostdat = { "!=" = "" } }
-    # text = { field = "hostdat", description = "2.2 Admission date and time at this hospital" }
-
 [[observation]]
   name = "total_fluid_output_ml"
   phase = "study"
