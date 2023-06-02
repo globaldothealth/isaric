@@ -442,7 +442,7 @@
   description = "patient is on ART (antiretroviral therapy)"
   values = { 1 = true, 2 = false, 4 = false }
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = "pre_nonoralsteroid_cmoccur"
   ref = "Y/N/NK"
   description = "Other immunosuppressant agents (not oral steroids)"

@@ -324,6 +324,11 @@
   description = "Hypertension"
   ref = "Y/N/NK"
 
+[subject.has_immunosuppression]
+  field = "other_imm_supps_premed"
+  description = "Other Immunosuppressive Agents"
+  ref = "Y/N/NK"
+
 [subject.has_liver_disease]
   combinedType = "any"
   fields = [

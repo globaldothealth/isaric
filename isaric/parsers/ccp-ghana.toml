@@ -325,7 +325,7 @@
   description = "Hypertension"
   ref = "Y/N/NK"
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = "other_imm_supps_premed"
   ref = "Y/N/NK"
 

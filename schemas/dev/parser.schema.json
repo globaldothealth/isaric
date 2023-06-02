@@ -416,8 +416,8 @@
           "description": "HIV - on ART (ARV medication)",
           "$ref": "#/definitions/mapping"
         },
-        "has_immunosuppression_therapy_treatment": {
-          "description": "Immunosuppression therapies treatment",
+        "has_immunosuppression": {
+          "description": "Immunosuppression",
           "$ref": "#/definitions/mapping"
         },
         "has_comorbidity_other": {

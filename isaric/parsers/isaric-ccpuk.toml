@@ -242,7 +242,7 @@
     significantly increase the risk of infections (such as \
     Severe combined immunodeficiency (SCID), homozygous sickle cell)"""
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = "vulnerable_immuno"
   ref = "Y/N/NK"
   description = "People on immunosuppression therapies sufficient to significantly increase risk of infection"

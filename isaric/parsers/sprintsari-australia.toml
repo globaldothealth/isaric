@@ -171,7 +171,7 @@
   description = "AIDS/HIV"
   ref = "Y/N"
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = "chrimm_mhyn"
   description = "Chronic Immunosuppression"
   ref = "Y/N"

@@ -239,7 +239,7 @@
   description = ""
   ref = "Y/N/NK"
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = ""
   description = ""
   ref = "Y/N/NK"

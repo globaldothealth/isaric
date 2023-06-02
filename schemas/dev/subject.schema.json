@@ -246,9 +246,9 @@
       "description": "HIV - on ART (ARV medication)",
       "category": "comorbidities"
     },
-    "has_immunosuppression_therapy_treatment": {
+    "has_immunosuppression": {
       "type": "boolean",
-      "description": "Immunosuppression therapies treatment",
+      "description": "Immunosuppressed",
       "category": "comorbidities"
     },
     "has_comorbidity_other": {

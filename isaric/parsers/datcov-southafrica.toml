@@ -214,7 +214,7 @@
     values = { 'Yes' = true, 'No' = false }
     # values = [nan, 'Yes', 'Unknown', 'No']
 
-  [subject.has_immunosuppression_therapy_treatment]
+  [subject.has_immunosuppression]
     field = "Admission Medications.Immunosuppressants"
     values = { TRUE = true, FALSE = false }
 
