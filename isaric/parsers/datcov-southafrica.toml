@@ -73,8 +73,9 @@
       { field = "ethnic", values = { 1 = "Black", 2 = "White", 3 = "Indian", 4 = "Coloured" } },
     ]
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.works_healthcare]
     combinedType = "any"

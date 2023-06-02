@@ -187,7 +187,7 @@ General notes on naming conventions:
 
 **enrolment_date**: Date. Date of subject enrolement into the study.
 
-**admission_date**: Date. Date of admission to site NOTE TO DEVS: Move this to visit & combine with start_date?
+**earliest_admission_date**: Date. Date of admission for the first study visit. Use `combinedType = "min"` To allow the earliest date to be chosen from across multiple visits.
 
 **age**: Value. Age of the subject in years.
 

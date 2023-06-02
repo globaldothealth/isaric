@@ -246,7 +246,7 @@
       "type": "object",
       "required": [
         "subject_id",
-        "admission_date",
+        "earliest_admission_date",
         "age",
         "sex_at_birth",
         "ethnicity",
@@ -264,8 +264,8 @@
           "description": "Date of enrolment in the study",
           "$ref": "#/definitions/mapping"
         },
-        "admission_date": {
-          "description": "Date of admission to site",
+        "earliest_admission_date": {
+          "description": "Date of admission to first study visit",
           "$ref": "#/definitions/mapping"
         },
         "age": {

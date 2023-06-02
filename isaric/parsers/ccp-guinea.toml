@@ -240,8 +240,9 @@
     field = "record_id"
     sensitive = true
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.enrolment_date]
     field = "recruit_date"

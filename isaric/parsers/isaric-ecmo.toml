@@ -255,8 +255,9 @@
     field = "dsstdat"
     description = "Date of Enrolment"
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.ethnicity] # TODO: need to add ethnic other field
     description = "Ethnic groups"

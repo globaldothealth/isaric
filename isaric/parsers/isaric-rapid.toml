@@ -265,9 +265,11 @@
     field = "dsstdat"
     description = "Date of Enrolment"
 
-  [subject.admission_date]
-    field = "hostdat"
-    description = "Admission date at this facility"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [
+      { field = "hostdat", description = "Admission date at this facility" },
+    ]
 
   [subject.ethnicity]
     description = "Ethnicity"

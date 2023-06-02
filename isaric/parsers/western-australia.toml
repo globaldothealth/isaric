@@ -62,13 +62,11 @@
     description = "Date of enrollment"
     source_date = "%d/%m/%Y"
 
-  [subject.admission_date]
-    combinedType = "firstNonNull"
+  [subject.earliest_admission_date]
+    combinedType = "min"
     fields = [
       { field = "admission_date" },
       { field = "hostdat", description = "Admission date at this facility" },
-      { field = "dsstdat", description = "Date of enrolment" },
-      { field = "cestdat", description = "Symptom onset (date of first/earliest symptom):" },
     ]
 
   [subject.age]

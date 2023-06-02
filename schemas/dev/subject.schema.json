@@ -5,7 +5,7 @@
   "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
   "required": [
     "subject_id",
-    "admission_date",
+    "earliest_admission_date",
     "age",
     "sex_at_birth",
     "ethnicity",
@@ -28,10 +28,10 @@
       "description": "Date of enrolment in the study",
       "category": "site-details"
     },
-    "admission_date": {
+    "earliest_admission_date": {
       "type": "string",
       "format": "date",
-      "description": "Date of admission to site",
+      "description": "Date of admission for first study visit",
       "category": "site-details"
     },
     "age": {

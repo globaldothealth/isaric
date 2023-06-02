@@ -38,8 +38,9 @@
     field = "subjid"
     sensitive = true
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.age]
     field = "age_estimateyears"
