@@ -154,7 +154,7 @@
     { field = "postpart_rptestcd_out", values = { 1 = true, 0 = false } },
   ]
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "egestage_rptestcd"
   description = "Gestational weeks assessment"
 

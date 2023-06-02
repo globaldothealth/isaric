@@ -31,7 +31,6 @@
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
-  country_iso3 = ""
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -47,9 +46,9 @@
     field = ""
     description = ""
 
-  [subject.admission_date]
-    field = ""
-    description = ""
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "", description = "" }]
 
   [subject.age]
     field = ""
@@ -113,7 +112,7 @@
   description = ""
   ref = "Y/N/NK"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = ""
   description = ""
 

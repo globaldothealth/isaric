@@ -320,7 +320,7 @@
           "description": "In post partum phase",
           "$ref": "#/definitions/mapping"
         },
-        "pregnancy_gestational_assessment_weeks": {
+        "pregnancy_gestational_age_weeks": {
           "description": "Gestational assessment weeks",
           "$ref": "#/definitions/mapping"
         },

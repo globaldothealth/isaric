@@ -370,7 +370,7 @@
   description = "Whether currently pregnant or in post-partum period"
   values = { 1 = false, 2 = true }
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "gest"
   description = "Gestational age"
   unit = "weeks"

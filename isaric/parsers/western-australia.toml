@@ -95,7 +95,7 @@
     description = "Pregnant?"
     values = { 1 = true, 2 = false } #, 998 = false, 999 = false - unknown shouldn't be mapped to false, it indicates the question wasn't asked.
 
-  [subject.pregnancy_gestational_assessment_weeks]
+  [subject.pregnancy_gestational_age_weeks]
     field = "egestage_rptestcd"
     description = "If YES: Gestational weeks assessment:"
 

@@ -324,7 +324,7 @@
   field = "still_ceoccur"
   values = { 1 = "Still birth", 2 = "Live birth" }
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "apsc_egestage_scorres"
   description = "Gestational weeks assessment"
 

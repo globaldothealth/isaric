@@ -170,7 +170,7 @@
   field = "dlvrdtc_rptestcd"
   description = "Delivery date"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "egestage_rptestcd"
   description = "If yes: gestational age (in week of amenorrhea)"
   unit = "weeks"

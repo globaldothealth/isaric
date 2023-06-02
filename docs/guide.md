@@ -185,7 +185,7 @@ General notes on naming conventions:
 
 **dataset_id**: Text. Refers to the specifc ID/Version of the dataset being used (NOTE TO DEVS: should this be study metadata instead?)
 
-**enrolment_date**: Date. Date of subject enrolement into the study.
+**enrolment_date**: Date. Date of subject enrolment into the study.
 
 **earliest_admission_date**: Date. Date of admission for the first study visit. Use `combinedType = "min"` To allow the earliest date to be chosen from across multiple visits.
 
@@ -203,6 +203,8 @@ General notes on naming conventions:
 
 **pregnancy**: Bool. Is the subject currently pregnant?
 
+**pregnancy_gestational_age_weeks**: Value. Gestational age assesment at point of enrolment.
+
 **preganacy_date_of_delivery**: Date. If the subject gave birth during the study period, give the date
 
 **pregnancy_birth_weight_kg**: Value. Weight of infant at birth, kg.
@@ -217,9 +219,7 @@ General notes on naming conventions:
 
 **pregnancy_whether_breastfed**: Bool. Is the subject currently breastfeeding/ did they breastfeed during the study period?
 
-**pregnancy_post_partum**: Bool. Is the subject post-partum (up to 6 weeks post-delivery) at the point of enrolement?
-
-**pregnancy_gestational_outcome_weeks**: Value. Gestational age assesment at point of enrolement. NOTE TO DEVS: This is how the attribute has been used, but the name is confusing; suggest rename to gestational_age_weeks/redefine this to be the number of weeks at which subject gave birth?
+**pregnancy_post_partum**: Bool. Is the subject post-partum (up to 6 weeks post-delivery) at the point of enrolment?
 
 **has_asplenia**: Bool. Does the subject have asplenia?
 

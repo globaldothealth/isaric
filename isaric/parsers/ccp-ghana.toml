@@ -399,7 +399,7 @@
   field = "del_date"
   description = "Delivery Date"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "gest"
   description = "Gestational age"
 

@@ -118,7 +118,7 @@
       "description": "In post partum phase",
       "category": "pregnancy"
     },
-    "pregnancy_gestational_assessment_weeks": {
+    "pregnancy_gestational_age_weeks": {
       "type": "number",
       "description": "Gestational assessment weeks",
       "category": "pregnancy"
