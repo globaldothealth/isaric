@@ -48,6 +48,27 @@ uses it for validation. Validation status (true/false) and error messages are
 reported in the `adtl_valid` and `adtl_error` columns in the output
 respectively.
 
+### Running with RELSUB matching
+
+ISARIC source datasets have unique visit IDs, with every patient assigned a new
+ID on every visit. There is a separate table (RELSUB in SDTM), which matches
+visit IDs for the same subject. So if visit `A012` and `A342` refer to the same
+patient, there would be an entry in the RELSUB table like: `A012,A342,SAME`. For
+datasets that have relsub matching (`ref = "relsub"` present in subject ID
+definition), we need to generate the RELSUB matching definition first, before
+calling adtl with the RELSUB map. As an example, for the CCPUK RELSUB file
+(corresponding [parser](isaric/parsers/isaric-ccpuk.toml)), this is the
+procedure to transform the source data with RELSUB mapping:
+
+```shell
+# Create the RELSUB mapping
+python3 scripts/relsub.py CCPUK_RELSUB.csv -o isaric-ccpuk-relsub.json
+adtl isaric/parsers/isaric-ccpuk.toml ../isaric-data/ccpuk.csv --include-def isaric-ccpuk-relsub.json
+```
+
+The RELSUB script expects the ID columns to be named USUBJID, RSUBJID; these can
+be changed via parameters, see `python3 scripts/relsub.py --help`.
+
 ### Development
 
 Install [pre-commit](https://pre-commit.com) and setup pre-commit hooks
