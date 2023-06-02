@@ -16,6 +16,18 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 from .util import maybe, parse_choices, DEFAULT_CONFIG
 
+GENERAL_LEVEL_INDICATORS = dict(
+    cough=["cough_dry", "cough_with_haemoptysis", "cough_with_sputum_production"],
+    treatment_oxygen_therapy=[
+        "treatment_oxygen_therapy_unspecified",
+        "treatment_high_flow_nasal_cannula",
+        "treatment_noninvasive_ventilation",
+        "treatment_invasive_ventilation",
+        "treatment_prone_positioning",
+        "treatment_ecmo",
+    ],
+)
+
 
 def matches_redcap(
     config: Dict[str, Any],
@@ -145,8 +157,8 @@ def matches_redcap(
                 if ("date_" in str(row.get("valid_type", "")) or T == "date")
                 else scores["date-mismatch"]
             )
-        if (
-            "follow" in row.get("category", "")
+        if "follow" in row.get(
+            "category", ""
         ):  # de-emphasise followup, usually only required in observation
             score += scores["is-followup"]
         words = row["schema_field"].split("_")
