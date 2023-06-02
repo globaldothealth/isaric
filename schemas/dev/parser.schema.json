@@ -31,6 +31,9 @@
             "if": {
               "type": "object"
             },
+            "ignoreMissingKey": {
+              "const": true
+            },
             "sensitive": {
               "type": "boolean",
               "description": "Indicates to the parser whether the field is sensitive. Usually a sensitive field is hashed or encrypted before storing in the database.",
