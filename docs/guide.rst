@@ -344,10 +344,10 @@ chosen from across multiple visits.
 
 **sex_at_birth**: Text. One of
 
-  + male
-  + female
-  + intersex
-  + non-binary
++ male
++ female
++ intersex
++ non-binary
 
 NOTE TO DEVS - this isn't a sex at birth, rather current
 sex/gender. suggest remove, or create new attribute for gender/similar?
@@ -369,13 +369,13 @@ the study period, give the date
 
 **pregancy_outcome**: Text. Outcome of the pregnancy, one of:
 
-  + live_birth
-  + still_birth
++ live_birth
++ still_birth
 
 **pregnancy_gestational_outcome**: Text: One of
 
- + term_birth
- + preterm_birth
++ term_birth
++ preterm_birth
 
 **pregnancy_whether_breastfed**: Bool. Is the subject currently
 breastfeeding/ did they breastfeed during the study period?
@@ -409,17 +409,17 @@ neoplasm (cancerous tumor)?
 
 **has_smoking**: Text. Smoking history. One of
 
-  + current
-  + former
-  + never
-  + no
++ current
++ former
++ never
++ no
 
 `no` should be used if `never` is not explicitly made an option. E.g.
 where data is provided as
 
- > Currently smoking? (Y/N)
+   > Currently smoking? (Y/N)
 
- > How many years ago did you quit smoking? (date)
+   > How many years ago did you quit smoking? (date)
 
 Would be recorded as `current/former/no` as 'Never smoked' has not been explicitly stated,
 and an empty entry for 'How many years ago' may just be missing data, rather than inferring
@@ -484,31 +484,26 @@ Superset, general level indicators:
 therapy and/or respiratory support has been administered. Subsets (all
 boolean indicators) are:
 
-  + *treatment_oxygen_mask_unspecified* - NOTE TO
-  DEVS: needs to be added. Captures O2 therapy delivered by any method
-  other than a HFNC - e.g., standard mask or cannula.
++ *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 
-  + *treatment_high_flow_nasal_cannula*
++ *treatment_high_flow_nasal_cannula*
 
-  + *treatment_noninvasive_ventilation* - Ventilation via e.g., BIPAP/CPAP
-  mask
++ *treatment_noninvasive_ventilation* - Ventilation via e.g., BIPAP/CPAP mask
 
-  + *treatment_invasive_ventilation* - Intubation. Includes
-  deprecated 'mechanical_support' attribute
++ *treatment_invasive_ventilation* - Intubation. Includes deprecated 'mechanical_support' attribute
 
-  + *treatment_prone_positioning* - Note, only if field is labelled as prone
-  ventilation.
++ *treatment_prone_positioning* - Note, only if field is labelled as prone ventilation.
 
-  + *treatment_ecmo*
++ *treatment_ecmo*
 
 **treatment_cardiovascular_support**: Indicates at least one cardiovascular
 support has been administered. Subsets (all boolean indicators) are:
 
-  + *treatment_inotropes_vasopressors*
++ *treatment_inotropes_vasopressors*
 
-  + *treatment_pacing*
++ *treatment_pacing*
 
-  + *treatment_ecmo*
++ *treatment_ecmo*
 
 Overarching fields denoting 'cardiovascular support' can also include CPR,
 or other forms of mechanical cardiovascular support.
@@ -520,16 +515,11 @@ The general drug categories *antiviral*, *antibiotic*, *corticosteroid*
 and *experimental_agent* all have a set of three hierarchical
 attributes, e.g. for antivirals:
 
-+ **treatment_antiviral**: Bool. If
-antivirals have been administered during the visit
++ **treatment_antiviral**: Bool. If antivirals have been administered during the visit
 
-+ **treatment_antiviral_type**: Set. Lists all the different types of
-antiviral administered. Should only be used where values are mapped, as
-there is a restricted list of accepted values defined in the schema -
-i.e. do not map a free text field here.
++ **treatment_antiviral_type**: Set. Lists all the different types of antiviral administered. Should only be used where values are mapped, as there is a restricted list of accepted values defined in the schema - i.e. do not map a free text field here.
 
-+ **treatment_antiviral_type_other**: Set. For free text fields listing
-the names of antivirals used.
++ **treatment_antiviral_type_other**: Set. For free text fields listing the names of antivirals used.
 
 other fields
 ~~~~~~~~~~~~
