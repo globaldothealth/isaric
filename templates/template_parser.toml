@@ -61,7 +61,6 @@
     [subject.sex_at_birth.values] # THIS CAN CHANGE BETWEEN DATASETS
       1 = "male"
       2 = "female"
-      3 = "non_binary"
 
 [subject.ethnicity]
   field = ""

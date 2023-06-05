@@ -347,11 +347,6 @@ chosen from across multiple visits.
   + male
   + female
   + intersex
-  + non-binary
-
-NOTE TO DEVS - this isn't a sex at birth, rather current
-sex/gender. suggest remove, or create new attribute for gender/similar?
-Or rename to just 'sex'.
 
 **ethnicity**: Text. Subject's ethnicity.
 

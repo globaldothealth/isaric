@@ -254,7 +254,7 @@
   [subject.sex_at_birth]
     field = "sex"
     description = "Sex at Birth"
-    values = { 1 = "male", 2 = "female", 3 = "non_binary" }
+    values = { 1 = "male", 2 = "female" }
 
   [subject.subject_id]
     field = "subjid"

@@ -60,7 +60,6 @@
       "enum": [
         "male",
         "female",
-        "non_binary",
         "intersex"
       ],
       "description": "Sex at birth",
