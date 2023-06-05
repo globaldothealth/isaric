@@ -5,11 +5,22 @@
   "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
   "required": [
     "subject_id",
-    "earliest_admission_date",
     "age",
     "sex_at_birth",
     "ethnicity",
     "pathogen"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "earliest_admission_date"
+      ]
+    },
+    {
+      "required": [
+        "enrolment_date"
+      ]
+    }
   ],
   "properties": {
     "subject_id": {
