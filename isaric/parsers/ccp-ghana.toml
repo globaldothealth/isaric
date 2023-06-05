@@ -584,6 +584,14 @@
   excludeWhen = "false-like"
   fields = [{ field = "daily_corticost_cmoth" }]
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "overall_inotrop_cmtrt", description = "Inotropes/vasopressors?", values = { 1 = true, 2 = false } },
+    { field = "vaso_or_inot", description = "Any vasopressor/inotropic support?", ref = "Y/N/NK" },
+    { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support?", values = { 1 = true, 2 = false } },
+  ]
+
 [visit.treatment_dialysis]
   field = "overall_rrt_prtrt"
   description = "Renal replacement therapy (RRT) or dialysis?"

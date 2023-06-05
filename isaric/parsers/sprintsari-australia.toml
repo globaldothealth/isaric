@@ -303,6 +303,13 @@
   description = "Corticosteroid ?"
   ref = "Y/N"
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "daily_ecmo_prtrt", description = "ECMO?", ref = "Y/N" },
+    { field = "daily_inotrope_cmyn", description = "Any vasopressor / inotropic support?", ref = "Y/N" },
+  ]
+
 [visit.treatment_dialysis]
   field = "daily_rrt_cmtrt"
   description = "Dialysis / Hemofiltration?"

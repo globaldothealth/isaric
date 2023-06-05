@@ -454,13 +454,14 @@
   ref = "Y/N/NK"
   # values = ['0', 'Unknown', '1']
 
-[visit.treatment_cardiovascular]
+[visit.treatment_cardiovascular_support]
   combinedType = "any"
   fields = [
     { field = "Ever CardiovascularSupport", values = { 1 = true, 0 = false } },
-    { field = "Intervention during hospitalisation.CardiovascularSupport", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+    { field = "Intervention during hospitalisation.CardiovascularSupport", ref = "Y/N/NK" },               # values = ['0', 'Unknown', '1']
+    { field = 'Intervention during hospitalisation.MechanicalSupport', values = { 1 = true, 0 = false } },
+    { field = "Ever ECMO", values = { 0 = false, 1 = true } },
   ]
-  # put MechanicalSupport in here? Contains ECMO as a subtype.
 
 [visit.treatment_colchicine]
   field = "Medication during hospitalisation.Colchicine"

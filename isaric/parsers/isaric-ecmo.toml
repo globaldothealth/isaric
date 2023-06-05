@@ -622,6 +622,15 @@
   excludeWhen = "false-like"
   fields = [{ field = "corticost_cmtrt" }]
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "extracorp_prtrt", ref = "Y/N/NK" },
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    { field = "inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+    { field = "daily_inotrope_cmyn", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+  ]
+
 [visit.treatment_anticoagulation]
   description = "Anticoagulation?"
   combinedType = "any"
@@ -700,12 +709,6 @@
   #   description = "Pacing"
   #   field = "c_pimplant"
   #   values = { 1 = true, 0 = false }
-
-  # [visit.treatment_cardiovascular] # critical care form not present
-  #   field = "ccm_b_horeas___4"
-  #   description = "Cardiovascular complications?"
-  #   values = { 0 = false, 1 = true }
-  #   if = { ccm_b_icu_yn = 1 }
 
 [visit.treatment_inhaled_nitric_oxide]
   combinedType = "any"

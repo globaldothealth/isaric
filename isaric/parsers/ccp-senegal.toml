@@ -392,6 +392,14 @@
     { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
     { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
     { fieldPattern = ".*oxygenotherapy_prec.*", values = { 1 = true, 2 = true } },
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
   ]
 
   # observation

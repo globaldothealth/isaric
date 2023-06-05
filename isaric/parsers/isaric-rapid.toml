@@ -646,11 +646,19 @@
     { field = "daily_corticost_cmoth" },
   ]
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
+    { fieldPattern = ".*inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+    { field = "ccm_a_inotrop_cmtrt", ref = "Y/N/NK", description = "Any vasopressor/inotropic support?" },
+  ]
+
 [visit.treatment_dialysis]
   description = "Dialysis"
   combinedType = "any"
   fields = [
-    { field = "overall_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
+    { fieldPattern = "overall_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
     { field = "daily_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
     { field = "ccm_a_renal_prtrt", ref = "Y/N/NK", description = "Dialysis/Hemofiltration?" },
     { field = "ccm_b_renal_prtrt", ref = "Y/N/NK", description = "Dialysis/Hemofiltration?" },

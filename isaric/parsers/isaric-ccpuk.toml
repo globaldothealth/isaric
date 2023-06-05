@@ -432,6 +432,15 @@
       { field = "corticost5_cmtrt" },
     ]
 
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      { field = "inotrop_cmtrt", ref = "Y/N/NK" },
+      { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
+      { field = "extracorp_prtrt", ref = "Y/N/NK" },
+      { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    ]
+
   [visit.treatment_dialysis]
     description = "Renal replacement therapy (RRT) or dialysis"
     combinedType = "any"

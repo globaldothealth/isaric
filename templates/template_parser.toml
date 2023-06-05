@@ -469,7 +469,7 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_cardiovascular]
+  [visit.treatment_cardiovascular_support]
     field = ""
     description = ""
     ref = "Y/N/NK"

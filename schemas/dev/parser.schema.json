@@ -641,7 +641,7 @@
           "description": "Indication anticoagulation",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_cardiovascular": {
+        "treatment_cardiovascular_support": {
           "description": "Cardiovascular",
           "$ref": "#/definitions/mapping"
         },

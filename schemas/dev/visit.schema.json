@@ -290,7 +290,7 @@
       "description": "Indication anticoagulation",
       "category": "treatments"
     },
-    "treatment_cardiovascular": {
+    "treatment_cardiovascular_support": {
       "type": "boolean",
       "description": "Cardiovascular",
       "category": "treatments"

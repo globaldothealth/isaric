@@ -267,6 +267,13 @@
       ref = "Y/N/NK"
       description = "Extracorporeal (ECMO) support on the first day of admission?"
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
+    { fieldPattern = "inotrop_cmtrt", ref = "Y/N/NK" },
+  ]
+
 [visit.treatment_corticosteroid]
   description = "Corticosteroid"
   combinedType = "any"

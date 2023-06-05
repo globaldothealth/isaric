@@ -559,6 +559,13 @@
 
   # daily_corticost_cmoth is empty
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support", ref = "Y/N/NK" },
+    { field = "vaso_or_inot", description = "Any administration of vasopressor/inotrope?", ref = "Y/N/NK" },
+  ]
+
 [visit.treatment_experimental_agent]
   field = "daily_exper_cmyn"
   values = { 1 = true, 0 = false }

@@ -501,6 +501,18 @@ boolean indicators) are:
 
   + *treatment_ecmo*
 
+**treatment_cardiovascular_support**: Indicates at least one cardiovascular
+support has been administered. Subsets (all boolean indicators) are:
+
+  + *treatment_inotropes_vasopressors*
+
+  + *treatment_pacing*
+
+  + *treatment_ecmo*
+
+Overarching fields denoting 'cardiovascular support' can also include CPR,
+or other forms of mechanical cardiovascular support.
+
 General drug types
 ~~~~~~~~~~~~~~~~~~
 
@@ -589,10 +601,6 @@ treated with neuromuscular blocking agents during the visit?
 **treatment_offlabel**: Bool. Was the subject treated with off-label
 medications, e.g. for compassionate use?
 
-**treatment_cardiovascular**: Bool. Did the subject receive
-cardiovascular support, e.g., Pacing, Intropic support, mechanical
-(e.g. ecmo, intra-aeortic balloon pump), cpr. NOTE TO DEVS: Consider
-making this a superset in the same manner as oxygen_therapy
 
 **treatment_colchine**: Bool. Was the pateint treated with Colchine?
 
