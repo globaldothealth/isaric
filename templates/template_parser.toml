@@ -502,11 +502,6 @@
     field = ""
     description = ""
 
-  [visit.treatment_oxygen_mechanical_support]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_pacing]
     field = ""
     description = ""

@@ -324,11 +324,6 @@
       "description": "Other treatments",
       "category": "treatments"
     },
-    "treatment_oxygen_mechanical_support": {
-      "type": "boolean",
-      "description": "Oxygen mechanical support",
-      "category": "treatments"
-    },
     "treatment_pacing": {
       "type": "boolean",
       "description": "Pacing",

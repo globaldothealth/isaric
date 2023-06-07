@@ -479,11 +479,6 @@
   field = "Ever NonSteroidal"
   values = { 1 = true, 0 = false }
 
-[visit.treatment_oxygen_mechanical_support]
-  field = "Intervention during hospitalisation.MechanicalSupport"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
 [visit.treatment_pacing]
   field = "Intervention during hospitalisation.Pacing"
   ref = "Y/N/NK"

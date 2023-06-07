@@ -665,10 +665,6 @@
           "description": "Other treatments",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_oxygen_mechanical_support": {
-          "description": "Oxygen mechanical support",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_pacing": {
           "description": "Pacing",
           "$ref": "#/definitions/mapping"

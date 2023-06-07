@@ -485,7 +485,7 @@ boolean indicators) are:
 
 + *treatment_noninvasive_ventilation* - Ventilation via e.g., BIPAP/CPAP mask
 
-+ *treatment_invasive_ventilation* - Intubation. Includes deprecated 'mechanical_support' attribute
++ *treatment_invasive_ventilation* - Intubation. Includes fields described as 'mechanical ventilation' or similar.
 
 + *treatment_prone_positioning* - Note, only if field is labelled as prone ventilation.
 
