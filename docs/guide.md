@@ -267,7 +267,7 @@ General notes on naming conventions:
 
 **has_apnoea**: Bool. Does the subject have apnoea?
 
-**has_inflamatory_bowel_disease** Bool. Does the subject have inflamatory bowel disease?
+**has_inflamatory_bowel_disease** Bool. Does the subject have inflamatory bowel disease? - NOTE TO DEVS: umbrella field "has_chronic_inflammatory_disease" with "has_inflamatory_bowel_disease" or "has_rheumatologic_disorder" recorded as sub-categories?
 
 **has_rare_disease_inborn_metabolism_error** Bool. Does the subject have a rare inborn disease?
 
