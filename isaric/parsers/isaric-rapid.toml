@@ -1409,35 +1409,6 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" } # not sure about this for this mapping ..
   value = { field = "ccm_b_cfs_rsorres" }
-  # if = { ccm_b_cfs_rsyn = 1 }
-
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { field = "overall_icu_hostdat" }
-  is_present = { field = "overall_rrt_prtrt", ref = "Y/N/NK" }
-
-  # dialysis_hemofiltration not in observation schema
-  # [[observation]]
-  #   name = "dialysis_hemofiltration"
-  #   phase = "study"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   is_present = { field = "daily_rrt_prtrt", ref = "Y/N/NK" }
-  #   if = { daily_rrt_prtrt = { "!=" = 3 } }
-
-  # [[observation]]
-  #   name = "dialysis_hemofiltration"
-  #   phase = "study"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   is_present = { field = "ccm_a_renal_prtrt", ref = "Y/N/NK" }
-  #   if = { ccm_a_renal_prtrt = { "!=" = 3 } }
-
-  # [[observation]]
-  #   name = "dialysis_hemofiltration"
-  #   phase = "study"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   is_present = { field = "ccm_b_renal_prtrt", ref = "Y/N/NK" }
-  #   if = { ccm_b_renal_prtrt = { "!=" = 3 } }
 
 [[observation]]
   name = "temperature_celsius"

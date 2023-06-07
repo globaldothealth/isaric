@@ -1111,12 +1111,6 @@
   value = { field = "urine_ph", description = "Urine pH" }
 
 [[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { field = "soins_date_t" }
-  is_present = { field = "dialy_hemo", description = "Dialysis/Hemofiltration?", ref = "Y/N/NK" }
-
-[[observation]]
   name = "respiratory_rate"
   phase = "study"
   date = { field = "para_vitaux_date_t" }

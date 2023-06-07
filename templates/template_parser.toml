@@ -864,15 +864,6 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
   name = "runny_nose"
   date = ""
   phase = ""

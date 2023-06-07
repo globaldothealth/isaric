@@ -919,12 +919,6 @@
   date = { field = "daily_date" }
   value = { field = "daily_temp_vsorres" } # there is no source unit field and no conditional field
 
-  # [[observation]]
-  #   name = "renal_replacement_therapy_dialysis"
-  #   date = { field = "daily_date" }
-  #   phase = "study"
-  #   is_present = { field = "daily_rrt_prtrt", values = { 1 = true, 2 = false } }
-
 [[observation]]
   name = "mid_upper_arm_circumference_cm"
   date = { ref = "admissionDateHierarchy" }

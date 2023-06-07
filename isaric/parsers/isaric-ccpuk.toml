@@ -899,12 +899,6 @@
   ]
 
 [[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "rrt_prtrt", ref = "Y/N/NK" }
-
-[[observation]]
   name = "temperature_celsius"
   value = { field = "temp_vsorres", source_unit = { field = "temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
   phase = "admission"

@@ -991,12 +991,6 @@
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_lowerchest_ceoccur_2", values = { 1 = true, 0 = false } }
 
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "Intervention during hospitalisation.RenalDialysis", values = { 1 = true, 0 = false } }
-
   # [[observation]]
   #   name = "severe_dehydration"
   #   # free text, mostly in

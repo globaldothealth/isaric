@@ -1005,47 +1005,6 @@
   #   value = { field = "ccm_b_cfs_rsorres" }
   #   if = { ccm_b_cfs_rsyn = 1 }
 
-[[observation]] # This is a treatment - should it be here?
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }            # date in the treatment form? ..
-  is_present = { field = "rrt_prtrt", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "dailyDateHierarchy" }
-  is_present = { field = "daily_rrt_cmtrt", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"                                          # in the outcome form
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "renal_proccur", ref = "Y/N/NK" }
-
-  # [[observation]] # Not in data
-  #   name = "renal_replacement_therapy_dialysis"
-  #   phase = "study"
-  #   date = { ref = "admissionDateHierarchy" }                    # in the critical_care_module form
-  #   is_present = { field = "ccm_b_renal_prtrt", ref = "Y/N/NK" }
-  #   if = { ccm_b_renal_prtrt = { "!=" = 3 } }
-
-  # [[observation]] # not in data
-  #   name = "renal_replacement_therapy_dialysis"
-  #   phase = "study"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   is_present = { field = "k_dicuddial", values = { 1 = true, 0 = false } }
-  #   if = { k_dicuddial = { "!=" = "" } }
-  #   # description = "Is this patient still dialysis dependent at ICU discharge?"
-
-  # [[observation]] # not in data
-  #   name = "renal_replacement_therapy_dialysis"
-  #   phase = "study"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   is_present = { field = "k_dhosddial", values = { 1 = true, 0 = false } }
-  #   if = { k_dhosddia = { "!=" = "" } }
-  #   # description = "Is this patient still dialysis dependent at Hospital discharge?"
-
 [[observation]]
   name = "temperature_celsius"
   phase = "admission"
