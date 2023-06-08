@@ -473,6 +473,7 @@
   name = "abdominal_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "abd_date" }
   is_present = { field = "abd_pain_hx", description = "Abdominal pain", ref = "Y/N" }
 
 [[observation]]
@@ -527,6 +528,7 @@
   name = "cough_with_sputum_production"
   phase = "admission"
   date = { field = "sputum_date" }
+  start_date = { field = "sputum_date" }
 
   [observation.is_present]
     field = "sputum_hx"
@@ -543,8 +545,12 @@
 
 [[observation]] # check if this is correct?!
   name = "diastolic_blood_pressure_mmHg"
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
-  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "admission_diabp_vsorres" = { "!=" = "" } }
+  ]
+  date = { field = "daily_assess_date" }
 
   [observation.value]
     field = "admission_diabp_vsorres"
@@ -553,8 +559,12 @@
 
 [[observation]] # check if this is correct?!
   name = "diastolic_blood_pressure_mmHg"
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
-  date = { ref = "admissionDateHierarchy" }
+  phase = "study" 
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" }, 
+  { "admission_diabp_vsorres" = { "!=" = "" } }
+  ]
+  date = { field = "daily_assess_date" }
 
   [observation.value]
     field = "admission_diabp_vsorres"
@@ -605,6 +615,7 @@
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { "arthralgia_date" }
 
   [observation.is_present]
     field = "arthralgia_hx"
@@ -615,6 +626,7 @@
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "anosmia_date" }
 
   [observation.is_present]
     field = "anosmia_hx"
@@ -625,6 +637,7 @@
   name = "loss_of_taste"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "ageusia_date" }
 
   [observation.is_present]
     field = "ageusia_hx"
@@ -633,7 +646,11 @@
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "map_sx" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
@@ -642,7 +659,11 @@
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study"
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "map_sx" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
@@ -653,6 +674,7 @@
   name = "muscle_aches"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "myalgia_date" }
 
   [observation.is_present]
     field = "myalgia_hx"
@@ -661,7 +683,11 @@
 
 [[observation]]
   name = "pH"
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "daily_ph_data" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
   context = ['Same blood gas record']
 
@@ -671,7 +697,11 @@
 
 [[observation]]
   name = "pH"
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study" 
+  if.all = [ 
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "daily_ph_data" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
   context = ['Same blood gas record']
 
@@ -681,7 +711,11 @@
 
 [[observation]]
   name = "pao2"
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "daily_pao2_data" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
@@ -700,7 +734,11 @@
 
 [[observation]]
   name = "pao2"
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study"
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "daily_pao2_data" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
@@ -727,6 +765,7 @@
   name = "runny_nose"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "rn_date" }
 
   [observation.is_present]
     field = "rn_hx"
@@ -737,6 +776,7 @@
   name = "shortness_of_breath"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "sob_date" }
 
   [observation.is_present]
     field = "sob_hx"
@@ -747,6 +787,7 @@
   name = "skin_rash"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "rash_date" }
 
   [observation.is_present]
     field = "rash_hx"
@@ -756,6 +797,7 @@
   name = "sore_throat"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "throat_date" }
 
   [observation.is_present]
     field = "throat_hx"
@@ -763,19 +805,31 @@
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "sysbp_vsorres" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
   value = { field = "sysbp_vsorres", source_unit = "mmHg" }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study"
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "sysbp_vsorres" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
   value = { field = "sysbp_vsorres", source_unit = "mmHg" }
 
 [[observation]]
   name = "temperature_celsius"
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "t_sx" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
@@ -784,7 +838,11 @@
 
 [[observation]]
   name = "temperature_celsius"
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study"
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "t_sx" = { "!=" = "" } }
+  ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
@@ -832,25 +890,41 @@
 [[observation]]
   name = "o2_flow_vol_max"
   date = { field = "daily_assess_date" }
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "oxy_flow" = { "!=" = "" } }
+  ]
   text = { field = "oxy_flow" }
 
 [[observation]]
   name = "o2_flow_vol_max"
   date = { field = "daily_assess_date" }
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study"
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "oxy_flow" = { "!=" = "" } }
+  ]
   text = { field = "oxy_flow" }
 
 [[observation]]
   name = "heart_sounds"
   date = { field = "daily_assess_date" }
-  phase = { field = "admission", if = { redcap_event_name = "on_admission_arm_1" } }
+  phase = "admission"
+  if.all = [
+  { redcap_event_name = "on_admission_arm_1" },
+  { "heart_sound" = { "!=" = "" } }
+  ]
   text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
 
 [[observation]]
   name = "heart_sounds"
   date = { field = "daily_assess_date" }
-  phase = { field = "study", if = { redcap_event_name = "daily_progress_arm_1" } }
+  phase = "study"
+  if.all = [
+  { redcap_event_name = "daily_progress_arm_1" },
+  { "heart_sound" = { "!=" = "" } }
+  ]
   text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
 
 [[observation]]
@@ -862,12 +936,14 @@
 [[observation]]
   name = "irritability_peadiatrics"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "irri_date" }
   phase = "admission"
   is_present = { field = "irri_hx", ref = "Y/N" }
 
 [[observation]]
   name = "feeding_intolerance_peadiatrics"
   date = { ref = "admissionDateHierarchy" }
+  start_date = { field = "feed_date" }
   phase = "admission"
   is_present = { field = "feed_hx", ref = "Y/N" }
 
