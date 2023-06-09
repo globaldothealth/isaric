@@ -418,6 +418,52 @@
 
 [[observation]]
   name = "cough"
+  phase = "pre-admission"
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "cough_cestdat_v2" },
+      { field = "coughsput_cestdat_v2" },
+      { field = "coughhb_cestdat_v2" },
+    ]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "pre-admission"
+  start_date = { field = "cough_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "pre-admission"
+  start_date = { field = "coughsput_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "pre-admission"
+  start_date = { field = "coughhb_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
   date = { ref = "dailyDate" }
   phase = "study"
 
@@ -428,6 +474,12 @@
       { field = "daily_coughhb_ceoccur", ref = "Y/N/NK" },
       { field = "daily_coughsput_ceoccur", ref = "Y/N/NK" },
     ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { ref = "dailydate" }
+  phase = "study"
+  is_present = { field = "daily_cough_ceoccur", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
@@ -639,44 +691,6 @@
     fields = [
       { field = "oxy_vsorresu", values = { 1 = "Room air", 2 = "Oxygen therapy" } },
     ]
-
-[[observation]]
-  name = "cough"
-  phase = "admission"
-  date = { ref = "admissionDate" }
-  duration_type = "event"
-
-  [observation.start_date]
-    combinedType = "min"
-    fields = [
-      { field = "cough_cestdat_v2" },
-      { field = "coughsput_cestdat_v2" },
-      { field = "coughhb_cestdat_v2" },
-    ]
-
-  [observation.is_present]
-    combinedType = "any"
-    fields = [
-      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
-    ]
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  start_date = { field = "coughsput_cestdat_v2" }
-  date = { ref = "admissionDate" }
-  duration_type = "event"
-  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
-  start_date = { field = "coughhb_cestdat_v2" }
-  date = { ref = "admissionDate" }
-  duration_type = "event"
-  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "sore_throat"

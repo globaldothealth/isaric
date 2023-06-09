@@ -551,24 +551,54 @@
   name = "cough"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
+  [observation.is_present]
+  combinedType = "any"
+  fields = [
+    { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+    { field = "coughsput_ceoccur_v2", ref = "Y/N" },
+    { field = "coughhb_ceoccur_v2", ref = "Y/N" }
+  ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
   is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
   date = { field = "daily_date" }
   phase = "study"
+  [observation.is_present]
+  combinedType = "any"
+  fields = [
+    { field = "daily_cough_ceoccur_v2", ref = "Y/N" },
+    { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" }
+  ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "daily_date" }
+  phase = "study"
   is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
-  name = "cough" # This one is data taken from pre-admission, preferable to use cough_ceoccur_v2
-  date = { ref = "admissionDateHierarchy" }
-  phase = "admission"
-  is_present = { field = "symptoms_cough", values = { 1 = true, 0 = false } }
-  if.all = [
-    { cough_ceoccur_v2 = { "!=" = 1 } },
-    { cough_ceoccur_v2 = { "!=" = 2 } },
-    { symptoms_cough = { "!=" = "" } },
-  ]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" }
 
   # [[observation]] # oxy_vsorres is missing - but oxy_vsorresu isn't!
   #   name = "oxygen_saturation_percent"
@@ -785,24 +815,6 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "symptoms_fever", values = { 1 = true, 0 = false } }
-
-[[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "study"
-  date = { field = "daily_date" }
-  is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"

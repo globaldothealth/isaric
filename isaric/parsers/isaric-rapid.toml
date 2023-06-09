@@ -881,19 +881,83 @@
   name = "cough"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "symptoms_cough", values = { 1 = true, 0 = false } },
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
   is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough"
   date = { field = "daily_date" }
   phase = "study"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "daily_cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "daily_coughsput_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "daily_date" }
+  phase = "study"
   is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "cough"
-  date = { ref = "admissionDateHierarchy" }
-  phase = "admission"
-  is_present = { field = "symptoms_cough", values = { 1 = true, 0 = false } }
+  name = "cough_with_sputum_production"
+  date = { field = "daily_date" }
+  phase = "study"
+  is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  start_date = {field = "flw_survey_date", apply = {function = "startDate", params = [7]}}
+  date = {field = "flw_survey_date"}
+  is_present = {field = "flw_pers_cough", ref = "Y/N/NK", if = {flw_pers_cough_y = 1}}
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  start_date = {field = "flw_survey_date", apply = {function = "startDate", params = [7]}}
+  date = {field = "flw_survey_date"}
+  is_present = {field = "flw_pers_cough", ref = "Y/N/NK", if = {flw_pers_cough_y = 2}}
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  start_date = {field = "flw2_survey_date", apply = {function = "startDate", params = [7]}}
+  date = {field = "flw2_survey_date"}
+  is_present = {field = "flw2_pers_cough", ref = "Y/N/NK", if = {flw2_pers_cough_y = 1}}
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  start_date = {field = "flw2_survey_date", apply = {function = "startDate", params = [7]}}
+  date = {field = "flw2_survey_date"}
+  is_present = {field = "flw2_pers_cough", ref = "Y/N/NK", if = {flw2_pers_cough_y = 2}}
 
 [[observation]]
   name = "avpu"
@@ -1253,24 +1317,6 @@
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_fever", values = { 1 = true, 0 = false } }
-
-[[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"

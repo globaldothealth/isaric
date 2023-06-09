@@ -534,21 +534,101 @@
 
 [[observation]]
   name = "cough"
-  phase = "admission"
+  phase = "pre-admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_cough_ceoccur_2", values = { 0 = false, 1 = true }, description = "Signs and symptoms pre-covid19 diagnosis" },
+      { field = "flw_coughsput_ceoccur_2", values = { 0 = false, 1 = true } },
+      { field = "flw_coughhb_ceoccur_2", values = { 0 = false, 1 = true } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_cough_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "admission"
+  phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_coughsput_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "admission"
+  phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_coughhb_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_pers_cough_dry", values = { 0 = false, 1 = true } },
+      { field = "flw_pers_cough_ph", values = { 0 = false, 1 = true } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  is_present = { field = "flw_pers_cough_dry", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  is_present = { field = "flw_pers_cough_ph", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  for.n.range = [1, 5]
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw2_pers_cough_dry_{n}", values = { 0 = false, 1 = true } },
+      { field = "flw2_pers_cough_ph_{n}", values = { 0 = false, 1 = true } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  is_present = { field = "flw2_pers_cough_dry_{n}", values = { 0 = false, 1 = true } }
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  is_present = { field = "flw2_pers_cough_ph_{n}", values = { 0 = false, 1 = true } }
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "shortness_of_breath"

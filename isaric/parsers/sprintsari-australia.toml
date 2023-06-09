@@ -457,12 +457,11 @@
       { field = "coughhb_ceoccur_v2", description = "Cough: bloody sputum / haemoptysis", values = { 1 = true, 2 = false } },
     ]
 
-  [observation.if]
-    any = [
-      { cough_ceoccur_v2 = { "!=" = "" } },
-      { coughsput_ceoccur_v2 = { "!=" = "" } },
-      { coughhb_ceoccur_v2 = { "!=" = "" } },
-    ]
+[[observation]]
+  name = "cough_dry"
+  phase = "admission"
+  date = { ref "admissionDateHierarchy" }
+  is_present = {field = "cough_ceoccur_v2", description = "Cough", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "cough_with_sputum_production"
