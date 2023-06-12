@@ -10,7 +10,7 @@
     groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
-    optional-fields = ["ethnicity", "sex_at_birth"]
+    optional-fields = ["ethnicity", "sex_at_birth", "sex"]
 
   [adtl.tables.visit]
     kind = "groupBy"
@@ -552,12 +552,12 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   [observation.is_present]
-  combinedType = "any"
-  fields = [
-    { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
-    { field = "coughsput_ceoccur_v2", ref = "Y/N" },
-    { field = "coughhb_ceoccur_v2", ref = "Y/N" }
-  ]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N" },
+    ]
 
 [[observation]]
   name = "cough_dry"
@@ -582,11 +582,11 @@
   date = { field = "daily_date" }
   phase = "study"
   [observation.is_present]
-  combinedType = "any"
-  fields = [
-    { field = "daily_cough_ceoccur_v2", ref = "Y/N" },
-    { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" }
-  ]
+    combinedType = "any"
+    fields = [
+      { field = "daily_cough_ceoccur_v2", ref = "Y/N" },
+      { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" },
+    ]
 
 [[observation]]
   name = "cough_dry"

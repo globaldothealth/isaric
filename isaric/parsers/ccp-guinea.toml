@@ -247,7 +247,7 @@
   [subject.enrolment_date]
     field = "recruit_date"
 
-  [subject.sex_at_birth]
+  [subject.sex]
     field = "sex"
     values = { 0 = "female", 1 = "male" }
 
