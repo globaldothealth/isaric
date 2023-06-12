@@ -1,7 +1,8 @@
->adtl isaric-ccpuk.toml CCPUKSARILondon_DATA_2022-06-06_1135.csv
+> adtl isaric/parsers/isaric-ccpuk.toml ../isaric-data/isaric-ccpuk/CCPUKSARILondon_DATA_2022-06-06_1135.csv --include-def isaric/parsers/relsub.json
 
-|table          |valid  |total  |percentage_valid|
+|table       	|valid	|total	|percentage_valid|
 |---------------|-------|-------|----------------|
+
 |subject        |31614  |36754  |86.015128% |
 |visit          |30810  |36754  |83.827611% |
 |observation    |1243439        |1245776        |99.812406% |

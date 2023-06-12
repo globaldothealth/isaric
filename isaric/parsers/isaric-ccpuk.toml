@@ -42,15 +42,16 @@
 [subject]
   pathogen = "COVID-19"
 
+  [subject.subject_id]
+    field = "subjid"
+    ref = "relsub"
+    sensitive = true
+    ignoreMissingKey = true
+
   [subject.sex_at_birth]
     field = "sex"
     description = "Sex at Birth"
     values = { 1 = "male", 2 = "female" }
-
-  [subject.subject_id]
-    field = "subjid"
-    sensitive = true
-    description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
   [subject.enrolment_date]
     field = "dsstdat"
@@ -286,6 +287,12 @@
 [visit]
   country_iso3 = "GBR"
 
+  [visit.subject_id]
+    field = "subjid"
+    ref = "relsub"
+    sensitive = true
+    ignoreMissingKey = true
+
   [visit.date_outcome]
     combinedType = "firstNonNull"
     description = "Outcome date"
@@ -293,11 +300,6 @@
 
   [visit.visit_id]
     field = "subjid"
-    sensitive = true
-
-  [visit.subject_id] # same as visit_id!
-    field = "subjid"
-    sensitive = true
 
   [visit.start_date]
     combinedType = "firstNonNull"
