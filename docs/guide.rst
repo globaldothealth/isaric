@@ -348,6 +348,9 @@ chosen from across multiple visits.
   + female
   + intersex
 
+**sex**: Text. Use if the data dictionary does not specifically state sex *at birth*.
+Can include options such as transgender, non-binary if included in the collected data.
+
 **ethnicity**: Text. Subject's ethnicity.
 
 **pathogen**: Text. Pathogen subject is being studied for.

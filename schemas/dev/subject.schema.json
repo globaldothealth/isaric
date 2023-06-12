@@ -6,7 +6,6 @@
   "required": [
     "subject_id",
     "age",
-    "sex_at_birth",
     "ethnicity",
     "pathogen"
   ],
@@ -19,6 +18,18 @@
     {
       "required": [
         "enrolment_date"
+      ]
+    }
+  ],
+  "oneOf": [
+    {
+      "required": [
+        "sex_at_birth"
+      ]
+    },
+    {
+      "required": [
+        "sex"
       ]
     }
   ],
@@ -66,6 +77,10 @@
         "intersex"
       ],
       "description": "Sex at birth",
+      "category": "demographics"
+    },
+    "sex": {
+      "description": "Sex/Gender",
       "category": "demographics"
     },
     "ethnicity": {

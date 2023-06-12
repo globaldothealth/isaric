@@ -201,7 +201,7 @@
   field = "daily_hoterm"
   ref = "Y/N/NK"
 
-[subject.sex_at_birth]
+[subject.sex]
   field = "sex"
   description = "Sex"
   values = { 1 = "male", 2 = "female" }

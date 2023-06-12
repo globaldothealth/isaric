@@ -253,7 +253,6 @@
       "required": [
         "subject_id",
         "age",
-        "sex_at_birth",
         "ethnicity",
         "pathogen"
       ],
@@ -266,6 +265,18 @@
         {
           "required": [
             "enrolment_date"
+          ]
+        }
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "sex_at_birth"
+          ]
+        },
+        {
+          "required": [
+            "sex"
           ]
         }
       ],
@@ -291,6 +302,10 @@
         },
         "sex_at_birth": {
           "description": "Sex at birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "sex": {
+          "description": "Sex/Gender",
           "$ref": "#/definitions/mapping"
         },
         "ethnicity": {
