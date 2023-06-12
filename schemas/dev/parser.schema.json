@@ -74,7 +74,10 @@
                 "params": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "number"
+                    ]
                   },
                   "description": "Additional parameters to pass to the function"
                 }
@@ -833,6 +836,7 @@
               "confusion",
               "conjunctivitis",
               "cough",
+              "cough_dry",
               "cough_with_haemoptysis",
               "cough_with_sputum_production",
               "cyanosis",

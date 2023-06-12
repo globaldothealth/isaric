@@ -4,11 +4,12 @@
 |---------------|-------|-------|----------------|
 |subject        |285    |293    |97.269625% |
 |visit          |286    |293    |97.610922% |
-|observation    |10652  |10677  |99.765852% |
+|observation    |11092  |11118  |99.766145% |
 
 ## subject
 
-* 8: data must contain ['admission_date', 'age', 'country_iso3', 'pathogen', 'subject_id'] properties
+* 7: data cannot be validated by any definition
+* 1: data must contain ['age', 'pathogen', 'subject_id'] properties
 
 ## visit
 
@@ -16,4 +17,4 @@
 
 ## observation
 
-* 25: data must contain ['phase', 'date', 'name'] properties
+* 26: data must contain ['phase', 'date', 'name'] properties

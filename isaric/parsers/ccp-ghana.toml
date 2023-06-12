@@ -894,6 +894,7 @@
   name = "chest_pain"
   phase = "pre-admission"
   start_date = { field = "chest_pain_date" }
+  duration_type = "event"
   date = { field = "add_date" }
   is_present = { field = "chest_pain", description = "Chest pain", ref = "Y/N/NK" }
 
@@ -945,6 +946,7 @@
   phase = "pre-admission"
   start_date = { field = "dry_cough_date" }
   date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
   is_present = { field = "dry_cough", ref = "Y/N/NK" }
 
 [[observation]]

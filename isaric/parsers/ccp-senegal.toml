@@ -477,7 +477,7 @@
 
 [[observation]]
   name = "cough_dry"
-  date = { ref = "dailydate" }
+  date = { ref = "dailyDate" }
   phase = "study"
   is_present = { field = "daily_cough_ceoccur", ref = "Y/N/NK" }
 
@@ -591,7 +591,9 @@
   name = "temperature_celsius"
   phase = "study"
   for.n.range = [1, 5]
-  value = { field = "daily_temp_vsorres_{n}", apply.function = "getFloat" }
+  value = { field = "daily_temp_vsorres_{n}", apply = { function = "getFloat", params = [
+    ",",
+  ] } }
   date = { ref = "dailyDateTime" }
 
 [[observation]]

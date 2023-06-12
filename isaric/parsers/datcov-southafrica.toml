@@ -570,6 +570,8 @@
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
+  duration_type = "event"
+
   [observation.is_present]
     combinedType = "any"
     fields = [
@@ -584,6 +586,7 @@
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
+  duration_type = "event"
   is_present = { field = "flw_pers_cough_dry", values = { 0 = false, 1 = true } }
 
 [[observation]]
@@ -593,6 +596,7 @@
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
+  duration_type = "event"
   is_present = { field = "flw_pers_cough_ph", values = { 0 = false, 1 = true } }
 
 [[observation]]
@@ -602,6 +606,7 @@
   start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
     7,
   ] } }
+  duration_type = "event"
   for.n.range = [1, 5]
   [observation.is_present]
     combinedType = "any"
@@ -617,6 +622,7 @@
   start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
     7,
   ] } }
+  duration_type = "event"
   is_present = { field = "flw2_pers_cough_dry_{n}", values = { 0 = false, 1 = true } }
   for.n.range = [1, 5]
 
@@ -627,6 +633,7 @@
   start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
     7,
   ] } }
+  duration_type = "event"
   is_present = { field = "flw2_pers_cough_ph_{n}", values = { 0 = false, 1 = true } }
   for.n.range = [1, 5]
 

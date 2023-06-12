@@ -224,6 +224,7 @@
 
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
+  excludeWhen = "none"
   fields = [
     { field = "hostdat", description = "Admission date at this facility" },
     { field = "cestdat", description = "Onset date of first/earliest symptom" },
@@ -298,7 +299,7 @@
 
     [[subject.age.fields]]
       field = "brthdtc"
-      apply = { function = "yearsElapsed", params = ["dsstdat"] }
+      apply = { function = "yearsElapsed", params = ["$dsstdat"] }
 
     [[subject.age.fields]]
       field = "age"
@@ -431,6 +432,7 @@
 
   [visit.start_date]
     combinedType = "firstNonNull"
+    excludeWhen = "none"
     fields = [
       { field = "hostdat", description = "Admission date at this facility" },
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
@@ -887,7 +889,7 @@
       { field = "symptoms_cough", values = { 1 = true, 0 = false } },
       { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
       { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
     ]
 
 [[observation]]
@@ -928,36 +930,30 @@
 [[observation]]
   name = "cough_with_sputum_production"
   date = { field = "daily_date" }
+  duration_type = "event"
   phase = "study"
   is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_dry"
   phase = "followup"
-  start_date = {field = "flw_survey_date", apply = {function = "startDate", params = [7]}}
-  date = {field = "flw_survey_date"}
-  is_present = {field = "flw_pers_cough", ref = "Y/N/NK", if = {flw_pers_cough_y = 1}}
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  date = { field = "flw_survey_date" }
+  duration_type = "event"
+  is_present = { field = "flw_pers_cough", ref = "Y/N/NK", if = { flw_pers_cough_y = 1 } }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
-  start_date = {field = "flw_survey_date", apply = {function = "startDate", params = [7]}}
-  date = {field = "flw_survey_date"}
-  is_present = {field = "flw_pers_cough", ref = "Y/N/NK", if = {flw_pers_cough_y = 2}}
-
-[[observation]]
-  name = "cough_dry"
-  phase = "followup"
-  start_date = {field = "flw2_survey_date", apply = {function = "startDate", params = [7]}}
-  date = {field = "flw2_survey_date"}
-  is_present = {field = "flw2_pers_cough", ref = "Y/N/NK", if = {flw2_pers_cough_y = 1}}
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "followup"
-  start_date = {field = "flw2_survey_date", apply = {function = "startDate", params = [7]}}
-  date = {field = "flw2_survey_date"}
-  is_present = {field = "flw2_pers_cough", ref = "Y/N/NK", if = {flw2_pers_cough_y = 2}}
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  date = { field = "flw_survey_date" }
+  duration_type = "event"
+  is_present = { field = "flw_pers_cough", ref = "Y/N/NK", if = { flw_pers_cough_y = 2 } }
+  if = { "flw_pers_cough_y" = 2 }
 
 [[observation]]
   name = "avpu"

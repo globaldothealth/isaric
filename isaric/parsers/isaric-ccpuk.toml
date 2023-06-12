@@ -549,7 +549,7 @@
         4 = "death"
         5 = "palliative discharge"
 
-## OBSERVATION
+        ## OBSERVATION
 
 [[observation]]
   name = "bleeding_haemorrhage"
@@ -574,13 +574,15 @@
   name = "cough_dry"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  is_present = {field = "flw_cough", values = { 1 = true, 0 = false }, if = {flw_cough_type = 1}}
+  is_present = { field = "flw_cough", values = { 1 = true, 0 = false }, if = { flw_cough_type = 1 } }
+  if = { flw_cough_type = 1 }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  is_present = {field = "flw_cough", values = { 1 = true, 0 = false }, if = {flw_cough_type = 2}}
+  is_present = { field = "flw_cough", values = { 1 = true, 0 = false }, if = { flw_cough_type = 2 } }
+  if = { flw_cough_type = 2 }
 
 [[observation]]
   name = "cough"
@@ -980,24 +982,33 @@
   phase = "study"
   is_present = { field = "vrialpneu_ceoccur", ref = "Y/N/NK" }
   start_date = { ref = "admissionDateHierarchy" }
-  date = { field = "dsstdtc" }
   duration_type = "event"
   context = ['viral']
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   is_present = { field = "bactpneu_ceoccur", ref = "Y/N/NK" }
   start_date = { ref = "admissionDateHierarchy" }
-  date = { field = "dsstdtc" }
   duration_type = "event"
   context = ['bacterial']
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   is_present = { field = "cryptogenic_ceterm", ref = "Y/N/NK" }
   start_date = { ref = "admissionDateHierarchy" }
-  date = { field = "dsstdtc" }
   duration_type = "event"
   context = ['cryptogenic organizing pneumonia (POC)']
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
