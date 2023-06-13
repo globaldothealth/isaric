@@ -2,15 +2,17 @@
 
 |table       	|valid	|total	|percentage_valid|
 |---------------|-------|-------|----------------|
-|subject       	|30745	|35753	|85.992784% |
-|visit         	|30810	|36754	|83.827611% |
-|observation   	|1192364	|1202801	|99.132275% |
+
+|subject        |31614  |36754  |86.015128% |
+|visit          |30810  |36754  |83.827611% |
+|observation    |1243439        |1245776        |99.812406% |
 
 ## subject
 
-* 5000: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 4101: data cannot be validated by any definition
+* 1031: data must contain ['subject_id', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
 * 5: data.age must be smaller than or equal to 120
-* 2: data.admission_date must be date
+* 2: data.earliest_admission_date must be date
 * 1: data.age must be bigger than or equal to 0
 
 ## visit
@@ -22,6 +24,6 @@
 
 ## observation
 
-* 10363: data must contain ['phase', 'date', 'name'] properties
-* 68: data.date cannot be validated by any definition
+* 2257: data must contain ['phase', 'date', 'name'] properties
+* 74: data.date cannot be validated by any definition
 * 6: data.value must be number

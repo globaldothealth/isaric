@@ -21,6 +21,20 @@ def make_fields_optional(
                 set(schema["properties"][table]["required"])
                 - set(optional_fields[table] or [])
             )
+            if "oneOf" in schema["properties"][table]:
+                for x in range(len(schema["properties"][table]["oneOf"])):
+                    schema["properties"][table]["oneOf"][x]["required"] = list(
+                        set(schema["properties"][table]["oneOf"][x]["required"])
+                        - set(optional_fields[table] or [])
+                    )
+                if all(
+                    all(
+                        bool(v) == False
+                        for v in schema["properties"][table]["oneOf"][x].values()
+                    )
+                    for x in range(len(schema["properties"][table]["oneOf"]))
+                ):
+                    schema["properties"][table].pop("oneOf")
         elif table == "observation":
             schema["properties"][table]["items"]["required"] = list(
                 set(schema["properties"][table]["items"]["required"])
