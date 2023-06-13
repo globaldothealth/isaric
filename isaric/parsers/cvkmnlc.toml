@@ -1,0 +1,512 @@
+[adtl]
+  name = "ccp-spain"
+  description = "COVID-19 patient data, Hospital del Mar, Barcelona, Spain"
+  defaultDateFormat = "%d/%m/%Y"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ["ethnicity", "sex_at_birth"]
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ["outcome", "date_outcome"]
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N/NK".values]
+    0 = false
+    1 = true
+    2 = "Unknown"
+
+# Subject table queries
+    # there is no enrolment_date
+ 
+[subject]
+  study_id = "ccp-spain"
+  country_iso3 = "ESP"
+  pathogen = "COVID-19"
+
+  [subject.sex_at_birth]
+    field = "sex"
+    description = "Sex at Birth"
+    values = { 0 = 'female", 1 = "male" }
+
+  [subject.subject_id]
+    field = "record_id"
+    sensitive = true
+    description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
+
+  [subject.admission_date]
+    field = "fchadminsion"
+    description = "Admission date at hospital"
+
+  [subject.ethnicity] # TODO: need to add ethnic other field
+    description = "Ethnic groups"
+    combinedType = "set"
+    excludeWhen = "none"
+    values = { 1 = "White", 2 = "Black", 3 = "Hispanic", 4 = "Asian", 5 = "Arab", 6 = "Other" }
+
+  [subject.works_microbiology_lab]
+    field = "infhospi"
+    description = "Employed in a microbiology laboratory?"
+    values = { 2 = true} ### CHECK
+
+  [subject.works_healthcare]
+    field = "infhospi"
+    values = { 1 = true} ### CHECK
+    description = "Employed as a healthcare worker?"
+
+  [subject.age]
+    combinedType = "firstNonNull"
+    [[subject.age.fields]]
+    fields = [
+      {field = "edad", unit = "years", description = "Calculated age in years"},
+      {field = "meses", unit = "months", description = "Age in Months", if = { edad = 0 }}
+    ]
+  
+  [subject.pregnancy]
+    field = "embarazo"
+    ref = "Y/N/NK"
+    description = "Pregnant ?"
+  
+  [subject.pregnancy_gestational_assessment_weeks]
+    field = "semgest"
+    description = "Gestational weeks assessment"
+
+  [subject.has_chronic_hematologic_disease]
+    field = "chronichaemo_mhyn"
+    ref = "Y/N/NK"
+    description = "Chronic hematologic disease"
+  
+  [subject.has_dementia]
+    field = "co_demencia"
+    ref = "Y/N/NK"
+    description = "Dementia"
+
+  [subject.has_obesity]
+    field = "co_obesid"
+    ref = "Y/N/NK"
+    description = "Obesity (as defined by clinical staff)"
+  
+  [subject.has_hiv]
+    field = "vih"
+    ref = "Y/N/NK"
+    description = "AIDS/HIV"
+  
+  [subject.has_hiv_art]
+    field = "tto_art"
+    description = "If HIV positive, ART received"
+    ref = "Y/N/NK"
+    
+  [subject.has_hypertension]
+    field = "co_hta"
+    ref = "Y/N/NK"
+    description = "Hypertension (physician diagnosed)"
+ 
+  [subject.has_smoking]
+    field = "co_fumador"
+    values = { 1 = "yes", 0 = "never", 2 = "former" }
+  
+  [subject.has_asthma]
+    field = "co_asma"
+    ref = "Y/N/NK"
+    description = "Asthma (physician diagnosed)"
+    
+  [subject.has_chronic_cardiac_disease]
+    field = "co_cardiop"
+    ref = "Y/N/NK"
+    description = "Chronic cardiac disease, including congenital heart disease (not hypertension)"
+    
+  [subject.has_chronic_kidney_disease]
+    field = "co_erc"
+    ref = "Y/N/NK"
+    description = "Chronic kidney disease"
+
+  [subject.has_diabetes]
+    field = "co_dm"
+    ref = "Y/N/NK"
+    description = "Diabetes without complications"
+
+  [subject.has_liver_disease]
+    combinedType = "any"
+    fields = [
+        {field = "co_cirrosis", ref = "Y/N/NK"},
+        {field = "c_ih", ref = "Y/N/NK"}
+    ]
+    description = "Has liver disease"
+
+  [subject.has_malnutrition]
+    field = "co_malnutricion"
+    description = "Patient is malnourished"
+    ref = "Y/N/NK"
+
+  [subject.date_death]
+    field = "fch_exitus"
+    description = "Date of death"
+    if = { outcome = 3 }
+
+  [subject.has_died]
+    field = "outcome"
+    description = "Has the subject died since being enroled in the study?"
+    values = {1 = false, 2 = false, 3 = true}
+
+  [subject.icu_admitted]
+    field = "uci"
+    description = "Admitted to ICU?"
+    values = {0 = false, 1 = true}
+
+[visit]
+  country_iso3 = "ESP"
+
+  [visit.date_outcome]
+    combinedType = "firstNonNull"
+    description = "Outcome date"
+    fields = [{ field = "fch_alta" }, { field = "fch_ulticont" }, {field = "fch_exitus"}, {field = "fcha_1eralta"}, {field = "fch_pcr_neg"}]
+
+  [visit.visit_id]
+    field = "record_id"
+    sensitive = true
+
+  [visit.subject_id] # same as visit_id!
+    field = "record_id"
+    sensitive = true
+
+  [visit.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "fchadminsion", description = "Admission date at this facility" },
+      { fieled = "fch_sv", desctiption = "Date for Vital Signs upon admission"},
+    ]
+
+  [visit.icu_admission]
+    combinedType = "any"
+    field= "uci"
+    values = {0 = false, 1 = true}
+
+  [visit.icu_admission_dates]
+    description = "ICU admission date"
+    field= "fecha_uci"
+
+  [visit.pathogen_test_date]
+    field = "fch_covid19"
+
+  [visit.treatment_antibiotics]
+    description = "Antibiotic agent?"
+    field = "atb"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_antibiotics_type]
+    combinedType = "set"
+    excludeWhen = 'false-like'
+    fields = [
+      { field = "azt", values = {1 = "Anthromycin}}
+    ]
+
+  [visit.treatment_antifungal_agent]
+    description = "Antibiotic agent?"
+    field = "antif"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_antivirals]
+    description = "Antiviral agent?"
+    combinedType = "any"
+    fields = [
+    {field = "tozi",  values = {0 = false, 1 = true}, description = "Tocilizumab Antiviral?"},
+    {field = "rbv",  values = {0 = false, 1 = true}, description = "Ribavirin Antiviral?"},
+    {field = "remdi",  values = {0 = false, 1 = true}, description = "Remdesivir Antiviral?"},
+    {field = "lopr",  values = {0 = false, 1 = true}, description = "Lopinavir/Ritonvir Antiviral?"}
+    ] 
+
+  [visit.treatment_antivitals_type]
+    description = "Type of antiviral agent used"
+    combinedType = "set"
+    fields = [
+        {field = "tozi",  values = {1 = "Tocilizuma"}},
+        {field = "rbv",  values = {1 = "Ribavirin"}},
+        {field = "remdi",  values = {1 = "Remdesivir"}},
+        {field = "lopr",  values = {1 = "Lopinavir/Ritonvir"}}
+    ] 
+
+  [visit.treatment_corticosteroid]
+    description = "Corticosteroid agent?"
+    field = "cortis"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_dialysis]
+    description = "Renal replacement therapy (RRT) or dialysis"
+    field = "t_hd"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_ecmo]
+    description = "Extracorporeal (ECMO) support"
+    field = "t_ecmo"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_oxygen_therapy]
+    description = "Oxygen therapy"
+    field = "t_o2"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_noninvasive_ventilation]
+    description = "Non-invasive ventilation"
+    field = "t_vmni"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_invasive_ventilation]
+    description = "Invasive ventilation?"
+    field = "t_iot"
+    values = {0 = false, 1 = true}
+
+  [visit.treatment_inotropes_vasopressors]
+    description = "Inotropes / vasopressors"
+    field = "t_dva"
+    values = {0 = false, 1 = true}
+
+  [visit.outcome]
+    combinedType = "firstNonNull"
+
+    [[visit.outcome.fields]]
+      field = "outcome
+
+      [visit.outcome.fields.values]
+        2 = "discharged"
+        1 = "hospitalised"
+        3 = "death"
+
+  [visit.treatment_other]
+    combinedType = "set"
+    fields = [
+    {field = "otro_tto", description = "Any other treatments?"},
+    {field = "cloroquina", values = {1 = "Chloroquine"}}
+    {field = "cloroq", values = {1 = "Hydroxychloroquine"}}
+    ]  
+
+  [visit.outcome_date]
+    description = "Date the visit outcome was recorded"
+    combinedType = firstNonNull
+    fields = [
+        {field = "fch_alta", description = "Date of hospital discharge"},
+        {field = "fch_exitus", description = "Date of death"},
+        {field = "fch_ulticont", description = "Date of last contact"}
+    ] 
+
+[[observation]]
+  name = "avpu"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_consciencia", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "sv_tad" }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_dolorabdominal", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_consciencia", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "c_hdab", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "chest_pain"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_dt", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "confusion"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_dt", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_tos", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_hemop", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_exp", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "diarrhoea"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_diarrea", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "headache"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_cefalea", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "joint_pain"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_mialartral", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_anosmia", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "renal_replacement_therapy_dialysis"
+  date = ### outcomedatehierarchy
+  start_date = "fch_sv"
+  phase = "study"
+  duration_type = "block"
+  is_present = { field = "t_hd", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "c_crisis", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_disnea", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "skin_rash"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_rash", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_nausea", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "sv_fc"}
+
+[[observation.is_present]]
+  name = "other_symptom"
+  date = "fch_sv"
+  phase = "admission"
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "c_otrosv" }]
+  description = "Other treatment"
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = fch_sv""
+  phase = "admission"
+  is_present = { field = "sv_sat"}
+
+[[observation]]
+  name = "pao2"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "pa02"}
+
+[[observation]]
+  name = "pco2"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "pco2"}
+
+[[observation]]
+  name = "respiratory_rate"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "sv_fresp"}
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "sv_tas"}
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "sv_temp"}
+
+### Obervation attributes not mapped here...
+    # avpu
+    # clinical_classification_critical_illness_scale
+    # clinical_classification_pneumonia_needing_oxygen
+    # clinical_frailty_score
+    # anorexia
+    # base_excess
+    # conjunctivitis
+    # cyanosis
+    # ear_pain
+    # fatigue_malaise
+    # feeding_intolerence_peadiatrics
+    # hepatomegaly
+    # inability_to_walk
+    # inability_to_walk_scale
+    # irritability_peadiatrics
+    # loss_of_taste
+    # lung_sounds
+    # lymphadenopathy
+    # lower_chest_wall_indrawing
+    # muscle_aches
+    # total_fluid_output_m
+    # heart_sounds
+    # mid_upper_arm_circumference_cm
+    # mean_arterial_blood_pressure_mmHg
+    # severe_dehydration
+    # skin_ulcers
+    # richmond_agitation-sedation_scale
+    # riker_sedation-agitation_scale
+    # pH
+    # transfer_from_other_facility
+    # time_of_admission
+    # sternal_capillary_refill_time_greater_2s
+    # runny_nose
+    # wheezing
+    # oxygen_flow_volume_max
+    # oxygen_o2hb
+    # sore_throat
