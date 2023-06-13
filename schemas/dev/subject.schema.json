@@ -5,16 +5,40 @@
   "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
   "required": [
     "subject_id",
-    "country_iso3",
-    "admission_date",
     "age",
-    "sex_at_birth",
     "ethnicity",
     "pathogen"
   ],
+  "anyOf": [
+    {
+      "required": [
+        "earliest_admission_date"
+      ]
+    },
+    {
+      "required": [
+        "enrolment_date"
+      ]
+    }
+  ],
+  "oneOf": [
+    {
+      "required": [
+        "sex_at_birth"
+      ]
+    },
+    {
+      "required": [
+        "sex"
+      ]
+    }
+  ],
   "properties": {
     "subject_id": {
-      "type": "string",
+      "type": [
+        "string",
+        "integer"
+      ],
       "description": "Unique ID of subject",
       "category": "metadata"
     },
@@ -23,22 +47,16 @@
       "description": "Dataset ID, refers to a specific version",
       "category": "metadata"
     },
-    "country_iso3": {
-      "type": "string",
-      "pattern": "^[A-Z]{3}$",
-      "description": "ISO 3166-1 alpha-3 country code of study site",
-      "category": "site-details"
-    },
     "enrolment_date": {
       "type": "string",
       "format": "date",
       "description": "Date of enrolment in the study",
       "category": "site-details"
     },
-    "admission_date": {
+    "earliest_admission_date": {
       "type": "string",
       "format": "date",
-      "description": "Date of admission to site",
+      "description": "Date of admission for first study visit",
       "category": "site-details"
     },
     "age": {
@@ -56,10 +74,13 @@
       "enum": [
         "male",
         "female",
-        "non_binary",
         "intersex"
       ],
       "description": "Sex at birth",
+      "category": "demographics"
+    },
+    "sex": {
+      "description": "Sex/Gender",
       "category": "demographics"
     },
     "ethnicity": {
@@ -125,7 +146,7 @@
       "description": "In post partum phase",
       "category": "pregnancy"
     },
-    "pregnancy_gestational_assessment_weeks": {
+    "pregnancy_gestational_age_weeks": {
       "type": "number",
       "description": "Gestational assessment weeks",
       "category": "pregnancy"
@@ -253,9 +274,9 @@
       "description": "HIV - on ART (ARV medication)",
       "category": "comorbidities"
     },
-    "has_immunosuppression_therapy_treatment": {
+    "has_immunosuppression": {
       "type": "boolean",
-      "description": "Immunosuppression therapies treatment",
+      "description": "Immunosuppressed",
       "category": "comorbidities"
     },
     "has_comorbidity_other": {

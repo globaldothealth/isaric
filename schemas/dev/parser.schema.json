@@ -31,6 +31,9 @@
             "if": {
               "type": "object"
             },
+            "ignoreMissingKey": {
+              "const": true
+            },
             "sensitive": {
               "type": "boolean",
               "description": "Indicates to the parser whether the field is sensitive. Usually a sensitive field is hashed or encrypted before storing in the database.",
@@ -74,7 +77,10 @@
                 "params": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "number"
+                    ]
                   },
                   "description": "Additional parameters to pass to the function"
                 }
@@ -246,12 +252,33 @@
       "type": "object",
       "required": [
         "subject_id",
-        "country_iso3",
-        "admission_date",
         "age",
-        "sex_at_birth",
         "ethnicity",
         "pathogen"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "earliest_admission_date"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date"
+          ]
+        }
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "sex_at_birth"
+          ]
+        },
+        {
+          "required": [
+            "sex"
+          ]
+        }
       ],
       "properties": {
         "subject_id": {
@@ -261,16 +288,12 @@
         "study_id": {
           "type": "string"
         },
-        "country_iso3": {
-          "description": "ISO 3166-1 alpha-3 country code of study site",
-          "$ref": "#/definitions/mapping"
-        },
         "enrolment_date": {
           "description": "Date of enrolment in the study",
           "$ref": "#/definitions/mapping"
         },
-        "admission_date": {
-          "description": "Date of admission to site",
+        "earliest_admission_date": {
+          "description": "Date of admission to first study visit",
           "$ref": "#/definitions/mapping"
         },
         "age": {
@@ -279,6 +302,10 @@
         },
         "sex_at_birth": {
           "description": "Sex at birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "sex": {
+          "description": "Sex/Gender",
           "$ref": "#/definitions/mapping"
         },
         "ethnicity": {
@@ -325,7 +352,7 @@
           "description": "In post partum phase",
           "$ref": "#/definitions/mapping"
         },
-        "pregnancy_gestational_assessment_weeks": {
+        "pregnancy_gestational_age_weeks": {
           "description": "Gestational assessment weeks",
           "$ref": "#/definitions/mapping"
         },
@@ -421,8 +448,8 @@
           "description": "HIV - on ART (ARV medication)",
           "$ref": "#/definitions/mapping"
         },
-        "has_immunosuppression_therapy_treatment": {
-          "description": "Immunosuppression therapies treatment",
+        "has_immunosuppression": {
+          "description": "Immunosuppression",
           "$ref": "#/definitions/mapping"
         },
         "has_comorbidity_other": {
@@ -493,6 +520,10 @@
         },
         "icu_admission_dates": {
           "description": "Date(s) of admission to ICU",
+          "$ref": "#/definitions/mapping"
+        },
+        "transfer_from_other_facility": {
+          "description": "Admitted to ICU in this visit",
           "$ref": "#/definitions/mapping"
         },
         "treatment_dialysis": {
@@ -631,7 +662,7 @@
           "description": "Indication anticoagulation",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_cardiovascular": {
+        "treatment_cardiovascular_support": {
           "description": "Cardiovascular",
           "$ref": "#/definitions/mapping"
         },
@@ -644,7 +675,7 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_delirium": {
-          "description": "Delirium",
+          "description": "Treatment for delirium",
           "$ref": "#/definitions/mapping"
         },
         "treatment_monoclonal_antibody": {
@@ -653,10 +684,6 @@
         },
         "treatment_other": {
           "description": "Other treatments",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_oxygen_mechanical_support": {
-          "description": "Oxygen mechanical support",
           "$ref": "#/definitions/mapping"
         },
         "treatment_pacing": {
@@ -813,7 +840,7 @@
             "enum": [
               "avpu",
               "clinical_classification_critical_illness_scale_",
-              "clinical_classification_pneumonia_needing_oxygen",
+              "pneumonia",
               "clinical_frailty_score",
               "diastolic_blood_pressure_mmHg",
               "glasgow_coma_score",
@@ -827,6 +854,7 @@
               "confusion",
               "conjunctivitis",
               "cough",
+              "cough_dry",
               "cough_with_haemoptysis",
               "cough_with_sputum_production",
               "cyanosis",
@@ -848,7 +876,6 @@
               "lung_sounds",
               "lymphadenopathy",
               "muscle_aches",
-              "renal_replacement_therapy_dialysis",
               "runny_nose",
               "seizures",
               "severe_dehydration",
@@ -857,7 +884,6 @@
               "skin_ulcers",
               "sore_throat",
               "sternal_capillary_refill_time_greater_2s",
-              "time_of_admission",
               "vomiting_nausea",
               "wheezing",
               "heart_rate_bpm",
@@ -868,16 +894,15 @@
               "oxygen_o2hb",
               "oxygen_saturation_percent",
               "oxygen_flow_volume_max",
-              "pao2",
-              "pco2",
+              "pao2_mmHg",
+              "pco2_mmHg",
               "pH",
               "respiratory_rate",
               "richmond_agitation-sedation_scale",
               "riker_sedation-agitation_scale",
               "systolic_blood_pressure_mmHg",
               "temperature_celsius",
-              "total_fluid_output_ml",
-              "transfer_from_other_facility"
+              "total_fluid_output_ml"
             ]
           }
         }
