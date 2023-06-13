@@ -5,7 +5,6 @@
   "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
   "required": [
     "subject_id",
-    "country_iso3",
     "admission_date",
     "age",
     "sex_at_birth",
