@@ -719,7 +719,7 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **fatigue_malaise**: Bool.
 
-**feeding_intolerance_peadiatrics** Bool. Unused.
+**feeding_intolerance_pediatrics** Bool. Unused.
 
 **glasgow_coma_score**: Value. `Coma
 scale <https://www.glasgowcomascale.org>`__
@@ -753,7 +753,7 @@ inability, 2-slight inability, 3-moderate inability, 4-severe inability,
 mapped to *2-some difficulty* in the 1-4 scale. If a relevant field
 instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
-**irritability_peadiatrics**: Bool. Unused.
+**irritability_pediatrics**: Bool. Unused.
 
 **joint_pain**: Bool.
 
