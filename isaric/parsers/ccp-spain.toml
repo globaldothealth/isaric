@@ -1,3 +1,5 @@
+#:schema ../../schemas/dev/parser.schema.json
+
 [adtl]
   name = "ccp-spain"
   description = "COVID-19 patient data, Hospital del Mar, Barcelona, Spain"
@@ -32,13 +34,12 @@
  
 [subject]
   study_id = "ccp-spain"
-  country_iso3 = "ESP"
   pathogen = "COVID-19"
 
   [subject.sex_at_birth]
     field = "sex"
     description = "Sex at Birth"
-    values = { 0 = 'female", 1 = "male" }
+    values = { 0 = "female", 1 = "male" }
 
   [subject.subject_id]
     field = "record_id"
@@ -208,8 +209,8 @@
     combinedType = "set"
     excludeWhen = 'false-like'
     fields = [
-      { field = "azt", values = {1 = "Anthromycin}}
-    ]
+      { field = "azt", values = {1 = "Anthromycin"}}
+  ]
 
   [visit.treatment_antifungal_agent]
     description = "Antibiotic agent?"
@@ -275,7 +276,7 @@
     combinedType = "firstNonNull"
 
     [[visit.outcome.fields]]
-      field = "outcome
+      field = "outcome"
 
       [visit.outcome.fields.values]
         2 = "discharged"
@@ -286,13 +287,13 @@
     combinedType = "set"
     fields = [
     {field = "otro_tto", description = "Any other treatments?"},
-    {field = "cloroquina", values = {1 = "Chloroquine"}}
+    {field = "cloroquina", values = {1 = "Chloroquine"}},
     {field = "cloroq", values = {1 = "Hydroxychloroquine"}}
     ]  
 
   [visit.outcome_date]
     description = "Date the visit outcome was recorded"
-    combinedType = firstNonNull
+    combinedType = "firstNonNull"
     fields = [
         {field = "fch_alta", description = "Date of hospital discharge"},
         {field = "fch_exitus", description = "Date of death"},
@@ -390,12 +391,10 @@
   is_present = { field = "ss_anosmia", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  date = ### outcomedatehierarchy
-  start_date = "fch_sv"
-  phase = "study"
-  duration_type = "block"
-  is_present = { field = "t_hd", ref = "Y/N/NK" }
+  name = "loss_of_smell_or_taste"
+  date = "fch_sv"
+  phase = "admission"
+  is_present = { field = "ss_anosmia", ref = "Y/N/NK" }
 
 [[observation]]
   name = "seizures"
@@ -427,18 +426,15 @@
   phase = "admission"
   is_present = { field = "sv_fc"}
 
-[[observation.is_present]]
+[[observation]]
   name = "other_symptom"
-  date = "fch_sv"
   phase = "admission"
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [{ field = "c_otrosv" }]
-  description = "Other treatment"
+  date = {field = "fch_sv"}
+  text = { field = "c_otrosv", description = "Other treatment" }
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  date = fch_sv""
+  date = "fch_sv"
   phase = "admission"
   is_present = { field = "sv_sat"}
 
