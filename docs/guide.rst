@@ -18,7 +18,7 @@ same as an empty field; we therefore treat it in the same way. When the
 data is parsed, if a value is encountered which is not mapped it will be
 returned as ``None``, in the same manner as an empty field. E.g.
 
-::
+.. code:: toml
 
    # Values in the data: 1 (true), 0 (false), 2 (unknown), nan (empty)
    [subject.has_hypertension]
@@ -38,12 +38,12 @@ order to provide a value. They should only be used to fill fields which
 are required by the schema; otherwise, if a date has not been provided,
 the field should remain empty.
 
-Dates should be provided in order of most -> least specific; in general,
-this will inversely correspond to least -> most likely to be provided in
+Dates should be provided in order of most → least specific; in general,
+this will inversely correspond to least → most likely to be provided in
 the data. If the most specific/relevant date is also the most commonly
 filled field, a date hierarchy may not be appropriate. For example:
 
-::
+.. code:: toml
 
    [adtl.defs.admissionDateHierarchy]
      combinedType = "firstNonNull"
@@ -67,8 +67,8 @@ will return ``True``. If none are true but some are ``False``, will
 return ``False``; is all of the fields are ``Null``, will return
 ``None``.
 
-**firstNonNull**: The first field in the list which is *not Null* -
-i.e. either True, False, or a specifc value, will be given. If *all* the
+**firstNonNull**: The first field in the list which is *not null* -
+i.e. either True, False, or a specific value, will be given. If *all* the
 fields are ``None``, *the field will also be returned as ``None``*.
 
 **set**: Similar to the 'list' combinedType, ``set`` will return a list
@@ -89,7 +89,7 @@ also be cases where the \*_cmyn housekeeping variable has been left
 empty but the \*_cmtype fields are filled; using this ``if`` statement
 would then incorrectly filter out the information.
 
-::
+.. code:: toml
 
    [visit.treatment_experimental_agent]
      description = "Experimental treatments used?"
@@ -107,7 +107,7 @@ will usually be filled, as it is the date of discharge/outcome. However
 it is only valid to use it to fill a ``death_date`` attribute if the
 subject died, indicated by the ``dsterm`` field being equal to 4.
 
-::
+.. code:: toml
 
    [subject.date_death]
      field = "dsstdtc"
@@ -138,7 +138,7 @@ descriptors can be used:
 
 **pre-admission**: Specifically for medication/treatments recorded as
 e.g., medical history, before hospital admission. All symptoms,
-including those which may be described as occuring before admission,
+including those which may be described as occurring before admission,
 should NOT be recorded with this descriptor.
 
 **admission**: Refers to data collected upon subject admission. Any
@@ -165,17 +165,18 @@ Duration type
 -------------
 
 In addition to the three phase descriptors, within the observations
-table the ``duration_type`` attribute can be used to distinguish between
-an 'event', which denotes an observation that occurs once or multiple
-times within the observation period, or a 'block' to refers to something
-present within the entire observation period. In this case, the
-observation period is given by the interval between ``start_date`` and
-``date``, providing a more specific date range on top of the phase
-descriptors.
+table the ``duration_type`` attribute can be used to distinguish between:
+
++ ``event``: Denotes an observation that occurs once or multiple times
+  within the observation period
++ ``block``: to refers to something present within the entire observation
+  period. In this case, the observation period is given by the interval
+  between ``start_date`` and ``date``, providing a more specific
+  date range on top of the phase descriptors.
 
 For example:
 
-::
+.. code:: toml
 
    [[observation]]
      name = "headache"
@@ -208,7 +209,7 @@ or use a parser-wide ``skipFieldPattern`` variable to allow *adtl* to
 pass over a field without an error if it isn't found in a file.
 
 Use this with caution - make sure that skipping over a field isn't
-hiding a typo or other hidden issues! Examples and further explaination
+hiding a typo or other hidden issues! Examples and further explanation
 can be found
 `here <https://github.com/globaldothealth/adtl/blob/main/docs/specification.md/#skippable-fields>`__.
 
@@ -221,7 +222,7 @@ parser development.
 1) During development
 ~~~~~~~~~~~~~~~~~~~~~
 
-We recommend developing using VScode to make the most of the parser
+We recommend developing using VSCode to make the most of the parser
 development tools. Ensure the
 `evenBetterToml <https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml>`__
 VSCode extension is present in your environment, and then add a schema
@@ -236,8 +237,8 @@ parser.schema.json file. If you have not changed the structure of the
 repository and are writing a file within the ``isaric/parsers/`` folder,
 this path should be correct.
 
-Once this is set up, some autocompletion of code and hints will be
-availbe to help write your parser file, with error highlighting
+Once this is set up, some auto-completion of code and hints will be
+available to help write your parser file, with error highlighting
 included.
 
 2) Testing the parser
@@ -250,7 +251,7 @@ according to the schemas) using
 your parser file contains a table which looks similar to the following,
 with the ``schema`` key included:
 
-::
+.. code:: toml
 
    [adtl.tables]
        study = { kind = "constant" }
@@ -272,7 +273,7 @@ transformation; the terminal command should follow the format
    adtl specification-file input-file
 
 Once the command has run, adtl will generate a report in the terminal
-showing validation error counts, and will prodice error messages
+showing validation error counts, and will produce error messages
 indicating what is causing the parser validation to fail at particular
 steps.
 
@@ -344,9 +345,9 @@ chosen from across multiple visits.
 
 **sex_at_birth**: Text. One of
 
-  + male
-  + female
-  + intersex
++ male
++ female
++ intersex
 
 **sex**: Text. Use if the data dictionary does not specifically state sex *at birth*.
 Can include options such as transgender, non-binary if included in the collected data.
@@ -357,15 +358,15 @@ Can include options such as transgender, non-binary if included in the collected
 
 **pregnancy**: Bool. Is the subject currently pregnant?
 
-**pregnancy_gestational_age_weeks**: Value. Gestational age assesment at
+**pregnancy_gestational_age_weeks**: Value. Gestational age assessment at
 point of enrolment.
 
-**preganacy_date_of_delivery**: Date. If the subject gave birth during
+**pregnancy_date_of_delivery**: Date. If the subject gave birth during
 the study period, give the date
 
 **pregnancy_birth_weight_kg**: Value. Weight of infant at birth, kg.
 
-**pregancy_outcome**: Text. Outcome of the pregnancy, one of:
+**pregnancy_outcome**: Text. Outcome of the pregnancy, one of:
 
 + live_birth
 + still_birth
@@ -437,12 +438,12 @@ kidney disease?
 gestational
 
 **has_liver_disease**: Bool. Does the subject have liver disease? (Note
-- this usually combines mild + moderate liver diease)
+- this usually combines mild + moderate liver disease)
 
 **has_apnoea**: Bool. Does the subject have apnoea?
 
-**has_inflamatory_bowel_disease** Bool. Does the subject have
-inflamatory bowel disease?
+**has_inflammatory_bowel_disease** Bool. Does the subject have
+inflammatory bowel disease?
 
 **has_rare_disease_inborn_metabolism_error** Bool. Does the subject have
 a rare inborn disease?
@@ -450,7 +451,9 @@ a rare inborn disease?
 **has_solid_organ_transplant** Bool. Has the subject undergone a solid
 organ transplant? (Note - include bone marrow transplants here)
 
-**has_immunosuppression** Bool. Is the subject immunosuppressed? This
+.. _has_immunosuppression:
+
+**has_immunosuppression**: Bool. Is the subject immunosuppressed? This
 can be inferred as ``True`` if the patient is recorded as being on
 immunosuppressants pre-admission, which will also be recorded as a
 pre-admission medication at a later date, or could be directly recorded
@@ -458,9 +461,9 @@ in the data as having an immunosuppression co-morbidity.
 
 **has_comorbidity_other**: Set. Any other comorbidity - free text field.
 
-**has_died**: Bool. Has the subject died since being enroled in the
+**has_died**: Bool. Has the subject died since being enrolled in the
 study? Can take data from both hospitalisation and follow-up surveys,
-and includes non-covid related deaths where specified (as in many
+and includes non-COVID related deaths where specified (as in many
 studies the cause of death is unknown).
 
 **date_death**: Date. Takes date from outcome date/date of death (if
@@ -527,7 +530,7 @@ other fields
 **subject_id**: Text. Unique ID for the subject (NOTE: currently this is
 the same as the visit ID, prior to implementation of RELSUB matching).
 
-**dataset_id**: Text. Refers to the specifc ID/Version of the dataset
+**dataset_id**: Text. Refers to the specific ID/Version of the dataset
 being used (NOTE TO DEVS: should this be study metadata instead?)
 
 **country_iso3**: Text. Alpha-3 country code of the study site.
@@ -557,7 +560,7 @@ agent(s)?
 **treatment_anticoagulation**: Bool. Treated with anticoagulants during
 the visit? (Note - this is often combines a general anticoagulation
 field with those specific to Heparin. NOTE TO DEVS: merge (if not
-already) wih treatment_indication_anticoagulation)
+already) with treatment_indication_anticoagulation)
 
 **treatment_inhaled_nitric_oxide**: Bool. Treated with nitric oxide
 inhalation?
@@ -571,8 +574,7 @@ inhalation?
 **treatment_immunosuppressant**: Bool. Treated with immunosuppresants?
 (Note - this is specific to this visit. If the subject was on
 immunosuppresants for a chronic condition prior to admission, this
-should be recorded under
-`has_immunosuppression_therapy <immunosuppressed>`__ in the subject
+should be recorded under has_immunosuppression_ in the subject
 table as a comorbidity.)
 
 **treatment_intravenous_fluids**: Bool. Did the subject receive IV
@@ -590,7 +592,7 @@ treated with neuromuscular blocking agents during the visit?
 medications, e.g. for compassionate use?
 
 
-**treatment_colchine**: Bool. Was the pateint treated with Colchine?
+**treatment_colchicine**: Bool. Was the patient treated with Colchicine?
 
 **treatment_immunoglobulins**: Bool. Did the subject receive
 immunoglobulins?
@@ -607,8 +609,13 @@ as free text fields, should be recorded here.
 **treatment_pacing**: Bool. Did the subject receive heart pacing during
 the visit?
 
-**outcome** Text. Outcome of the visit, one of: + death + hospitalised +
-transferred + recovered + discharged + palliative discharge
+**outcome** Text. Outcome of the visit, one of:
++ death
++ hospitalised
++ transferred
++ recovered
++ discharged
++ palliative discharge
 
 **date_outcome** Date. Date the visit outcome was recorded; either date
 of death, or date the subject left this facility.
@@ -623,13 +630,11 @@ Complications should be recorded here, not in the subject table.
 Superset, general level indicators:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**cough**: Indicates any type of cough. Subsets are
+**cough**: Indicates any type of cough. Subtypes are
 
-  + *cough_dry*
-
-  + *cough_with_sputum_production* (wet cough)
-
-  + *cough_with_haemoptysis* (bloody cough)
++ *cough_dry*
++ *cough_with_sputum_production* (wet cough)
++ *cough_with_haemoptysis* (bloody cough)
 
 Should be a combinedType = “any”, listing all the cough fields for the
 corresponding phase (admission, study etc). If individual dates are
@@ -637,7 +642,7 @@ given for each cough type, they should be combined with ``min``, to give
 the earliest date a cough presented. Should then also be broken down
 into the subtypes for the phase. For example:
 
-::
+.. code:: toml
 
    [[observation]]
      name = "cough"
@@ -667,13 +672,13 @@ into the subtypes for the phase. For example:
 Other fields
 ~~~~~~~~~~~~
 
-**avpu**: Text. Where is the subject on the AVPU conciousness scale
+**avpu**: Text. Where is the subject on the AVPU consciousness scale
 (Alert, Voice, Pain, Unresponsive)
 
 **abdominal_pain**: Bool.
 
-**altered_conciousness_confusion**: Bool. If field only records
-confusion, not altered conciousness, use `confusion <confusion>`__
+**altered_consciousness_confusion**: Bool. If field only records
+confusion, not altered consciousness, use confusion_
 
 **anorexia**: Bool.
 
@@ -694,9 +699,11 @@ Traffic-light suggests only in one parser, suggest editing or removal.
 **clinical_frailty_score**: Value. `Frailty
 scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/rockwood_cfs.pdf>`__
 
+.. _confusion:
+
 **confusion**: Bool.
 
-**conjunctavitis**: Bool.
+**conjunctivitis**: Bool.
 
 **cyanosis**: Bool. Presence of cyanosis (blue/purple hue to skin)
 
@@ -712,14 +719,14 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **fatigue_malaise**: Bool.
 
-**feeding_intolerence_peadiatrics** Bool. Unused.
+**feeding_intolerance_peadiatrics** Bool. Unused.
 
 **glasgow_coma_score**: Value. `Coma
 scale <https://www.glasgowcomascale.org>`__
 
 **headache**: Bool.
 
-**heart_rate_bmp**: Value.
+**heart_rate_bpm**: Value.
 
 **heart_sounds**: Bool.
 
@@ -728,11 +735,15 @@ scale <https://www.glasgowcomascale.org>`__
 **history_of_fever** Bool. Recently feverish? For admission/followup
 where the subject self-reports.
 
-**inability_to_walk**: boolean indicator. Where a relevant field
-contains a scale, rather than boolean Y/N responses, use
-`inability_to_walk_scale <inability_to_walk_scale>`__.
+.. _inability_to_walk:
 
-\ **inability_to_walk_scale**: Use a 1-4 scale to indicate the degree of
+**inability_to_walk**: Bool. Where a relevant field
+contains a scale, rather than boolean Y/N responses, use
+inability_to_walk_scale_
+
+.. _inability_to_walk_scale:
+
+**inability_to_walk_scale**: Use a 1-4 scale to indicate the degree of
 difficulty a subject has walking. Values should map to: *1-No
 difficulty, 2-Some difficulty, 3-Lots of difficulty, 4-Unable to walk*.
 If the field contains a greater number of options, they should be mapped
@@ -740,8 +751,7 @@ onto a 1-4 scale, rounding down. E.g., for a 1-5 scale of: *1-no
 inability, 2-slight inability, 3-moderate inability, 4-severe inability,
 5-unable*, option 3 (moderate inability) should be rounded down and
 mapped to *2-some difficulty* in the 1-4 scale. If a relevant field
-instead contains a boolean Y/N response, use
-`inability_to_walk <#inability_to_walk>`__ instead.
+instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
 **irritability_peadiatrics**: Bool. Unused.
 
