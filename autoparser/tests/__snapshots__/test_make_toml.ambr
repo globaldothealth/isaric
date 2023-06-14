@@ -107,7 +107,7 @@
   [visit.outcome]
   field = "dsterm"
   description = "<acronym title=\"Definition available in the CRF Completion Guide - see your FILE REPOSITORY for a copy.\">Outcome:</acronym>"
-  values = { 1 = "discharged", 3 = "transferred", 4 = "death", 5 = "discharged" }
+  values = { 1 = "discharged", 3 = "transferred", 4 = "death", 5 = "palliative discharge" }
   
   [visit.treatment_anticoagulation]
   field = "anticoag_cmyn"

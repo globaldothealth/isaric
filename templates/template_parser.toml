@@ -31,7 +31,6 @@
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
-  country_iso3 = ""
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -47,9 +46,9 @@
     field = ""
     description = ""
 
-  [subject.admission_date]
-    field = ""
-    description = ""
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "", description = "" }]
 
   [subject.age]
     field = ""
@@ -62,7 +61,6 @@
     [subject.sex_at_birth.values] # THIS CAN CHANGE BETWEEN DATASETS
       1 = "male"
       2 = "female"
-      3 = "non_binary"
 
 [subject.ethnicity]
   field = ""
@@ -113,7 +111,7 @@
   description = ""
   ref = "Y/N/NK"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = ""
   description = ""
 
@@ -240,7 +238,7 @@
   description = ""
   ref = "Y/N/NK"
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = ""
   description = ""
   ref = "Y/N/NK"
@@ -299,6 +297,11 @@
   [visit.icu_admission_dates]
     field = ""
     description = ""
+
+  [visit.transfer_from_other_facility]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
 
   [visit.treatment_dialysis]
     field = ""
@@ -465,7 +468,7 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_cardiovascular]
+  [visit.treatment_cardiovascular_support]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -498,11 +501,6 @@
   [visit.treatment_other]
     field = ""
     description = ""
-
-  [visit.treatment_oxygen_mechanical_support]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
 
   [visit.treatment_pacing]
     field = ""
@@ -555,7 +553,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "clinical_classification_pneumonia_needing_oxygen"
+  name = "pneumonia"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -861,15 +859,6 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
   name = "runny_nose"
   date = ""
   phase = ""
@@ -934,15 +923,6 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "time_of_admission"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1041,7 +1021,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1050,7 +1030,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1114,15 +1094,6 @@
 
 [[observation]]
   name = "total_fluid_output_ml"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "transfer_from_other_facility"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }

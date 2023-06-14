@@ -31,7 +31,7 @@ def matches_redcap(
     lem = WordNetLemmatizer()
 
     def lemmatized(s, split=None):
-        s = s.strip()
+        s = str(s).strip()
         return " ".join(lem.lemmatize(w) for w in s.split(sep=split))
 
     def lemmatized_choices(s: str) -> str:
@@ -44,9 +44,14 @@ def matches_redcap(
             )
 
     if isinstance(data_dictionary, str):
-        df = pd.read_csv(data_dictionary).rename(columns=column_mappings)[
-            list(column_mappings.values())
-        ]
+        data_dictionary = Path(data_dictionary)
+        if data_dictionary.suffix == ".csv":
+            df = pd.read_csv(data_dictionary)
+        elif data_dictionary.suffix == ".xlsx":
+            df = pd.read_excel(data_dictionary)
+        else:
+            raise ValueError(f"Unsupported format (not CSV or XLSX): {data_dictionary}")
+        df = df.rename(columns=column_mappings)[list(column_mappings.values())]
         df["description"] = df.description.map(lemmatized)
         df["lemmatized_choices"] = df.choices.map(lemmatized_choices)
 
@@ -141,7 +146,7 @@ def matches_redcap(
                 else scores["date-mismatch"]
             )
         if (
-            "follow" in row["category"]
+            "follow" in row.get("category", "")
         ):  # de-emphasise followup, usually only required in observation
             score += scores["is-followup"]
         words = row["schema_field"].split("_")

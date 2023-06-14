@@ -55,12 +55,26 @@
     },
     "date": {
       "type": "string",
-      "format": "date",
+      "anyOf": [
+        {
+          "format": "date"
+        },
+        {
+          "format": "date-time"
+        }
+      ],
       "description": "Date of observation, or end date of observation period"
     },
     "start_date": {
       "type": "string",
-      "format": "date",
+      "anyOf": [
+        {
+          "format": "date"
+        },
+        {
+          "format": "date-time"
+        }
+      ],
       "description": "Start date of observation duration"
     },
     "duration_type": {
@@ -95,7 +109,7 @@
       "enum": [
         "avpu",
         "clinical_classification_critical_illness_scale",
-        "clinical_classification_pneumonia_needing_oxygen",
+        "pneumonia",
         "clinical_frailty_score",
         "diastolic_blood_pressure_mmHg",
         "glasgow_coma_score",
@@ -109,27 +123,28 @@
         "confusion",
         "conjunctivitis",
         "cough",
+        "cough_dry",
         "cough_with_haemoptysis",
         "cough_with_sputum_production",
         "cyanosis",
         "diarrhoea",
         "ear_pain",
         "fatigue_malaise",
-        "feeding_intolerance_peadiatrics",
+        "feeding_intolerance_pediatrics",
         "headache",
         "hepatomegaly",
         "history_of_fever",
         "inability_to_walk",
         "inability_to_walk_scale",
-        "irritability_peadiatrics",
+        "irritability_pediatrics",
         "joint_pain",
         "loss_of_smell",
         "loss_of_taste",
+        "loss_of_smell_or_taste",
         "lower_chest_wall_indrawing",
         "lung_sounds",
         "lymphadenopathy",
         "muscle_aches",
-        "renal_replacement_therapy_dialysis",
         "runny_nose",
         "seizures",
         "severe_dehydration",
@@ -138,7 +153,6 @@
         "skin_ulcers",
         "sore_throat",
         "sternal_capillary_refill_time_greater_2s",
-        "time_of_admission",
         "vomiting_nausea",
         "wheezing",
         "heart_rate_bpm",
@@ -149,16 +163,15 @@
         "oxygen_o2hb",
         "oxygen_saturation_percent",
         "oxygen_flow_volume_max",
-        "pao2",
-        "pco2",
+        "pao2_mmHg",
+        "pco2_mmHg",
         "pH",
         "respiratory_rate",
         "richmond_agitation-sedation_scale",
         "riker_sedation-agitation_scale",
         "systolic_blood_pressure_mmHg",
         "temperature_celsius",
-        "total_fluid_output_ml",
-        "transfer_from_other_facility"
+        "total_fluid_output_ml"
       ],
       "description": "Observation name"
     }
