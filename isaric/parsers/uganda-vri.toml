@@ -1,0 +1,463 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "uganda-vri.toml"
+  description = "uganda.toml"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "groupBy"
+    groupBy = ""
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N"]
+    values = { 0 = false, 1 = true }
+
+[subject]
+  pathogen = "COVID-19"
+  country_iso3 = "UGA"
+  
+  [subject.subject_id]
+    field = "record_id"
+    sensitive = true
+
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "hospitalization_date" }]
+
+  [subject.age]
+    field = "age"
+    source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
+    unit = "years"
+
+  [subject.sex_at_birth]
+    field = "sex"
+
+    [subject.sex_at_birth.values]
+      1 = "male"
+      0 = "female"
+
+[subject.works_microbiology_lab]
+  field = "occupation"
+  values = { 1 = false, 2 = false, 3 = false,  4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
+
+[subject.works_healthcare]
+  field = "occupation"
+  values = { 1 = false, 2 = false, 3 = false,  4 = false, 5 = true, 6 = false, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
+
+[subject.has_hiv]
+  field = "hiv_aids"
+  ref = "Y/N"
+
+[subject.has_hypertension]
+  field = "nypertens"
+  ref = "Y/N"
+
+[subject.has_smoking]
+  field = "smok"
+
+  [subject.has_smoking.values]
+    1 = "yes"
+    2 = "former"
+    0 = "never"
+
+[subject.has_asthma]
+  field = "asthma"
+  ref = "Y/N"
+
+[subject.has_chronic_kidney_disease]
+  field = "kidney_dse"
+  ref = "Y/N"
+
+[subject.has_diabetes]
+  field = "diab"
+  ref = "Y/N"
+
+[subject.has_liver_disease]
+  field = "liver_dse"
+  ref = "Y/N"
+
+[subject.has_hiv_art]
+  field = "art"
+  ref = "Y/N"
+
+[subject.has_immunosuppression]
+  field = "dschg_diag"
+  description = "Discharge diagnosis"
+  value = { 17 = true }
+
+[subject.has_chronic_cardiac_disease]
+  field = "heart_dse"
+  ref = "Y/N"
+
+[subject.has_tuberculosis]
+  combinedType = "any"
+  fields = [
+    { field = "activ_tb", ref = "Y/N" },
+    { field = "priortb", ref = "Y/N" },
+    { field = "dschg_diag___8", value = { 1 = true } }
+  ]
+
+[subject.has_malignant_neoplasm]
+  field = "hem_dse"
+  ref = "Y/N"
+
+[subject.has_died] # type - boolean
+  field = "outcome"
+  values = { 2 = true }
+
+[subject.date_death]
+  field = "outcome_date"
+  if = { outcome = 2 }
+
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = "UGA"
+
+  [visit.subject_id]
+    field = "record_id"
+    sensitive = true
+
+  [visit.visit_id]
+    field = "record_id"
+    sensitive = true
+
+  [visit.start_date]
+    field = "hospitalization_date"
+
+  [visit.transfer_from_other_facility]
+    field = "admission"
+    value = { 4 = true }
+
+  [visit.treatment_inotropes_vasopressors]
+    field = "vasopressor"
+    ref = "Y/N"
+
+  [visit.treatment_oxygen_therapy]
+    field = "daily_oxy"
+    ref = "Y/N"
+
+  [visit.treatment_antimalarial]
+    field = "daily_antimal"
+    ref = "Y/N"
+
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_antimal_type___1", values = { 1 = "Quinine" } },
+      { field = "daily_antimal_type___2", values = { 1 = "Coartem" } },
+      { field = "daily_antimal_type___3", values = { 1 = "Artesunate" } },
+      { field = "daily_antimal_moth" }
+    ]
+
+  [visit.treatment_intravenous_fluids]
+    field = "daily_iv_fluids"
+    ref = "Y/N"
+
+  [visit.outcome]
+    field = "outcome"
+
+    [visit.outcome.values]
+      1 = "discharged"
+      2 = "death"
+      3 = "transferred"
+
+[visit.date_outcome]
+  field = "outcome_date"
+
+# OBSERVATION
+# required fields - phase, date, name
+
+[[observation]]
+  name = "avpu"
+  date = "vital_signs_date"
+  phase = "study"
+  text = { field = "avpu", values = { 1 = "ALERT", 2 = "Only responsive to VOICE", 3 = "Only responsive to PAIN", 4 = "UNRESPONSIVE" } }
+
+[[observation]]
+  name = "avpu"
+  date = "vital_signs_date"
+  phase = "study"
+  text = { field = "avpu_study", values = { 1 = "ALERT", 2 = "Only responsive to VOICE", 3 = "Only responsive to PAIN", 4 = "UNRESPONSIVE" } }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "diastol" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "diastol_iso" }
+
+[[observation]]
+  name = "glasgow_coma_score"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "gcs" }
+
+[[observation]]
+  name = "glasgow_coma_score"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "mental" }
+  
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "bleed", ref = "Y/N" }
+
+[[observation]]
+  name = "confusion"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "confused", ref = "Y/N" }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "nailbed", ref = "Y/N" }
+
+[[observation]]
+  name = "cough"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "cof", ref = "Y/N" }
+
+[[observation]]
+  name = "cough"
+  date = "hospitalization_date"
+  phase = "admission"
+  is_present = { field = "sick_symp___2", values = { 1 = true } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = "hospitalization_date"
+  phase = "admission"
+  is_present = { field = "sick_symp___3", values = { 1 = true } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "diarr", ref = "Y/N" }
+
+[[observation]]
+  name = "headache"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "head", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  date = "hospitalization_date"
+  phase = "admission"
+  is_present = { field = "sick_symp___1", values = { 1 = true } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "fever_hist", ref = "Y/N" }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "hospitalization_date"
+  phase = "admission"
+  text = { field = "move", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "hospitalization_date"
+  phase = "admission"
+  text = { field = "walk", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "hospitalization_date"
+  phase = "admission"
+  text = { field = "stairs", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "date_30"
+  phase = "followup"
+  text = { field = "move_v2", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "date_30"
+  phase = "followup"
+  text = { field = "walk-v2", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "date_30"
+  phase = "followup"
+  text = { field = "stairs_v2", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "date_60"
+  phase = "followup"
+  text = { field = "move_v60", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "date_60"
+  phase = "followup"
+  text = { field = "walk-v60", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "date_60"
+  phase = "followup"
+  text = { field = "stairs_v60", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]] # CHECK THIS!
+  name = "inability_to_walk_scale"
+  date = "vital_signs_date"
+  phase = "study"
+  text = { field = "assist_study", values = { 1 = 1, 2 = 2, 3 = 4 } }
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "indraw", ref = "Y/N" }
+
+[[observation]]
+  name = "runny_nose"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "runny_nose", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "seizure", ref = "Y/N" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "breath", ref = "Y/N" }
+
+[[observation]]
+  name = "skin_rash"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "rash_skin", ref = "Y/N" }
+
+[[observation]]
+  name = "sore_throat"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "throat", ref = "Y/N" }
+
+[[observation]] # SHOULD WE MAKE THIS A MIN OR MAX OF the recorded values? i.e., minimum(caps_1, caps_2, caps_3)
+  name = "sternal_capillary_refill_time_greater_2s"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "caps_1" }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "caps_2" }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "caps_3" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = "vital_signs_date"
+  phase = "study"
+  is_present = { field = "vomi", ref = "Y/N" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "hr_study" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "pulse_iso" }
+
+[[observation]]
+  name = "mid_upper_arm_circumference_cm"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "muac" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "oxy_satu" }
+  context = { field = "oxy_thpy",	values = { 1 = "Room air", 2 = "Oxygen therapy" } }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "o2_satu" }
+  context = { field = "ox_type",	values = { 1 = "Room air", 2 = "Oxygen therapy" } }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "rr_iso" }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "rr_study" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "systol_iso" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "systol" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "vital_signs_date"
+  phase = "study"
+  value = { field = "temp_study" }
+
