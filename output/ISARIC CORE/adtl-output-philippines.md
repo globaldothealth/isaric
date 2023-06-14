@@ -4,11 +4,13 @@
 |---------------|-------|-------|----------------|
 |subject        |359    |631    |56.893819% |
 |visit          |352    |631    |55.784469% |
-|observation    |31947  |32599  |97.999939% |
+|observation    |33835  |34490  |98.100899% |
 
 ## subject
 
-* 272: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 239: data must contain ['subject_id', 'age', 'ethnicity', 'pathogen'] properties
+* 19: data must be valid exactly by one definition (0 matches found) (Note: sex_at_birth missing)
+* 14: data cannot be validated by any definition (Note: enrolment_date and earliest_admission_date missing)
 
 ## visit
 
@@ -16,4 +18,4 @@
 
 ## observation
 
-* 652: data must contain ['phase', 'date', 'name'] properties
+* 655: data must contain ['phase', 'date', 'name'] properties

@@ -259,14 +259,14 @@
 
 [subject]
   pathogen = "COVID-19"
-  country_iso3 = { field = "country", ref = "countryMap" }
 
   [subject.subject_id]
     field = "subjid"
     sensitive = true
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "hostdat" }]
 
   [subject.enrolment_date]
     field = "dsstdat"
@@ -470,7 +470,7 @@
     { field = "dlvr_cestdat", description = "Delivery during admission? If yes, date:", can_skip = true },
   ]
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   combinedType = "firstNonNull"
   fields = [
     { field = "egestage_rptestcd", description = "If YES: Gestational week assessment:" },
@@ -513,7 +513,7 @@
   description = "Employed in a microbiology laboratory?"
   ref = "Y/N/NK"
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = "pre_nonoralsteroid_cmoccur"
   description = "Other immunosuppressant agents (not oral steroids)"
   ref = "Y/N/NK"
@@ -557,7 +557,6 @@
     fields = [
       { field = "hostdat", description = "Admission date at this facility" },
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
-      { field = "dsstdat", description = "Date of enrolment" },
     ]
 
   [visit.icu_admission]
@@ -595,6 +594,10 @@
   [[visit.icu_admission_dates.fields]]
     field = "ccm_b_icu_hodat"
     description = "Date admitted to critical care ward"
+
+[visit.transfer_from_other_facility]
+  field = "hoyn"
+  values = { 1 = false, 2 = true, 0 = false }
 
 [visit.treatment_antibiotics]
   field = "antibiotic_cmyn"
@@ -672,6 +675,15 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [{ field = "antiviral_cmtype" }]
+
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { fieldPattern = "extracorp_prtr.*", description = "Extracorporeal support (ECMO)?", ref = "Y/N/NK" },
+    { field = "daily_ecmo_prtrt", description = "Extra corporeal life support (ECLS / ECMO)?", ref = "Y/N/NK" },
+    { field = "inotrop_cmtrt", ref = "Y/N/NK" },
+    { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
+  ]
 
 [visit.treatment_corticosteroid]
   combinedType = "any"
@@ -1052,6 +1064,29 @@
     ]
 
 [[observation]]
+  name = "cough_dry"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", description = "Cough", ref = "Y/N/NK", "can_skip" = true },
+      { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = true } }
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  is_present = { field = "flw2_pers_cough_dry", description = "Persistent cough (dry)", values = { 1 = true, 0 = false } }
+
+[[observation]]
   name = "cough_with_sputum_production"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -1220,6 +1255,39 @@
   is_present = { field = "flw2_joint_pain", description = "Joint pain or swelling", values = { 1 = true, 0 = false } }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy"}
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia_ceoccur_v2", description = "Loss of smell (Anosmia)", ref = "Y/N/NK" },
+      { field = "ageusia_ceoccur_v2", description = "Loss of taste (Ageusia)", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = {field = "flw_survey_date"}
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_loss_smell", description = "Loss of smell", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_taste", description = "Loss of taste", values = { 1 = true, 0 = false } }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = {field = "flw2_survey_date"}
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw2_loss_of_smell", description = "Loss of smell", values = { 1 = true, 0 = false } },
+      { field = "flw2_loss_of_taste", description = "Loss of taste", values = { 1 = true, 0 = false } }
+    ]
+
+[[observation]]
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -1302,6 +1370,7 @@
   phase = "study"
   start_date = { ref = "admissionDateHierarchy" }
   date = { field = "dsstdtc" }
+  duration_type = "block"
   text = { field = "oxygen_cmdose", values = { 1 = "<2 l/min", 6 = "2-5 l/min", 2 = "6-10 l/min", 3 = "11-15 l/min", 4 = ">15 l/min" } }
   context = ['Maximum over entire visit']
 
@@ -1325,7 +1394,7 @@
   value = { field = "daily_oxy_vsorres", description = "percentage oxygen saturation" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat" }
   value = { field = "daily_pao2_lborres", unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
@@ -1338,7 +1407,7 @@
     ]
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat" }
   value = { field = "daily_pco2_lborres", unit = "mmHg", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
@@ -1348,6 +1417,33 @@
   phase = "study"
   date = { field = "daily_dsstdat" }
   value = { field = "daily_ph_lborres", description = "pH" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  is_present = { field = "viralpneu_ceterm", ref = "Y/N/NK" }
+  context = ["viral"]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  is_present = { field = "bactpneu_ceterm", ref = "Y/N/NK" }
+  context = ["bacterial"]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  is_present = { field = "cryptogenic_ceterm", ref = "Y/N/NK" }
+  context = ["Cryptogenic organizing pneumonia (COP)"]
 
 [[observation]]
   name = "respiratory_rate"
@@ -1490,12 +1586,6 @@
   date = { ref = "admissionDateHierarchy" }
   value = { field = "temp_vsorres", source_unit = { field = "temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
   context = ['Highest']
-
-[[observation]]
-  name = "transfer_from_other_facility"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "hooccur", values = { 1 = true, 2 = true, 3 = false }, "can_skip" = true }
 
 [[observation]]
   name = "vomiting_nausea"

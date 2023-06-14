@@ -667,6 +667,14 @@ into the subtypes for the phase. For example:
          { field = "blood_cough", description = "Blood cough", ref = "Y/N/NK" },
        ]
 
+**loss_of_smell_or_taste**: Bool. General indicator for loss of smell or taste,
+and can also be used as a single indicator where both symptoms are combined in
+a dataset.
+Subtypes are:
+
++ *loss_of_smell*
++ *loss_of_taste*
+
 .. _other-fields-1:
 
 Other fields
@@ -756,14 +764,6 @@ instead contains a boolean Y/N response, use inability_to_walk_ instead.
 **irritability_pediatrics**: Bool. Unused.
 
 **joint_pain**: Bool.
-
-**loss_of_smell**: Bool. If loss of smell/taste, use combined attribute
-below.
-
-**loss_of_smell_or_taste**: Bool. For where smell/taste loss is
-combined.
-
-**loss_of_taste**: Bool.
 
 **lower_chest_wall_indrawing**: Bool.
 
