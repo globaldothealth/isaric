@@ -4,7 +4,6 @@
   name = "ccp-uganda"
   description = "uganda - CPPInUseV20_Data"
 
-
   [adtl.tables.subject]
     kind = "groupBy"
     groupBy = "subject_id"
@@ -41,15 +40,13 @@
   # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
-  study_id = "CVAFWWW"
-  country_iso3 = "UGA"
   pathogen = "COVID-19"
 
   [subject.subject_id]
     field = "record_id"
     sensitive = true
 
-  [subject.admission_date]
+  [subject.earliest_admission_date]
     ref = "admissionDateHierarchy"
     description = "Admission date at this facility"
 
@@ -58,7 +55,7 @@
     source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
     unit = "years"
 
-  [subject.sex_at_birth]
+  [subject.sex]
     field = "sex"
     description = "Gender"
     values = { 0 = "female", 1 = "male" }
@@ -108,7 +105,7 @@
     description = "Is the client pregnant or in postpartum period"
     values = { 1 = false, 2 = true, 3 = false }
 
-  [subject.pregnancy_gestational_assessment_weeks]
+  [subject.pregnancy_gestational_age_weeks]
     field = "gest"
     description = "Gestational age"
 
@@ -158,7 +155,7 @@
     field = "art"
     ref = "Y/N"
 
-  [subject.has_immunosuppression_therapy_treatment]
+  [subject.has_immunosuppression]
     field = "other_imm_supps_premed"
     apply = { function = "isNotNull" }
 
@@ -217,6 +214,10 @@
     excludeWhen = "none"
     fields = [{ field = "overall_icu_hostdat" }]
 
+  [visit.transfer_from_other_facility]
+    field = "was_trans"
+    values = { 1 = true, 0 = false }
+
   [visit.treatment_dialysis]
     combinedType = "any"
     fields = [
@@ -244,6 +245,11 @@
     fields = [
       { field = "overall_oxygen_cmoccur", values = { 1 = true, 0 = false, 3 = false } },
       { field = "can_oxy_ther", values = { 1 = true, 0 = false } },
+      { field = "overall_invasive_proccur", values = { 1 = true, 0 = false, 3 = false } },
+      { field = "inv_vent", values = { 1 = true, 0 = false } },
+      { field = "overall_noninvasive_proccur", values = { 1 = true, 0 = false, 3 = false } },
+      { field = "non_inv_vent", values = { 1 = true, 0 = false } },
+      { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false, 3 = false } },
     ]
 
   [visit.treatment_prone_position]
@@ -325,6 +331,14 @@
       { field = "oth_interv_sp", description = "Specify Other intervention or procedure?" },
     ]
 
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false, 3 = false } },
+      { field = "overall_inotrop_cmtrt", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+      { field = "vaso_or_inot", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+    ]
+
   [visit.outcome]
     field = "outcome"
     values = { 1 = "discharged", 2 = "death", 4 = "transferred" }
@@ -350,11 +364,32 @@
   phase = "admission"
   text = { field = "avpu_study", values = { 1 = "ALERT", 2 = "Only responsive to VOICE", 3 = "Only responsive to PAIN", 4 = "UNRESPONSIVE" } }
 
-  # [[observation]]
-  #   name = "clinical_classification_pneumonia_needing_oxygen"
-  #   date = { ref = "admissionDateHierarchy" }
-  #   phase = "admission"
-  #   is_present = { field = "clipneu", ref = "Y/N" } # This field just indicates pneumonia, not necc. oxygen
+[[observation]]
+  name = "pneumonia"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "clipneu", ref = "Y/N" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = "comp_date"
+  is_present = { field = "viral_pneumo", values = { 1 = true, 0 = false } }
+  context = ["viral"]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = "comp_date"
+  is_present = { field = "bact_pneumo", values = { 1 = true, 0 = false } }
+  context = ["bacterial"]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = "comp_date"
+  is_present = { field = "cop", values = { 1 = true, 0 = false } }
+  context = ["cryptogenic organising pneumonia (COP)"]
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
@@ -369,17 +404,11 @@
   value = { field = "diastol" }
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   date = { field = "icu_date" }
   phase = "study"
-  value = { field = "pcc02" }
-  [observation.context]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "pcc02_source", values = { 1 = "From same blood gas record as PaO2" } },
-      { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } },
-    ]
+  value = { field = "pcc02", unit = "mmHg", source_unit = { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } } }
+  context = ["same blood-gas record as paO2"]
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -394,6 +423,18 @@
   is_present = { field = "confused", ref = "Y/N" }
 
 [[observation]]
+  name = "abdominal_pain"
+  phase = "study"
+  date = "signs_symps_date"
+  is_present = { field = "abd_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "consciousness", description = "altered consciousness/confusion", ref = "Y/N" }
+
+[[observation]]
   name = "base_excess"
   date = { field = "icu_date" }
   phase = "study"
@@ -404,6 +445,10 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "bleed", ref = "Y/N" }
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "bleed_loc_v2" }]
 
 [[observation]]
   name = "chest_pain"
@@ -423,11 +468,42 @@
   date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "cof", ref = "Y/N" },
       { field = "sick_symp___2", values = { 1 = true, 0 = false } },
     ]
+
+[[observation]]
+  name = "cough"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough", ref = "Y/N" },
+      { field = "dry_cough", ref = "Y/N" },
+      { field = "wet_cough", ref = "Y/N" },
+      { field = "blood_cough", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "dry_cough", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "wet_cough", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "blood_cough", ref = "Y/N" }
 
 [[observation]]
   name = "diarrhoea"
@@ -506,6 +582,17 @@
   is_present = { field = "jt_ache", ref = "Y/N" }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "smell", ref = "Y/N" },
+      { field = "taste", ref = "Y/N" },
+    ]
+
+[[observation]]
   name = "loss_of_smell"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
@@ -534,6 +621,12 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "runny_nose", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  date = "signs_symps_date"
+  is_present = { field = "seizures", ref = "Y/N" }
 
 [[observation]]
   name = "shortness_of_breath"
@@ -566,12 +659,6 @@
   value = { field = "caps" }
 
 [[observation]]
-  name = "time_of_admission"
-  date = { ref = "admissionDateHierarchy" }
-  phase = "admission"
-  text = { field = "add_time" }
-
-[[observation]]
   name = "vomiting_nausea"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
@@ -587,13 +674,13 @@
   name = "heart_rate_bpm"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "pulse_iso", ref = "Y/N" }
+  value = { field = "pulse_iso" }
 
 [[observation]]
   name = "heart_rate_bpm"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "hr_study", ref = "Y/N" }
+  value = { field = "hr_study" }
 
 [[observation]]
   name = "other_symptom"
@@ -608,16 +695,15 @@
   value = { field = "o2_satu" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "icu_date" }
-  value = { field = "pa02", description = "PaO2 at time of FiO2 above" }
+  value = { field = "pa02", description = "PaO2 at time of FiO2 above", unit = "mmHg", source_unit = { field = "pa02_type", values = { 1 = "kPa", 2 = "mmHg" } } }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
     fields = [
       { field = "pa02_samp_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
-      { field = "pa02_type", values = { 1 = "kPa", 2 = "mmHg" } },
     ]
 
 [[observation]]
