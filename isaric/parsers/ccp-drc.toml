@@ -34,15 +34,15 @@
     common = { visit_id = { field = "record_id", sensitive = true } }
 
 [subject]
-  country_iso3 = "DRC"
   pathogen = "COVID-19"
 
   [subject.subject_id]
     field = "record_id"
     sensitive = true
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.age]
     field = "age"
@@ -173,7 +173,7 @@
   field = "del_date"
   description = "Date of delivery"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "gest"
   description = "Number of weeks of amenorrhea"
 
@@ -409,6 +409,13 @@
     { field = "daily_corticost_cmoth", description = "Corticosteroid - If <i> Other Corticosteroid </i>, specific" },
   ]
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "overall_inotrop_cmtrt", description = "Inotroped/vasopressors?", values = { 1 = true, 2 = false } },
+    { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) Support?", values = { 1 = true, 2 = false } },
+  ]
+
 [visit.treatment_dialysis]
   combinedType = "any"
 
@@ -590,6 +597,11 @@
   description = "Prone position?"
   values = { 1 = true, 2 = false }
 
+[visit.transfer_from_other_facility]
+  field = "trans_fac"                                                     # PL: check this
+  description = "If transferred, is the transfer structure a study site?"
+  ref = "Y/N/NK"
+
 [[observation]]
   name = "abdominal_pain"
   phase = "admission"
@@ -681,18 +693,45 @@
   is_present = { field = "chest_pain_v2", description = "Chest pain", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "clinical_classification_pneumonia_needing_oxygen"
+  name = "pneumonia"
   phase = "study"
   date = { field = "vitals_date" }
   is_present = { field = "clipneu", description = "Clinical pneumonia diagnosed?", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "clinical_classification_pneumonia_needing_oxygen"
+  name = "pneumonia"
   phase = "admission"
   start_date = { field = "pneumo_cli_date" }
   date = { ref = "admissionDateHierarchy" }
   duration_type = "event"
   is_present = { field = "pneumo_cli", description = "Clinical pneumonia diagnosed?", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = "date_comp_viral_pneu2"
+  date = { field = "comp_date" }
+  duration_type = "block"
+  is_present = { field = "viral_pneumo2", ref = "Y/N/NK" }
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = "date_comp_bact_pneu2"
+  date = { field = "comp_date" }
+  duration_type = "block"
+  is_present = { field = "bact_pneumo2", ref = "Y/N/NK" }
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = "date_comp_cryp_org2"
+  date = { field = "comp_date" }
+  duration_type = "block"
+  is_present = { field = "cop2", ref = "Y/N/NK" }
+  context = ['cryptogenic organising pneumonia']
 
 [[observation]]
   name = "conjunctivitis"
@@ -906,6 +945,35 @@
   is_present = { field = "jt_pain_v2", description = "Joint pain (arthralgia)", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [{ field = "anosmia_date" }, { field = "ageusia_date" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
+      { field = "ageusia", description = "AGUEUSIE (loss of taste)", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia_v2", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
+      { field = "ageusia_v2", description = "AGUEUSIE (loss of taste)", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
   name = "loss_of_smell"
   phase = "admission"
   start_date = { field = "anosmia_date" }
@@ -989,13 +1057,13 @@
   value = { field = "ph", description = "PH" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "signs_symps_date" }
   value = { field = "pa02", description = "PAO2 at the time of the superior FIO2" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "signs_symps_date" }
 
@@ -1005,7 +1073,7 @@
     values = { 1 = true, 0 = false }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   phase = "study"
   date = { field = "signs_symps_date" }
 
@@ -1015,7 +1083,7 @@
     values = { 1 = "artériel", 2 = "veineux", 3 = "capillaire" }
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   phase = "study"
   date = { field = "signs_symps_date" }
   value = { field = "pcc02", description = "PCO2 Value" }
@@ -1139,16 +1207,6 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "temperature_iso", description = "Temperature" }
-
-[[observation]]
-  name = "transfer_from_other_facility"
-  phase = "study"
-  date = { field = "signs_symps_date" }
-
-  [observation.is_present]
-    field = "trans_fac"
-    description = "If transferred, is the transfer structure a study site?"
-    ref = "Y/N/NK"
 
 [[observation]]
   name = "vomiting_nausea"

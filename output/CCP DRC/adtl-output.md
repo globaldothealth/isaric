@@ -4,11 +4,12 @@
 |---------------|-------|-------|----------------|
 |subject        |124    |126    |98.412698% |
 |visit          |122    |126    |96.825397% |
-|observation    |15129  |15454  |97.896985% |
+|observation    |15318  |15690  |97.629063% |
 
 ## subject
 
-* 2: data must contain ['subject_id', 'country_iso3', 'admission_date', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 1: data must be valid exactly by one definition (0 matches found)
+* 1: data must contain ['subject_id', 'age', 'ethnicity', 'pathogen'] properties
 
 ## visit
 
@@ -16,4 +17,4 @@
 
 ## observation
 
-* 325: data must contain ['phase', 'date', 'name'] properties
+* 372: data must contain ['phase', 'date', 'name'] properties
