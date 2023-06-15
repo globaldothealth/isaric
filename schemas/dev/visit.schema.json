@@ -243,6 +243,12 @@
       "description": "Antimalarial",
       "category": "treatments"
     },
+    "treatment_antimalarial_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antimalarials administered",
+      "category": "treatments"
+    },
     "treatment_high_flow_nasal_cannula": {
       "type": "boolean",
       "description": "High flow nasal cannula",
