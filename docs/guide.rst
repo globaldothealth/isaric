@@ -610,6 +610,7 @@ as free text fields, should be recorded here.
 the visit?
 
 **outcome** Text. Outcome of the visit, one of:
+
 + death
 + hospitalised
 + transferred
