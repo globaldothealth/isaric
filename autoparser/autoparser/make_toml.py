@@ -190,11 +190,14 @@ def _make_toml_observation(
     observations = []
 
     for mapping in mappings.itertuples():
-        phase = map_enum(
-            [mapping.category.replace("treatment", "study")],
-            ["admission", "study", "followup"],
-        )
-        phase = phase.get(mapping.category, "study")
+        if "category" in mappings.columns:
+            phase = map_enum(
+                [mapping.category.replace("treatment", "study")],
+                ["admission", "study", "followup"],
+            )
+            phase = phase.get(mapping.category, "study")
+        else:
+            phase = "study"  # no category information found, default to study
         obs_type = config["observation_type_mapping"].get(mapping.type, "value")
         field_mapping = single_field_mapping(
             config, mapping, references, use_type=mapping.type, add_auto_condition=True

@@ -46,15 +46,16 @@
   field = "daily_dsstdat"
 
 [subject]
-  country_iso3 = "SEN"
   pathogen = "COVID-19"
+  enrolment_date = { field = "dsstdat" }
 
   [subject.subject_id]
     field = "record_id"
     sensitive = true
 
-  [subject.admission_date]
-    ref = "admissionDate"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDate" }]
 
   [subject.age]
     field = "age_estimateyears"
@@ -169,7 +170,7 @@
   field = "dlvrdtc_rptestcd"
   description = "Delivery date"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = "egestage_rptestcd"
   description = "If yes: gestational age (in week of amenorrhea)"
   unit = "weeks"
@@ -178,6 +179,13 @@
   field = "apsc_gestout"
   description = "Pregnancy gestational outcome"
   values = { 1 = "term_birth", 2 = "preterm_birth" }
+
+[subject.pregnancy_whether_breastfed]
+  combinedType = "any"
+  fields = [
+    { field = "allaitante", ref = "Y/N/NK" },
+    { field = "apsc_brfedind", ref = "Y/N/NK" },
+  ]
 
 [subject.pregnancy_outcome]
   field = "pregout_rptestcd"
@@ -193,7 +201,7 @@
   field = "daily_hoterm"
   ref = "Y/N/NK"
 
-[subject.sex_at_birth]
+[subject.sex]
   field = "sex"
   description = "Sex"
   values = { 1 = "male", 2 = "female" }
@@ -205,6 +213,11 @@
 [subject.works_microbiology_lab]
   field = "labwork_erterm"
   ref = "Y/N/NK"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "otherrisktext", if.other_mhyn = 1 }]
 
   # visit
 
@@ -222,6 +235,18 @@
   [visit.start_date]
     ref = "admissionDate"
 
+  [visit.icu_admission]
+    field = "daily_hoterm"
+    ref = "Y/N/NK"
+
+  [visit.transfer_from_other_facility]
+    field = "hooccur"
+    values = { 1 = true, 2 = true, 3 = false }
+
+  [visit.treatment_prone_position]
+    field = "daily_prone_cmtrt"
+    ref = "Y/N/NK"
+
   [visit.outcome]
     field = "dsterm"
     description = "Outcome"
@@ -238,11 +263,12 @@
   description = "Outcome date"
 
 [visit.treatment_dialysis]
-  combinedType = "any"
-  fields = [
-    { field = "daily_rrt_cmtrt", ref = "Y/N/NK" },
-    { field = "renal_proccur", ref = "Y/N/NK" },
-  ]
+  # do not use renal_proccur as it is from discharge treatment section
+  field = "daily_rrt_cmtrt"
+  ref = "Y/N/NK"
+
+[visit.pathogen_test_date]
+  field = "mb_avthosp_dat"
 
 [visit.treatment_ecmo]
   field = "daily_ecmo_prtrt"
@@ -302,6 +328,34 @@
       TINIDAZOLE = true
       "TOBREX COLLYRE" = true
 
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+
+  [[visit.treatment_antibiotics_type.fields]]
+    fieldPattern = "tmt_pdthosp_nom.*"
+
+    [visit.treatment_antibiotics_type.fields.values]
+      "ACIDE CLAVULANIQUE" = "Clauvanic acid"
+      AMOXICILLINE = "Amoxicillin"
+      APEXIME = "Apexime"
+      AZICURE = "Azicure"
+      AZITHROMYCINE = "Azithromycine"
+      C-TRI = "C-TRI"
+      "C.TRI" = "C-TRI"
+      CEFTRIAXONE = "Ceftriaxone"
+      CIPROFLOXACINE = "Ciprofloxacine"
+      IMIPENEME = "Imipeneme"
+      NOVOCLIN = "Novoclin"
+      TINIDAZOLE = "Tinidazole"
+      "TOBREX COLLYRE" = "Tobramycin"
+
+[visit.treatment_experimental_agent_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { fieldPattern = "tmt_pdthosp_nom.*", values = { HYDROXYCHLOROQUINE = "Hydroxychloroquine" } },
+  ]
+
 [visit.treatment_antifungal_agent]
   combinedType = "any"
 
@@ -337,6 +391,15 @@
     { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
     { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
     { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
+    { fieldPattern = ".*oxygenotherapy_prec.*", values = { 1 = true, 2 = true } },
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+  ]
+
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    { field = "daily_inotrope_cmyn", ref = "Y/N/NK" },
   ]
 
   # observation
@@ -355,6 +418,52 @@
 
 [[observation]]
   name = "cough"
+  phase = "pre-admission"
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "cough_cestdat_v2" },
+      { field = "coughsput_cestdat_v2" },
+      { field = "coughhb_cestdat_v2" },
+    ]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "pre-admission"
+  start_date = { field = "cough_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "pre-admission"
+  start_date = { field = "coughsput_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "pre-admission"
+  start_date = { field = "coughhb_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
   date = { ref = "dailyDate" }
   phase = "study"
 
@@ -365,6 +474,12 @@
       { field = "daily_coughhb_ceoccur", ref = "Y/N/NK" },
       { field = "daily_coughsput_ceoccur", ref = "Y/N/NK" },
     ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  is_present = { field = "daily_cough_ceoccur", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
@@ -476,7 +591,9 @@
   name = "temperature_celsius"
   phase = "study"
   for.n.range = [1, 5]
-  value = { field = "daily_temp_vsorres_{n}", apply.function = "getFloat" }
+  value = { field = "daily_temp_vsorres_{n}", apply = { function = "getFloat", params = [
+    ",",
+  ] } }
   date = { ref = "dailyDateTime" }
 
 [[observation]]
@@ -576,44 +693,6 @@
     fields = [
       { field = "oxy_vsorresu", values = { 1 = "Room air", 2 = "Oxygen therapy" } },
     ]
-
-[[observation]]
-  name = "cough"
-  phase = "admission"
-  date = { ref = "admissionDate" }
-  duration_type = "event"
-
-  [observation.start_date]
-    combinedType = "min"
-    fields = [
-      { field = "cough_cestdat_v2" },
-      { field = "coughsput_cestdat_v2" },
-      { field = "coughhb_cestdat_v2" },
-    ]
-
-  [observation.is_present]
-    combinedType = "any"
-    fields = [
-      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
-    ]
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  start_date = { field = "coughsput_cestdat_v2" }
-  date = { ref = "admissionDate" }
-  duration_type = "event"
-  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
-  start_date = { field = "coughhb_cestdat_v2" }
-  date = { ref = "admissionDate" }
-  duration_type = "event"
-  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "sore_throat"
@@ -760,3 +839,30 @@
   phase = "admission"
   date = { ref = "admissionDate" }
   is_present = { field = "lymp_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "viralpneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDate" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['viral']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "bactpneu_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDate" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "cryptogenic_ceterm", ref = "Y/N/NK" }
+  start_date = { ref = "admissionDate" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  context = ['cryptogenic organizing pneumonia (POC)']

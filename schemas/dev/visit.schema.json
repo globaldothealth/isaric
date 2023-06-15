@@ -18,7 +18,10 @@
       "category": "metadata"
     },
     "subject_id": {
-      "type": "string",
+      "type": [
+        "string",
+        "integer"
+      ],
       "description": "Unique ID of subject",
       "category": "metadata"
     },
@@ -67,6 +70,11 @@
       },
       "uniqueItems": true,
       "description": "Date(s) of admission to ICU"
+    },
+    "transfer_from_other_facility": {
+      "type": "boolean",
+      "description": "Transferred to site from another facility",
+      "category": "treatments"
     },
     "treatment_dialysis": {
       "type": "boolean",
@@ -290,7 +298,7 @@
       "description": "Indication anticoagulation",
       "category": "treatments"
     },
-    "treatment_cardiovascular": {
+    "treatment_cardiovascular_support": {
       "type": "boolean",
       "description": "Cardiovascular",
       "category": "treatments"
@@ -307,7 +315,7 @@
     },
     "treatment_delirium": {
       "type": "boolean",
-      "description": "Delirium",
+      "description": "treatment for delirium",
       "category": "treatments"
     },
     "treatment_monoclonal_antibody": {
@@ -322,11 +330,6 @@
       },
       "uniqueItems": true,
       "description": "Other treatments",
-      "category": "treatments"
-    },
-    "treatment_oxygen_mechanical_support": {
-      "type": "boolean",
-      "description": "Oxygen mechanical support",
       "category": "treatments"
     },
     "treatment_pacing": {
