@@ -31,11 +31,11 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Some difficulty"
-  4 = "Lots of difficulty"
-  5 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 2 # "Some difficulty"
+  4 = 3 # "Lots of difficulty"
+  5 = 4 # "Unable to walk"
 
   ## SUBJECT
 
@@ -888,7 +888,7 @@
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
 
-  [observation.text]
+  [observation.value]
     combinedType = "firstNonNull"
     fields = [
       { field = "flw_eq5d_mb_p", ref = "inabilityWalk" },
@@ -961,7 +961,7 @@
   name = "base_excess"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  is_present = { field = "daily_baseex_lborres", ref = "Y/N/NK" }
+  value = { field = "daily_baseex_lborres" }
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"

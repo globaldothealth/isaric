@@ -43,11 +43,11 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Some difficulty"
-  4 = "Lots of difficulty"
-  5 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 2 # "Some difficulty"
+  4 = 3 # "Lots of difficulty"
+  5 = 4 # "Unable to walk"
 
 [subject]
   pathogen = "COVID-19"
@@ -910,13 +910,13 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "dsstdtc" }                                           # Can't find a date for the followup forms specifically
-  text = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
+  value = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "dsstdtc" }                                                    # Can't find a date for the followup forms specifically
-  text = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
+  value = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
 
 [[observation]]
   name = "temperature_celsius"
