@@ -35,17 +35,17 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Some difficulty"
-  4 = "Lots of difficulty"
-  5 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 2 # "Some difficulty"
+  4 = 3 # "Lots of difficulty"
+  5 = 4 # "Unable to walk"
 
 [adtl.defs.inabilityWalkToday.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Lots of difficulty"
-  4 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 3 # "Lots of difficulty"
+  4 = 4 # "Unable to walk"
 
 [subject]
   # study_id = "datcov-southafrica"
@@ -913,19 +913,19 @@
   date = { field = "flw_survey_date" }
   name = "inability_to_walk_scale"
   phase = "followup"
-  text = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
+  value = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
 
 [[observation]]
   date = { field = "flw_survey_date" }
   name = "inability_to_walk_scale"
   phase = "followup"
-  text = { field = "flw_walking_today", ref = "inabilityWalkToday" }
+  value = { field = "flw_walking_today", ref = "inabilityWalkToday" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
-  text = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
+  value = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
   if.not = { "flw2_eq5d_mb_5l_uk_eng_2_{n}" = "" }
   for.n.range = [1, 5]
 
@@ -933,7 +933,7 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
-  text = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
+  value = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
   if.not = { "flw2_walking_today_{n}" = "" }
   for.n.range = [1, 5]
 
