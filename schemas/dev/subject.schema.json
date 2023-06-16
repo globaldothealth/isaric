@@ -220,6 +220,11 @@
       "description": "Chronic cardiac disease",
       "category": "comorbidities"
     },
+    "has_chronic_respiratory_disease": {
+      "type": "boolean",
+      "description": "Chronic respiratory disease",
+      "category": "comorbidities"
+    },
     "has_chronic_kidney_disease": {
       "type": "boolean",
       "description": "Chronic kidney disease",

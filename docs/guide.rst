@@ -432,6 +432,9 @@ cardiac disease?
 **has_chronic_kidney_disease**: Bool. Does the subject have a chronic
 kidney disease?
 
+**has_chronic_respiratory_disease**: Bool. Does the subject have a chronic
+respiratory (not asthma) disease?
+
 **has_diabetes**: Bool. Does the subject have diabetes?
 
 **diabetes_type**: Text. Type of diabetes; one of \* type-1 \* type-2 \*

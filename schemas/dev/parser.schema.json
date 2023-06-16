@@ -408,6 +408,10 @@
           "description": "Chronic cardiac disease",
           "$ref": "#/definitions/mapping"
         },
+        "has_chronic_respiratory_disease": {
+          "description": "Chronic cardiac disease",
+          "$ref": "#/definitions/mapping"
+        },
         "has_chronic_kidney_disease": {
           "description": "Chronic kidney disease",
           "$ref": "#/definitions/mapping"
