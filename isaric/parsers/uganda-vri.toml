@@ -271,28 +271,6 @@
   is_present = { field = "fever_hist", ref = "Y/N" }
 
 [[observation]] # CHECK THIS!
-  # 1 month prior to illness, did patient need help?
-  name = "inability_to_walk_scale"
-  date = { field = "hospitalization_date" }
-  phase = "admission"
-  text = { field = "move", values = { 1 = "1 - No difficulty", 2 = "2 - Some difficulty", 3 = "4 - Unable to walk" } }
-  context = ['walk around the home']
-
-[[observation]] # CHECK THIS!
-  name = "inability_to_walk_scale"
-  date = { field = "hospitalization_date" }
-  phase = "admission"
-  text = { field = "walk", values = { 1 = "1 - No difficulty", 2 = "2 - Some difficulty", 3 = "4 - Unable to walk" } }
-  context = ['walk on a flat surface for 20 mins']
-
-[[observation]] # CHECK THIS!
-  name = "inability_to_walk_scale"
-  date = { field = "hospitalization_date" }
-  phase = "admission"
-  text = { field = "stairs", values = { 1 = "1 - No difficulty", 2 = "2 - Some difficulty", 3 = "4 - Unable to walk" } }
-  context = ['walk up a hill']
-
-[[observation]] # CHECK THIS!
   name = "inability_to_walk_scale"
   date = { field = "date_30" }
   phase = "followup"
