@@ -650,6 +650,12 @@
     field = "headache_hx"
     description = "Headache"
     ref = "Y/N"
+    
+ [[observation]]
+  name = "glasgow_coma_score"
+  phase = "study"
+  date = { field = "daily_assess_date" }
+  value = { field = "daily_gcs_sx" }
 
 [[observation]]
   name = "heart_rate_bpm"
