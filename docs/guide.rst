@@ -673,8 +673,8 @@ into the subtypes for the phase. For example:
 Other fields
 ~~~~~~~~~~~~
 
-**avpu**: Text. Where is the subject on the AVPU consciousness scale
-(Alert, Voice, Pain, Unresponsive)
+**avpu**: Text. Where is the subject on the AVPU consciousness scale, one of
+*Alert, Voice, Pain, Unresponsive*.
 
 **abdominal_pain**: Bool.
 
@@ -697,7 +697,7 @@ described as bleeding (haemorrhage) or similar, use
 **clinical_classification_critical_illness_scale**: Currently Unused.
 Traffic-light suggests only in one parser, suggest editing or removal.
 
-**clinical_frailty_score**: Value. `Frailty
+**clinical_frailty_score**: Value (1-9). `Frailty
 scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/rockwood_cfs.pdf>`__
 
 .. _confusion:
@@ -710,11 +710,11 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **diarrhoea**: Bool.
 
-**diastolic_blood_pressure_mmHg**: Value.
+**diastolic_blood_pressure_mmHg**: Value (50-250).
 
-**systolic_blood_pressure_mmHg**: Value.
+**systolic_blood_pressure_mmHg**: Value (50-250).
 
-**mean_arterial_blood_pressure_mmHg**: Value.
+**mean_arterial_blood_pressure_mmHg**: Value (50-250).
 
 **ear_pain**: Bool.
 
@@ -722,12 +722,12 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **feeding_intolerance_pediatrics** Bool. Unused.
 
-**glasgow_coma_score**: Value. `Coma
+**glasgow_coma_score**: Value (3-15). `Coma
 scale <https://www.glasgowcomascale.org>`__
 
 **headache**: Bool.
 
-**heart_rate_bpm**: Value.
+**heart_rate_bpm**: Value (1-250).
 
 **heart_sounds**: Bool.
 
@@ -745,13 +745,13 @@ inability_to_walk_scale_
 .. _inability_to_walk_scale:
 
 **inability_to_walk_scale**: Use a 1-4 scale to indicate the degree of
-difficulty a subject has walking. Values should map to: *1-No
-difficulty, 2-Some difficulty, 3-Lots of difficulty, 4-Unable to walk*.
+difficulty a subject has walking. Values should map to integers 1-4: 1 (No
+difficulty), 2 (Some difficulty), 3 (Lots of difficulty), 4 (Unable to walk).
 If the field contains a greater number of options, they should be mapped
 onto a 1-4 scale, rounding down. E.g., for a 1-5 scale of: *1-no
 inability, 2-slight inability, 3-moderate inability, 4-severe inability,
 5-unable*, option 3 (moderate inability) should be rounded down and
-mapped to *2-some difficulty* in the 1-4 scale. If a relevant field
+mapped to 2 in the 1-4 scale. If a relevant field
 instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
 **irritability_pediatrics**: Bool. Unused.
@@ -772,7 +772,7 @@ combined.
 
 **lymphadenopathy**: Bool. Combines adenopathy and lymphadenopathy.
 
-**mid_upper_arm_circumference_cm**: Value.
+**mid_upper_arm_circumference_cm**: Value (5-100).
 
 **muscle_aches**: Bool.
 
@@ -784,17 +784,17 @@ fields describing symptoms, here.
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.
 
-**oxygen_saturation_percent**: Value. Use context to note whether
+**oxygen_saturation_percent**: Value (50-100). Use context to note whether
 observation was made on room air, on while on oxygen.
 
-**pao2_mmHg**: Value. Use context to record whether this is an arterial,
+**pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the
 default unit.
 
-**pco2_mmHg**: Value. Use context to note if this is from the same blood
+**pco2_mmHg**: Value (10-100). Use context to note if this is from the same blood
 gas record as the *pao2*/*pH* observation.
 
-**pH**: Value. Use context to note if this is from the same blood gas
+**pH**: Value (4-10). Use context to note if this is from the same blood gas
 record as the *pao2*/*pco2* observation.
 
 **pneumonia**: Bool. Use context to note if bacterial, viral or COP, and
@@ -802,11 +802,11 @@ if the patient requires oxygen as a result (if specified in that field,
 don’t assume that if the patient is recorded as being on oxygen
 elsewhere, it is related to this record of pneumonia).
 
-**respiratory_rate**: Value.
+**respiratory_rate**: Value (1-50).
 
-**richmond_agitation-sedation_scale**: Value.
+**richmond_agitation-sedation_scale**: Value (-5 to 4, including 0).
 
-**riker_sedation-agitation_scale**: Value.
+**riker_sedation-agitation_scale**: Value (1-7).
 
 **runny_nose**: Bool.
 
@@ -826,7 +826,7 @@ elsewhere, it is related to this record of pneumonia).
 conditional statements if the refill time is given rather than a yes/no
 response.
 
-**temperature_celsius**: Value
+**temperature_celsius**: Value (25-50)
 
 **total_fluid_output_ml**: Value.
 
