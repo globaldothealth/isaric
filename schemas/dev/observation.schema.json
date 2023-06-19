@@ -335,6 +335,11 @@
     }
   ],
   "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the observation",
+      "category": "metadata"
+    },
     "dataset_id": {
       "type": "string",
       "description": "Dataset ID, refers to a specific version",
