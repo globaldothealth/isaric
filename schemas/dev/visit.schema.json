@@ -137,6 +137,12 @@
       "description": "Antifungal agent",
       "category": "treatments"
     },
+    "treatment_antifungal_agent_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antifungal agents",
+      "category": "treatments"
+    },
     "treatment_antivirals": {
       "type": "boolean",
       "description": "Antivirals",
@@ -240,6 +246,12 @@
     },
     "treatment_antimalarial": {
       "type": "boolean",
+      "description": "Antimalarial",
+      "category": "treatments"
+    },
+    "treatment_antimalarial_type": {
+      "type": "array",
+      "uniqueItems": true,
       "description": "Antimalarial",
       "category": "treatments"
     },

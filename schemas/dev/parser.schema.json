@@ -566,6 +566,10 @@
           "description": "Antifungal agent",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_antifungal_agent_type": {
+          "description": "Antifungal agent",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_antivirals": {
           "description": "Antivirals",
           "$ref": "#/definitions/mapping"
@@ -619,6 +623,10 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_antimalarial": {
+          "description": "Antimalarial",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antimalarial_type": {
           "description": "Antimalarial",
           "$ref": "#/definitions/mapping"
         },
