@@ -1043,7 +1043,7 @@
     { heart_sound = { "!=" = "" } },
     { heart_sound = { "!=" = "9999" } },
   ]
-  text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
+  is_present = { field = "heart_sound", values = { 0 = false, 1 = true } }
 
 [[observation]]
   name = "heart_sounds"
@@ -1054,7 +1054,7 @@
     { heart_sound = { "!=" = "" } },
     { heart_sound = { "!=" = "9999" } },
   ]
-  text = { field = "heart_sound", values = { 0 = "normal", 1 = "abnormal" } }
+  is_present = { field = "heart_sound", values = { 0 = false, 1 = true } }
 
 [[observation]]
   name = "lung_sounds"
@@ -1065,7 +1065,7 @@
     { lung_sound = { "!=" = "9999" } },
     { lung_sound = { "!=" = "" } },
   ]
-  text = { field = "lung_sound", values = { 0 = "normal", 1 = "abnormal" } }
+  is_present = { field = "lung_sound", values = { 0 = false, 1 = true } }
 
 [[observation]]
   name = "lung_sounds"
@@ -1076,7 +1076,7 @@
     { lung_sound = { "!=" = "9999" } },
     { lung_sound = { "!=" = "" } },
   ]
-  text = { field = "lung_sound", values = { 0 = "normal", 1 = "abnormal" } }
+  is_present = { field = "lung_sound", values = { 0 = false, 1 = true } }
 
 [[observation]]
   name = "irritability_pediatrics"
