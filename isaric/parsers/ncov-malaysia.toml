@@ -113,9 +113,9 @@
   description = "Breastfed"
   values = { 1 = true, 2 = false }
 
-[subject.has_apnoea]
-  field = "apnoea_hx"
-  ref = "Y/N"
+  # [subject.has_apnoea]
+  # apmoea_hx relates to signs and symptoms at hospital admission rather than
+  # medical history. No other medical history variable for apnoea in this dataset
 
 [subject.has_chronic_cardiac_disease]
   field = "c_cardiac"
@@ -199,9 +199,7 @@
 [subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [
-    {field = "o_risk_text", ref = "Y/N"}
-  ]
+  fields = [{ field = "o_risk_text", ref = "Y/N" }]
 
 [subject.icu_admitted]
   field = "type_icu"
@@ -212,7 +210,7 @@
   field = "type_outcome"
   values = { 4 = true }
 
-[subject.date_death] # IS THIS CORRECT?
+[subject.date_death]
   field = "outcome_date"
   if = { type_outcome = 4 }
 
@@ -242,9 +240,9 @@
     ]
 
   [visit.pathogen_test_date]
-    field = "patho_test_date"
+    field = "pathogen_test0"
     description = "If yes, specimen collected date?	"
-    # NOT SURE ABOUT THIS DATE - CHECK notes from SK
+    if.pathogen_detect0 = 1
 
   [visit.start_date]
     ref = "admissionDate"
@@ -387,6 +385,8 @@
       { field = "ecmo_vent", description = "ECMO?", ref = "Y/N" },
       { field = "ecmo_dc", ref = "Y/N" },
       { field = "prone_dc", ref = "Y/N", description = "Prone Ventilation?" },
+      { description = "Oxygen interface - HFNC", field = "oxy_interface", values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false, 6 = false } },
+      { field = "type_oxy_dc", values = { 1 = false, 2 = true, 7777 = false } },
     ]
 
   [visit.treatment_prone_position]
@@ -409,11 +409,9 @@
     fields = [
       { field = "mx_antimalarial_type___1", values = { 1 = "Chloroquine" } },
       { field = "mx_antimalarial_type___2", values = { 1 = "Hydroxychloroquine" } },
-      { field = "mx_antimalarial_type___7777", values = { 1 = "Other" } },
       { field = "o_mx_antimalarial_type" },
       { field = "type_antimalarial_dc___1", values = { 1 = "Hydroxychloroquine" } },
       { field = "type_antimalarial_dc___2", values = { 1 = "Chloroquine" } },
-      { field = "type_antimalarial_dc___7777", values = { 1 = "Other" } },
       { field = "o_type_antimalarial_dc" },
     ]
 
@@ -431,8 +429,10 @@
     fields = [
       { field = "mx_immunosup_type___1", values = { 1 = "Dexamethasone" } },
       { field = "mx_immunosup_type___2", values = { 1 = "Methylprednisolone" } },
+      { field = "o_mx_immunosup_type" },
       { field = "type_steroid_dc___1", values = { 1 = "Dexamethasone" } },
       { field = "type_steroid_dc___2", values = { 1 = "Methylprednisolone" } },
+      { field = "o_type_steroid_dc" },
     ]
 
   [visit.treatment_corticosteroid_type_other]
@@ -459,7 +459,6 @@
       { field = "mx_delirium_type___1", values = { 1 = "Haloperidol" } },
       { field = "mx_delirium_type___1", values = { 1 = "Olanzapine" } },
       { field = "mx_delirium_type___1", values = { 1 = "Quetipine" } },
-      { field = "mx_delirium_type___1", values = { 1 = "other" } },
       { field = "o_mx_delirium_type" },
     ]
 
@@ -650,8 +649,8 @@
     field = "headache_hx"
     description = "Headache"
     ref = "Y/N"
-    
- [[observation]]
+
+[[observation]]
   name = "glasgow_coma_score"
   phase = "study"
   date = { field = "daily_assess_date" }
@@ -781,7 +780,7 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      {field = "oxy_sx", values = { 1 = "on room air", 2 = "on oxygen therapy" }}
+      { field = "oxy_sx", values = { 1 = "on room air", 2 = "on oxygen therapy" } },
     ]
 
 [[observation]]
@@ -981,11 +980,12 @@
     field = "t_sx"
     unit = "°C"
 
-[[observation]] # THIS NEEDS DISCUSSION
-  name = "total_fluid_output_ml"
-  phase = "study"
-  date = { field = "daily_assess_date" }
-  value = { field = "mx_fluid_out" }
+    # Not very useful without fluid input, disabling
+    # [[observation]] # THIS NEEDS DISCUSSION
+    #   name = "total_fluid_output_ml"
+    #   phase = "study"
+    #   date = { field = "daily_assess_date" }
+    #   value = { field = "mx_fluid_out" }
 
 [[observation]]
   name = "vomiting_nausea"
@@ -1059,7 +1059,23 @@
 [[observation]]
   name = "lung_sounds"
   date = { field = "daily_assess_date" }
-  phase = "study"
+  phase = "admission"
+  if.all = [
+    { redcap_event_name = "on_admission_arm_1" },
+    { lung_sound = { "!=" = "9999" } },
+    { lung_sound = { "!=" = "" } },
+  ]
+  text = { field = "lung_sound", values = { 0 = "normal", 1 = "abnormal" } }
+
+[[observation]]
+  name = "lung_sounds"
+  date = { field = "daily_assess_date" }
+  phase = "admission"
+  if.all = [
+    { redcap_event_name = "daily_progress_arm_1" },
+    { lung_sound = { "!=" = "9999" } },
+    { lung_sound = { "!=" = "" } },
+  ]
   text = { field = "lung_sound", values = { 0 = "normal", 1 = "abnormal" } }
 
 [[observation]]

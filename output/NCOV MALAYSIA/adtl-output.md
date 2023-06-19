@@ -3,8 +3,8 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |6440   |6476   |99.444101% |
-|visit          |6362   |6476   |98.239654% |
-|observation    |303489 |303591 |99.966402% |
+|visit          |6317   |6476   |97.544781% |
+|observation    |320555 |320657 |99.968190% |
 
 ## subject
 
@@ -15,6 +15,8 @@
 ## visit
 
 * 114: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
+* 41: data.treatment_corticosteroid_type[0] must be one of ['Methylprednisolone', 'Prednisolone', 'Dexamethasone', 'Hydrocortisone', 'Other']
+* 4: data.treatment_corticosteroid_type[1] must be one of ['Methylprednisolone', 'Prednisolone', 'Dexamethasone', 'Hydrocortisone', 'Other']
 
 ## observation
 
