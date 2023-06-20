@@ -320,6 +320,24 @@
       { field = "steroid_dc", ref = "Y/N" },
     ]
 
+  [visit.treatment_corticosteroid_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "mx_immunosup_type___1", values = { 1 = "Dexamethasone" } },
+      { field = "mx_immunosup_type___2", values = { 1 = "Methylprednisolone" } },
+      { field = "type_steroid_dc___1", values = { 1 = "Dexamethasone" } },
+      { field = "type_steroid_dc___2", values = { 1 = "Methylprednisolone" } },
+    ]
+
+  [visit.treatment_corticosteroid_type_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "o_mx_immunosup_type" },
+      { field = "o_type_steroid_dc" },
+    ]
+
   [visit.treatment_dialysis]
     combinedType = "any"
     fields = [
@@ -422,26 +440,6 @@
   [visit.treatment_antifungal_agent]
     field = "antifungal_dc"
     ref = "Y/N"
-
-  [visit.treatment_corticosteroid_type]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "mx_immunosup_type___1", values = { 1 = "Dexamethasone" } },
-      { field = "mx_immunosup_type___2", values = { 1 = "Methylprednisolone" } },
-      { field = "o_mx_immunosup_type" },
-      { field = "type_steroid_dc___1", values = { 1 = "Dexamethasone" } },
-      { field = "type_steroid_dc___2", values = { 1 = "Methylprednisolone" } },
-      { field = "o_type_steroid_dc" },
-    ]
-
-  [visit.treatment_corticosteroid_type_other]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "o_mx_immunosup_type" },
-      { field = "o_type_steroid_dc" },
-    ]
 
   [visit.treatment_other]
     combinedType = "set"
@@ -592,6 +590,7 @@
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
     { "admission_diabp_vsorres" = { "!=" = "" } },
+    { "admission_diabp_vsorres" = { "!=" = 9999 } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -606,6 +605,7 @@
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
     { "admission_diabp_vsorres" = { "!=" = "" } },
+    { "admission_diabp_vsorres" = { "!=" = 9999 } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -655,12 +655,17 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "daily_gcs_sx" }
+  if.all = [
+    { "daily_gcs_sx" = { "!=" = "" } },
+    { "daily_gcs_sx" = { "!=" = 9999 } },
+  ]
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "pr_sx" }
+  if.all = [{ "pr_sx" = { "!=" = "" } }, { "pr_sx" = { "!=" = 9999 } }]
 
 [[observation]]
   name = "history_of_fever"
@@ -738,6 +743,7 @@
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
     { "map_sx" = { "!=" = "" } },
+    { "map_sx" = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -751,6 +757,7 @@
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
     { "map_sx" = { "!=" = "" } },
+    { "map_sx" = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -775,6 +782,7 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "spo_sx" }
+  if.all = [{ "spo_sx" = { "!=" = "" } }, { "spo_sx" = { "!=" = 9999 } }]
 
   [observation.context]
     combinedType = "set"
@@ -817,6 +825,7 @@
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
     { "daily_pao2_data" = { "!=" = "" } },
+    { "daily_pao2_data" = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -840,6 +849,7 @@
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
     { "daily_pao2_data" = { "!=" = "" } },
+    { "daily_pao2_data" = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -862,6 +872,10 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "daily_pco2_data", unit = "mmHg", source_unit = { field = "daily_pco2_unit", values = { 1 = "kPa", 2 = "mmHg" } } }
+  if.all = [
+    { daily_pco2_data = { "!=" = "" } },
+    { daily_pco2_data = { "!=" = "9999" } },
+  ]
 
 [[observation]]
   name = "seizures"
@@ -876,6 +890,7 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "rr_sx" }
+  if.all = [{ "rr_sx" = { "!=" = "" } }, { "rr_sx" = { "!=" = 9999 } }]
 
 [[observation]]
   name = "runny_nose"
@@ -950,6 +965,7 @@
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
     { "sysbp_vsorres" = { "!=" = "" } },
+    { "sysbp_vsorres" = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
   value = { field = "sysbp_vsorres", source_unit = "mmHg" }
@@ -973,6 +989,7 @@
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
     { "t_sx" = { "!=" = "" } },
+    { "t_sx" = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
