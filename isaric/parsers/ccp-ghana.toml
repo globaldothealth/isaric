@@ -860,21 +860,21 @@
   phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
 
-  [observation.value]
+  [observation.text]
     field = "adm21s2"
     description = "AVPU: responsiveness scale:"
 
     [observation.value.values]
-      1 = "alert"
-      2 = "verbal_stimulation"
-      3 = "painful_stimulation"
-      4 = "unresponsive"
+      1 = "Alert"
+      2 = "Verbal"
+      3 = "Pain"
+      4 = "Unresponsive"
 
 [[observation]]
   name = "base_excess"
   phase = "study"
   date = { field = "icu_date" }
-  text = { field = "base_excess", description = "Base excess" }
+  value = { field = "base_excess", description = "Base excess" }
 
 [[observation]]
   name = "bleeding_haemorrhage"

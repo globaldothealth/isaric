@@ -12,20 +12,334 @@
     {
       "required": [
         "text"
-      ]
+      ],
+      "properties": {
+        "name": {
+          "const": "avpu"
+        },
+        "text": {
+          "enum": [
+            "Alert",
+            "Verbal",
+            "Pain",
+            "Unresponsive"
+          ]
+        }
+      }
+    },
+    {
+      "$comment": "Oxygen flow volume is represented as a range which is not a native JSON Schema type",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "name": {
+          "const": "oxygen_flow_volume_max"
+        }
+      }
     },
     {
       "required": [
         "value"
-      ]
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "clinical_classification_critical_illness_scale",
+            "total_fluid_output_ml",
+            "base_excess",
+            "oxygen_o2hb"
+          ]
+        },
+        "value": {
+          "type": "number"
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "clinical_frailty_score"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "inability_to_walk_scale"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "glasgow_coma_score"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 3,
+          "maximum": 15
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "heart_rate_bpm"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 250
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "mid_upper_arm_circumference_cm"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 5,
+          "maximum": 100
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "oxygen_saturation_percent"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 50,
+          "maximum": 100
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "pao2_mmHg"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 50,
+          "maximum": 150
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "pco2_mmHg"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 100
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "pH"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 4,
+          "maximum": 10
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "respiratory_rate"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "richmond_agitation-sedation_scale"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": -5,
+          "maximum": 4
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "riker_sedation-agitation_scale"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "temperature_celsius"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 25,
+          "maximum": 50
+        }
+      }
+    },
+    {
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "name": {
+          "const": "other_symptom"
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "diastolic_blood_pressure_mmHg",
+            "mean_arterial_blood_pressure_mmHg",
+            "systolic_blood_pressure_mmHg"
+          ]
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 50,
+          "maximum": 250
+        }
+      }
     },
     {
       "required": [
         "is_present"
-      ]
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "pneumonia",
+            "abdominal_pain",
+            "altered_consciousness_confusion",
+            "anorexia",
+            "bleeding",
+            "bleeding_haemorrhage",
+            "chest_pain",
+            "confusion",
+            "conjunctivitis",
+            "cough",
+            "cough_dry",
+            "cough_with_haemoptysis",
+            "cough_with_sputum_production",
+            "cyanosis",
+            "diarrhoea",
+            "ear_pain",
+            "fatigue_malaise",
+            "feeding_intolerance_pediatrics",
+            "headache",
+            "hepatomegaly",
+            "history_of_fever",
+            "inability_to_walk",
+            "irritability_pediatrics",
+            "joint_pain",
+            "loss_of_smell",
+            "loss_of_taste",
+            "loss_of_smell_or_taste",
+            "lower_chest_wall_indrawing",
+            "lung_sounds",
+            "lymphadenopathy",
+            "muscle_aches",
+            "runny_nose",
+            "seizures",
+            "severe_dehydration",
+            "shortness_of_breath",
+            "skin_rash",
+            "skin_ulcers",
+            "sore_throat",
+            "sternal_capillary_refill_time_greater_2s",
+            "vomiting_nausea",
+            "wheezing",
+            "heart_sounds"
+          ]
+        }
+      }
     }
   ],
   "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the observation",
+      "category": "metadata"
+    },
     "dataset_id": {
       "type": "string",
       "description": "Dataset ID, refers to a specific version",
@@ -104,76 +418,6 @@
       },
       "uniqueItems": true,
       "description": "Context that qualifies the observation, e.g. *axillary* temperature, or *room air* oxygen saturation measurement"
-    },
-    "name": {
-      "enum": [
-        "avpu",
-        "clinical_classification_critical_illness_scale",
-        "pneumonia",
-        "clinical_frailty_score",
-        "diastolic_blood_pressure_mmHg",
-        "glasgow_coma_score",
-        "abdominal_pain",
-        "altered_consciousness_confusion",
-        "anorexia",
-        "base_excess",
-        "bleeding",
-        "bleeding_haemorrhage",
-        "chest_pain",
-        "confusion",
-        "conjunctivitis",
-        "cough",
-        "cough_dry",
-        "cough_with_haemoptysis",
-        "cough_with_sputum_production",
-        "cyanosis",
-        "diarrhoea",
-        "ear_pain",
-        "fatigue_malaise",
-        "feeding_intolerance_pediatrics",
-        "headache",
-        "hepatomegaly",
-        "history_of_fever",
-        "inability_to_walk",
-        "inability_to_walk_scale",
-        "irritability_pediatrics",
-        "joint_pain",
-        "loss_of_smell",
-        "loss_of_taste",
-        "loss_of_smell_or_taste",
-        "lower_chest_wall_indrawing",
-        "lung_sounds",
-        "lymphadenopathy",
-        "muscle_aches",
-        "runny_nose",
-        "seizures",
-        "severe_dehydration",
-        "shortness_of_breath",
-        "skin_rash",
-        "skin_ulcers",
-        "sore_throat",
-        "sternal_capillary_refill_time_greater_2s",
-        "vomiting_nausea",
-        "wheezing",
-        "heart_rate_bpm",
-        "heart_sounds",
-        "mean_arterial_blood_pressure_mmHg",
-        "mid_upper_arm_circumference_cm",
-        "other_symptom",
-        "oxygen_o2hb",
-        "oxygen_saturation_percent",
-        "oxygen_flow_volume_max",
-        "pao2_mmHg",
-        "pco2_mmHg",
-        "pH",
-        "respiratory_rate",
-        "richmond_agitation-sedation_scale",
-        "riker_sedation-agitation_scale",
-        "systolic_blood_pressure_mmHg",
-        "temperature_celsius",
-        "total_fluid_output_ml"
-      ],
-      "description": "Observation name"
     }
   },
   "dependencies": {
