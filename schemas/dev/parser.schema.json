@@ -554,6 +554,10 @@
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_oxygen_mask_prongs": {
+          "description": "Oxygen therapy via mask or nasal prongs",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_prone_position": {
           "description": "Prone position",
           "$ref": "#/definitions/mapping"

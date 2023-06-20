@@ -122,6 +122,11 @@
       "description": "Oxygen therapy",
       "category": "treatments"
     },
+    "treatment_oxygen_mask_prongs": {
+      "type": "boolean",
+      "description": "Oxygen therapy via nasal prongs or a mask",
+      "category": "treatments"
+    },
     "treatment_prone_position": {
       "type": "boolean",
       "description": "Prone position",

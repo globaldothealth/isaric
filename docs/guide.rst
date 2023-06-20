@@ -485,7 +485,7 @@ Superset, general level indicators:
 therapy and/or respiratory support has been administered. Subsets (all
 boolean indicators) are:
 
-+ *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
++ *treatment_oxygen_mask_prongs* - Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 
 + *treatment_high_flow_nasal_cannula*
 
@@ -505,6 +505,8 @@ support has been administered. Subsets (all boolean indicators) are:
 + *treatment_pacing*
 
 + *treatment_ecmo*
+
++ *treatment_cpr*
 
 Overarching fields denoting 'cardiovascular support' can also include CPR,
 or other forms of mechanical cardiovascular support.
@@ -779,7 +781,7 @@ combined.
 **other_symptom**: Set (Text). List any other symptoms, or free text
 fields describing symptoms, here.
 
-**oxygen_o2hb**: Unused, not sure what it relates to.
+**oxygen_o2hb**: Value. Haemoglobin test results.
 
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.

@@ -63,6 +63,28 @@
       { field = "age_estimateyearsu", description = "estimated age in years" },
     ] # All other age fields are empty
 
+  [subject.pregnancy]
+    field = "pregyn_rptestcd"
+    values = { 1 = true, 0 = false }
+    description = "Pregnant?"
+
+  [subject.pregnancy_gestational_age_weeks]
+    field = "egestage_rptestcd"
+    values = { 1 = true, 0 = false }
+    description = "Gestational weeks assessment"
+
+  [subject.pregnancy_gestational_outcome]
+    field = "ex_preterm_mhyn"
+    values = { 1 = "preterm_birth" }
+    description = "Ex-preterm infant?"
+
+  [subject.pregnancy_birth_weight_kg]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dy1_vac_birthwt", description = "If documented, enrolled child's birth weight", values = { 1 = "<1", 2 = "1-1.5", 3 = "1.5-2", 4 = "2-2.5", 5 = "2.5-3", 6 = "3-3.5", 7 = ">3.5" } },
+      { field = "dy1_vac_birthwt_verbal", description = "If known by mother, enrolled child's birth weight", values = { 1 = "<1", 2 = "1-1.5", 3 = "1.5-2", 4 = "2-2.5", 5 = "2.5-3", 6 = "3-3.5", 7 = ">3.5" } },
+    ]
+
   [subject.has_asthma]
     field = "asthma_mhyn"
     description = "Asthma(Physician diagnosed)"
@@ -170,25 +192,22 @@
     description = "Antibiotic?"
     ref = "Y/N/NK"
 
-    # [visit.treatment_antibiotics_type]
-    #   combinedType = "set"
+  [visit.treatment_antibiotics_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "antibiotic_type_v2___1", values = { 1 = "Benzypen" } },
+      { field = "antibiotic_type_v2___2", values = { 1 = "Gentamicin" } },
+      { field = "antibiotic_type_v2___3", values = { 1 = "Ceftriaxone" } },
+      { field = "antibiotic_type_v2___4", values = { 1 = "Amikacin" } },
+      { field = "antibiotic_type_v2___5", values = { 1 = "Chloramphenicol" } },
+      { field = "antibiotic_type_v2___6", values = { 1 = "Metronidazole" } },
+      { field = "antibiotic_type_v2___7", values = { 1 = "Meropenem" } },
+      { field = "antibiotic_type_v2___8", values = { 1 = "Azithryomycin" } },
+      { field = "antibiotic_type_v2___9", values = { 1 = "Ciprofloxacin" } },
+      { field = "dschrg_other_name" },
 
-    #   [[visit.treatment_antibiotics_type.fields]]
-    #     field = "antibiotic_type_v2"
-    #     description = "Specify antibiotic"
-    #     [visit.treatment_antibiotics_type.fields.values]
-    #       1 = "Benzypen"
-    #       2 = "Gentamicin"
-    #       3 = "Ceftriaxone"
-    #       4 = "Amikacin"
-    #       5 = "Chloramphenicol"
-    #       6 = "Metronidazole"
-    #       7 = "Meropenem"
-    #       8 = "Azithryomycin"
-    #       9 = "Ciprofloxacin"
-
-    #   [[visit.treatment_antibiotics_type.fields]]
-    #     field = "dschrg_other_name"
+    ]
 
   [visit.treatment_antifungal_agent]
     field = "antifung_cmyn_v2"
@@ -222,6 +241,13 @@
   [visit.treatment_antiviral_type_other]
     field = "antiviral_cmtype_v2"
     description = "If YES to antiviral agent; specify:"
+
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      { field = "inotrop_prtrt_v3", description = "Inotropes / vasopressors?", ref = "Y/N/NK" },
+      { field = "cardiacarrest_ceterm", description = "Cardiac arrest (Resuscitation requiring CPR +/- adrenaline)", ref = "Y/N/NK" },
+    ]
 
   [visit.treatment_corticosteroid]
     field = "corticost_cmyn_v2"
@@ -266,14 +292,21 @@
       { field = "iv_prtrt_v3", description = "IV Fluids", ref = "Y/N/NK" },
     ]
 
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    fields = [
+      { field = "oxygen_prtrt_v3", description = "Oxygen therapy?", ref = "Y/N/NK" },
+      { field = "noninvasive_prtrt_v3", description = "Non-invasive ventilation ? (e.g. BIPAP, CPAP)", ref = "Y/N/NK" },
+    ]
+
+  [visit.treatment_oxygen_mask_prongs]
+    field = "xygn_thrpintfc_trt_v3"
+    description = "If yes to oxygen therapy, interface:"
+    values = { 1 = true, 2 = true }
+
   [visit.treatment_noninvasive_ventilation]
     field = "noninvasive_prtrt_v3"
     description = "Non-invasive ventilation ? (e.g. BIPAP, CPAP)"
-    ref = "Y/N/NK"
-
-  [visit.treatment_oxygen_therapy]
-    field = "oxygen_prtrt_v3"
-    description = "Oxygen therapy?"
     ref = "Y/N/NK"
 
   [visit.outcome]
@@ -355,6 +388,12 @@
     ]
 
 [[observation]]
+  name = "cough"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___2", ref = "Y/N/NK" }
+
+[[observation]]
   name = "cough_dry"
   phase = "admission"
   start_date = { field = "cough_datstart_ceoccur_v2" }
@@ -393,6 +432,12 @@
     ]
 
 [[observation]]
+  name = "diarrhoea"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___10", ref = "Y/N/NK" }
+
+[[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "admission"
   date = { field = "hostdat" }
@@ -413,12 +458,32 @@
   value = { field = "hr_vsorres", description = "Heart Rate" }
 
 [[observation]]
+  name = "hepatomegaly"
+  phase = "admission"
+  date = { field = "hostdat" }
+  is_present = { field = "cardiac_failure___4", values = { 1 = true } }
+
+[[observation]]
   name = "history_of_fever"
   phase = "admission"
   start_date = { field = "fev_datstart_ceoccur_v2" }
   date = { field = "hostdat" }
   duration_type = "block"
   is_present = { field = "fever_ceoccur_v2", description = "History of fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___1", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "admission"
+  start_date = { field = "lthrgy_dtstrt" }
+  date = { field = "hostdat" }
+  duration_type = "block"
+  is_present = { field = "lethargy_ceoccur_v2", ref = "Y/N/NK", description = "Lethargy" }
 
 [[observation]]
   name = "feeding_intolerance_pediatrics"
@@ -431,6 +496,12 @@
     field = "eat_drink_ceoccur_v2"
     description = "Refusing to eat or drink or a history of poor oral intake"
     ref = "Y/N/NK"
+
+[[observation]]
+  name = "feeding_intolerance_pediatrics"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___11", ref = "Y/N/NK" }
 
 [[observation]]
   name = "inability_to_walk"
@@ -491,12 +562,6 @@
   duration_type = "block"
   is_present = { field = "myalgia_ceoccur_v2", description = "Muscle ache (Myalgia)", ref = "Y/N/NK" }
 
-  # [[observation]]
-  #   name = "other_symptom"
-  #   phase = "study"
-  #   date = { ref = "dailyDateHierarchy" }
-  #   text = { field = "specify_symptom", description = "If other, specify symptom" }
-
 [[observation]]
   name = "oxygen_flow_volume_max"
   phase = "study"
@@ -520,6 +585,12 @@
     fields = [
       { field = "oxy_vsorresu", description = "Oxygen saturation on:", values = { 1 = "on room air", 2 = "on oxygen therapy" } },
     ]
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "admission"
+  date = { field = "hostdat" }
+  value = { field = "hb_lborres", description = "Haemoglobin g/L" }
 
 [[observation]]
   name = "pneumonia"
@@ -588,12 +659,24 @@
   is_present = { field = "shortbreath_ceoccur_v2", description = "Shortness of breath", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___3", ref = "Y/N/NK" }
+
+[[observation]]
   name = "skin_rash"
   phase = "admission"
   start_date = { field = "skn_rsh_dtstrt" }
   date = { field = "hostdat" }
   duration_type = "block"
   is_present = { field = "rash_ceoccur_v2", description = "Skin rash", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "skin_rash"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___4", ref = "Y/N/NK" }
 
 [[observation]]
   name = "skin_ulcers"
@@ -642,3 +725,9 @@
   date = { field = "hostdat" }
   duration_type = "block"
   is_present = { field = "vomit_ceoccur_v2", description = "Vomiting", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+  date = { field = "date" }
+  is_present = { field = "ongoing_symptoms___9", ref = "Y/N/NK" }

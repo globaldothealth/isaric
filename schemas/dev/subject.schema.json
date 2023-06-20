@@ -119,9 +119,13 @@
       "category": "pregnancy"
     },
     "pregnancy_birth_weight_kg": {
-      "type": "number",
+      "type": [
+        "number",
+        "string"
+      ],
       "description": "Birth weight (kg)",
-      "category": "pregnancy"
+      "category": "pregnancy",
+      "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
     "pregnancy_outcome": {
       "type": "string",
