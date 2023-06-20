@@ -712,17 +712,17 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **diarrhoea**: Bool.
 
-**diastolic_blood_pressure_mmHg**: Value (50-250).
+**diastolic_blood_pressure_mmHg**: Value (30-250).
 
-**systolic_blood_pressure_mmHg**: Value (50-250).
+**systolic_blood_pressure_mmHg**: Value (30-250).
 
-**mean_arterial_blood_pressure_mmHg**: Value (50-250).
+**mean_arterial_blood_pressure_mmHg**: Value (30-250).
 
 **ear_pain**: Bool.
 
 **fatigue_malaise**: Bool.
 
-**feeding_intolerance_pediatrics** Bool. Unused.
+**feeding_intolerance_pediatrics** Bool.
 
 **glasgow_coma_score**: Value (3-15). `Coma
 scale <https://www.glasgowcomascale.org>`__
@@ -733,7 +733,7 @@ scale <https://www.glasgowcomascale.org>`__
 
 **heart_sounds**: Bool.
 
-**hepatomegaly** Bool. Enlarged liver? (Unused)
+**hepatomegaly** Bool. Enlarged liver
 
 **history_of_fever** Bool. Recently feverish? For admission/followup
 where the subject self-reports.
@@ -804,7 +804,7 @@ if the patient requires oxygen as a result (if specified in that field,
 don’t assume that if the patient is recorded as being on oxygen
 elsewhere, it is related to this record of pneumonia).
 
-**respiratory_rate**: Value (1-50).
+**respiratory_rate**: Value (1-90).
 
 **richmond_agitation-sedation_scale**: Value (-5 to 4, including 0).
 
