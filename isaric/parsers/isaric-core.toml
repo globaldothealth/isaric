@@ -956,7 +956,7 @@
   name = "avpu"
   phase = "study"
   date = { field = "daily_dsstdat" }
-  text = { field = "avpu_vsorres", values = { 1 = "alert", 2 = "verbal", 3 = "pain", 4 = "unresponsive" } }
+  text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
 
 [[observation]]
   name = "base_excess"
@@ -1228,13 +1228,13 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw_survey_date" }
-  text = { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Some difficulty", 4 = "Lots of difficulty", 5 = "Unable to walk" } }
+  value = { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date" }
-  text = { field = "flw2_eq5d_mb_5l_uk_eng_2", values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Some difficulty", 4 = "Lots of difficulty", 5 = "Unable to walk" } }
+  value = { field = "flw2_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
 
 [[observation]]
   name = "joint_pain"
@@ -1257,34 +1257,34 @@
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy"}
+  date = { ref = "admissionDateHierarchy" }
   [observation.is_present]
     combinedType = "any"
     fields = [
       { field = "anosmia_ceoccur_v2", description = "Loss of smell (Anosmia)", ref = "Y/N/NK" },
-      { field = "ageusia_ceoccur_v2", description = "Loss of taste (Ageusia)", ref = "Y/N/NK" }
+      { field = "ageusia_ceoccur_v2", description = "Loss of taste (Ageusia)", ref = "Y/N/NK" },
     ]
 
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
-  date = {field = "flw_survey_date"}
+  date = { field = "flw_survey_date" }
   [observation.is_present]
     combinedType = "any"
     fields = [
       { field = "flw_loss_smell", description = "Loss of smell", values = { 1 = true, 0 = false } },
-      { field = "flw_loss_taste", description = "Loss of taste", values = { 1 = true, 0 = false } }
+      { field = "flw_loss_taste", description = "Loss of taste", values = { 1 = true, 0 = false } },
     ]
 
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
-  date = {field = "flw2_survey_date"}
+  date = { field = "flw2_survey_date" }
   [observation.is_present]
     combinedType = "any"
     fields = [
       { field = "flw2_loss_of_smell", description = "Loss of smell", values = { 1 = true, 0 = false } },
-      { field = "flw2_loss_of_taste", description = "Loss of taste", values = { 1 = true, 0 = false } }
+      { field = "flw2_loss_of_taste", description = "Loss of taste", values = { 1 = true, 0 = false } },
     ]
 
 [[observation]]

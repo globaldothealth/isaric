@@ -4,13 +4,13 @@
 |---------------|-------|-------|----------------|
 |subject        |2098   |2174   |96.504140% |
 |visit          |2126   |2174   |97.792088% |
-|observation    |128556 |128601 |99.965008% |
+|observation    |128019 |128601 |99.547437% |
 
 ## subject
 
 * 62: data must contain ['subject_id', 'age', 'ethnicity', 'pathogen'] properties
-* 8: data must be valid exactly by one definition (0 matches found) (Note: sex_at_birth missing)
-* 6: data cannot be validated by any definition (Note: missing both enrolment_date and earliest_admission_date)
+* 8: data must be valid exactly by one definition (0 matches found)
+* 6: data cannot be validated by any definition
 
 ## visit
 
@@ -18,5 +18,5 @@
 
 ## observation
 
+* 539: data must be valid exactly by one definition (0 matches found)
 * 43: data must contain ['phase', 'date', 'name'] properties
-* 2: data.value must be number
