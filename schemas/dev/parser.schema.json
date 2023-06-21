@@ -708,27 +708,111 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": false,
+        "additionalProperties": true,
         "required": [
           "phase",
-          "name",
           "date"
         ],
         "oneOf": [
           {
             "required": [
-              "text"
-            ]
+              "text",
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "enum": [
+                  "other_symptom",
+                  "avpu",
+                  "oxygen_flow_volume_max"
+                ]
+              }
+            }
           },
           {
             "required": [
-              "value"
-            ]
+              "value",
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "enum": [
+                  "clinical_frailty_score",
+                  "diastolic_blood_pressure_mmHg",
+                  "glasgow_coma_score",
+                  "base_excess",
+                  "inability_to_walk_scale",
+                  "heart_rate_bpm",
+                  "mean_arterial_blood_pressure_mmHg",
+                  "mid_upper_arm_circumference_cm",
+                  "oxygen_o2hb",
+                  "oxygen_saturation_percent",
+                  "pao2_mmHg",
+                  "pco2_mmHg",
+                  "pH",
+                  "respiratory_rate",
+                  "richmond_agitation-sedation_scale",
+                  "riker_sedation-agitation_scale",
+                  "systolic_blood_pressure_mmHg",
+                  "temperature_celsius",
+                  "total_fluid_output_ml"
+                ]
+              }
+            }
           },
           {
             "required": [
-              "is_present"
-            ]
+              "is_present",
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "enum": [
+                  "pneumonia",
+                  "abdominal_pain",
+                  "altered_consciousness_confusion",
+                  "anorexia",
+                  "bleeding",
+                  "bleeding_haemorrhage",
+                  "chest_pain",
+                  "confusion",
+                  "conjunctivitis",
+                  "cough",
+                  "cough_dry",
+                  "cough_with_haemoptysis",
+                  "cough_with_sputum_production",
+                  "cyanosis",
+                  "diarrhoea",
+                  "ear_pain",
+                  "fatigue_malaise",
+                  "feeding_intolerance_pediatrics",
+                  "headache",
+                  "hepatomegaly",
+                  "history_of_fever",
+                  "inability_to_walk",
+                  "irritability_pediatrics",
+                  "joint_pain",
+                  "loss_of_smell",
+                  "loss_of_taste",
+                  "loss_of_smell_or_taste",
+                  "lower_chest_wall_indrawing",
+                  "lung_sounds",
+                  "lymphadenopathy",
+                  "muscle_aches",
+                  "runny_nose",
+                  "seizures",
+                  "severe_dehydration",
+                  "shortness_of_breath",
+                  "skin_rash",
+                  "skin_ulcers",
+                  "sore_throat",
+                  "sternal_capillary_refill_time_greater_2s",
+                  "vomiting_nausea",
+                  "wheezing",
+                  "heart_sounds"
+                ]
+              }
+            }
           }
         ],
         "properties": {
@@ -837,77 +921,6 @@
               {
                 "$ref": "#/definitions/mapping"
               }
-            ]
-          },
-          "name": {
-            "description": "Observation name",
-            "enum": [
-              "avpu",
-              "clinical_classification_critical_illness_scale_",
-              "pneumonia",
-              "clinical_frailty_score",
-              "diastolic_blood_pressure_mmHg",
-              "glasgow_coma_score",
-              "abdominal_pain",
-              "adenopathy",
-              "altered_consciousness_confusion",
-              "anorexia",
-              "base_excess",
-              "bleeding",
-              "bleeding_haemorrhage",
-              "chest_pain",
-              "confusion",
-              "conjunctivitis",
-              "cough",
-              "cough_dry",
-              "cough_with_haemoptysis",
-              "cough_with_sputum_production",
-              "cyanosis",
-              "diarrhoea",
-              "ear_pain",
-              "fatigue_malaise",
-              "feeding_intolerance_pediatrics",
-              "headache",
-              "hepatomegaly",
-              "history_of_fever",
-              "inability_to_walk",
-              "inability_to_walk_scale",
-              "irritability_pediatrics",
-              "joint_pain",
-              "loss_of_smell",
-              "loss_of_taste",
-              "loss_of_smell_or_taste",
-              "lower_chest_wall_indrawing",
-              "lung_sounds",
-              "lymphadenopathy",
-              "muscle_aches",
-              "runny_nose",
-              "seizures",
-              "severe_dehydration",
-              "shortness_of_breath",
-              "skin_rash",
-              "skin_ulcers",
-              "sore_throat",
-              "sternal_capillary_refill_time_greater_2s",
-              "vomiting_nausea",
-              "wheezing",
-              "heart_rate_bpm",
-              "heart_sounds",
-              "mean_arterial_blood_pressure_mmHg",
-              "mid_upper_arm_circumference_cm",
-              "other_symptom",
-              "oxygen_o2hb",
-              "oxygen_saturation_percent",
-              "oxygen_flow_volume_max",
-              "pao2_mmHg",
-              "pco2_mmHg",
-              "pH",
-              "respiratory_rate",
-              "richmond_agitation-sedation_scale",
-              "riker_sedation-agitation_scale",
-              "systolic_blood_pressure_mmHg",
-              "temperature_celsius",
-              "total_fluid_output_ml"
             ]
           }
         }
