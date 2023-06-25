@@ -33,6 +33,9 @@
     field = "record_id"
     sensitive = true
 
+  [subject.enrolment_date]
+    field = "investigate_date"
+
   [subject.earliest_admission_date]
     combinedType = "min"
     fields = [{ field = "hospitalization_date" }]
@@ -136,6 +139,9 @@
   [visit.start_date]
     field = "hospitalization_date"
 
+  [visit.pathogen_test_date]
+    field = "oro_date"
+
   [visit.transfer_from_other_facility]
     field = "admission"
     values = { 4 = true }
@@ -185,19 +191,6 @@
   date = { field = "vital_signs_date" }
   phase = "study"
   text = { field = "avpu", values = { 1 = "Alert", 2 = "Voice", 3 = "Pain", 4 = "Unresponsive" } }
-
-[[observation]]
-  name = "avpu"
-  date = { field = "vital_signs_date" }
-  phase = "study"
-  text = { field = "avpu_study", values = { 1 = "Alert", 2 = "Voice", 3 = "Pain", 4 = "Unresponsive" } }
-
-[[observation]]
-  name = "diastolic_blood_pressure_mmHg"
-  date = { field = "vital_signs_date" }
-  phase = "study"
-  value = { field = "diastol" }
-  if.all = [{ diastol = { "!=" = "" } }, { diastol = { "!=" = 0 } }]
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
@@ -416,8 +409,8 @@
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  date = { field = "vital_signs_date" }
-  phase = "study"
+  date = { field = "hospitalization_date" }
+  phase = "admission"
   value = { field = "oxy_satu" }
   if.all = [{ oxy_satu = { "!=" = "" } }, { oxy_satu = { "!=" = 0 } }]
 
