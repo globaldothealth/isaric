@@ -32,7 +32,7 @@
     field = "record_id"
     sensitive = true
 
-  [subject.enrollment_date]
+  [subject.enrolment_date]
     field = "q1_demographics"
     description = "1) Enrolment date / Date d'inclusion"
 
