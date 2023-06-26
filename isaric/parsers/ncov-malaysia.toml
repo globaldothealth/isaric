@@ -589,8 +589,8 @@
   phase = "admission"
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
-    { "admission_diabp_vsorres" = { "!=" = "" } },
-    { "admission_diabp_vsorres" = { "!=" = 9999 } },
+    { admission_diabp_vsorres = { "!=" = "" } },
+    { admission_diabp_vsorres = { "!=" = 9999 } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -604,8 +604,8 @@
   phase = "study"
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
-    { "admission_diabp_vsorres" = { "!=" = "" } },
-    { "admission_diabp_vsorres" = { "!=" = 9999 } },
+    { admission_diabp_vsorres = { "!=" = "" } },
+    { admission_diabp_vsorres = { "!=" = 9999 } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -656,8 +656,8 @@
   date = { field = "daily_assess_date" }
   value = { field = "daily_gcs_sx" }
   if.all = [
-    { "daily_gcs_sx" = { "!=" = "" } },
-    { "daily_gcs_sx" = { "!=" = 9999 } },
+    { daily_gcs_sx = { "!=" = "" } },
+    { daily_gcs_sx = { "!=" = 9999 } },
   ]
 
 [[observation]]
@@ -665,7 +665,7 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "pr_sx" }
-  if.all = [{ "pr_sx" = { "!=" = "" } }, { "pr_sx" = { "!=" = 9999 } }]
+  if.all = [{ pr_sx = { "!=" = "" } }, { pr_sx = { "!=" = 9999 } }]
 
 [[observation]]
   name = "history_of_fever"
@@ -742,8 +742,8 @@
   phase = "admission"
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
-    { "map_sx" = { "!=" = "" } },
-    { "map_sx" = { "!=" = "9999" } },
+    { map_sx = { "!=" = "" } },
+    { map_sx = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -756,8 +756,8 @@
   phase = "study"
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
-    { "map_sx" = { "!=" = "" } },
-    { "map_sx" = { "!=" = "9999" } },
+    { map_sx = { "!=" = "" } },
+    { map_sx = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -782,7 +782,7 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "spo_sx" }
-  if.all = [{ "spo_sx" = { "!=" = "" } }, { "spo_sx" = { "!=" = 9999 } }]
+  if.all = [{ spo_sx = { "!=" = "" } }, { spo_sx = { "!=" = 9999 } }]
 
   [observation.context]
     combinedType = "set"
@@ -810,7 +810,7 @@
   phase = "study"
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
-    { "daily_ph_data" = { "!=" = "" } },
+    { daily_ph_data = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
   context = ['Same blood gas record']
@@ -824,17 +824,15 @@
   phase = "admission"
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
-    { "daily_pao2_data" = { "!=" = "" } },
-    { "daily_pao2_data" = { "!=" = "9999" } },
+    { daily_pao2_data = { "!=" = "" } },
+    { daily_pao2_data = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
-    excludeWhen = "none"
-    combinedType = "firstNonNull" # TODO: check this - maybe these should be separate observations
-    fields = [
-      { field = "daily_pao2_data", unit = "mmHg", source_unit = { field = "daily_pao2_unit", values = { 1 = "kPa", 2 = "mmHg" } } },
-    ]
+    field = "daily_pao2_data"
+    unit = "mmHg"
+    source_unit = { field = "daily_pao2_unit", values = { 1 = "kPa", 2 = "mmHg" } }
 
   [observation.context]
     combinedType = "set"
@@ -848,17 +846,15 @@
   phase = "study"
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
-    { "daily_pao2_data" = { "!=" = "" } },
-    { "daily_pao2_data" = { "!=" = "9999" } },
+    { daily_pao2_data = { "!=" = "" } },
+    { daily_pao2_data = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
   [observation.value]
-    excludeWhen = "none"
-    combinedType = "firstNonNull" # TODO: check this - maybe these should be separate observations
-    fields = [
-      { field = "daily_pao2_data", unit = "mmHg", source_unit = { field = "daily_pao2_unit", values = { 1 = "kPa", 2 = "mmHg" } } },
-    ]
+    field = "daily_pao2_data"
+    unit = "mmHg"
+    source_unit = { field = "daily_pao2_unit", values = { 1 = "kPa", 2 = "mmHg" } }
 
   [observation.context]
     combinedType = "set"
@@ -890,7 +886,7 @@
   phase = "study"
   date = { field = "daily_assess_date" }
   value = { field = "rr_sx" }
-  if.all = [{ "rr_sx" = { "!=" = "" } }, { "rr_sx" = { "!=" = 9999 } }]
+  if.all = [{ rr_sx = { "!=" = "" } }, { rr_sx = { "!=" = 9999 } }]
 
 [[observation]]
   name = "runny_nose"
@@ -954,7 +950,7 @@
   phase = "admission"
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
-    { "sysbp_vsorres" = { "!=" = "" } },
+    { sysbp_vsorres = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
   value = { field = "sysbp_vsorres", source_unit = "mmHg" }
@@ -964,8 +960,8 @@
   phase = "study"
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
-    { "sysbp_vsorres" = { "!=" = "" } },
-    { "sysbp_vsorres" = { "!=" = "9999" } },
+    { sysbp_vsorres = { "!=" = "" } },
+    { sysbp_vsorres = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
   value = { field = "sysbp_vsorres", source_unit = "mmHg" }
@@ -975,7 +971,7 @@
   phase = "admission"
   if.all = [
     { redcap_event_name = "on_admission_arm_1" },
-    { "t_sx" = { "!=" = "" } },
+    { t_sx = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -988,8 +984,8 @@
   phase = "study"
   if.all = [
     { redcap_event_name = "daily_progress_arm_1" },
-    { "t_sx" = { "!=" = "" } },
-    { "t_sx" = { "!=" = "9999" } },
+    { t_sx = { "!=" = "" } },
+    { t_sx = { "!=" = "9999" } },
   ]
   date = { field = "daily_assess_date" }
 
@@ -1128,7 +1124,7 @@
 [[observation]]
   name = "pneumonia"
   phase = "study"
-  start_date = { ref = "admissionDate" }
+  start_date = { field = "case_class_adm_date", source_date = "%d/%m/%Y" }
   date = { field = "outcome_date" }
   duration_type = "event"
   is_present = { field = "v_pneumo_comp", ref = "Y/N" }
@@ -1151,3 +1147,30 @@
   duration_type = "event"
   is_present = { field = "cop_comp", ref = "Y/N" }
   context = ['crypotenic organising pneumonia (COP)']
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  text = { field = "note_hx" }
+  if.all = [{ note_hx = { "!=" = "9999" } }, { note_hx = { "!=" = "" } }]
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "admission"
+  if.all = [
+    { redcap_event_name = "on_admission_arm_1" },
+    { lab_hb = { "!=" = "" } },
+  ]
+  date = { field = "daily_assess_date" }
+  value = { field = "lab_hb", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  if.all = [
+    { redcap_event_name = "daily_progress_arm_1" },
+    { lab_hb = { "!=" = "" } },
+  ]
+  date = { field = "daily_assess_date" }
+  value = { field = "lab_hb", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
