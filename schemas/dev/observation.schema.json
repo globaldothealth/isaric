@@ -275,7 +275,7 @@
         },
         "value": {
           "type": "number",
-          "minimum": 50,
+          "minimum": 30,
           "maximum": 250
         }
       }
