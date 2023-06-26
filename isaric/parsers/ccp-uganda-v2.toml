@@ -361,8 +361,8 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "oth_interv_sp", description = "Specify Other intervention or procedure?" },
-      { field = "sup_antibiotic_agent" },
+      { field = "oth_interv_sp", description = "Specify Other intervention or procedure?", if = { oth_interv_sp = { "!=" = 0 } } },
+      { field = "sup_antibiotic_agent", if = { oth_interv_sp = { "!=" = 0 } } },
     ]
 
   [visit.treatment_cardiovascular_support]
@@ -486,7 +486,9 @@
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "bleed_loc" }]
+    fields = [
+      { field = "bleed_loc", values = { 1 = "mouth", 2 = "nose", 3 = "ear", 4 = "urethra", 5 = "vagina", 6 = "anus", 7 = "petechia" } },
+    ]
 
 [[observation]]
   name = "chest_pain"
@@ -738,12 +740,14 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "oxy_satu" }
+  if.all = [{ oxy_satu = { "!=" = "" } }, { oxy_satu = { "!=" = 0 } }]
 
 [[observation]]
   name = "oxygen_saturation_percent"
   date = { field = "vitals_date" }
   phase = "study"
   value = { field = "o2_satu" }
+  if.all = [{ o2_satu = { "!=" = "" } }, { o2_satu = { "!=" = 0 } }]
 
 [[observation]]
   name = "pao2_mmHg"
@@ -822,6 +826,7 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "study"
   text = { field = "ttl_oxy" }
+  if.all = [{ ttl_oxy = { "!=" = "" } }, { ttl_oxy = { "!=" = 999 } }]
 
 [[observation]]
   name = "oxygen_o2hb"
