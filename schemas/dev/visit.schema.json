@@ -148,6 +148,7 @@
         "enum": [
           "Ribavirin",
           "Lopinavir/Ritonvir",
+          "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
           "Chloroquine/Hydroxychloroquine",
@@ -161,6 +162,8 @@
           "Anti-influenza antiviral",
           "Tocilizumab",
           "Anakinra",
+          "Favipravir",
+          "Atazanavir",
           "Other"
         ]
       },
@@ -243,6 +246,12 @@
       "description": "Antimalarial",
       "category": "treatments"
     },
+    "treatment_antimalarial_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antimalarials administered",
+      "category": "treatments"
+    },
     "treatment_high_flow_nasal_cannula": {
       "type": "boolean",
       "description": "High flow nasal cannula",
@@ -311,6 +320,12 @@
     "treatment_delirium": {
       "type": "boolean",
       "description": "treatment for delirium",
+      "category": "treatments"
+    },
+    "treatment_delirium_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "treatments for delirium types administered",
       "category": "treatments"
     },
     "treatment_monoclonal_antibody": {
