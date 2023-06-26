@@ -512,15 +512,15 @@ or other forms of mechanical cardiovascular support.
 General drug types
 ~~~~~~~~~~~~~~~~~~
 
-The general drug categories *antiviral*, *antibiotic*, *corticosteroid*
-and *experimental_agent* all have a set of three hierarchical
-attributes, e.g. for antivirals:
+The general drug categories *antiviral*, *antibiotic*, *corticosteroid*,
+*experimental_agent*, *antimalarial* and *delirium* all have a set of three
+hierarchical attributes, e.g. for antivirals:
 
 + **treatment_antiviral**: Bool. If antivirals have been administered during the visit
 
 + **treatment_antiviral_type**: Set. Lists all the different types of antiviral administered. Should only be used where values are mapped, as there is a restricted list of accepted values defined in the schema - i.e. do not map a free text field here.
 
-+ **treatment_antiviral_type_other**: Set. For free text fields listing the names of antivirals used.
++ **treatment_antiviral_type_other**: Set. For free text fields listing the names of antivirals used. (only for corticosteroids, anvirials and experimental agents)
 
 other fields
 ~~~~~~~~~~~~
@@ -710,11 +710,11 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **diarrhoea**: Bool.
 
-**diastolic_blood_pressure_mmHg**: Value (50-250).
+**diastolic_blood_pressure_mmHg**: Value (30-250).
 
-**systolic_blood_pressure_mmHg**: Value (50-250).
+**systolic_blood_pressure_mmHg**: Value (30-250).
 
-**mean_arterial_blood_pressure_mmHg**: Value (50-250).
+**mean_arterial_blood_pressure_mmHg**: Value (30-250).
 
 **ear_pain**: Bool.
 
@@ -779,12 +779,12 @@ combined.
 **other_symptom**: Set (Text). List any other symptoms, or free text
 fields describing symptoms, here.
 
-**oxygen_o2hb**: Unused, not sure what it relates to.
+**oxygen_o2hb**: Value. Heamoglobin level, lab test.
 
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.
 
-**oxygen_saturation_percent**: Value (50-100). Use context to note whether
+**oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
 
 **pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
