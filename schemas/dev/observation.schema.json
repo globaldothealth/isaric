@@ -141,7 +141,7 @@
         },
         "value": {
           "type": "number",
-          "minimum": 50,
+          "minimum": 20,
           "maximum": 100
         }
       }
@@ -274,7 +274,7 @@
           ]
         },
         "value": {
-          "type": "integer",
+          "type": "number",
           "minimum": 30,
           "maximum": 250
         }
