@@ -3,8 +3,8 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |124    |126    |98.412698% |
-|visit          |122    |126    |96.825397% |
-|observation    |15318  |15690  |97.629063% |
+|visit          |121    |126    |96.031746% |
+|observation    |15746  |16156  |97.462243% |
 
 ## subject
 
@@ -14,7 +14,8 @@
 ## visit
 
 * 4: data must contain ['visit_id', 'subject_id', 'country_iso3', 'start_date', 'outcome', 'date_outcome'] properties
+* 1: data.treatment_other[0] must be string
 
 ## observation
 
-* 372: data must contain ['phase', 'date', 'name'] properties
+* 410: data must contain ['phase', 'date', 'name'] properties

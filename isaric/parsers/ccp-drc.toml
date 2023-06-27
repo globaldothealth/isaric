@@ -1063,11 +1063,11 @@
   date = { ref = "ss_datetime" }
   is_present = { field = "seizures_v2", ref = "Y/N/NK" }
 
-[[observation]]
-  name = "seizures"
-  phase = "study"
-  is_present = { field = "comps_seizures2", ref = "Y/N/NK" }
-  date = { field = "comp_date2" }
+  # [[observation]]
+  #   name = "seizures"
+  #   phase = "study"
+  #   is_present = { field = "comps_seizures2", ref = "Y/N/NK" }
+  #   date = { field = "comp_date2" } # no dates
 
 [[observation]]
   name = "shortness_of_breath"
