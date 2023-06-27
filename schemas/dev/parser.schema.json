@@ -759,7 +759,8 @@
                   "riker_sedation-agitation_scale",
                   "systolic_blood_pressure_mmHg",
                   "temperature_celsius",
-                  "total_fluid_output_ml"
+                  "total_fluid_output_ml",
+                  "oxygen_flow_volume_max"
                 ]
               }
             }

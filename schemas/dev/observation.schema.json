@@ -39,6 +39,17 @@
       }
     },
     {
+      "$comment": "Oxygen flow volume is represented as a numerical value",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "oxygen_flow_volume_max"
+        }
+      }
+    },
+    {
       "required": [
         "value"
       ],
