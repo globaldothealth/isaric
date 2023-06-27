@@ -19,6 +19,7 @@ Output is a JSON file with the following structure
 }
 ```
 """
+import os
 import json
 import csv
 import mimetypes
@@ -62,12 +63,18 @@ def data_summary(
     return {"non_empty_fields": sorted(non_empty_fields), "n_id": len(ids)}
 
 
-def main(filename: str, id_field: str, encoding: Optional[str] = None) -> Dict[str, Any]:
+def main(
+    filename: str, parser_name: str, id_field: str, encoding: Optional[str] = None
+) -> Dict[str, Any]:
     mimetype, guessed_encoding = guess_mimetype_encoding(filename)
     encoding = encoding or guessed_encoding  # prefer encoding supplied by user
+    isaric_data = os.getenv("ISARIC_DATA")
     return {
-        "file": Path(filename).name,
+        "file": str(Path(filename).relative_to(isaric_data))
+        if isaric_data
+        else filename,
         "sha256": sha256(filename),
+        "parser": parser_name,
         "mimetype": mimetype,
         "encoding": encoding,
         "id_field": id_field,
@@ -77,14 +84,24 @@ def main(filename: str, id_field: str, encoding: Optional[str] = None) -> Dict[s
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Source data summary")
+    parser.add_argument(
+        "parser_name", help="Location of the parser, relative to isaric root folder"
+    )
     parser.add_argument("file", help="Filename to produce data summary for")
     parser.add_argument("id", help="ID (primary key) field in file")
+    parser.add_argument(
+        "-o", "--output-folder", help="Metadata output folder", default="metadata"
+    )
     parser.add_argument("--encoding", help="Use encoding instead of auto-detecting")
     args = parser.parse_args()
 
-    data = main(args.file, args.id, args.encoding)
+    data = main(args.file, args.parser_name, args.id, args.encoding)
     output_file = Path(args.file).stem + ".json"
 
-    with open(output_file, "w") as fp:
+    if not (
+        parent_folder := Path(args.output_folder) / Path(args.parser_name).stem
+    ).exists():
+        parent_folder.mkdir(parents=True)
+    with open(parent_folder / output_file, "w") as fp:
         json.dump(data, fp, indent=2)
     print(json.dumps(data, indent=2))

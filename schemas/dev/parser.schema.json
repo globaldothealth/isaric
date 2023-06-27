@@ -623,7 +623,7 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_antimalarial_type": {
-          "description": "Antimalarial",
+          "description": "Antimalarial names",
           "$ref": "#/definitions/mapping"
         },
         "treatment_high_flow_nasal_cannula": {
@@ -680,6 +680,10 @@
         },
         "treatment_delirium": {
           "description": "Treatment for delirium",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_delirium_type": {
+          "description": "Treatment for delirium types",
           "$ref": "#/definitions/mapping"
         },
         "treatment_monoclonal_antibody": {
