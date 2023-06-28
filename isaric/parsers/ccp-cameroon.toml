@@ -3,6 +3,7 @@
 [adtl]
   name = "ccp-cameroon"
   description = "CCP CAMEROON"
+  defaultDateFormat = "%d/%m/%Y"
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -20,10 +21,21 @@
   [adtl.tables.observation]
     kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "subjid", sensitive = true } }
+    common = { visit_id = { field = "record_id", sensitive = true } }
 
 [adtl.defs]
   "Y/N" = { values = { 1 = true, 2 = false } }
+
+  [adtl.defs.admissionObsDate]
+    combinedType = "firstNonNull"
+    fields = [{ field = "q0_signs_symptoms" }, { field = "q2_onset" }]
+
+  [adtl.defs.outcomeDate]
+    combinedType = "min"
+    fields = [
+      { field = "q9_outcome" },
+      { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
+    ]
 
 [subject]
   pathogen = "COVID-19"
@@ -33,25 +45,32 @@
     sensitive = true
 
   [subject.enrolment_date]
-    field = "q1_demographics"
-    description = "1) Enrolment date / Date d'inclusion"
+    combinedType = "min"
+    fields = [
+      { field = "q6_site", description = "Date of patient enrolment" },
+      { field = "q1_demographics", description = "1) Enrolment date / Date d'inclusion" },
+    ]
 
   [subject.earliest_admission_date]
     combinedType = "min"
     fields = [
-      { field = "q2_onset", description = "2) Admission date at this facility / Date de consultation dans la FOSA de l'étude:" }
+      { field = "q2_onset", description = "2) Admission date at this facility / Date de consultation dans la FOSA de l'étude:" },
     ]
 
   [subject.age]
     combinedType = "firstNonNull"
     fields = [
       { field = "q5_demographics", description = "5) Estimated Age / Age estimé" },
-      { field = "q4_demographics", description = "4) Date of birth / Date de naissance", apply = { function = "yearsElapsed", params = [ "$q1_demographics" ] } }
+      { field = "q4_demographics", description = "4) Date of birth / Date de naissance", apply = { function = "yearsElapsed", params = [
+        "$q1_demographics",
+        "%d/%m/%Y",
+        "%d/%m/%Y",
+      ] } },
     ]
     unit = "years"
     source_unit = { field = "q6_demographics", description = "6) Unité de l' âge du participant", values = { 2 = "months", 1 = "years" } }
 
-  [subject.sex_at_birth]
+  [subject.sex]
     field = "q2_demographics"
     description = "2) Sex / Sexe"
     values = { 1 = "male", 2 = "female" }
@@ -60,11 +79,11 @@
     field = "q7_demographics"
     description = "7) Employed as a health care worker / Employé en tant que travailleur de la santé ?                                                                                                "
     values = { 1 = true, 2 = false }
-    
+
   [subject.works_microbiology_lab]
     field = "q8_demographics"
     description = "8) If health professional, specify / Si professionnel de santé"
-    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false  }
+    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false }
 
   [subject.has_asthma]
     field = "q3_co_morbidities"
@@ -75,24 +94,20 @@
     field = "q17_demographics"
     description = "17) Pregnant / Enceinte?"
     ref = "Y/N"
-    if = { "q2_demographics" = "2" }
 
   [subject.pregnancy_birth_weight_kg]
     field = "q28_demographics"
     description = "28) Birth weight / Poids de naissance"
     unit = "kg"
     source_unit = { field = "q29_demographics", description = "29) Unit / Unité", values = { 1 = "kg", 2 = "lbs" } }
-    if = { "q27_demographics" = "1" }
 
   [subject.pregnancy_date_of_delivery]
     field = "q21_demographics"
     description = "21) Delivery date / Date d'accouchement"
-    if = { "q19_demographics" = "1" }
 
   [subject.pregnancy_gestational_age_weeks]
     field = "q18_demographics"
     description = "18) If YES: Gestational weeks assessment / Si OUI, préciser l'âge gestationnel"
-    if = { "q17_demographics" = "1" }
 
   [subject.pregnancy_post_partum]
     field = "q19_demographics"
@@ -103,19 +118,16 @@
     field = "q30_demographics"
     description = "30) Gestational outcome / Nouveau- né"
     values = { 1 = "term_birth", 2 = "preterm_birth" }
-    if = { "q26_demographics" = "1" }
 
   [subject.pregnancy_outcome]
     field = "q20_demographics"
     description = "20) Pregnancy Outcome / Produit de la grossesse"
     values = { 1 = "live birth", 2 = "still birth" }
-    if = { "q19_demographics" = "1" }
 
   [subject.pregnancy_whether_breastfed]
     field = "q31_demographics"
     description = "31) Breastfed / Avez- vous pratiqué l'allaitement maternel?"
     ref = "Y/N"
-    if = { "q26_demographics" = "1" }
 
   [subject.has_chronic_cardiac_disease]
     field = "q1_co_morbidities"
@@ -200,14 +212,14 @@
 
 [subject.has_smoking]
   field = "q18_co_morbidities"
-  description = "18) Smoking / Tabagisme" 
+  description = "18) Smoking / Tabagisme"
   values = { 1 = "yes", 2 = "never", 3 = "former" }
 
 [subject.has_comorbidity_other]
   combinedType = "set"
-  excludeWhen = "false-like"
+  excludeWhen = "none"
   fields = [
-    { field = "q19_co_morbidities", description = "19) Other relevant risk factor  / Autre facteur de risque pertinent", ref = "Y/N" }
+    { field = "q20_co_morbidities", description = "20) Other relevant risk factor  / Autre facteur de risque pertinent" },
   ]
 
 [subject.icu_admitted]
@@ -216,12 +228,21 @@
   ref = "Y/N"
 
 [subject.has_died]
-  field = "q1_outcome"
-  values = { 5 = true }
+  combinedType = "any"
+  fields = [
+    { field = "q1_outcome", values = { 5 = true } },
+    { field = "q1_treatment_outcome", values = { 5 = true } },
+    { field = "q9_ae_sae", apply = { function = "isNotNull" } },
+  ]
+
 
 [subject.date_death]
-  field = "q9_ae_sae"
-
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "q9_ae_sae" },
+    { field = "q9_outcome", if = { q1_outcome = 5 } },
+    { field = "q14_treatment_outcome", if = { q1_treatment_outcome = 5 } },
+  ]
 
 [visit]
   country_iso3 = "CMR"
@@ -258,15 +279,15 @@
   source_date = "%d-%m-%Y"
 
 [visit.start_date]
-  field = "q2_onset" 
+  field = "q2_onset"
 
 [visit.treatment_antibiotics]
   combinedType = "any"
   fields = [
     { field = "q4_onset", description = "4) If so, what did you consume? - Antibiotics / Si oui avez vous consommé des antibiotiques?", ref = "Y/N" },
-    { field = "q5_medication", description = "5) Antibiotic / Antibiotique ?", ref = "Y/N" }
+    { field = "q5_medication", description = "5) Antibiotic / Antibiotique ?", ref = "Y/N" },
   ]
-  
+
 [visit.treatment_antivirals]
   field = "q2_medication"
   description = "2) Antiviral agent / Antiviral? "
@@ -282,11 +303,13 @@
 [visit.treatment_antiviral_type_other]
   combinedType = "set"
   excludeWhen = "false-like"
-  fields = [{ field = "q4_medication" , description = "4) If Other, specify / Si autre, Préciser" }]
+  fields = [
+    { field = "q4_medication", description = "4) If Other, specify / Si autre, Préciser" },
+  ]
 
 [visit.treatment_antifungal_agent]
   field = "q12_medication"
-  description = "12) Antifungal agent / Agent antifongique    ?  "
+  description = "12) Antifungal agent / Agent antifongique?"
   ref = "Y/N"
 
 [visit.treatment_corticosteroid]
@@ -298,7 +321,7 @@
   combinedType = "any"
   fields = [
     { field = "q14_treatment", description = "14) Extracorporeal support / Soutien extracorporel ?", ref = "Y/N" },
-    { field = "q16_treatment", description = "16) Inotropes - vasopressors / 	Inotropes -vasopresseurrs?", ref = "Y/N" }
+    { field = "q16_treatment", description = "16) Inotropes - vasopressors / 	Inotropes -vasopresseurrs?", ref = "Y/N" },
   ]
 
 [visit.treatment_experimental_agent]
@@ -336,10 +359,21 @@
   description = "8) Non-invasive ventilation / Ventilation non invasive ? (ex: BIPAP, CPAP) ? (e.g. BIPAP, CPAP) "
   ref = "Y/N"
 
-[visit.treatment_oxygen_therapy]
-  field = "q7_treatment"
-  description = "7) Oxygen therapy / Oxygénothérapie?"
+[visit.treatment_antimalarial]
+  field = "q1_medication"
+  description = "Hydroxychloroquine/Chloroquinine"
   ref = "Y/N"
+
+[visit.treatment_oxygen_therapy]
+  combinedType = "any"
+  fields = [
+    { field = "q7_treatment", description = "7) Oxygen therapy / Oxygénothérapie?", ref = "Y/N" },
+    { field = "q8_treatment", description = "8) Non-invasive ventilation (e.g. BIPAP, CPAP)", ref = "Y/N" },
+    { field = "q9_treatment", description = "9) Invasive ventilation (Any)?", ref = "Y/N" },
+    { field = "q11_treatment", description = "11) Prone Ventilation?", ref = "Y/N" },
+    { field = "q14_treatment", description = "14) Extracorporeal support?", ref = "Y/N" },
+  ]
+
 
 [visit.treatment_prone_position]
   field = "q11_treatment"
@@ -350,10 +384,21 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "q8_onset", description = "8) If so, what did you consume? - Other / Si oui ,qu'avez vous consommé d'autres ?", ref = "Y/N" },
-    { field = "q9_hcare_practice", description = "9) If yes (please specify)  / Si oui, préciser" },
-    { field = "q18_medication", description = "18) Other / Autre", ref = "Y/N" },
-    { field = "q21_medication", description = "21) OTHER intervention or procedure (please specify) / Autre mesure thérapeutique  (merci de préciser)" }
+    # { field = "q8_onset", description = "8) If so, what did you consume? - Other / Si oui ,qu'avez vous consommé d'autres ?", ref = "Y/N" },
+    # { field = "q9_hcare_practice", description = "9) If yes (please specify)  / Si oui, préciser" },
+    # { field = "q18_medication", description = "18) Other / Autre", ref = "Y/N" },
+    { field = "q21_treatment", description = "21) OTHER intervention or procedure (please specify)", if = { all = [
+      { q21_treatment = { "!=" = "no" } },
+      { q21_treatment = { "!=" = "Non" } },
+      { q21_treatment = { "!=" = "NA" } },
+      { q21_treatment = { "!=" = "N/A" } },
+      { q21_treatment = { "!=" = 0 } },
+      { q21_treatment = { "!=" = "No" } },
+    ] } },
+    { field = "q4_health_care" },
+    { field = "q6_health_care" },
+    { field = "q8_health_care" },
+    { field = "q10_health_care" },
   ]
 
 [visit.outcome]
@@ -370,25 +415,26 @@
     7 = "palliative discharge"
 
 [visit.date_outcome]
-  combinedType = "firstNonNull"
+  combinedType = "min"
   fields = [
-    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" }
+    { field = "q9_outcome" },
+    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
   ]
 
 [[observation]]
   name = "abdominal_pain"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q30_signs_symptoms"
     description = "30) Abdominal pain /Douleur abdominale"
-    values = { 1 = true, 2 = false } 
+    values = { 1 = true, 2 = false }
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q28_signs_symptoms"
@@ -397,8 +443,8 @@
 
 [[observation]]
   name = "bleeding_haemorrhage"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q37_signs_symptoms"
@@ -407,8 +453,8 @@
 
 [[observation]]
   name = "chest_pain"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q19_signs_symptoms"
@@ -417,8 +463,8 @@
 
 [[observation]]
   name = "conjunctivitis"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q33_signs_symptoms"
@@ -427,8 +473,8 @@
 
 [[observation]]
   name = "cough"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     combinedType = "any"
@@ -440,14 +486,14 @@
 
 [[observation]]
   name = "cough_dry"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
   is_present = { field = "q12_signs_symptoms", description = "12) Cough / Toux", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q13_signs_symptoms"
@@ -456,8 +502,8 @@
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q14_signs_symptoms"
@@ -466,8 +512,8 @@
 
 [[observation]]
   name = "diarrhoea"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q32_signs_symptoms"
@@ -486,8 +532,8 @@
 
 [[observation]]
   name = "ear_pain"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q17_signs_symptoms"
@@ -496,8 +542,8 @@
 
 [[observation]]
   name = "fatigue_malaise"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q22_signs_symptoms"
@@ -506,8 +552,8 @@
 
 [[observation]]
   name = "headache"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q27_signs_symptoms"
@@ -522,8 +568,8 @@
 
 [[observation]]
   name = "history_of_fever"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q11_signs_symptoms"
@@ -532,8 +578,8 @@
 
 [[observation]]
   name = "joint_pain"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q21_signs_symptoms"
@@ -541,9 +587,20 @@
     values = { 1 = true, 2 = false }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "q24_signs_symptoms", description = "24) Loss of sense of smell", values = { 1 = true, 2 = false } },
+      { field = "q25_signs_symptoms", description = "25) Loss of flavour", values = { 1 = true, 2 = false } },
+    ]
+
+[[observation]]
   name = "loss_of_smell"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q24_signs_symptoms"
@@ -552,8 +609,8 @@
 
 [[observation]]
   name = "loss_of_taste"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q25_signs_symptoms"
@@ -562,8 +619,8 @@
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q26_signs_symptoms"
@@ -572,8 +629,8 @@
 
 [[observation]]
   name = "lymphadenopathy"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q36_signs_symptoms"
@@ -582,11 +639,11 @@
 
 [[observation]]
   name = "muscle_aches"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
-    field = "q20_signs_symptoms2"
+    field = "q20_signs_symptoms"
     description = "20) Muscle aches (Myalgia) / Douleur musculaire (Myalgie)"
     values = { 1 = true, 2 = false }
 
@@ -604,6 +661,39 @@
     ]
 
 [[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  date = { field = "q1_lab_results" }
+  value = { field = "q2_lab_results" }
+
+[[obsevration]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { fields = "q2_onset" }
+  date = { ref = "outcomeDate" }
+  duration_type = "event"
+  is_present = { field = "q1_complications" }
+  context = ['viral']
+
+[[obsevration]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { fields = "q2_onset" }
+  date = { ref = "outcomeDate" }
+  duration_type = "event"
+  is_present = { field = "q2_complications" }
+  context = ['bacterial']
+
+[[obsevration]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { fields = "q2_onset" }
+  date = { ref = "outcomeDate" }
+  duration_type = "event"
+  is_present = { field = "q7_complications" }
+  context = ['cryptogenic organizing pneumonia (COP)']
+
+[[observation]]
   name = "respiratory_rate"
   phase = "study"
   date = { field = "q0_signs_symptoms" }
@@ -611,8 +701,8 @@
 
 [[observation]]
   name = "runny_nose"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q16_signs_symptoms"
@@ -621,14 +711,22 @@
 
 [[observation]]
   name = "seizures"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
   is_present = { field = "q29_signs_symptoms", description = "29) Seizures /Convulsions", values = { 1 = true, 2 = false } }
+
+[[obsevration]]
+  name = "seizures"
+  phase = "study"
+  start_date = { fields = "q2_onset" }
+  date = { ref = "outcomeDate" }
+  duration_type = "event"
+  is_present = { field = "q10_complications" }
 
 [[observation]]
   name = "severe_dehydration"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q7_signs_symptoms"
@@ -637,8 +735,8 @@
 
 [[observation]]
   name = "shortness_of_breath"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q23_signs_symptoms"
@@ -647,8 +745,8 @@
 
 [[observation]]
   name = "skin_rash"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q34_signs_symptoms"
@@ -657,8 +755,8 @@
 
 [[observation]]
   name = "skin_ulcers"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q35_signs_symptoms"
@@ -667,8 +765,8 @@
 
 [[observation]]
   name = "sore_throat"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q15_signs_symptoms"
@@ -677,9 +775,10 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
-  is_present = { field = "q8_signs_symptoms", description = "8) Sternal capillary refill time < 2seconds  / Temps de recoloration cutané < 2secondes", ref = "Y/N" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  is_present = { field = "q8_signs_symptoms", description = "8) Sternal capillary refill time < 2seconds  / Temps de recoloration cutané < 2secondes", values = { 1 = false, 0 = true } }
+  # question asks for time LESS than 2secs so reversed the true/false response
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
@@ -701,8 +800,8 @@
 
 [[observation]]
   name = "vomiting_nausea"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q31_signs_symptoms"
@@ -711,11 +810,10 @@
 
 [[observation]]
   name = "wheezing"
-  phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
 
   [observation.is_present]
     field = "q18_signs_symptoms"
     description = "18) Wheezing / Sifflement"
     values = { 1 = true, 2 = false }
-
