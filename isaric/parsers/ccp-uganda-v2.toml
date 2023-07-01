@@ -290,6 +290,21 @@
       { field = "sup_meds_antivirals", apply = { function = "isNotNull" } },
     ]
 
+  [visit.treatment_antiviral_type]
+    combinedType = "set"
+    excludeWhen = "none"
+
+    [[visit.treatment_antiviral_type.fields]]
+      field = "sup_meds_antivirals"
+
+      [visit.treatment_antiviral_type.fields.values]
+        1 = "Ribavirin"               # Q: data dictionary says Ribanavirin, typo?
+        2 = "Lopinavir/Ritonavir"
+        3 = "Interferon alpha"
+        4 = "Interferon beta"
+        5 = "Neuraminidase inhibitor"
+        6 = "Other"
+
   [visit.treatment_antibiotics]
     combinedType = "any"
     fields = [
