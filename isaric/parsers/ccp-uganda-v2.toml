@@ -358,7 +358,7 @@
 
   [visit.treatment_antimalarial_type]
     field = "meds_given"
-    values = { 1 = "Hydroxychloroquine", 2 = "Chloroquine phopshate" }
+    values = { 1 = "Hydroxychloroquine", 2 = "Chloroquine phosphate" }
 
   [visit.treatment_high_flow_nasal_cannula]
     field = "can_oxy_ther"
