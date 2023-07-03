@@ -1,0 +1,491 @@
+[adtl]
+  name = "StopCOVID Russia"
+  description = "CVMEWUS StopCOVID cohort, Sechenov University hospital network, Moscow, Russia, 2020"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "groupBy"
+    groupBy = ""
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N".values]
+    1 = true
+    2 = false
+
+  [adtl.defs.admissionDate]
+    field = "hostdat"
+
+  [adtl.defs.severity.values]
+    1 = "caused bearable discomfort/was controlled"
+    2 = "caused severe discomfort/was not controlled"
+    3 = "the reason for calling an ambulance/visit a doctor"
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [subject.earliest_admission_date]
+    ref = "admissionDate"
+  
+  [subject.sex_at_birth]
+    field = "Sex"
+    values = { M = "male", F = "female"}
+
+# no pregnancy related information in data dictionary
+
+[subject.has_chronic_hematologic_disease]
+  field = "chronhaemo_mhyn"
+  ref = "Y/N"
+
+[subject.has_asplenia]
+  field = "asplenia_mhyn"
+  ref = "Y/N"
+
+[subject.has_tuberculosis]
+  field = "tb_mhyn"
+  ref = "Y/N"
+
+[subject.has_dementia]
+  field = "dementia_mhyn"
+  ref = "Y/N"
+
+[subject.has_rheumatologic_disorder]
+  field = "rheumatology_mhyr"
+  ref = "Y/N"
+
+[subject.has_hiv]
+  field = "aidshiv_mhyn"
+  ref = "Y/N"
+
+[subject.has_hypertension]
+  field = "hypertension_mhyn"
+  ref = "Y/N"
+
+[subject.has_malignant_neoplasm]
+  field = "malignantneo_mhyn"
+  ref = "Y/N"
+
+[subject.has_smoking]
+  field = "smoking_mhyn"
+  values = { 1 = "yes", 2 = "never", 3 = "former"}
+
+[subject.has_asthma]
+  field = "asthma_mhyn"
+  ref = "Y/N"
+
+[subject.has_chronic_cardiac_disease]
+  field = "chroniccard_mhyn"
+  ref = "Y/N"
+
+[subject.has_chronic_kidney_disease]
+  field = "renal_mhyn"
+  ref = "Y/N"
+
+[subject.has_diabetes]
+  combinedType = "any"
+  fields = [  # not mapping false, as it does not imply absence of diabetes
+    { field = "diabetes_mhyn", values = {1 = true} },
+    { field = "diabetescomp_mhyn", values = {1 = true}},
+    { field = "diabetes_mhyn_2", values = {1 = true, 2 = true }}
+  ]
+  
+[subject.diabetes_type]
+  field = "diabetes_mhyn_2"
+  values = { 1 = "type-1", 2 = "type-2" }
+
+[subject.has_liver_disease]
+  combinedType = "any"
+  fields = [
+    { field = "modliver_mhyn", ref="Y/N"},
+    { field = "mildliv_mhyn", ref="Y/N"}
+  ]
+
+[subject.has_hiv_art]
+  field = "aidshiv_mhyn_2"
+  # 1, YES-on ART | 2, YES-not on ART | 3, No | 4, Unknown
+  values = { 1 = true, 2 = false, 3 = false }
+
+[subject.has_malnutrition]
+  field = "malnutrition_mhyn"
+  ref = "Y/N"
+
+[subject.has_comorbidity_other] # type - array
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [ {field = "otherrisktext"}]
+
+[subject.has_died] # type - boolean
+  field = "dsterm" # outcome
+  values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false }
+
+[subject.date_death]
+  field = "dsstdtc"
+  description = "Outcome death"
+  if.dsterm = 4
+
+[subject.icu_admitted]
+  field = "icu_hoterm"
+  ref = "Y/N"
+
+# VISIT
+
+[visit]
+  country_iso3 = "RUS"
+
+  [visit.visit_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.start_date]
+    field = "flw_date_symptoms"
+
+  # There is pathogen test information, but no test date
+  # [visit.pathogen_test_date]
+  #   field = ""
+  #   description = ""
+
+  [visit.icu_admission]
+    field = "icu_hoterm"
+    ref = "Y/N"
+
+  [visit.icu_admission_dates]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [ { field = "icu_hostdat"}]
+
+  [visit.treatment_dialysis]
+    field = "rrt_prtrt"
+    ref = "Y/N"
+
+  [visit.treatment_inotropes_vasopressors]
+    field = "inotrop_cmtrt"
+    ref = "Y/N"
+
+  [visit.treatment_ecmo]
+    field = "extracorp_prtrt"
+    ref = "Y/N"
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    fields = [
+      { field = "oxygen_cmoccur", ref = "Y/N" },
+      { field = "noninvasive_proccur", ref = "Y/N" },
+      { field = "invasive_proccur", ref = "Y/N" },
+      { field = "highflow_cmoccur", ref = "Y/N" },  # high flow nasal cannula
+      { field = "pronevent_proccur", ref = "Y/N" }, # prone ventilation
+    ]
+
+  [visit.treatment_prone_position]
+    field = "pronevent_proccur"
+    ref = "Y/N"
+
+  [visit.treatment_invasive_ventilation]
+    field = "invasive_proccur"
+    ref = "Y/N"
+
+  [visit.treatment_inhaled_nitric_oxide]
+    field = "inhalednit_cmtrt"
+    ref = "Y/N"
+
+  [visit.treatment_noninvasive_ventilation]
+    field = "noninvasive_proccur"
+    ref = "Y/N"
+
+  [visit.treatment_high_flow_nasal_cannula]
+    field = "highflow_cmoccur"
+    ref = "Y/N"
+
+  [visit.treatment_offlabel]
+    field = ""
+    description = ""
+    ref = "Y/N"
+
+  # [visit.treatment_cardiovascular_support] nothing other than ECMO
+
+  [visit.outcome]
+    field = "dsterm"
+
+    [visit.outcome.values]
+      1 = "discharged"
+      2 = "hospitalised"
+      3 = "transferred"
+      4 = "death"
+      5 = "palliative discharge"
+
+[visit.date_outcome]
+  field = "dsstdtc"
+
+# OBSERVATION
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date.ref = "admissionDate"
+  phase = "admission"
+  value = { field = "admission_diabp_vsorres" }
+  if.diabp_vsyn = 1
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date.ref = "admissionDate"
+  phase = "admission"
+  value = { field = "sysbp_vsorres" }
+  if.sysbp_vsyn = 1
+
+[[observation]]
+  name = "abdominal_pain"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "abdopain_ceoccur_v2_dat"
+  is_present = { field = "abdopain_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "abdopain_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "fatigue_malaise"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "fatigue_ceoccur_v2_dat"
+  is_present = { field = "fatigue_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "fatigue_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "anorexia"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "anorexia_ceoccur_v2_dat"
+  is_present = { field = "anorexia_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "anorexia_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "confusion"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "confusion_ceoccur_v2_dat"
+  is_present = { field = "confusion_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "confusion_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "muscle_aches"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "myalgia_ceoccur_v2_dat"
+  is_present = { field = "myalgia_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "myalgia_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "joint_pain"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "jointpain_ceoccur_v2_dat"
+  is_present = { field = "jointpain_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "jointpain_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "diarrhoea"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "diarrhoea_ceoccur_v2_dat"
+  is_present = { field = "diarrhoea_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "diarrhoea_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "vomiting_nausea"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "vomit_ceoccur_v2_dat"
+  is_present = { field = "vomit_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "vomit_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "skin_rash"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "rash_ceoccur_v2_dat"
+  is_present = { field = "rash_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "rash_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "bleed_ceoccur_v2_dat"
+  is_present = { field = "bleed_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "bleed_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "loss_of_smell"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "anosmia_ceoccur_v2_dat"
+  is_present = { field = "anosmia_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "anosmia_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "loss_of_taste"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "ageusia_ceoccur_v2_dat"
+  is_present = { field = "ageusia_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "ageusia_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "seizures"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "seizures_ceoccur_v2_dat"
+  is_present = { field = "seizures_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "seizures_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "headache"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "headache_ceoccur_v2_dat"
+  is_present = { field = "headache_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "headache_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "lymphadenopathy"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "lymp_ceoccur_v2_dat"
+  is_present = { field = "lymp_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "lymp_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "conjunctivitis"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "conjunct_ceoccur_v2_dat"
+  is_present = { field = "conjunct_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "conjunct_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "chest_pain"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "chestpain_ceoccur_v2_dat"
+  is_present = { field = "chestpain_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "chestpain_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "lowerchest_ceoccur_v2_dat"
+  is_present = { field = "lowerchest_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "lowerchest_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "shortness_of_breath"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "shortbreath_ceoccur_v2_dat"
+  is_present = { field = "shortbreath_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "shortbreath_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "wheezing"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "wheeze_ceoccur_v2_dat"
+  is_present = { field = "wheeze_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "wheeze_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "sore_throat"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "sorethroat_ceoccur_v2_dat"
+  is_present = { field = "sorethroat_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "sorethroat_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "runny_nose"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "runnynose_ceoccur_v2_dat"
+  is_present = { field = "runnynose_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "runnynose_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]  # TODO: use combinedType here
+  name = "cough"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "cough_ceoccur_v2_dat"
+  is_present = { field = "cough_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "cough_ceoccur_v2_sev", ref = "severity"}]
+
+[[observation]]
+  name = "history_of_fever"
+  date.ref = "admissionDate"
+  phase = "admission"
+  start_date.field = "fever_ceoccur_v2_dat"
+  is_present = { field = "fever_ceoccur_v2", ref = "Y/N" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [ { field = "fever_ceoccur_v2_sev", ref = "severity"}]
