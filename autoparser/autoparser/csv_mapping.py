@@ -16,6 +16,22 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 from .util import maybe, parse_choices, DEFAULT_CONFIG
 
+def _read_data_dictionary(data_dictionary: str, column_mappings: Dict[str, Any]) -> pd.DataFrame:
+
+    if not isinstance(data_dictionary, str):
+        if isinstance(data_dictionary, pd.DataFrame):
+            return data_dictionary.rename(columns=column_mappings)[list(column_mappings.values())]
+        else:
+            raise ValueError(f"Unsupported type for data_dictionary: {type(data_dictionary)}")
+    data_dictionary = Path(data_dictionary)
+    if data_dictionary.suffix == ".csv":
+        df = pd.read_csv(data_dictionary)
+    elif data_dictionary.suffix == ".xlsx":
+        df = pd.read_excel(data_dictionary)
+    else:
+        raise ValueError(f"Unsupported format (not CSV or XLSX): {data_dictionary}")
+    return df.rename(columns=column_mappings)[list(column_mappings.values())]
+
 
 def matches_redcap(
     config: Dict[str, Any],
@@ -43,17 +59,9 @@ def matches_redcap(
                 lemmatized(c) for c in choices.values() if isinstance(c, str)
             )
 
-    if isinstance(data_dictionary, str):
-        data_dictionary = Path(data_dictionary)
-        if data_dictionary.suffix == ".csv":
-            df = pd.read_csv(data_dictionary)
-        elif data_dictionary.suffix == ".xlsx":
-            df = pd.read_excel(data_dictionary)
-        else:
-            raise ValueError(f"Unsupported format (not CSV or XLSX): {data_dictionary}")
-        df = df.rename(columns=column_mappings)[list(column_mappings.values())]
-        df["description"] = df.description.map(lemmatized)
-        df["lemmatized_choices"] = df.choices.map(lemmatized_choices)
+    df = _read_data_dictionary(data_dictionary, column_mappings)
+    df["description"] = df.description.map(lemmatized)
+    df["lemmatized_choices"] = df.choices.map(lemmatized_choices)
 
     # Drop field types like 'banner' which are purely informative
     _allowed_field_types = config["categorical_types"] + config["text_types"]
@@ -159,6 +167,14 @@ def matches_redcap(
     match_df["score"] = match_df.apply(scorer, axis=1)
     return match_df.sort_values(["schema_field", "score"], ascending=[True, False])
 
+def matches_substring(
+    config: Dict[str, Any],
+    data_dictionary: Union[pd.DataFrame, str],
+    table: str,
+    num_matches: int = 6,
+) -> pd.DataFrame:
+    "Uses simpler substring matching"
+    raise NotImplementedError
 
 def deep_get(d: Dict[str, Any], keys: str) -> Any:
     dc = copy.deepcopy(d)
@@ -180,13 +196,20 @@ def get_fields(config: Dict[str, Any], table: str) -> List[str]:
     if table != "observation":
         return read_json(config["schema-path"] / schemas[table])
     else:
+        observation_properties = []
+        schema = read_json(config["schema-path"] / schemas[table])
+        for prop in schema["oneOf"]:
+            name = prop["properties"]["name"]
+            if "const" in name.keys():
+                observation_properties.append(name["const"])
+            elif "enum" in name.keys():
+                observation_properties.extend(name["enum"])
+            else:
+                pass
         return {
             "properties": {
                 k: {"category": "observation"}
-                for k in deep_get(
-                    read_json(config["schema-path"] / schemas[table]),
-                    "properties.name.enum",
-                )
+                for k in observation_properties
             }
         }
 
@@ -252,6 +275,7 @@ def main():
         type=int,
         default=6,
     )
+    parser.add_argument("-m", "--matcher", help="Matcher algorithm to use, default='tf-idf'", choices=["tf-idf", "substring"], default="tf-idf")
     parser.add_argument("--schema-path", help="Path where ISARIC schemas are located")
     parser.add_argument(
         "-t", "--tables", help="Only match for tables (comma separated list, no spaces)"
@@ -282,8 +306,9 @@ def main():
     if args.check:
         with open(args.check, "rb") as fp:
             parser_spec = tomli.load(fp)
+    matcher = matches_redcap if args.matcher == "tf-idf" else matches_substring
     for table in tables:
-        df = matches_redcap(
+        df = matcher(
             config,
             args.dictionary,
             table,
