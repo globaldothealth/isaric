@@ -76,6 +76,10 @@
     field = "asplenia_mhyn"
     ref = "Y/N"
 
+  [subject.has_obesity]
+    field = "obesity_mhyn"
+    ref = "Y/N"
+
   [subject.has_tuberculosis]
     field = "tb_mhyn"
     ref = "Y/N"
