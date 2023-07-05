@@ -309,6 +309,12 @@
   is_present = { field = "vomit_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  name = "vomiting_nausea"
+  date.ref = "followupDate"
+  phase = "followup"
+  is_present = { field = "vomit_cov", ref = "boolean" }
+
+[[observation]]
   name = "skin_rash"
   date.ref = "admissionDate"
   phase = "admission"
@@ -333,16 +339,38 @@
   is_present = { field = "ageusia_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  date.ref = "admissionDate"
+  phase = "admission"
+  is_present.combinedType = "any"
+  is_present.fields = [
+    { field = "anosmia_ceoccur_v2", ref = "Y/N" },
+    { field = "ageusia_ceoccur_v2", ref = "Y/N" }
+  ]
+
+[[observation]]
   name = "seizures"
   date.ref = "admissionDate"
   phase = "admission"
   is_present = { field = "seizures_cecoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  name = "seizures"
+  date.ref = "followupDate"
+  phase = "followup"
+  is_present = { field = "flw_seizures", ref = "boolean"}
+
+[[observation]]
   name = "headache"
   date.ref = "admissionDate"
   phase = "admission"
   is_present = { field = "headache_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "severe_dehydration"
+  phase = "admission"  # TODO: not sure, check
+  date.ref = "admissionDate"
+  is_present = { field = "dehydration_vsorres", ref = "Y/N"}
 
 [[observation]]
   name = "lymphadenopathy"
@@ -373,6 +401,12 @@
   date.ref = "admissionDate"
   phase = "admission"
   is_present = { field = "shortbreath_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date.ref = "followupDate"
+  phase = "followup"
+  is_present = { field = "flw_breathless", ref = "boolean" }
 
 [[observation]]
   name = "wheezing"
@@ -421,6 +455,16 @@
   date.ref = "followupDate"
   phase = "followup"
   is_present = { field = "flw_loss_taste", ref = "boolean" }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date.ref = "followupDate"
+  phase = "followup"
+  is_present.combinedType = "any"
+  is_present.fields = [
+    { field = "flw_loss_smell", ref = "boolean" },
+    { field = "flw_loss_taste", ref = "boolean" }
+  ]
 
 [[observation]]
   name = "chest_pain"
@@ -515,3 +559,16 @@
     3 = 2 # You have moderate problems in walking about?
     4 = 3 # You have severe problems in walking about?
     5 = 4 # You are unable to walk about?
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  phase = "study"
+  date.ref = "admissionDate"  # TODO: could not find study date
+  text.field = "oxygen_cmdose"
+
+  [observation.text.values]
+    1 = "< 2 L/min"
+    6 = "2-5 L/min"
+    2 = "6-10 L/min"
+    3 = "11-15 L/min"
+    4 = ">15 L/min"
