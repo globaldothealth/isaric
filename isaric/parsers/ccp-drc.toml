@@ -274,7 +274,7 @@
   fields = [{ field = "date_icu_adm", description = "Date of ICU Admission:" }]
 
 [visit.pathogen_test_date]
-  field = "results_date"
+  field = "sample_taken_date"
 
 [visit.outcome]
   field = "outcome"
