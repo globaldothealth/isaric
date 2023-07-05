@@ -266,7 +266,8 @@
 
   [subject.earliest_admission_date]
     combinedType = "min"
-    fields = [{ field = "hostdat" }]
+    # fields = [{ field = "hostdat" }]
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.enrolment_date]
     field = "dsstdat"
@@ -323,13 +324,12 @@
 
     [[subject.has_chronic_cardiac_disease.fields]]
       field = "chroniccard_mhyn"
-      description = "<acronym title=\"Include any of coronary artery disease, heart failure, congenital heart disease, cardiomyopathy, rheumatic heart disease.\">Chronic cardiac disease <i>(not hypertension)</i></acronym>"
+      description = "Chronic cardiac disease (not hypertension)"
       ref = "Y/N/NK"
 
-    [[subject.has_chronic_cardiac_disease.fields]]
-      field = "chronicpul_mhyn"
-      description = "<acronym title=\"Include any of chronic obstructive pulmonary disease (chronic bronchitis, chronic obstructive pulmonary disease (COPD), emphysema), cystic fibrosis, bronchiectasis, interstitial lung disease, pre-existing requirement for long term oxygen therapy. Do not include asthma.\">Chronic pulmonary disease <i>(not asthma)</i></acronym>"
-      ref = "Y/N/NK"
+[subject.has_chronic_hematologic_disease]
+  field = "chronhaemo_mhyn"
+  ref = "Y/N/NK"
 
 [subject.has_chronic_kidney_disease]
   field = "renal_mhyn"
@@ -420,22 +420,6 @@
   combinedType = "any"
 
   [[subject.icu_admitted.fields]]
-    field = "flw2_icu"
-    description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
-
-    [subject.icu_admitted.fields.values]
-      1 = true
-      0 = false
-
-  [[subject.icu_admitted.fields]]
-    field = "flw_icu"
-    description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
-
-    [subject.icu_admitted.fields.values]
-      1 = true
-      0 = false
-
-  [[subject.icu_admitted.fields]]
     field = "ccm_b_icu_hodat"
     description = "<acronym title=\"Date admitted to critical care ward\">ICU ADMISSION DATE</acronym>"
     apply = { function = "isNotNull" }
@@ -447,6 +431,11 @@
 
   [[subject.icu_admitted.fields]]
     field = "icu_hoterm"
+    description = "ICU admission:"
+    ref = "Y/N/NK"
+
+  [[subject.icu_admitted.fields]]
+    field = "daily_hoterm"
     description = "ICU admission:"
     ref = "Y/N/NK"
 
@@ -466,23 +455,20 @@
   combinedType = "firstNonNull"
   fields = [
     { field = "dlvrdtc_rptestcd", description = "Delivery date:" },
-    { field = "edlvrdtc_rporres", description = "1.1 Expected estimated date of delivery:", can_skip = true },
     { field = "dlvr_cestdat", description = "Delivery during admission? If yes, date:", can_skip = true },
   ]
 
 [subject.pregnancy_gestational_age_weeks]
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "egestage_rptestcd", description = "If YES: Gestational week assessment:" },
-    { field = "apsc_egestage_scorres", description = "4.6 Gestational age, weeks:", can_skip = true },
-  ]
+  field = "egestage_rptestcd"
+  description = "If YES: Gestational week assessment:"
 
 [subject.pregnancy_gestational_outcome]
   combinedType = "firstNonNull"
   excludeWhen = "none"
   fields = [
     { field = "apsc_gestout", description = "Gestational outcome", values = { 1 = "term_birth", 2 = "preterm_birth" } },
-    { field = "pregout_rptestcd", description = "Pregnancy Outcome", values = { 1 = "term_birth", 2 = "preterm_birth" } },
+    # { field = "pregout_rptestcd", description = "Pregnancy Outcome", values = { 1 = "term_birth", 2 = "preterm_birth" } },
+    { field = "apdd_prcdth_ddorres", values = { 1 = "preterm_birth" }, "can_skip" = true },
   ]
 
 [subject.pregnancy_outcome]
@@ -556,6 +542,7 @@
     combinedType = "firstNonNull"
     fields = [
       { field = "hostdat", description = "Admission date at this facility" },
+      { field = "flw_date_symptoms" },
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
     ]
 
@@ -568,23 +555,12 @@
       ref = "Y/N/NK"
 
     [[visit.icu_admission.fields]]
-      field = "flw2_icu"
-      description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
-
-      [visit.icu_admission.fields.values]
-        1 = true
-        0 = false
-
-    [[visit.icu_admission.fields]]
-      field = "flw_icu"
-      description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?"
-
-      [visit.icu_admission.fields.values]
-        1 = true
-        0 = false
+      field = "daily_hoterm"
+      description = "Date of ICU admission:"
+      ref = "Y/N/NK"
 
 [visit.icu_admission_dates]
-  combinedType = "set"
+  combinedType = "set" # We require ICU admission to be a list, so firstNonNull won't work. Maybe some data cleaning on the other end is the best way to deal with this where dates are recorded slightly differently for what appears to be the same visit.
   excludeWhen = "none"
 
   [[visit.icu_admission_dates.fields]]
@@ -688,9 +664,9 @@
 [visit.treatment_corticosteroid]
   combinedType = "any"
   fields = [
-    { field = "corticost_cmyn", ref = "Y/N/NK" },                                            # check - true should override the falses, not just the empty values.
+    { field = "corticost_cmyn", ref = "Y/N/NK" },                        # check - true should override the falses, not just the empty values.
     { field = "dexameth_cmyn", ref = "Y/N/NK", "can_skip" = true },
-    { field = "steroid_other_cmyn", apply = { function = "isNotNull" }, "can_skip" = true },
+    { field = "steroid_other_cmyn", ref = "Y/N/NK", "can_skip" = true },
   ]
 
 [visit.treatment_corticosteroid_type]
@@ -711,8 +687,9 @@
 [visit.treatment_dialysis]
   combinedType = "any"
   fields = [
-    { field = "renal_proccur", description = "7.3.3. Dialysis / renal treatment?", ref = "Y/N/NK", "can_skip" = true },
     { field = "ccm_b_renal_prtrt", description = "Dialysis/Hemofiltration?", ref = "Y/N/NK" },
+    { field = "daily_rrt_cmtrt", ref = "Y/N/NK" },
+    { field = "rrt_prtrt", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_ecmo]
@@ -727,20 +704,6 @@
     field = "daily_ecmo_prtrt"
     description = "Extra corporeal life support (ECLS / ECMO)?"
     ref = "Y/N/NK"
-
-[visit.treatment_experimental_agent]
-  field = "othertx_cmyn"
-  description = "Other treatment administered for COVID-19 including experimental or compassionate use?"
-  ref = "Y/N/NK"
-
-  # [visit.treatment_experimental_agent_type]
-  #   combinedType = "set"
-  #   excludeWhen = "none"
-  #   fields = [
-  #     { field = "othertx_cmtrt_1" },
-  #     { field = "othertx_cmtrt_2" },
-  #     { field = "othertx_cmtrt_3" },
-  #   ]
 
 [visit.treatment_oxygen_therapy]
   combinedType = "any"
@@ -764,6 +727,7 @@
     field = "daily_prone_cmtrt"
     description = "Prone ventilation"
     ref = "Y/N/NK"
+    if = { daily_prone_cmtype = 1, "can_skip" = true } # doesn't exist in Italy data, but field is only presented if invasive_ventilation is True so still valid.
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "daily_ecmo_prtrt"
@@ -791,7 +755,7 @@
     can_skip = true
 
   [[visit.treatment_oxygen_therapy.fields]]
-    field = "pronevent_prtrt"
+    field = "pronevent_prtrt"         # may need checking whether this really is ventilation
     description = "Prone ventilation"
     ref = "Y/N/NK"
 
@@ -807,7 +771,7 @@
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "ccm_b_noninvasive_prtrt"
-    description = "Humidified high flow nasal cannula (HHFNC)?"
+    description = "Non-invasive ventilation?"
     ref = "Y/N/NK"
 
   [[visit.treatment_oxygen_therapy.fields]]
@@ -879,6 +843,8 @@
     { field = "othertx_cmtrt_1", description = "<i>Other Agent 1</i> - Agent:" },
     { field = "othertx_cmtrt_3", description = "<i>Other Agent 3</i> - Agent:", "can_skip" = true },
     { field = "othertx_cmtrt_2", description = "<i>Other Agent 2</i> - Agent:" },
+    { field = "daily_other_prtrt" },
+    { field = "other_cm", "can_skip" = true },
   ]
 
 [visit.treatment_prone_position]
@@ -953,6 +919,18 @@
   is_present = { field = "anorexia_ceoccur_v2", description = "Anorexia", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "anorexia"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_appetite", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "anorexia"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  is_present = { field = "flw2_loss_of_app", ref = "Y/N/NK" }
+
+[[observation]]
   name = "avpu"
   phase = "study"
   date = { field = "daily_dsstdat" }
@@ -993,6 +971,13 @@
     fields = [
       { field = "flw_bleeding_site", description = "please specify bleeding site" },
     ]
+
+[[observation]]
+  name = "bleeding"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false } }
+  # site?
 
 [[observation]]
   name = "chest_pain"
@@ -1048,6 +1033,8 @@
     fields = [
       { field = "flw_pers_cough", description = "Persistant cough", values = { 1 = true, 0 = false } },
       { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = true, 2 = true } },
+      { field = "flw_pers_cough_dry", values = { 1 = true, 0 = false } },
+      { field = "flw_pers_cough_ph", values = { 1 = true, 0 = false } },
     ]
 
 [[observation]]
@@ -1071,14 +1058,19 @@
     combinedType = "any"
     fields = [
       { field = "cough_ceoccur_v2", description = "Cough", ref = "Y/N/NK", "can_skip" = true },
-      { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = true, 0 = false } },
+      { field = "cough_ceoccur_v2_2", description = "Cough: 1-nonproductive, 2-productive, 3-with haemoptysis", values = { 1 = true, 2 = false, 3 = false, 0 = false } },
     ]
 
 [[observation]]
   name = "cough_dry"
   phase = "followup"
   date = { field = "flw_survey_date" }
-  is_present = { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = true } }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = true, 2 = false } },
+      { field = "flw_pers_cough_dry", values = { 1 = true, 0 = false } },
+    ]
 
 [[observation]]
   name = "cough_dry"
@@ -1102,7 +1094,12 @@
   name = "cough_with_sputum_production"
   phase = "followup"
   date = { field = "flw_survey_date" }
-  is_present = { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = false, 2 = true } }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_pers_cough_y", description = "If yes to persistent cough, please specify", values = { 1 = false, 2 = true } },
+      { field = "flw_pers_cough_ph", values = { 1 = true, 0 = false } },
+    ]
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -1168,7 +1165,12 @@
   name = "fatigue_malaise"
   phase = "followup"
   date = { field = "flw_survey_date" }
-  is_present = { field = "flw_fatigue", description = "Fatigue", values = { 1 = true, 0 = false } }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_fatigue", description = "Fatigue", values = { 1 = true, 0 = false } },
+      { field = "flw_fatigue_new", values = { 1 = true, 0 = false } },
+    ]
 
 [[observation]]
   name = "fatigue_malaise"
@@ -1219,10 +1221,43 @@
   is_present = { field = "fever_ceoccur_v2", description = "History of fever", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  is_present = { field = "flw2_fever", ref = "Y/N/NK" }
+
+[[observation]]
   name = "inability_to_walk"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "inablewalk_ceoccur_v2", description = "Inability to walk", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  value = { field = "flw_walking_today", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
+  context = ["Ability to walk or climb steps today"]
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "admission"
+  date = { field = "flw_survey_date" }
+  value = { field = "flw_walking_pre_c19", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
+  context = ["Ability to walk or climb steps prior to COVID-19 illness"]
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "admission"
+  date = { field = "flw_survey_date" }
+  value = { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
+  context = ["Ability to walk prior to COVID-19 illness"]
 
 [[observation]]
   name = "inability_to_walk_scale"
@@ -1235,6 +1270,13 @@
   phase = "followup"
   date = { field = "flw2_survey_date" }
   value = { field = "flw2_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  value = { field = "flw2_walking_today", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
+  context = ["Ability to walk or climb steps today"]
 
 [[observation]]
   name = "joint_pain"
@@ -1366,6 +1408,18 @@
   text = { field = "other_cetermy_v2", description = "Other sign or symptom" }
 
 [[observation]]
+  name = "other_symptom"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  text = { field = "flw_new_symptoms" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  text = { field = "flw2_other_symp" }
+
+[[observation]]
   name = "oxygen_flow_volume_max"
   phase = "study"
   start_date = { ref = "admissionDateHierarchy" }
@@ -1373,6 +1427,12 @@
   duration_type = "block"
   text = { field = "oxygen_cmdose", values = { 1 = "<2 l/min", 6 = "2-5 l/min", 2 = "6-10 l/min", 3 = "11-15 l/min", 4 = ">15 l/min" } }
   context = ['Maximum over entire visit']
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_hb_lborres", unit = "g/dL", source_unit = { field = "daily_hb_lborresu", values = { 2 = "g/dL", 1 = "g/L", 3 = "mg/dL" } } } # 4 = "mmol/L" but conversion is tricky
 
 [[observation]]
   name = "oxygen_saturation_percent"
@@ -1403,7 +1463,7 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Capillary", 3 = "Venous", 4 = "Unknown" } },
+      { field = "daily_pao2_lbspec", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary", 4 = "Unknown" } },
     ]
 
 [[observation]]
@@ -1463,11 +1523,11 @@
   date = { field = "daily_dsstdat" }
   value = { field = "rass_vsorres", apply = { function = "getFloat" }, description = "RASS calculated between -5 and 4" }
 
-  # [[observation]]
-  #   name = "riker_sedation-agitation_scale"
-  #   phase = "study"
-  #   date = { field = "daily_dsstdat" }
-  #   value = { field = "sas_vsorres", description = "SAS calculated between 1 and 7" }
+[[observation]]
+  name = "riker_sedation-agitation_scale"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "sas_vsorres", description = "SAS calculated between 1 and 7", "can_skip" = true }
 
 [[observation]]
   name = "runny_nose"
@@ -1538,6 +1598,12 @@
   is_present = { field = "flw_skin_rash", description = "Skin rash", values = { 1 = true, 0 = false } }
 
 [[observation]]
+  name = "skin_rash"
+  phase = "followup"
+  date = { field = "flw2_survey_date" }
+  is_present = { field = "flw2_skin_rash", description = "Skin rash", values = { 1 = true, 0 = false } }
+
+[[observation]]
   name = "skin_ulcers"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -1577,15 +1643,14 @@
   name = "temperature_celsius"
   phase = "study"
   date = { field = "daily_dsstdat" }
-  value = { field = "daily_temp_vsorres", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
+  value = { field = "daily_temp_vsorres", unit = "degC", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "degC", 2 = "degF" } } }
   context = ['Highest']
 
 [[observation]]
   name = "temperature_celsius"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  value = { field = "temp_vsorres", source_unit = { field = "temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
-  context = ['Highest']
+  value = { field = "temp_vsorres", unit = "degC", source_unit = { field = "temp_vsorresu", values = { 1 = "degC", 2 = "degF" } } }
 
 [[observation]]
   name = "vomiting_nausea"
@@ -1598,6 +1663,12 @@
   phase = "followup"
   date = { field = "flw_survey_date" }
   is_present = { field = "flw_nausea", description = "Nausea/vomiting", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  is_present = { field = "flw_feeling_sick", description = "Nausea/vomiting", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "vomiting_nausea"

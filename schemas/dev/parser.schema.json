@@ -666,10 +666,6 @@
           "description": "Respiratory support",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_indication_anticoagulation": {
-          "description": "Indication anticoagulation",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_cardiovascular_support": {
           "description": "Cardiovascular",
           "$ref": "#/definitions/mapping"

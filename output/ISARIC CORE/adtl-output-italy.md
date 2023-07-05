@@ -2,14 +2,14 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |2558   |2977   |85.925428% |
+|subject        |2559   |2977   |85.959019% |
 |visit          |2908   |2977   |97.682230% |
-|observation    |300036 |347190 |86.418388% |
+|observation    |313625 |364182 |86.117655% |
 
 ## subject
 
 * 408: data must contain ['subject_id', 'age', 'ethnicity', 'pathogen'] properties
-* 8: data cannot be validated by any definition
+* 7: data cannot be validated by any definition
 * 3: data must be valid exactly by one definition (0 matches found)
 
 ## visit
@@ -18,5 +18,5 @@
 
 ## observation
 
-* 46475: data must contain ['phase', 'date', 'name'] properties
-* 679: data must be valid exactly by one definition (0 matches found)
+* 50128: data must contain ['phase', 'date', 'name'] properties
+* 429: data must be valid exactly by one definition (0 matches found)

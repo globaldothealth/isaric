@@ -559,8 +559,7 @@ agent(s)?
 
 **treatment_anticoagulation**: Bool. Treated with anticoagulants during
 the visit? (Note - this is often combines a general anticoagulation
-field with those specific to Heparin. NOTE TO DEVS: merge (if not
-already) with treatment_indication_anticoagulation)
+field with those specific to Heparin.)
 
 **treatment_inhaled_nitric_oxide**: Bool. Treated with nitric oxide
 inhalation?
@@ -787,7 +786,7 @@ record the maximum flow volume.
 **oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
 
-**pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
+**pao2_mmHg**: Value (25-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the
 default unit.
 
