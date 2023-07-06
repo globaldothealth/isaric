@@ -361,10 +361,10 @@
   date = { ref = "admissionDate" }
   context = ["Lowest in 24 hrs"]
 
-  [observation.text]
+  [observation.value]
     field = "igs_glasg"
     description = "SAPS II: Glasgow score (points)"
-    values = { 0 = "14 - 15", 5 = "11-13", 7 = "9-10", 13 = "6-8", 26 = "< 6" }
+    values = { 0 = "14-15", 5 = "11-13", 7 = "9-10", 13 = "6-8", 26 = "<6" }
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -374,7 +374,7 @@
   [observation.value]
     field = "sofa_glasg7"
     description = "SOFA D7 - Neurological: Glasgow without sedation"
-    values = { 0 = "15", 1 = "13 - 14", 2 = "10 - 12", 3 = "6 - 9", 4 = "<6" }
+    values = { 0 = "15", 1 = "13-14", 2 = "10-12", 3 = "6-9", 4 = "<6" }
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -384,7 +384,7 @@
   [observation.value]
     field = "sofa_glasg14"
     description = "SOFA D14 - Neurological: Glasgow without sedation"
-    values = { 0 = "15", 1 = "13 - 14", 2 = "10 - 12", 3 = "6 - 9", 4 = "<6" }
+    values = { 0 = "15", 1 = "13-14", 2 = "10-12", 3 = "6-9", 4 = "<6" }
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -394,7 +394,7 @@
   [observation.value]
     field = "sofa_glasg0"
     description = "SOFA D0 - Neurological: Glasgow without sedation"
-    values = { 0 = "15", 1 = "13 - 14", 2 = "10 - 12", 3 = "6 - 9", 4 = "<6" }
+    values = { 0 = "15", 1 = "13-14", 2 = "10-12", 3 = "6-9", 4 = "<6" }
 
 [[observation]]
   name = "heart_rate_bpm"
@@ -499,12 +499,12 @@
   date = { ref = "admissionDate" }
   value = { field = "temp", description = "Temperature (°C)" }
 
-[[observation]]
-  name = "total_fluid_output_ml"
-  phase = "admission"
-  date = { ref = "admissionDate" }
+  # [[observation]] - useless without input volumes
+  #   name = "total_fluid_output_ml"
+  #   phase = "admission"
+  #   date = { ref = "admissionDate" }
 
-  [observation.text]
-    field = "igs_diures"
-    description = "SAPS II: Urine output (L/24 h)"
-    values = { 11 = "< 0.5", 4 = "0.5 - 0.999", 0 = ">= 1.0" }
+  #   [observation.text]
+  #     field = "igs_diures"
+  #     description = "SAPS II: Urine output (L/24 h)"
+  #     values = { 11 = "< 0.5", 4 = "0.5 - 0.999", 0 = ">= 1.0" }
