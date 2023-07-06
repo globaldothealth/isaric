@@ -58,13 +58,16 @@
       { field = "adm_hosp_dh", description = "Date and time of admission to hospital", source_date = "%Y-%m-%d %H:%M" },
     ]
 
+  [subject.enrolment_date]
+    field = "incl_date"
+
   [subject.icu_admitted]
     field = "adm_rea_dh"
     description = "Date and time of admission to intensive care"
     apply = { function = "isNotNull" }
 
   [subject.has_chronic_cardiac_disease]
-    field = "comorb1"
+    field = "comorb2"
     values = { 1 = true, 0 = false }
 
   [subject.has_chronic_hematologic_disease]
@@ -79,6 +82,10 @@
 
   [subject.has_chronic_respiratory_disease]
     field = "comorb1"
+    values = { 1 = true, 0 = false }
+
+  [subject.has_dementia]
+    field = "comorb5"
     values = { 1 = true, 0 = false }
 
   [subject.has_diabetes]
@@ -161,9 +168,12 @@
       { field = "adm_rea_dh", description = "Date and time of admission to intensive care" },
     ]
 
+  [visit.pathogen_test_date]
+    field = "prlv_vir_d"
+
   [visit.transfer_from_other_facility]
     field = "provenance"
-    values = { 3 = true, 4 = true }
+    values = { 1 = false, 2 = false, 3 = true, 4 = true, 5 = true }
     description = "origin before admission to intensive care; 1, Home or emergency department | 2, Ward | 3, Long term care facility | 4, Transfer from another hospital | 5, Transfer from another ICU"
 
   [visit.treatment_antibiotics]
@@ -181,9 +191,11 @@
     ]
 
   [visit.treatment_anticoagulation]
-    field = "aco_ouinon"
-    description = "Anticoagulation"
-    values = { 1 = true, 2 = true, 0 = false }
+    combinedType = "any"
+    fields = [
+      { field = "aco_ouinon", description = "Anticoagulation", values = { 1 = true, 2 = true, 0 = false } },
+      { field = "ttt_ac", description = "Anticoagulation", values = { 1 = true, 0 = false } },
+    ]
 
   [visit.treatment_antivirals]
     field = "atv_ouinon"
@@ -239,15 +251,10 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "ttt_ass1_dose", apply = { function = "textIfNotNull", params = [
-        "Chloroquine",
-      ] } },
-      { field = "ttt_ass2_dose", apply = { function = "textIfNotNull", params = [
-        "Hydroxychloroquine",
-      ] } },
-      { field = "ttt_ass4_dose", apply = { function = "textIfNotNull", params = [
-        "Tocilizumab",
-      ] } },
+      { field = "ttt_ass_type___1", values = { 1 = "Chloroquine" } },
+      { field = "ttt_ass_type___2", values = { 1 = "Hydroxychloroquine" } },
+      # { field = "ttt_ass_type___3", values = {1 = "Corticosteroids"} },
+      { field = "ttt_ass_type___4", values = { 1 = "Tocilizumab" } },
       { field = "ttt_ass5_nom" },
       { field = "ttt_ass6_nom" },
     ]
@@ -259,6 +266,7 @@
       { field = "a_of", values = { 1 = true, 0 = false }, description = "Optiflow (HFNC)" },
       { field = "a_vni", values = { 1 = true, 0 = false }, description = "Non-invasive ventilation" },
       { field = "a_vm_ouinon", values = { 1 = true, 0 = false }, description = "Mechanical ventilation" },
+      { field = "vm_ouinon", values = { 1 = true, 0 = false }, description = "Mechanical ventilation" },
       { field = "ecmo_ouinon", values = { 1 = true, 0 = false }, description = "ECMO" },
     ]
 
@@ -268,16 +276,17 @@
     description = "Optiflow"
 
   [visit.treatment_invasive_ventilation]
-    field = "a_vm_ouinon"
-    description = "Mechanical ventilation"
-    if = { a_vm_type = { "!=" = 2 } }      # 2 = bipap which is non-invasive?
-    values = { 1 = true, 0 = false }
+    combinedType = "any"
+    fields = [
+      { field = "a_vm_ouinon", description = "Mechanical ventilation", if = { a_vm_type = { "!=" = 2 } }, values = { 1 = true, 0 = false } },
+      { field = "vm_ouinon", values = { 1 = true, 0 = false }, description = "Mechanical ventilation" },
+    ]
 
   [visit.treatment_noninvasive_ventilation]
     combinedType = "any"
     fields = [
       { field = "a_vni", values = { 1 = true, 0 = false }, description = "Non-invasive ventilation" },
-      { field = "a_vm_ouinon", values = { 1 = true, 0 = false }, description = "Mechanical ventilation", if = { a_vm_type = 2 } }, # 2 = bipap which is non-invasive?
+      { field = "a_vm_ouinon", values = { 1 = true, 0 = false }, description = "Mechanical ventilation", if = { a_vm_type = 2 } }, # 2 = bipap which is non-invasive
     ]
 
   [visit.treatment_prone_position]
@@ -288,15 +297,15 @@
   [visit.outcome]
     combinedType = "firstNonNull"
     fields = [
-      { field = "shosp_statut", values = { 1 = "recovered", 2 = "death" }, description = "hospital discharge status" }, # 1 = alive
-      { field = "srea_statut", values = { 1 = "recovered", 2 = "death" }, description = "ICU discharge status" },
+      { field = "shosp_statut", values = { 1 = "discharged", 2 = "death" }, description = "hospital discharge status" }, # 1 = alive
+      { field = "srea_statut", values = { 1 = "hospitalised", 2 = "death" }, description = "ICU discharge status" },
     ]
 
   [visit.date_outcome]
     combinedType = "firstNonNull"
     fields = [
       { field = "shosp_d", source_date = "%Y-%m-%d", description = "Date of discharge from hospital" },
-      { field = "srea_d", source_date = "%Y-%m-%d", description = "Date of discharge from hospital" },
+      # { field = "srea_d", source_date = "%Y-%m-%d", description = "Date of discharge from hospital" },
     ]
 
 
@@ -350,6 +359,7 @@
   name = "glasgow_coma_score"
   phase = "admission"
   date = { ref = "admissionDate" }
+  context = ["Lowest in 24 hrs"]
 
   [observation.text]
     field = "igs_glasg"
@@ -359,7 +369,7 @@
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { field = "date_j7" }
+  date = { field = "date_j7", source_date = "%Y-%m-%d" }
 
   [observation.value]
     field = "sofa_glasg7"
@@ -369,7 +379,7 @@
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { field = "date_j14" }
+  date = { field = "date_j14", source_date = "%Y-%m-%d" }
 
   [observation.value]
     field = "sofa_glasg14"
@@ -379,7 +389,7 @@
 [[observation]]
   name = "glasgow_coma_score"
   phase = "admission"
-  date = { ref = "admissionDate" }
+  date = { field = "adm_rea_dh" }
 
   [observation.value]
     field = "sofa_glasg0"
@@ -400,7 +410,7 @@
     combinedType = "any"
     fields = [
       { field = "signes_clin___8", values = { 1 = true } },
-      { field = "signes_clin___9", values = { 1 = true } },
+      # { field = "signes_clin___9", values = { 1 = true } },
     ]
 
 [[observation]]
@@ -408,12 +418,6 @@
   phase = "admission"
   date = { ref = "admissionDate" }
   is_present = { field = "signes_clin___8", values = { 1 = true } }
-
-[[observation]]
-  name = "loss_of_taste"
-  phase = "admission"
-  date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___9", values = { 1 = true } }
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
@@ -445,6 +449,12 @@
   text = { field = "signe_clin_autre" }
 
 [[observation]]
+  name = "oxygen_o2hb"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "hb_dose" }
+
+[[observation]]
   name = "pH"
   phase = "admission"
   date = { ref = "admissionDate" }
@@ -461,6 +471,21 @@
   phase = "admission"
   date = { ref = "admissionDate" }
   value = { field = "paco2_dose", description = "PaCO2 (mmHg)" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  start_date = { ref = "admissionDate" }
+  date = { field = "shosp_d", source_date = "%Y-%m-%d" }
+  duration_type = "event"
+  is_present = { field = "compl_type___1", values = { 1 = true }, description = "VAP" }
+  context = ["Ventilator associated pneumonia"]
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  is_present = { field = "signes_clin___9", values = { 1 = true } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
