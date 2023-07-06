@@ -7,12 +7,14 @@ on:
     - 'isaric/parsers/*.toml'
     - 'ci/validate_parser.py'
     - '.github/workflows/parsers.yml'
+    - 'schemas/*/*.json'
   pull_request:
     branches: [ main ]
     paths:
     - 'isaric/parsers/*.toml'
     - 'ci/validate_parser.py'
     - '.github/workflows/parsers.yml'
+    - 'schemas/*/*.json'
   workflow_dispatch:
 
 jobs:
