@@ -298,108 +298,108 @@
       field = "sup_meds_antivirals"
 
       [visit.treatment_antiviral_type.fields.values]
-        1 = "Ribavirin"               # Q: data dictionary says Ribanavirin, typo?
+        1 = "Ribavirin"
         2 = "Lopinavir/Ritonavir"
         3 = "Interferon alpha"
         4 = "Interferon beta"
         5 = "Neuraminidase inhibitor"
         6 = "Other"
 
-  [visit.treatment_antibiotics]
-    combinedType = "any"
-    fields = [
-      { field = "meds_given", values = { 1 = false, 2 = false, 3 = true, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false } },
-      { field = "daily_antibiotic", ref = "Y/N" },
-      { field = "antibio_meds_oth", apply = { function = "isNotNull" } },
-    ]
+[visit.treatment_antibiotics]
+  combinedType = "any"
+  fields = [
+    { field = "meds_given", values = { 1 = false, 2 = false, 3 = true, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false } },
+    { field = "daily_antibiotic", ref = "Y/N" },
+    { field = "antibio_meds_oth", apply = { function = "isNotNull" } },
+  ]
 
-  [visit.treatment_antibiotics_type]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "antibio_meds_oth" },
-      { field = "daily_antibiotic_type___1", values = { 1 = "Ceftriaxone" } },
-      { field = "daily_antibiotic_type___2", values = { 1 = "Metronidazole" } },
-      { field = "daily_antibiotic_type___3", values = { 1 = "Erythromycin" } },
-      { field = "daily_antibiotic_type___4", values = { 1 = "Levofloxacin" } },
-      { field = "daily_antibiotic_type___5", values = { 1 = "Cirofloxacin" } },
-      { field = "daily_antibiotic_type___6", values = { 1 = "Gentamicin" } },
-      { field = "daily_antibiotic_type___7", values = { 1 = "Co-trimoxazole" } },
-      { field = "daily_antibiotic_type___8", values = { 1 = "Amoxacillin" } },
-      { field = "daily_antibiotic_type___9", values = { 1 = "Penicillin" } },
-      { field = "daily_antibiotic_type___10", values = { 1 = "Fluconazole" } },
-      { field = "daily_antibiotic_type___11", values = { 1 = "Other" } },
-    ]
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "antibio_meds_oth" },
+    { field = "daily_antibiotic_type___1", values = { 1 = "Ceftriaxone" } },
+    { field = "daily_antibiotic_type___2", values = { 1 = "Metronidazole" } },
+    { field = "daily_antibiotic_type___3", values = { 1 = "Erythromycin" } },
+    { field = "daily_antibiotic_type___4", values = { 1 = "Levofloxacin" } },
+    { field = "daily_antibiotic_type___5", values = { 1 = "Cirofloxacin" } },
+    { field = "daily_antibiotic_type___6", values = { 1 = "Gentamicin" } },
+    { field = "daily_antibiotic_type___7", values = { 1 = "Co-trimoxazole" } },
+    { field = "daily_antibiotic_type___8", values = { 1 = "Amoxacillin" } },
+    { field = "daily_antibiotic_type___9", values = { 1 = "Penicillin" } },
+    { field = "daily_antibiotic_type___10", values = { 1 = "Fluconazole" } },
+    { field = "daily_antibiotic_type___11", values = { 1 = "Other" } },
+  ]
 
-  [visit.treatment_anticoagulation]
-    field = "meds_given"
-    values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 6 = false, 7 = false, 8 = false, 9 = false }
+[visit.treatment_anticoagulation]
+  field = "meds_given"
+  values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 6 = false, 7 = false, 8 = false, 9 = false }
 
-  [visit.treatment_inhaled_nitric_oxide]
-    combinedType = "any"
-    fields = [
-      { field = "overall_nitrcoxid", values = { 1 = true, 0 = false } },
-      { field = "nitric_oxide", values = { 1 = true, 0 = false } },
-    ]
+[visit.treatment_inhaled_nitric_oxide]
+  combinedType = "any"
+  fields = [
+    { field = "overall_nitrcoxid", values = { 1 = true, 0 = false } },
+    { field = "nitric_oxide", values = { 1 = true, 0 = false } },
+  ]
 
-  [visit.treatment_noninvasive_ventilation]
-    combinedType = "any"
-    fields = [
-      { field = "overall_noninvasive_proccur", values = { 1 = true, 0 = false } },
-      { field = "non_inv_vent", values = { 1 = true, 0 = false } },
-    ]
+[visit.treatment_noninvasive_ventilation]
+  combinedType = "any"
+  fields = [
+    { field = "overall_noninvasive_proccur", values = { 1 = true, 0 = false } },
+    { field = "non_inv_vent", values = { 1 = true, 0 = false } },
+  ]
 
-  [visit.treatment_antimalarial]
-    combinedType = "any"
-    fields = [
-      { field = "daily_antimal", ref = "Y/N" },
-      { field = "meds_given", values = { 1 = true, 2 = true } },
-    ]
+[visit.treatment_antimalarial]
+  combinedType = "any"
+  fields = [
+    { field = "daily_antimal", ref = "Y/N" },
+    { field = "meds_given", values = { 1 = true, 2 = true } },
+  ]
 
-  [visit.treatment_antimalarial_type]
-    field = "meds_given"
-    values = { 1 = "Hydroxychloroquine", 2 = "Chloroquine phosphate" }
+[visit.treatment_antimalarial_type]
+  field = "meds_given"
+  values = { 1 = "Hydroxychloroquine", 2 = "Chloroquine phosphate" }
 
-  [visit.treatment_high_flow_nasal_cannula]
-    field = "can_oxy_ther"
-    values = { 1 = true, 0 = false }
+[visit.treatment_high_flow_nasal_cannula]
+  field = "can_oxy_ther"
+  values = { 1 = true, 0 = false }
 
-  [visit.treatment_intravenous_fluids]
-    field = "daily_iv_fluids"
-    ref = "Y/N"
+[visit.treatment_intravenous_fluids]
+  field = "daily_iv_fluids"
+  ref = "Y/N"
 
-  [visit.treatment_neuromuscular_blocking_agents]
-    field = "neuro_block"
-    values = { 1 = true, 0 = false }
+[visit.treatment_neuromuscular_blocking_agents]
+  field = "neuro_block"
+  values = { 1 = true, 0 = false }
 
-  [visit.treatment_other]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "oth_interv_sp", description = "Specify Other intervention or procedure?", if = { oth_interv_sp = { "!=" = 0 } } },
-      { field = "sup_antibiotic_agent", if = { oth_interv_sp = { "!=" = 0 } } },
-    ]
+[visit.treatment_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "oth_interv_sp", description = "Specify Other intervention or procedure?", if = { oth_interv_sp = { "!=" = 0 } } },
+    { field = "sup_antibiotic_agent", if = { oth_interv_sp = { "!=" = 0 } } },
+  ]
 
-  [visit.treatment_cardiovascular_support]
-    combinedType = "any"
-    fields = [
-      { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
-      { field = "overall_inotrop_cmtrt", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
-      { field = "vaso_or_inot", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
-    ]
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
+    { field = "overall_inotrop_cmtrt", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+    { field = "vaso_or_inot", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+  ]
 
-  [visit.outcome]
-    field = "outcome"
-    values = { 1 = "discharged", 2 = "death", 4 = "transferred" }
+[visit.outcome]
+  field = "outcome"
+  values = { 1 = "discharged", 2 = "death", 4 = "transferred" }
 
-  [visit.date_outcome]
-    field = "outcome_date"
+[visit.date_outcome]
+  field = "outcome_date"
 
 
-    # OBSERVATION
-    # required fields - phase, date, name
+  # OBSERVATION
+  # required fields - phase, date, name
 
-    # NOTE: Phase is unclear in some cases, data not provided for one of the main symptom forms.
+  # NOTE: Phase is unclear in some cases, data not provided for one of the main symptom forms.
 
 [[observation]]
   name = "avpu"
@@ -448,6 +448,15 @@
   phase = "admission"
   value = { field = "diastol_iso" }
   if.all = [{ diastol_iso = { "!=" = "" } }, { diastol_iso = { "!=" = 0 } }]
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  value = { field = "diastol" }
+  if.all = [{ diastol = { "!=" = "" } }, { diastol = { "!=" = 0 } }]
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
@@ -822,6 +831,15 @@
   phase = "admission"
   value = { field = "systol_iso" }
   if.all = [{ systol_iso = { "!=" = "" } }, { systol_iso = { "!=" = 0 } }]
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "systol" }
+  if.all = [{ systol = { "!=" = "" } }, { systol_iso = { "!=" = 0 } }]
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
