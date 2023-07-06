@@ -408,6 +408,10 @@
           "description": "Chronic cardiac disease",
           "$ref": "#/definitions/mapping"
         },
+        "has_chronic_respiratory_disease": {
+          "description": "Chronic cardiac disease",
+          "$ref": "#/definitions/mapping"
+        },
         "has_chronic_kidney_disease": {
           "description": "Chronic kidney disease",
           "$ref": "#/definitions/mapping"
@@ -751,6 +755,7 @@
                   "mid_upper_arm_circumference_cm",
                   "oxygen_o2hb",
                   "oxygen_saturation_percent",
+                  "oxygen_flow_volume_max",
                   "pao2_mmHg",
                   "pco2_mmHg",
                   "pH",
