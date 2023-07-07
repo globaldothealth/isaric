@@ -36,19 +36,6 @@
 [adtl.defs.followupDate]
   field = "flw_survey_date"
 
-[adtl.defs.followupDuration.values]
-  1 = "1-2 weeks"
-  2 = "> 2-4 weeks"
-  3 = ">1-2 months"
-  4 = ">2-3 months"
-  5 = ">3-6 months"
-  7 = "Since the hospital discharge"
-
-[adtl.defs.severity.values]
-  1 = "caused bearable discomfort/was controlled"
-  2 = "caused severe discomfort/was not controlled"
-  3 = "the reason for calling an ambulance/visit a doctor"
-
 [subject]
   pathogen = "COVID-19"
 
