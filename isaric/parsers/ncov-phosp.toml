@@ -1,0 +1,622 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "ncov-phosp"
+  description = "CVRRLMD COVID-19 PHOSP Subset"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ["enrolment_date"]
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "groupBy"
+    groupBy = ""
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N".values]
+    1 = true
+    0 = false
+
+  [adtl.defs.admissionDateHierarchy] # @SK - is there an order to which these dates were filled/collected?
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "crfev_date_visit" },
+      { field = "crf4b_date_visit" },
+      { field = "crf1a_date_adm" },
+      { field = "crf1a_xfer_in_adm_date" }
+    ]
+    
+    # SUBJECT
+    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "phosp_id"
+    sensitive = true
+
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [
+      { field = "crfev_date_visit" },
+      { field = "crf4b_date_visit" },
+      { field = "crf1a_date_adm" },
+      { field = "crf1a_xfer_in_adm_date" }
+    ]
+    ref = "admissionDateHierarchy"
+
+  [subject.age]
+    field = "age_admission"
+    description = "Age at Admission (Years)"
+
+  [subject.sex_at_birth]
+    field = "crf2a_sex"
+
+    [subject.sex_at_birth.values]
+      1 = "male"
+      2 = "female"
+
+[subject.ethnicity]
+  field = "crf1b_eth"
+  description = ""
+  values = { 1 = "(1) White - English / Welsh / Scottish / Northern Irish / British", 2 = "(2) White - Irish", 3 = "(3) White - Gypsy or Irish Traveller", 4 = "(4) White - Any other White background", 5 = "(5) Mixed/ Multiple Ethnic Backgrounds - White and Black Caribbean", 6 = "(6) Mixed/ Multiple Ethnic Backgrounds - White and Black African", 7 = "(7) Mixed/ Multiple Ethnic Backgrounds - White and Asian", 8 = "(8) Mixed/ Multiple Ethnic Backgrounds - Any other Mixed/ Multiple ethnic background", 9 = "(9) Asian/ Asian British - Indian", 10 = "(10) Asian/ Asian British - Pakistani", 11 = "(11) Asian/ Asian British - Bangladeshi", 12 = "(12) Asian/ Asian British - Chinese", 13 = "(13) Asian/ Asian British - Any other Asian background", 14 = "(14) Black/ African/ Caribbean/ Black British - African", 15 = "(15) Black/ African/ Caribbean/ Black British - Caribbean", 16 = "(16) Black/ African/ Caribbean/ Black British - Any other Black/ African/ Caribbean background", 17 = "(17) Other ethnic group - Arab", 18 = "(18) Other ethnic group - Any other ethnic group" }
+
+[subject.works_healthcare]
+  field = "crf1b_healthcare_worker"
+  ref = "Y/N"
+
+[subject.pregnancy]
+  field = "crf1a_pregnant_yn"
+  ref = "Y/N"
+
+[subject.pregnancy_date_of_delivery]
+  field = "crf1a_delivery_date"
+
+[subject.pregnancy_outcome]
+  field = "crf1a_pregnancy_outcome"
+  values = { 1 = "live birth", 2 = "still birth" }
+
+[subject.pregnancy_post_partum]
+  field = "crf1a_post_partum_yn"
+  ref = "Y/N"
+
+[subject.pregnancy_gestational_age_weeks]
+  field = "crf1a_gestational_weeks"
+
+[subject.has_chronic_hematologic_disease]
+  field = "crf1a_com_mh_stm"
+  values = { 1 = true, 2 = true }
+
+[subject.has_tuberculosis]
+  field = "crf1a_com_id_mt"
+  values = { 0 = false, 1 = true, 2 = false, 3 = false }
+  
+[subject.has_dementia]
+  field = "crf1a_com_neupsy_dem"
+  ref = "Y/N"
+
+[subject.has_rheumatologic_disorder]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "crf1a_com_rheu_ctd", ref = "Y/N" },
+    { field = "crf1a_com_rheu_other_yn" }
+  ]
+
+[subject.has_hiv]
+  field = "crf1a_com_id_hiv"
+  ref = "Y/N"
+
+[subject.has_hypertension]
+  combinedType = "any"
+  fields = [
+    { field = "crf1a_com_card_ht", ref = "Y/N" },
+    { field = "crf2a_pre_con_hypt", ref = "Y/N" }
+  ]
+
+[subject.has_malignant_neoplasm]
+  field = "crf1a_com_mh_stm"
+  values = { 1 = true, 2 = true }
+
+[subject.has_asthma]
+  field = "crf1a_com_res_ast"
+  ref = "Y/N"
+
+[subject.has_chronic_cardiac_disease]
+  combinedType = "any"
+  fields = [
+    { field = "crf1a_com_card_other_yn", ref = "Y/N" },
+    { field = "crf1a_com_card_mi", ref = "Y/N" },
+    { field = "crf2a_pre_con_card", ref = "Y/N" }
+  ]
+  
+[subject.has_chronic_kidney_disease]
+  field = "crf1a_com_mer_ckd_yn"
+  ref = "Y/N"
+
+[subject.has_diabetes]
+  field = "crf2a_pre_con_diab"
+  ref = "Y/N"
+
+[subject.diabetes_type]
+  field = "crf1a_com_mer_diab"
+  description = ""
+
+  [subject.diabetes_type.values]
+    1 = "type-1"
+    2 = "type-2"
+
+[subject.has_liver_disease]
+  field = "crf1a_com_gast_ld"
+  ref = "Y/N"
+
+[subject.has_apnoea]
+  field = "crf1a_com_res_osa"
+  ref = "Y/N"
+
+[subject.has_inflammatory_bowel_disease]
+  field = "crf1a_com_gast_ibd	"
+  ref = "Y/N"
+
+[subject.has_tuberculosis_past]
+  field = "crf1a_com_id_mt"
+  values = { 0 = false, 1 = false, 2 = true, 3 = true }
+
+[subject.has_immunosuppression]
+  field = "crf1a_immunosuppressant"
+  ref = "Y/N"
+
+[subject.has_died] # type - boolean
+  combinedType = "any"
+  fields = [
+    { field = "crf2a_reason_not_done", values = { 3 = true } },
+    { field = "crf_early_main_reason", values = { 8 = true } }
+  ]
+  
+[subject.date_death]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "wd_date" },
+    { field = "crf_early_withdraw_date" }
+  ]
+
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = "UK"
+
+  [visit.visit_id]
+    field = "phosp_id"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "phosp_id"
+    sensitive = true
+
+  [visit.start_date]
+    field = "crf1a_date_adm"
+    description = "Date of admission to this hospital"
+
+  [visit.pathogen_test_date]
+    field = "crf1a_date"
+    description = "Date of collection"
+
+  [visit.transfer_from_other_facility]
+    field = "crf1a_xfer_in"
+    ref = "Y/N"
+
+  [visit.treatment_dialysis]
+    field = "crf1a_add_diag_cvvh"
+    description = "b) Renal failure requiring CVVH or Haemodialysis"
+    ref = "Y/N"
+
+  [visit.treatment_ecmo]
+    field = "crf1a_o2_ecmo"
+    ref = "Y/N"
+
+  [visit.treatment_corticosteroid]
+    combinedType = "any"
+    fields = [
+      { field = "crf1a_nsaid", ref = "Y/N" },
+      { field = "crf1a_treat_ss", ref = "Y/N" },
+      { field = "med_class", values = { 16 = true } },
+      { field = "med_class", values = { 2 = true } }
+    ]
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    fields = [
+      { field = "crf1a_o2_supp", description = "a) Supplemental oxygen", ref = "Y/N" },
+      { field = "crf1a_supp_o2", description = "Supplemental oxygen", ref = "Y/N" }
+    ]  
+
+  [visit.treatment_invasive_ventilation]
+    field = "crf1a_o2_imv"
+    description = "e) Invasive Mechanical Ventilation"
+    ref = "Y/N"
+
+  [visit.treatment_antibiotics]
+    combinedType = "any"
+    fields = [
+      { field = "med_class", description = "Class number and name", values = { 11 = true } },
+      { field = "crf1a_treat_at", description = "a) Antibiotic therapy", ref = "Y/N" }
+    ]
+
+  [visit.treatment_inhaled_nitric_oxide]
+    combinedType = "any"
+    fields = [
+      { field = "crfev_add_inv_resp___3", ref = "Y/N" },
+      { field = "crf4a_inv_resp___3", ref = "Y/N" },
+      { field = "crf3a_inv_resp___3", ref = "Y/N" }
+    ]
+
+  [visit.treatment_noninvasive_ventilation]
+    field = "crf1a_o2_blniv"
+    description = "c) Bi-Level Non-Invasive Ventilation"
+    ref = "Y/N"
+
+  [visit.treatment_ace_inhibitors]
+  combinedType = "any"
+  fields = [
+    { field = "crf1a_acei", description = "c) Angiotensin converting enzyme inhibitors (ACEI)?", ref = "Y/N" },
+    { field = "med_class", description = "Class number and name", values = { 5 = true} }
+  ]
+
+  [visit.treatment_arb]
+    field = "crf1a_abbs"
+    description = "d) Angiotensin II receptor blockers (ARBs)?	"
+    ref = "Y/N"
+
+  [visit.treatment_high_flow_nasal_cannula]
+    field = "crf1a_o2_hfn"
+    description = "d) High Flow Nasal O2"
+    ref = "Y/N"
+
+  [visit.treatment_immunosuppressant]
+    field = "med_class"
+    description = "Class number and name"
+    values = { 10 = true }
+
+  [visit.treatment_nsaid]
+    field = "med_class"
+    description = "Class number and name"
+    values = { 2 = true }
+
+  [visit.outcome]
+    field = "crf2b_outcome"
+    description = "2) Outcome"
+
+    [visit.outcome.values] # check this??!! 
+      1 = "discharged"
+      # 2 = "Further follow up"
+  
+[visit.date_outcome]
+  combinedType = "any"
+  fields = [
+    { field = "crf1a_date_dis", description = "Date of discharge from hospital" },
+    { field = "crf2a_date_discharged", description = "Date discharged from hospital" },
+    { field = "crfev_date_discharge", description = "Date of discharge" }
+  ]
+
+    # OBSERVATION
+    # required fields - phase, date, name
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "crf3a_visit_date"
+  phase = "study"
+  value = { field = "crf3a_rest_bp_dia" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  value = { field = "crf1a_bp_dia" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "crf3b_visit_date"
+  phase = "study"
+  value = { field = "crf3b_rest_bp_dia" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "crf4a_visit_date"
+  phase = "study"
+  value = { field = "crf4a_rest_bp_dia" }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_bleeding", ref = "Y/N" }
+
+[[observation]]
+  name = "chest_pain"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_chest_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_confusion", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_cough", ref = "Y/N" }
+  
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_cough_blood", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_cough_sputum", ref = "Y/N" }
+
+[[observation]]
+  name = "diarrhoea"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_diarrhoea", ref = "Y/N" }
+  
+[[observation]]
+  name = "ear_pain"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_ear_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_fatigue", ref = "Y/N" }
+
+[[observation]]
+  name = "headache"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_headache", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_fever_history", ref = "Y/N" }
+
+# Q. Can you have 'inability to walk scale' without 'inability to walk'
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = "crf1a_date_ad"
+  phase = "admission"
+  value.field = "eq5d5l_q1"
+  [observation.value.values]
+    1 = 1 # I have no problems in walking about
+    2 = 2 # I have slight problems in walking about
+    3 = 2 # I have moderate problems in walking about
+    4 = 3 # I have severe problems in walking about
+    5 = 4 # I am unable to walk about
+
+[[observation]]
+  name = "joint_pain"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_join_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_loss_smell", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_loss_taste", ref = "Y/N" }
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_chest_indrawing", ref = "Y/N" }
+
+[[observation]]
+  name = "lymphadenopathy"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_lymphadenopathy", ref = "Y/N" }
+
+[[observation]]
+  name = "muscle_aches"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_muscle_aches", ref = "Y/N" }
+
+[[observation]]
+  name = "runny_nose"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_runny_nose", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_seizures", ref = "Y/N" }
+
+[[observation]]
+  name = "severe_dehydration"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_sev_dehydr", ref = "Y/N" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_shortness_breath", ref = "Y/N" }
+  	
+[[observation]]
+  name = "skin_rash"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_skin_rash", ref = "Y/N" }
+
+[[observation]]
+  name = "skin_ulcers"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_skin_ulcers", ref = "Y/N" }
+
+[[observation]]
+  name = "sore_throat"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_sore_throat", ref = "Y/N" }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_stcap_refill_2s", ref = "Y/N" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_nausea", ref = "Y/N" }
+
+[[observation]]
+  name = "wheezing"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  is_present = { field = "crf1a_wheezing", ref = "Y/N" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  value = { field = "crf1a_hr" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf3a_visit_date"
+  phase = "study"
+  value = { field = "crf3a_base_ecg_hr" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf3a_visit_date"
+  phase = "study"
+  value = { field = "crf3a_rest_hr" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf3b_visit_date"
+  phase = "study"
+  value = { field = "crf3b_base_ecg_hr" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf3b_visit_date"
+  phase = "study"
+  value = { field = "crf3b_rest_hr" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf4a_visit_date"
+  phase = "study"
+  value = { field = "crf4a_base_ecg_hr" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "crf4a_visit_date"
+  phase = "study"
+  value = { field = "crf4a_rest_hr" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  value = { field = "crf1a_o2_sat" }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  value = { field = "crf1a_respiratory_rate" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "crf3a_visit_date"
+  phase = "study"
+  value = { field = "crf3a_rest_bp_sys" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  value = { field = "crf1a_bp_sys" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "crf3b_visit_date"
+  phase = "study"
+  value = { field = "crf3b_rest_bp_sys" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "crf4a_visit_date"
+  phase = "study"
+  value = { field = "crf4a_rest_bp_sys" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "crf1a_date_adm"
+  phase = "admission"
+  value = { field = "crf1a_temperature" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "crf3a_visit_date"
+  phase = "study"
+  value = { field = "crf3a_rest_temp" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "crf3b_visit_date"
+  phase = "study"
+  value = { field = "crf3b_rest_temp" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "crf4a_visit_date"
+  phase = "study"
+  value = { field = "crf4a_rest_temp" }
