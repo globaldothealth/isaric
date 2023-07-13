@@ -356,6 +356,10 @@
           "description": "Gestational assessment weeks",
           "$ref": "#/definitions/mapping"
         },
+        "preterm_infant": {
+          "description": "Subject born preterm (<37 weeks)",
+          "$ref": "#/definitions/mapping"
+        },
         "has_chronic_hematologic_disease": {
           "description": "Chronic hematologic disease",
           "$ref": "#/definitions/mapping"
@@ -756,6 +760,7 @@
                   "clinical_frailty_score",
                   "diastolic_blood_pressure_mmHg",
                   "glasgow_coma_score",
+                  "blantyre_coma_score",
                   "base_excess",
                   "inability_to_walk_scale",
                   "heart_rate_bpm",

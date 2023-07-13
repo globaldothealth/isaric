@@ -68,15 +68,10 @@
     values = { 1 = true, 0 = false }
     description = "Pregnant?"
 
-  [subject.pregnancy_gestational_age_weeks]
-    field = "egestage_rptestcd"
-    values = { 1 = true, 0 = false }
-    description = "Gestational weeks assessment"
-
-  [subject.pregnancy_gestational_outcome]
-    field = "ex_preterm_mhyn"
-    values = { 1 = "preterm_birth" }
-    description = "Ex-preterm infant?"
+    # [subject.pregnancy_gestational_age_weeks]
+    #   field = "egestage_rptestcd"
+    #   values = { 1 = true, 0 = false }
+    #   description = "Gestational weeks assessment"
 
   [subject.pregnancy_birth_weight_kg]
     combinedType = "firstNonNull"
@@ -100,10 +95,10 @@
     description = "Chronic kidney disease"
     ref = "Y/N/NK"
 
-  [subject.has_comorbidity_other]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [{ field = "otherrisktext" }]
+    # [subject.has_comorbidity_other]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [{ field = "otherrisktext" }]
 
   [subject.has_diabetes]
     field = "diabetiscomp_mhyn"
@@ -114,8 +109,8 @@
     combinedType = "any"
     fields = [
       { field = "aidshiv_mhyn_child", description = "child hiv status", values = { 1 = true, 2 = true, 3 = false } },
-      { field = "dy1_pcr_jhp_result", description = "HIV PCR result", values = { 1 = true, 2 = false } },
-      { field = "dschrg_antbdy_test_result", description = "HIV rapid antibody test result", values = { 1 = true, 2 = false } },
+      # { field = "dy1_pcr_jhp_result", description = "HIV PCR result", values = { 1 = true, 2 = false } },
+      # { field = "dschrg_antbdy_test_result", description = "HIV rapid antibody test result", values = { 1 = true, 2 = false } },
     ]
 
   [subject.has_hiv_art]
@@ -147,20 +142,25 @@
     description = "Tuberculosis"
     ref = "Y/N/NK"
 
-  [subject.works_healthcare]
-    field = "healthwork_erterm"
-    description = "Does the child have a household contact who is a healthcare worker?"
-    ref = "Y/N/NK"
+  [subject.preterm_infant]
+    field = "ex_preterm_mhyn"
+    values = { 1 = true, 0 = false }
+    description = "Ex-preterm infant?"
 
-  [subject.works_microbiology_lab]
-    field = "labwork_erterm"
-    description = "Does the child have a household contact who is a laboratory worker?"
-    ref = "Y/N/NK"
+    # [subject.works_healthcare]
+    #   field = "healthwork_erterm"
+    #   description = "Does the child have a household contact who is a healthcare worker?"
+    #   ref = "Y/N/NK"
+
+    # [subject.works_microbiology_lab]
+    #   field = "labwork_erterm"
+    #   description = "Does the child have a household contact who is a laboratory worker?"
+    #   ref = "Y/N/NK"
 
   [subject.has_died]
     field = "dsterm"
     description = "Outcome:"
-    values = { 1 = true, 2 = true, 3 = true }
+    values = { 1 = true, 2 = true, 3 = true, 4 = false } # other two might die soon...
 
   [subject.date_death]
     field = "dsstdtc"
@@ -196,7 +196,7 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "antibiotic_type_v2___1", values = { 1 = "Benzypen" } },
+      { field = "antibiotic_type_v2___1", values = { 1 = "Benzylpenicillin" } },
       { field = "antibiotic_type_v2___2", values = { 1 = "Gentamicin" } },
       { field = "antibiotic_type_v2___3", values = { 1 = "Ceftriaxone" } },
       { field = "antibiotic_type_v2___4", values = { 1 = "Amikacin" } },
@@ -238,9 +238,9 @@
     description = "Antiviral?"
     ref = "Y/N/NK"
 
-  [visit.treatment_antiviral_type_other]
-    field = "antiviral_cmtype_v2"
-    description = "If YES to antiviral agent; specify:"
+    # [visit.treatment_antiviral_type_other]
+    #   field = "antiviral_cmtype_v2"
+    #   description = "If YES to antiviral agent; specify:"
 
   [visit.treatment_cardiovascular_support]
     combinedType = "any"
@@ -276,9 +276,9 @@
     description = "Experimental agent?"
     ref = "Y/N/NK"
 
-  [visit.treatment_experimental_agent_type_other]
-    field = "experimental_cmtype_v2"
-    description = "If YES to Experimental agent; specify:"
+    # [visit.treatment_experimental_agent_type_other]
+    #   field = "experimental_cmtype_v2"
+    #   description = "If YES to Experimental agent; specify:"
 
   [visit.treatment_inotropes_vasopressors]
     field = "inotrop_prtrt_v3"
@@ -345,19 +345,19 @@
   [observation.text]
     field = "avpu_vsorres"
     description = "AVPU"
-    values = { 1 = "Alert", 2 = "Alert", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" } # 2 = confused, which comes under verbal on 1-4 scale
+    values = { 1 = "Alert", 2 = "Verbal", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
   phase = "admission"
   date = { field = "hostdat" }
   is_present = { field = "bleed_ceoccur_v2", description = "Bleeding (Haemorrhage)", ref = "Y/N/NK" }
-  [observation.context]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "bleed_ceoccur_specify_v2", description = "If bleeding, specify site(s):" },
-    ]
+  # [observation.context]
+  #   combinedType = "set"
+  #   excludeWhen = "none"
+  #   fields = [
+  #     { field = "bleed_ceoccur_specify_v2", description = "If bleeding, specify site(s):" },
+  #   ]
 
 [[observation]]
   name = "chest_pain"
@@ -391,7 +391,7 @@
   name = "cough"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___2", ref = "Y/N/NK" }
+  is_present = { field = "ongoing_symptoms___2", values = { 1 = true } }
 
 [[observation]]
   name = "cough_dry"
@@ -435,7 +435,7 @@
   name = "diarrhoea"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___10", ref = "Y/N/NK" }
+  is_present = { field = "ongoing_symptoms___10", values = { 1 = true } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
@@ -475,7 +475,7 @@
   name = "history_of_fever"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___1", values = { 1 = true, 0 = false } }
+  is_present = { field = "ongoing_symptoms___1", values = { 1 = true } }
 
 [[observation]]
   name = "fatigue_malaise"
@@ -501,7 +501,7 @@
   name = "feeding_intolerance_pediatrics"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___11", ref = "Y/N/NK" }
+  is_present = { field = "ongoing_symptoms___11", values = { 1 = true } }
 
 [[observation]]
   name = "inability_to_walk"
@@ -570,7 +570,7 @@
   duration_type = "event"
   context = ["over entire visit"]
 
-  [observation.text]
+  [observation.value]
     field = "xygn_thrpintfc_mask_v3"
     description = "If NP or Mask selected what wa the maximum flow rate recorded in L/min"
 
@@ -590,7 +590,7 @@
   name = "oxygen_o2hb"
   phase = "admission"
   date = { field = "hostdat" }
-  value = { field = "hb_lborres", description = "Haemoglobin g/L" }
+  value = { field = "hb_lborres", description = "Haemoglobin g/L", unit = "g/dL", source_unit = { field = "hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
 
 [[observation]]
   name = "pneumonia"
@@ -662,7 +662,7 @@
   name = "shortness_of_breath"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___3", ref = "Y/N/NK" }
+  is_present = { field = "ongoing_symptoms___3", values = { 1 = true } }
 
 [[observation]]
   name = "skin_rash"
@@ -676,7 +676,7 @@
   name = "skin_rash"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___4", ref = "Y/N/NK" }
+  is_present = { field = "ongoing_symptoms___5", values = { 1 = true } }
 
 [[observation]]
   name = "skin_ulcers"
@@ -719,6 +719,18 @@
   value = { field = "temp_vsorres", description = "Temperature" }
 
 [[observation]]
+  name = "temperature_celsius"
+  phase = "followup"
+  date = { field = "m1_assess_date" }
+  value = { field = "m1_temp" }
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "followup"
+  date = { field = "m1_assess_date" }
+  value = { field = "m2_max_temp" }
+
+[[observation]]
   name = "vomiting_nausea"
   phase = "admission"
   start_date = { field = "vmtng_ch_dtstrt" }
@@ -730,4 +742,10 @@
   name = "vomiting_nausea"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___9", ref = "Y/N/NK" }
+  is_present = { field = "ongoing_symptoms___9", values = { 1 = true } }
+
+[[observation]]
+  name = "blantyre_coma_score"
+  phase = "admission"
+  date = { field = "hostdat" }
+  value = { field = "bcs_vsorres" }

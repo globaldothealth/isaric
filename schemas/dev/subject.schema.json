@@ -155,6 +155,11 @@
       "description": "Gestational assessment weeks",
       "category": "pregnancy"
     },
+    "preterm_infant": {
+      "type": "boolean",
+      "description": "Subject born preterm (<37 weeks)",
+      "category": "comorbidities"
+    },
     "has_chronic_hematologic_disease": {
       "type": "boolean",
       "description": "Chronic hematologic disease",

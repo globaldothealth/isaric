@@ -382,6 +382,8 @@ breastfeeding/ did they breastfeed during the study period?
 **pregnancy_post_partum**: Bool. Is the subject post-partum (up to 6
 weeks post-delivery) at the point of enrolment?
 
+**preterm_infant**: Bool. For pediatric subjects: was the child born pre-term (<37 weeks)?
+
 **has_asplenia**: Bool. Does the subject have asplenia?
 
 **has_tuberculosis** Bool. Does the subject currently have tuberculosis?
@@ -691,6 +693,8 @@ confusion, not altered consciousness, use confusion_
 **base_excess**: Value. Difference between observed and normal buffer
 base concentration for oxygenated blood.
 
+**blantyre_coma_score**: Value (0-5). Coma scale modified from the pediatric glasgow coma scale.
+
 **bleeding**: Bool. For bleeding (other) observations. If field is
 described as bleeding (haemorrhage) or similar, use
 *bleeding_haemorrhage*.
@@ -784,7 +788,7 @@ combined.
 **other_symptom**: Set (Text). List any other symptoms, or free text
 fields describing symptoms, here.
 
-**oxygen_o2hb**: Value. Heamoglobin level, lab test.
+**oxygen_o2hb**: Value (g/dL). Heamoglobin level, lab test.
 
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.
