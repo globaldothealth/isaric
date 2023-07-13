@@ -408,6 +408,10 @@
           "description": "Chronic cardiac disease",
           "$ref": "#/definitions/mapping"
         },
+        "has_chronic_respiratory_disease": {
+          "description": "Chronic cardiac disease",
+          "$ref": "#/definitions/mapping"
+        },
         "has_chronic_kidney_disease": {
           "description": "Chronic kidney disease",
           "$ref": "#/definitions/mapping"
@@ -631,7 +635,7 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_antimalarial_type": {
-          "description": "Antimalarial",
+          "description": "Antimalarial names",
           "$ref": "#/definitions/mapping"
         },
         "treatment_high_flow_nasal_cannula": {
@@ -688,6 +692,10 @@
         },
         "treatment_delirium": {
           "description": "Treatment for delirium",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_delirium_type": {
+          "description": "Treatment for delirium types",
           "$ref": "#/definitions/mapping"
         },
         "treatment_monoclonal_antibody": {
@@ -755,6 +763,7 @@
                   "mid_upper_arm_circumference_cm",
                   "oxygen_o2hb",
                   "oxygen_saturation_percent",
+                  "oxygen_flow_volume_max",
                   "pao2_mmHg",
                   "pco2_mmHg",
                   "pH",
