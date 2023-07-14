@@ -79,12 +79,16 @@
     field = "rheumatology_mhyr"
     ref = "Y/N"
 
-  [subject.has_hiv]
-    field = "aidshiv_mhyn"
+  [subject.has_hiv]  # TODO: needs confirmation from upstream
+    field = "aidshiv_mhyn_2"
     ref = "Y/N"
 
   [subject.has_hypertension]
     field = "hypertension_mhyn"
+    ref = "Y/N"
+
+  [subject.has_chronic_respiratory_disease]
+    field = "chronicpul_mhyn"
     ref = "Y/N"
 
   [subject.has_malignant_neoplasm]
@@ -108,16 +112,12 @@
     ref = "Y/N"
 
   [subject.has_diabetes]
-    combinedType = "any"
-    fields = [ # not mapping false, as it does not imply absence of diabetes
-      { field = "diabetes_mhyn", values = { 1 = true } },
-      { field = "diabetiscomp_mhyn", values = { 1 = true } },
-      { field = "diabetes_mhyn_2", values = { 1 = true, 2 = true } },
-    ]
+    field = "diabetes_mhyn_2"
+    values = { 1 = true, 2 = false, 4 = true }
 
   [subject.diabetes_type]
     field = "diabetes_mhyn_2"
-    values = { 1 = "type-1", 2 = "type-2" }
+    values = { 1 = "type-1", 4 = "type-2" }
 
   [subject.has_liver_disease]
     combinedType = "any"
@@ -126,7 +126,7 @@
       { field = "mildliv_mhyn", ref = "Y/N" },
     ]
 
-  [subject.has_hiv_art]
+  [subject.has_hiv_art]  # TODO: needs confirmation from upstream
     field = "aidshiv_mhyn_2"
     # 1, YES-on ART | 2, YES-not on ART | 3, No | 4, Unknown
     values = { 1 = true, 2 = false, 3 = false }
@@ -196,6 +196,7 @@
       { field = "oxygen_cmoccur", ref = "Y/N" },
       { field = "noninvasive_proccur", ref = "Y/N" },
       { field = "invasive_proccur", ref = "Y/N" },
+      { field = "extracorp_prtrt", ref = "Y/N" },
       { field = "nasal_highflow_proccur", ref = "Y/N" }, # high flow nasal cannula
       { field = "pronevent_prtrt", ref = "Y/N" },        # prone ventilation
     ]
@@ -220,7 +221,9 @@
     field = "nasal_highflow_proccur"
     ref = "Y/N"
 
-    # [visit.treatment_cardiovascular_support] nothing other than ECMO
+  [visit.treatment_cardiovascular_support] nothing other than ECMO
+    field = "extracorp_prtrt"
+    ref = "Y/N"
 
   [visit.outcome]
     field = "dsterm"
@@ -515,7 +518,6 @@
   name = "muscle_aches"
   date.ref = "followupDate"
   phase = "followup"
-  # TODO: no flw_mus_pain present, check if phase is correct
   is_present = { field = "mus_pain", ref = "boolean" }
 
 [[observation]]
