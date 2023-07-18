@@ -306,7 +306,11 @@
   name = "vomiting_nausea"
   date.ref = "followupDate"
   phase = "followup"
-  is_present = { field = "vomit_cov", ref = "boolean" }
+  is_present.combinedType = "any"
+  is_present.fields = [
+      { field = "vomit_cov", ref = "boolean" }
+      { field = "flw_nausea", ref = "boolean" }
+  ]
 
 [[observation]]
   name = "skin_rash"
@@ -359,12 +363,6 @@
   date.ref = "admissionDate"
   phase = "admission"
   is_present = { field = "headache_ceoccur_v2", ref = "Y/N" }
-
-[[observation]]
-  name = "severe_dehydration"
-  phase = "admission"  # TODO: not sure, check
-  date.ref = "admissionDate"
-  is_present = { field = "dehydration_vsorres", ref = "Y/N"}
 
 [[observation]]
   name = "lymphadenopathy"
@@ -457,7 +455,7 @@
   is_present = { field = "flw_pers_cough_y", values = {1 = true, 2 = false } }
 
 [[observation]]
-  name = "cough_dry"
+  name = "cough_with_sputum_production"
   date.ref = "followupDate"
   phase = "followup"
   is_present = { field = "flw_pers_cough_y", values = {1 = false, 2 = true } }
@@ -579,8 +577,7 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date.ref = "followupDate"
-  # TODO: there is also flw_eq5d_mb_5l_uk_eng_2
-  value.field = "flw_eq5d_mb_5l_uk_eng"
+  value.field = "flw_eq5d_mb_5l_uk_eng_2"
 
   [observation.value.values]
     1 = 1 # You have no problems in walking about?
@@ -592,7 +589,9 @@
 [[observation]]
   name = "oxygen_flow_volume_max"
   phase = "study"
-  date.ref = "admissionDate"  # TODO: could not find study date
+  duration_type = "block"
+  date.field = "dsstdtc"
+  start_date.ref = "admissionDate"  # TODO: could not find study date
   text.field = "oxygen_cmdose"
 
   [observation.text.values]
