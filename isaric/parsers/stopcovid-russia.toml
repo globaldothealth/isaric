@@ -162,7 +162,7 @@
     sensitive = true
 
   [visit.start_date]
-    field = "flw_date_symptoms"
+    field = "hostdat"
 
     # There is pathogen test information, but no test date
     # [visit.pathogen_test_date]
