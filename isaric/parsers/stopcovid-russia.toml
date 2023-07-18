@@ -591,7 +591,7 @@
   phase = "study"
   duration_type = "block"
   date.field = "dsstdtc"
-  start_date.ref = "admissionDate" # TODO: could not find study date
+  start_date.ref = "admissionDate"
   text.field = "oxygen_cmdose"
 
   [observation.text.values]
