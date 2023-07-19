@@ -31,10 +31,10 @@
     fields = [{ field = "q0_signs_symptoms" }, { field = "q2_onset" }]
 
   [adtl.defs.outcomeDate]
-    combinedType = "min"
+    combinedType = "firstNonNull"
     fields = [
-      { field = "q9_outcome" },
       { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
+      { field = "q9_outcome", description = "9) Outcome- transfer date /Date de sortie- transfert" }
     ]
 
 [subject]
@@ -45,11 +45,8 @@
     sensitive = true
 
   [subject.enrolment_date]
-    combinedType = "min"
-    fields = [
-      { field = "q6_site", description = "Date of patient enrolment" },
-      { field = "q1_demographics", description = "1) Enrolment date / Date d'inclusion" },
-    ]
+    field = "q1_demographics"
+    description = "1) Enrolment date / Date d'inclusion"
 
   [subject.earliest_admission_date]
     combinedType = "min"
@@ -101,18 +98,9 @@
     unit = "kg"
     source_unit = { field = "q29_demographics", description = "29) Unit / Unité", values = { 1 = "kg", 2 = "lbs" } }
 
-  [subject.pregnancy_date_of_delivery]
-    field = "q21_demographics"
-    description = "21) Delivery date / Date d'accouchement"
-
   [subject.pregnancy_gestational_age_weeks]
     field = "q18_demographics"
     description = "18) If YES: Gestational weeks assessment / Si OUI, préciser l'âge gestationnel"
-
-  [subject.pregnancy_post_partum]
-    field = "q19_demographics"
-    ref = "Y/N"
-    description = "19) POST PARTUM / POST PARTUM ? "
 
   [subject.pregnancy_gestational_outcome]
     field = "q30_demographics"
@@ -168,12 +156,14 @@
   ref = "Y/N"
 
 [subject.has_hiv]
-  field = "q11_co_morbidities"
-  description = "11) AIDS - HIV / VIH -SIDA"
-  ref = "Y/N"
+  combinedType = "any"
+  fields = [
+    { field = "q11_co_morbidities", description = "11) AIDS - HIV / VIH -SIDA", ref = "Y/N" },
+    { field = "q5_pathogen_testing", ref = "Y/N" }
+  ]
 
 [subject.has_hypertension]
-  field = "q18_co_morbidities"
+  field = "q21_co_morbidities"
   description = "18) Hypertension/ hypertension arterielle"
   ref = "Y/N"
 
@@ -282,11 +272,9 @@
   field = "q2_onset"
 
 [visit.treatment_antibiotics]
-  combinedType = "any"
-  fields = [
-    { field = "q4_onset", description = "4) If so, what did you consume? - Antibiotics / Si oui avez vous consommé des antibiotiques?", ref = "Y/N" },
-    { field = "q5_medication", description = "5) Antibiotic / Antibiotique ?", ref = "Y/N" },
-  ]
+  field = "q5_medication" 
+  description = "5) Antibiotic / Antibiotique ?" 
+  ref = "Y/N" 
 
 [visit.treatment_antivirals]
   field = "q2_medication"
@@ -325,8 +313,8 @@
   ]
 
 [visit.treatment_experimental_agent]
-  field = "q1_medication"
-  description = "1) Hydroxychloroquine/ Chloroquine"
+  field = "q15_medication"
+  description = "15) ELIXIR COVID and or ADSK COVID (Medication of Mgr Kleda)  / ELIXIR COVID et ou ADSAK COVID (Médicaments de MGR KLEDA) "
   ref = "Y/N"
 
 [visit.treatment_dialysis]
@@ -386,7 +374,7 @@
   fields = [
     # { field = "q8_onset", description = "8) If so, what did you consume? - Other / Si oui ,qu'avez vous consommé d'autres ?", ref = "Y/N" },
     # { field = "q9_hcare_practice", description = "9) If yes (please specify)  / Si oui, préciser" },
-    # { field = "q18_medication", description = "18) Other / Autre", ref = "Y/N" },
+    { field = "q20_medication", description = "20) If YES, please provide  dose / Si OUI, veuillez indiquer la dose" },
     { field = "q21_treatment", description = "21) OTHER intervention or procedure (please specify)", if = { all = [
       { q21_treatment = { "!=" = "no" } },
       { q21_treatment = { "!=" = "Non" } },
@@ -402,8 +390,11 @@
   ]
 
 [visit.outcome]
-  field = "q1_outcome"
-  description = "1) Outcome of healthcare facility / Issue de la FOSA "
+  combinedType = "set"
+  fields = [
+    { field = "q1_treatment_outcome", description = "1) Outcome of treatment /Issue du traitement" },
+    { field = "q1_outcome", description = "1) Outcome of healthcare facility / Issue de la FOSA " }
+  ]
 
   [visit.outcome.values]
     1 = "hospitalised"
@@ -415,10 +406,10 @@
     7 = "palliative discharge"
 
 [visit.date_outcome]
-  combinedType = "min"
+  combinedType = "firstNonNull"
   fields = [
-    { field = "q9_outcome" },
     { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
+    { field = "q9_outcome" }
   ]
 
 [[observation]]
@@ -664,31 +655,31 @@
   name = "oxygen_o2hb"
   phase = "study"
   date = { field = "q1_lab_results" }
-  value = { field = "q2_lab_results" }
+  value = { field = "q3_lab_results" }
 
-[[obsevration]]
+[[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { fields = "q2_onset" }
-  date = { ref = "outcomeDate" }
+  date = { field = "q14_treatment_outcome" }
   duration_type = "event"
   is_present = { field = "q1_complications" }
   context = ['viral']
 
-[[obsevration]]
+[[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { fields = "q2_onset" }
-  date = { ref = "outcomeDate" }
+  date = { field = "q14_treatment_outcome" }
   duration_type = "event"
   is_present = { field = "q2_complications" }
   context = ['bacterial']
 
-[[obsevration]]
+[[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { fields = "q2_onset" }
-  date = { ref = "outcomeDate" }
+  date = { field = "q14_treatment_outcome" }
   duration_type = "event"
   is_present = { field = "q7_complications" }
   context = ['cryptogenic organizing pneumonia (COP)']
@@ -715,7 +706,7 @@
   date = { ref = "admissionObsDate" }
   is_present = { field = "q29_signs_symptoms", description = "29) Seizures /Convulsions", values = { 1 = true, 2 = false } }
 
-[[obsevration]]
+[[observation]]
   name = "seizures"
   phase = "study"
   start_date = { fields = "q2_onset" }
@@ -790,7 +781,7 @@
   name = "temperature_celsius"
   phase = "study"
   date = { field = "q0_signs_symptoms" }
-  context = ["Highest in first 24hrs"]
+  #context = ["Highest in first 24hrs"]
 
   [observation.value]
     field = "q1_signs_symptoms"
