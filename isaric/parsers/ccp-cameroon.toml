@@ -660,7 +660,7 @@
 [[observation]]
   name = "pneumonia"
   phase = "study"
-  start_date = { fields = "q2_onset" }
+  start_date = { field = "q2_onset" }
   date = { field = "q14_treatment_outcome" }
   duration_type = "event"
   is_present = { field = "q1_complications" }
@@ -669,7 +669,7 @@
 [[observation]]
   name = "pneumonia"
   phase = "study"
-  start_date = { fields = "q2_onset" }
+  start_date = { field = "q2_onset" }
   date = { field = "q14_treatment_outcome" }
   duration_type = "event"
   is_present = { field = "q2_complications" }
@@ -678,7 +678,7 @@
 [[observation]]
   name = "pneumonia"
   phase = "study"
-  start_date = { fields = "q2_onset" }
+  start_date = { field = "q2_onset" }
   date = { field = "q14_treatment_outcome" }
   duration_type = "event"
   is_present = { field = "q7_complications" }
@@ -709,7 +709,7 @@
 [[observation]]
   name = "seizures"
   phase = "study"
-  start_date = { fields = "q2_onset" }
+  start_date = { field = "q2_onset" }
   date = { ref = "outcomeDate" }
   duration_type = "event"
   is_present = { field = "q10_complications" }
