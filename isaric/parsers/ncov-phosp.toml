@@ -212,7 +212,7 @@
   excludeWhen = "none"
   fields = [
     { field = "crf1a_com_other" },
-    { field = "crf2a_pre_con_other_detail" }
+    { field = "crf2a_pre_con_other_detail" },
     { field = "crf1a_com_card_other" },
     { field = "crf1a_com_neupsy_other" },
     { field = "crf1a_com_res_other" },
