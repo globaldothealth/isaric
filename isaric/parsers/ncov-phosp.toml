@@ -158,18 +158,18 @@
   field = "crf1a_com_mer_ckd_yn"
   ref = "Y/N"
 
-[subject.has_chronic_respiratory_disease] #crf1a_com_res_copd to crf1a_com_res_other_yn
-  combinedType = "any"
-  fields = [
-    { field = "crf1a_com_res_copd", ref = "Y/N" },
-    { field = "crf1a_com_res_ast", ref = "Y/N" },
-    { field = "crf1a_com_res_ild_yn", ref = "Y/N" },
-    { field = "crf1a_com_res_bron", ref = "Y/N" },
-    { field = "crf1a_com_res_osa", ref = "Y/N" },
-    { field = "crf1a_com_res_ohs", ref = "Y/N" },
-    { field = "crf1a_com_res_pe", ref = "Y/N" },
-    { field = "crf1a_com_res_other_yn", ref = "Y/N" }
-  ]
+#[subject.has_chronic_respiratory_disease]
+#  combinedType = "any"
+#  fields = [
+#    { field = "crf1a_com_res_copd", ref = "Y/N" },
+#    { field = "crf1a_com_res_ast", ref = "Y/N" },
+#    { field = "crf1a_com_res_ild_yn", ref = "Y/N" },
+#    { field = "crf1a_com_res_bron", ref = "Y/N" },
+#    { field = "crf1a_com_res_osa", ref = "Y/N" },
+#    { field = "crf1a_com_res_ohs", ref = "Y/N" },
+#    { field = "crf1a_com_res_pe", ref = "Y/N" },
+#    { field = "crf1a_com_res_other_yn", ref = "Y/N" }
+#  ]
 
 [subject.has_diabetes]
   combinedType = "any"
@@ -659,8 +659,8 @@
   phase = "followup"
   value = { field = "crf4a_rest_temp" }
 
-[[observation]]
-  name = "other_symptom"
-  date = { field = "patient_sq_date" }
-  phase = "followup"
-  value = { field = "patient_sq_h_other_detail" }
+#[[observation]]
+#  name = "other_symptom"
+#  date = { field = "patient_sq_date" }
+#  phase = "followup"
+#  value = { field = "patient_sq_h_other_detail" } # can't find this field ...
