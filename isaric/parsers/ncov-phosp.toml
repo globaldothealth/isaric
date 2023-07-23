@@ -176,7 +176,7 @@
   combinedType = "any"
   fields = [
     { field = "crf2a_pre_con_diab", ref = "Y/N" },
-    { field = "variable crf1a_com_mer_diab", values = { 1 = true, 2 = true, 0 = false }
+    { field = "variable crf1a_com_mer_diab", values = { 1 = true, 2 = true, 0 = false } }
   ]
 
 [subject.diabetes_type]
