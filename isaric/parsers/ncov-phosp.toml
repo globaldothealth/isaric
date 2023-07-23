@@ -53,7 +53,6 @@
       { field = "crf1a_date_adm" },
       { field = "crf1a_xfer_in_adm_date" }
     ]
-    ref = "admissionDateHierarchy"
 
   [subject.enrolment_date]
     field = "crf1a_date"
@@ -661,7 +660,7 @@
   value = { field = "crf4a_rest_temp" }
 
 [[observation]]
-name = "other_symptom"
-date = { field = "patient_sq_date" }
-phase = "followup"
-value = { field = "patient_sq_h_other_detail" }
+  name = "other_symptom"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  value = { field = "patient_sq_h_other_detail" }
