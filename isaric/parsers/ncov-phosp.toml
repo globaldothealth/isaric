@@ -409,7 +409,7 @@
 
 [[observation]]
   name = "cough_with_sputum_production"
-  date = { field = "crf1a_date_adm" ]
+  date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_cough_sputum", ref = "Y/N" }
 
