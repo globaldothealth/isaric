@@ -207,7 +207,7 @@
   field = "crf1a_immunosuppressant"
   ref = "Y/N"
 
-[subject.has_comorbodity_other]
+[subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
   fields = [
