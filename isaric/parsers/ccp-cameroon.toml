@@ -28,7 +28,10 @@
 
   [adtl.defs.admissionObsDate]
     combinedType = "firstNonNull"
-    fields = [{ field = "q0_signs_symptoms" }, { field = "q2_onset" }]
+    fields = [
+      { field = "q0_signs_symptoms", if = { redcap_event_name = "recruitment_arm_1" } }, 
+      { field = "q2_onset" }
+    ]
 
   [adtl.defs.outcomeDate]
     combinedType = "firstNonNull"
@@ -216,6 +219,7 @@
   field = "q1_treatment"
   description = "1) ICU or High Dependency Unit admission / Admission à l'Unité de Soins Intensifs ?"
   ref = "Y/N"
+  if = { redcap_event_name = "week_2_d14_arm_1" }
 
 [subject.has_died]
   combinedType = "any"
@@ -249,10 +253,12 @@
     field = "q1_treatment"
     description = "1) ICU or High Dependency Unit admission / Admission à l'Unité de Soins Intensifs ?  "
     ref = "Y/N"
+    if = { redcap_event_name = "week_2_d14_arm_1" }
 
   [visit.icu_admission_dates]
     combinedType = "set"
     excludeWhen = "none"
+    if = { redcap_event_name = "week_2_d14_arm_1" }
 
     [[visit.icu_admission_dates.fields]]
       field = "q4_treatment"
@@ -408,8 +414,8 @@
 [visit.date_outcome]
   combinedType = "firstNonNull"
   fields = [
-    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
-    { field = "q9_outcome" }
+    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement", apply = { function = "isNotNull", params = [ "q1_treatment_outcome" ] } },
+    { field = "q9_outcome", apply = { function = "isNotNull", params = [ "q1_outcome" ] } } 
   ]
 
 [[observation]]
@@ -514,8 +520,10 @@
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
-  date = { field = "q0_signs_symptoms" }
-
+  start_date = { field = "q2_onset" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  duration_type = "event"
+  
   [observation.value]
     field = "q6_signs_symptoms"
     source_unit = "mmHg"
@@ -554,7 +562,9 @@
 [[observation]]
   name = "heart_rate_bpm"
   phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  start_date = { field = "q2_onset" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  duration_type = "event"
   value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque" }
 
 [[observation]]
@@ -641,7 +651,9 @@
 [[observation]]
   name = "oxygen_saturation_percent"
   phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  start_date = { field = "q2_onset" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  duration_type = "event"
   value = { field = "q9_signs_symptoms", description = "9) Oxygen saturation / Saturation en oxygéne" }
 
   [observation.context]
@@ -661,33 +673,35 @@
   name = "pneumonia"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
   duration_type = "event"
-  is_present = { field = "q1_complications" }
+  is_present = { field = "q1_complications", if = { redcap_event_name = "week_2_d14_arm_1" } }
   context = ['viral']
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
   duration_type = "event"
-  is_present = { field = "q2_complications" }
+  is_present = { field = "q2_complications", if = { redcap_event_name = "week_2_d14_arm_1" } }
   context = ['bacterial']
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
   duration_type = "event"
-  is_present = { field = "q7_complications" }
+  is_present = { field = "q7_complications", if = { redcap_event_name = "week_2_d14_arm_1" } }
   context = ['cryptogenic organizing pneumonia (COP)']
 
 [[observation]]
   name = "respiratory_rate"
   phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  start_date = { field = "q2_onset" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  duration_type = "event"
   value = { field = "q4_signs_symptoms", description = "4) RR / Fréquence Respiratoire" }
 
 [[observation]]
@@ -710,7 +724,7 @@
   name = "seizures"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { ref = "outcomeDate" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
   duration_type = "event"
   is_present = { field = "q10_complications" }
 
@@ -774,13 +788,17 @@
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  start_date = { field = "q2_onset" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  duration_type = "event"
   value = { field = "q5_signs_symptoms", description = "5) Systolic BP / Tension artérielle systolique", source_unit = "mmHg" }
 
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
-  date = { field = "q0_signs_symptoms" }
+  start_date = { field = "q2_onset" }
+  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  duration_type = "event"
   #context = ["Highest in first 24hrs"]
 
   [observation.value]
@@ -793,7 +811,7 @@
   name = "vomiting_nausea"
   phase = "admission"
   date = { ref = "admissionObsDate" }
-
+  
   [observation.is_present]
     field = "q31_signs_symptoms"
     description = "31) Vomiting / Nausea /Vomissements/ Nausées"
