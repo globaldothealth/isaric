@@ -3,10 +3,7 @@
 [adtl]
   name = "ccp-spain"
   description = "COVID-19 patient data, Hospital del Mar, Barcelona, Spain"
-<<<<<<< Updated upstream
-=======
   defaultDateFormat = "%d/%m/%Y"
->>>>>>> Stashed changes
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -312,15 +309,6 @@
   ]
 
 [[observation]]
-<<<<<<< Updated upstream
-  name = "avpu"
-  date = { field = "fch_sv" }
-  phase = "admission"
-  is_present = { field = "ss_consciencia", ref = "Y/N/NK" }
-
-[[observation]]
-=======
->>>>>>> Stashed changes
   name = "diastolic_blood_pressure_mmHg"
   date = { field = "fch_sv" }
   phase = "admission"
@@ -453,21 +441,13 @@
   value = { field = "sv_sat" }
 
 [[observation]]
-<<<<<<< Updated upstream
-  name = "pao2"
-=======
   name = "pao2_mmHg"
->>>>>>> Stashed changes
   date = { field = "fch_sv" }
   phase = "admission"
   value = { field = "pa02" }
 
 [[observation]]
-<<<<<<< Updated upstream
-  name = "pco2"
-=======
   name = "pco2_mmHg"
->>>>>>> Stashed changes
   date = { field = "fch_sv" }
   phase = "admission"
   value = { field = "pco2" }
