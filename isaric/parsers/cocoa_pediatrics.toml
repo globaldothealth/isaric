@@ -396,25 +396,19 @@
 [[observation]]
   name = "cough_dry"
   phase = "admission"
-  start_date = { field = "cough_datstart_ceoccur_v2" }
   date = { field = "hostdat" }
-  duration_type = "block"
   is_present = { field = "cough_ceoccur_v2", description = "Cough", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
   phase = "admission"
-  start_date = { field = "cough_datstart_ceoccur_v2" }
   date = { field = "hostdat" }
-  duration_type = "block"
   is_present = { field = "coughhb_ceoccur_v2", description = "Cough: with haemoptysis", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "admission"
-  start_date = { field = "cough_datstart_ceoccur_v2" }
   date = { field = "hostdat" }
-  duration_type = "block"
   is_present = { field = "coughsput_ceoccur_v2", description = "Cough: with sputum production", ref = "Y/N/NK" }
 
 [[observation]]
