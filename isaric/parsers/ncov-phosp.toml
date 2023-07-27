@@ -9,7 +9,6 @@
     groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
-    optional-fields = ["enrolment_date"]
 
   [adtl.tables.visit]
     kind = "groupBy"
@@ -18,25 +17,24 @@
     schema = "../../schemas/dev/visit.schema.json"
 
   [adtl.tables.observation]
-    kind = "groupBy"
-    groupBy = ""
-    aggregation = "lastNotNull"
+    kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "phosp_id", sensitive = true } }
 
   [adtl.defs."Y/N".values]
-    1 = true
-    0 = false
+    Yes = true
+    No = false
 
-  [adtl.defs.admissionDateHierarchy] # @SK - is there an order to which these dates were filled/collected?
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "crf1a_date_adm" },
-      { field = "crf1a_date_first_symptoms" },
-      { field = "crf1a_date" }
-    ]
-    
-    # SUBJECT
-    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+[adtl.defs.admissionDateHierarchy] # @SK - is there an order to which these dates were filled/collected?
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "crf1a_date_adm" },
+    { field = "crf1a_date_first_symptoms" },
+    { field = "crf1a_date" },
+  ]
+
+  # SUBJECT
+  # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
   pathogen = "COVID-19"
@@ -48,29 +46,35 @@
   [subject.earliest_admission_date]
     combinedType = "min"
     fields = [
-      { field = "crfev_date_visit" },
-      { field = "crf4b_date_visit" },
-      { field = "crf1a_date_adm" },
-      { field = "crf1a_xfer_in_adm_date" }
+      { field = "crfev_date_visit", if = { crfev_date_visit = { "!=" = "NA" } } },
+      # { field = "crf4b_date_visit" },
+      { field = "crf1a_date_adm", if = { crf1a_date_adm = { "!=" = "NA" } } },
+      { field = "crf1a_xfer_in_adm_date", if = { crf1a_xfer_in_adm_date = { "!=" = "NA" } } },
     ]
 
   [subject.enrolment_date]
     field = "crf1a_date"
+    if = { crf1a_date = { "!=" = "NA" } }
 
   [subject.age]
     field = "age_admission"
     description = "Age at Admission (Years)"
+    if = { age_admission = { "!=" = "NA" } }
+
 
   [subject.sex_at_birth]
     field = "crf1a_sex"
 
     [subject.sex_at_birth.values]
-      1 = "male"
-      2 = "female"
+      Male = "male"
+      Female = "female"
 
 [subject.ethnicity]
-  field = "crf1b_eth"
-  values = { 1 = "(1) White - English / Welsh / Scottish / Northern Irish / British", 2 = "(2) White - Irish", 3 = "(3) White - Gypsy or Irish Traveller", 4 = "(4) White - Any other White background", 5 = "(5) Mixed/ Multiple Ethnic Backgrounds - White and Black Caribbean", 6 = "(6) Mixed/ Multiple Ethnic Backgrounds - White and Black African", 7 = "(7) Mixed/ Multiple Ethnic Backgrounds - White and Asian", 8 = "(8) Mixed/ Multiple Ethnic Backgrounds - Any other Mixed/ Multiple ethnic background", 9 = "(9) Asian/ Asian British - Indian", 10 = "(10) Asian/ Asian British - Pakistani", 11 = "(11) Asian/ Asian British - Bangladeshi", 12 = "(12) Asian/ Asian British - Chinese", 13 = "(13) Asian/ Asian British - Any other Asian background", 14 = "(14) Black/ African/ Caribbean/ Black British - African", 15 = "(15) Black/ African/ Caribbean/ Black British - Caribbean", 16 = "(16) Black/ African/ Caribbean/ Black British - Any other Black/ African/ Caribbean background", 17 = "(17) Other ethnic group - Arab", 18 = "(18) Other ethnic group - Any other ethnic group" }
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "crf1b_eth", if = { crf1b_eth = { "!=" = "NA" } } }]
+
+  # values = { 1 = "(1) White - English / Welsh / Scottish / Northern Irish / British", 2 = "(2) White - Irish", 3 = "(3) White - Gypsy or Irish Traveller", 4 = "(4) White - Any other White background", 5 = "(5) Mixed/ Multiple Ethnic Backgrounds - White and Black Caribbean", 6 = "(6) Mixed/ Multiple Ethnic Backgrounds - White and Black African", 7 = "(7) Mixed/ Multiple Ethnic Backgrounds - White and Asian", 8 = "(8) Mixed/ Multiple Ethnic Backgrounds - Any other Mixed/ Multiple ethnic background", 9 = "(9) Asian/ Asian British - Indian", 10 = "(10) Asian/ Asian British - Pakistani", 11 = "(11) Asian/ Asian British - Bangladeshi", 12 = "(12) Asian/ Asian British - Chinese", 13 = "(13) Asian/ Asian British - Any other Asian background", 14 = "(14) Black/ African/ Caribbean/ Black British - African", 15 = "(15) Black/ African/ Caribbean/ Black British - Caribbean", 16 = "(16) Black/ African/ Caribbean/ Black British - Any other Black/ African/ Caribbean background", 17 = "(17) Other ethnic group - Arab", 18 = "(18) Other ethnic group - Any other ethnic group" }
 
 [subject.works_healthcare]
   field = "crf1b_healthcare_worker"
@@ -82,10 +86,11 @@
 
 [subject.pregnancy_date_of_delivery]
   field = "crf1a_delivery_date"
+  if = { crf1a_delivery_date = { "!=" = "NA" } }
 
 [subject.pregnancy_outcome]
   field = "crf1a_pregnancy_outcome"
-  values = { 1 = "live birth", 2 = "still birth" }
+  values = { "Live Birth" = "live birth", "Still Birth" = "still birth" }
 
 [subject.pregnancy_post_partum]
   field = "crf1a_post_partum_yn"
@@ -93,15 +98,16 @@
 
 [subject.pregnancy_gestational_age_weeks]
   field = "crf1a_gestational_weeks"
+  if = { crf1a_gestational_weeks = { "!=" = "NA" } }
 
 [subject.has_chronic_hematologic_disease]
   field = "crf1a_com_mh_other_yn"
-  values = { 1 = true, 2 = true }
+  values = { Yes = true, No = false }
 
 [subject.has_tuberculosis]
   field = "crf1a_com_id_mt"
-  values = { 0 = false, 1 = true, 2 = false, 3 = false }
-  
+  values = { Never = false, "Current active TB" = true, "Previously treated active TB" = false, "Previously treated latent TB" = false }
+
 [subject.has_dementia]
   field = "crf1a_com_neupsy_dem"
   ref = "Y/N"
@@ -112,8 +118,8 @@
   fields = [
     { field = "crf1a_com_rheu_ctd", ref = "Y/N" },
     { field = "crf1a_com_rheu_ra", ref = "Y/N" },
-    { field = "crf1a_com_rheu_ost", ref = "Y/N" },    
-    { field = "crf1a_com_rheu_other_yn" }
+    { field = "crf1a_com_rheu_ost", ref = "Y/N" },
+    { field = "crf1a_com_rheu_other_yn", ref = "Y/N" },
   ]
 
 [subject.has_hiv]
@@ -124,12 +130,12 @@
   combinedType = "any"
   fields = [
     { field = "crf1a_com_card_ht", ref = "Y/N" },
-    { field = "crf2a_pre_con_hypt", ref = "Y/N" }
+    { field = "crf2a_pre_con_hypt", ref = "Y/N" },
   ]
 
 [subject.has_malignant_neoplasm]
   field = "crf1a_com_mh_stm"
-  values = { 1 = true, 2 = true, 0 = "false" }
+  values = { Metastatic = true, Localised = true, No = false }
 
 [subject.has_asthma]
   field = "crf1a_com_res_ast"
@@ -151,31 +157,31 @@
     { field = "crf1a_com_card_chd", ref = "Y/N" },
     { field = "crf1a_com_card_vhd", ref = "Y/N" },
     { field = "crf1a_com_card_pid", ref = "Y/N" },
-    { field = "crf1a_com_card_other_yn", ref = "Y/N" } 
+    { field = "crf1a_com_card_other_yn", ref = "Y/N" },
   ]
 
 [subject.has_chronic_kidney_disease]
   field = "crf1a_com_mer_ckd_yn"
   ref = "Y/N"
 
-#[subject.has_chronic_respiratory_disease]
-#  combinedType = "any"
-#  fields = [
-#    { field = "crf1a_com_res_copd", ref = "Y/N" },
-#    { field = "crf1a_com_res_ast", ref = "Y/N" },
-#    { field = "crf1a_com_res_ild_yn", ref = "Y/N" },
-#    { field = "crf1a_com_res_bron", ref = "Y/N" },
-#    { field = "crf1a_com_res_osa", ref = "Y/N" },
-#    { field = "crf1a_com_res_ohs", ref = "Y/N" },
-#    { field = "crf1a_com_res_pe", ref = "Y/N" },
-#    { field = "crf1a_com_res_other_yn", ref = "Y/N" }
-#  ]
+  #[subject.has_chronic_respiratory_disease]
+  #  combinedType = "any"
+  #  fields = [
+  #    { field = "crf1a_com_res_copd", ref = "Y/N" },
+  #    { field = "crf1a_com_res_ast", ref = "Y/N" },
+  #    { field = "crf1a_com_res_ild_yn", ref = "Y/N" },
+  #    { field = "crf1a_com_res_bron", ref = "Y/N" },
+  #    { field = "crf1a_com_res_osa", ref = "Y/N" },
+  #    { field = "crf1a_com_res_ohs", ref = "Y/N" },
+  #    { field = "crf1a_com_res_pe", ref = "Y/N" },
+  #    { field = "crf1a_com_res_other_yn", ref = "Y/N" }
+  #  ]
 
 [subject.has_diabetes]
   combinedType = "any"
   fields = [
     { field = "crf2a_pre_con_diab", ref = "Y/N" },
-    { field = "variable crf1a_com_mer_diab", values = { 1 = true, 2 = true, 0 = false } }
+    { field = "crf1a_com_mer_diab", values = { "Type 1" = true, "Type 2" = true, No = false } },
   ]
 
 [subject.diabetes_type]
@@ -183,24 +189,24 @@
   description = ""
 
   [subject.diabetes_type.values]
-    1 = "type-1"
-    2 = "type-2"
+    "Type 1" = "type-1"
+    "Type 2" = "type-2"
 
 [subject.has_liver_disease]
   field = "crf1a_com_gast_ld"
-  values = { 1 = true, 2 = true, 0 = false }
+  values = { "Mod/severe" = true, Mild = true, No = false }
 
 [subject.has_apnoea]
   field = "crf1a_com_res_osa"
   ref = "Y/N"
 
 [subject.has_inflammatory_bowel_disease]
-  field = "crf1a_com_gast_ibd	"
+  field = "crf1a_com_gast_ibd"
   ref = "Y/N"
 
 [subject.has_tuberculosis_past]
   field = "crf1a_com_id_mt"
-  values = { 0 = false, 1 = false, 2 = true, 3 = true }
+  values = { Never = false, "Current active TB" = false, "Previously treated active TB" = true, "Previously treated latent TB" = true }
 
 [subject.has_immunosuppression]
   field = "crf1a_immunosuppressant"
@@ -208,28 +214,29 @@
 
 [subject.has_comorbidity_other]
   combinedType = "set"
-  excludeWhen = "none"
+  excludeWhen = "false-like"
   fields = [
-    { field = "crf1a_com_other" },
-    { field = "crf2a_pre_con_other_detail" },
-    { field = "crf1a_com_card_other" },
-    { field = "crf1a_com_neupsy_other" },
-    { field = "crf1a_com_res_other" },
-    { field = "crf1a_com_rheu_other" },
-    { field = "crf1a_com_gast_other" },
-    { field = "crf1a_com_mer_other" },
-    { field = "crf1a_com_mh_other" }
+    { field = "crf1a_com_other", if = { crf1a_com_other = { "!=" = "NA" } } },
+    { field = "crf2a_pre_con_other_detail", if = { crf2a_pre_con_other_detail = { "!=" = "NA" } } },
+    { field = "crf1a_com_card_other", if = { crf1a_com_card_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_neupsy_other", if = { crf1a_com_neupsy_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_res_other", if = { crf1a_com_res_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_rheu_other", if = { crf1a_com_rheu_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_gast_other", if = { crf1a_com_gast_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_mer_other", if = { crf1a_com_mer_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_mh_other", if = { crf1a_com_mh_other = { "!=" = "NA" } } },
   ]
 
 [subject.has_died] # type - boolean
-  field = "crf2a_reason_not_done" 
-  values = { 3 = true }
-  
+  field = "crf2a_reason_not_done"
+  values = { Language = false, Declined = false, Died = true, Other = false }
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
 [visit]
-  country_iso3 = "UK"
+  country_iso3 = "GBR"
+  outcome = "discharged"
 
   [visit.visit_id]
     field = "phosp_id"
@@ -242,6 +249,7 @@
   [visit.start_date]
     field = "crf1a_date_adm"
     description = "Date of admission to this hospital"
+    if = { crf1a_date_adm = { "!=" = "NA" } }
 
   [visit.transfer_from_other_facility]
     field = "crf1a_xfer_in"
@@ -251,7 +259,7 @@
     combinedType = "any"
     fields = [
       { field = "crf1a_add_diag_cvvh", description = "b) Renal failure requiring CVVH or Haemodialysis", ref = "Y/N" },
-      { field = "crf1a_treat_rrt", ref = "Y/N" }
+      { field = "crf1a_treat_rrt", ref = "Y/N" },
     ]
 
   [visit.treatment_ecmo]
@@ -259,9 +267,9 @@
     ref = "Y/N"
 
   [visit.treatment_corticosteroid]
-    field = "crf1a_treat_ss" 
+    field = "crf1a_treat_ss"
     ref = "Y/N"
-   
+
   [visit.treatment_oxygen_therapy]
     combinedType = "any"
     fields = [
@@ -271,8 +279,8 @@
       { field = "crf1a_o2_imv", ref = "Y/N" },
       { field = "crf1a_o2_ecmo", ref = "Y/N" },
       { field = "crf1a_o2_blniv", ref = "Y/N" },
-      { field = "crf1a_o2_cpapv", ref = "Y/N" }
-    ]  
+      { field = "crf1a_o2_cpapv", ref = "Y/N" },
+    ]
 
   [visit.treatment_invasive_ventilation]
     field = "crf1a_o2_imv"
@@ -280,10 +288,10 @@
     ref = "Y/N"
 
   [visit.treatment_antibiotics]
-    field = "crf1a_treat_at" 
-    description = "a) Antibiotic therapy" 
+    field = "crf1a_treat_at"
+    description = "a) Antibiotic therapy"
     ref = "Y/N"
-    
+
   [visit.treatment_noninvasive_ventilation]
     field = "crf1a_o2_blniv"
     description = "c) Bi-Level Non-Invasive Ventilation"
@@ -298,7 +306,7 @@
     combinedType = "any"
     fields = [
       { field = "crf1a_treat_saril", ref = "Y/N" },
-      { field = "crf1a_treat_tocil", ref = "Y/N" }
+      { field = "crf1a_treat_tocil", ref = "Y/N" },
     ]
 
   [visit.treatment_prone_position]
@@ -320,21 +328,14 @@
   [visit.treatment_antivirals]
     field = "crf1a_treat_remde"
     ref = "Y/N"
-    
-  [visit.outcome]
-    field = "crf2b_outcome"
-    description = "2) Outcome"
 
-    [visit.outcome.values] # check this??!! 
-      1 = "discharged"
-      # 2 = "Further follow up"
-  
-[visit.date_outcome]
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "crf1a_date_dis", description = "Date of discharge from hospital" },
-    { field = "crfev_date_discharge", description = "Date of discharge" }
-  ]
+  [visit.date_outcome]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "crf1a_date_dis", description = "Date of discharge from hospital", if = { crf1a_date_dis = { "!=" = "NA" } } },
+      { field = "crf2a_date_discharged", description = "Date of discharge from hospital", if = { crf2a_date_discharged = { "!=" = "NA" } } },
+      # { field = "crfev_date_discharge", description = "Date of discharge" },
+    ]
 
     # OBSERVATION
     # required fields - phase, date, name
@@ -344,24 +345,28 @@
   date = { field = "crf3a_visit_date" }
   phase = "followup"
   value = { field = "crf3a_rest_bp_dia" }
+  if = { crf3a_rest_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   value = { field = "crf1a_bp_dia" }
+  if = { crf1a_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "crf3b_visit_date" }
+  date = { field = "crf3b_date_visit" }
   phase = "followup"
   value = { field = "crf3b_rest_bp_dia" }
+  if = { crf3b_rest_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   date = { field = "crf4a_visit_date" }
   phase = "followup"
   value = { field = "crf4a_rest_bp_dia" }
+  if = { crf4a_rest_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "abdominal_pain"
@@ -391,14 +396,14 @@
   name = "anorexia"
   date = { field = "patient_sq_date" }
   phase = "followup"
-  is_present = { field = "loss_of_appetit", ref = "Y/N" }
+  is_present = { field = "loss_of_appetite", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_cough", ref = "Y/N" }
-  
+
 
 [[observation]]
   name = "cough_with_haemoptysis"
@@ -417,7 +422,7 @@
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_diarrhoea", ref = "Y/N" }
-  
+
 [[observation]]
   name = "ear_pain"
   date = { field = "crf1a_date_adm" }
@@ -488,8 +493,8 @@
     combinedType = "any"
     fields = [
       { field = "crf1a_loss_taste", ref = "Y/N" },
-      { field = "crf1a_loss_smell", ref = "Y/N" }
-    ]  
+      { field = "crf1a_loss_smell", ref = "Y/N" },
+    ]
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
@@ -531,14 +536,15 @@
   name = "oxygen_o2hb"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
-  value = "crf1a_haemoglobin"
+  value = { field = "crf1a_haemoglobin" }
+  if = { crf1a_haemoglobin = { "!=" = "NA" } }
 
 [[observation]]
   name = "shortness_of_breath"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_shortness_breath", ref = "Y/N" }
-  	
+
 [[observation]]
   name = "skin_rash"
   date = { field = "crf1a_date_adm" }
@@ -580,87 +586,101 @@
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   value = { field = "crf1a_hr" }
+  if = { crf1a_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "heart_rate_bpm"
   date = { field = "crf3a_visit_date" }
   phase = "followup"
   value = { field = "crf3a_rest_hr" }
+  if = { crf3a_rest_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "crf3b_visit_date" }
+  date = { field = "crf3b_date_visit" }
   phase = "followup"
   value = { field = "crf3b_rest_hr" }
+  if = { crf3b_rest_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "heart_rate_bpm"
   date = { field = "crf4a_visit_date" }
   phase = "followup"
   value = { field = "crf4a_rest_hr" }
+  if = { crf4a_rest_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "oxygen_saturation_percent"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   value = { field = "crf1a_o2_sat" }
+  if = { crf1a_o2_sat = { "!=" = "NA" } }
 
 [[observation]]
   name = "respiratory_rate"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   value = { field = "crf1a_respiratory_rate" }
+  if = { crf1a_respiratory_rate = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   date = { field = "crf3a_visit_date" }
   phase = "followup"
   value = { field = "crf3a_rest_bp_sys" }
+  if = { crf3a_rest_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   value = { field = "crf1a_bp_sys" }
+  if = { crf1a_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "crf3b_visit_date" }
+  date = { field = "crf3b_date_visit" }
   phase = "followup"
   value = { field = "crf3b_rest_bp_sys" }
+  if = { crf3b_rest_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   date = { field = "crf4a_visit_date" }
   phase = "followup"
   value = { field = "crf4a_rest_bp_sys" }
+  if = { crf4a_rest_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   value = { field = "crf1a_temperature" }
+  if = { crf1a_temperature = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
   date = { field = "crf3a_visit_date" }
   phase = "followup"
   value = { field = "crf3a_rest_temp" }
+  if = { crf3a_rest_temp = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "crf3b_visit_date" }
+  date = { field = "crf3b_date_visit" }
   phase = "followup"
   value = { field = "crf3b_rest_temp" }
+  if = { crf3b_rest_temp = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
   date = { field = "crf4a_visit_date" }
   phase = "followup"
   value = { field = "crf4a_rest_temp" }
+  if = { crf4a_rest_temp = { "!=" = "NA" } }
 
-#[[observation]]
-#  name = "other_symptom"
-#  date = { field = "patient_sq_date" }
-#  phase = "followup"
-#  value = { field = "patient_sq_h_other_detail" } # can't find this field ...
+  #[[observation]]
+  #  name = "other_symptom"
+  #  date = { field = "patient_sq_date" }
+  #  phase = "followup"
+  #  value = { field = "patient_sq_h_other_detail" } # can't find this field ...
