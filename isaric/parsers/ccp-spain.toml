@@ -21,12 +21,12 @@
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "record_id", sensitive = true } } 
+    common = { visit_id = { field = "record_id", sensitive = true } }
 
   [adtl.defs."Y/N/NK".values]
     0 = false
     1 = true
-    # 2 = "Unknown"  
+    # 2 = "Unknown"
 
 [subject]
   study_id = "ccp-spain"
@@ -43,10 +43,10 @@
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
   [subject.earliest_admission_date]
-    fields = [{field = "fchadminsion"}]
+    fields = [{ field = "fchadminsion" }]
     combinedType = "min"
     description = "Date of admission to first study visit"
-     # there is no field that maps to enrolment_date
+    # there is no field that maps to enrolment_date
 
   [subject.ethnicity]
     description = "Ethnic groups"
@@ -59,11 +59,11 @@
   [subject.works_microbiology_lab]
     field = "infhospi"
     description = "Employed in a microbiology laboratory?"
-    values = { 2 = true }   # if not 2 - gives FALSE                               
+    values = { 2 = true }                                  # if not 2 - gives FALSE
 
   [subject.works_healthcare]
     field = "infhospi"
-    values = { 1 = true }     # if not 1 - gives FALSE                            
+    values = { 1 = true }                            # if not 1 - gives FALSE
     description = "Employed as a healthcare worker?"
 
   [subject.age]
@@ -78,7 +78,7 @@
     ref = "Y/N/NK"
     description = "Pregnant ?"
 
-  [subject.pregnancy_gestational_assessment_weeks]
+  [subject.pregnancy_gestational_age_weeks]
     field = "semgest"
     description = "Gestational weeks assessment"
 
@@ -171,9 +171,9 @@
     combinedType = "firstNonNull"
     description = "Outcome date"
     fields = [
-      { field = "fch_alta" },
-      { field = "fch_ulticont" },
-      { field = "fch_exitus" },
+      { field = "fch_alta", description = "Date of hospital discharge" },
+      { field = "fch_ulticont", description = "Date of last contact" },
+      { field = "fch_exitus", description = "Date of death" },
       { field = "fcha_1eralta" },
       { field = "fch_pcr_neg" },
     ]
@@ -190,11 +190,10 @@
     combinedType = "firstNonNull"
     fields = [
       { field = "fchadminsion", description = "Admission date at this facility" },
-      { field = "fch_sv", desctiption = "Date for Vital Signs upon admission" },
+      { field = "fch_sv", description = "Date for Vital Signs upon admission" },
     ]
 
   [visit.icu_admission]
-    combinedType = "any"
     field = "uci"
     values = { 0 = false, 1 = true }
 
@@ -202,9 +201,7 @@
     description = "ICU admission date"
     combinedType = "list"
     excludeWhen = "none"
-    fields = [
-      { field = "fecha_uci" }
-    ]
+    fields = [{ field = "fecha_uci" }]
 
   [visit.pathogen_test_date]
     field = "fch_covid19"
@@ -234,7 +231,7 @@
       { field = "lopr", values = { 0 = false, 1 = true }, description = "Lopinavir/Ritonvir Antiviral?" },
     ]
 
-  [visit.treatment_antivitals_type]
+  [visit.treatment_antiviral_type]
     description = "Type of antiviral agent used"
     combinedType = "set"
     fields = [
@@ -297,15 +294,6 @@
     { field = "otro_tto", description = "Any other treatments?" },
     { field = "cloroquina", values = { 1 = "Chloroquine" } },
     { field = "cloroq", values = { 1 = "Hydroxychloroquine" } },
-  ]
-
-[visit.outcome_date]
-  description = "Date the visit outcome was recorded"
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "fch_alta", description = "Date of hospital discharge" },
-    { field = "fch_exitus", description = "Date of death" },
-    { field = "fch_ulticont", description = "Date of last contact" },
   ]
 
 [[observation]]
@@ -472,7 +460,7 @@
 
   ### Obervation attributes not mapped here...
   # bleeding
-  # has_immunosuppression 
+  # has_immunosuppression
   # avpu
   # clinical_classification_critical_illness_scale
   # clinical_classification_pneumonia_needing_oxygen
