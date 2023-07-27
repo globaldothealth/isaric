@@ -3,7 +3,7 @@
 [adtl]
   name = "ccp-spain"
   description = "COVID-19 patient data, Hospital del Mar, Barcelona, Spain"
-  defaultDateFormat = "%d/%m/%Y"
+  # defaultDateFormat = "%d/%m/%Y"
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -172,8 +172,8 @@
     description = "Outcome date"
     fields = [
       { field = "fch_alta", description = "Date of hospital discharge" },
-      { field = "fch_ulticont", description = "Date of last contact" },
       { field = "fch_exitus", description = "Date of death" },
+      { field = "fch_ulticont", description = "Date of last contact" },
       { field = "fcha_1eralta" },
       { field = "fch_pcr_neg" },
     ]
@@ -234,8 +234,9 @@
   [visit.treatment_antiviral_type]
     description = "Type of antiviral agent used"
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
-      { field = "tozi", values = { 1 = "Tocilizuma" } },
+      { field = "tozi", values = { 1 = "Tocilizumab" } },
       { field = "rbv", values = { 1 = "Ribavirin" } },
       { field = "remdi", values = { 1 = "Remdesivir" } },
       { field = "lopr", values = { 1 = "Lopinavir/Ritonvir" } },
