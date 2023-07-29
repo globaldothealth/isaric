@@ -25,13 +25,24 @@
     Yes = true
     No = false
 
-[adtl.defs.admissionDateHierarchy] # @SK - is there an order to which these dates were filled/collected?
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "crf1a_date_adm" },
-    { field = "crf1a_date_first_symptoms" },
-    { field = "crf1a_date" },
-  ]
+  [adtl.defs.admissionDateHierarchy] # @SK - is there an order to which these dates were filled/collected?
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "crf1a_date_adm" },
+      { field = "crf1a_date_first_symptoms" },
+      { field = "crf1a_date" },
+    ]
+
+  [adtl.defs.eq5dDates]
+    combinedType = "firstNonNull"
+    excludeWhen = "none"
+    fields = [
+      { field = "crf2a_date", if = { redcap_event_name = "6 Weeks" } },
+      { field = "crf4a_visit_date", if = { redcap_event_name = "Add. Planned Clinical Visits" } },
+      { field = "crf3b_date_visit", if = { redcap_event_name = "3 Months (1st Research Visit)" } },
+      { field = "crf3b_date_visit", if = { redcap_event_name = "12 Months (2nd Research Visit)" } },
+      { field = "crf3a_visit_date", if = { crf3b_date_visit = "" } },
+    ]
 
   # SUBJECT
   # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
@@ -375,10 +386,22 @@
   is_present = { field = "crf1a_pain", ref = "Y/N" }
 
 [[observation]]
+  name = "abdominal_pain"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "abdominal_pain", ref = "Y/N" }
+
+[[observation]]
   name = "bleeding_haemorrhage"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_bleeding", ref = "Y/N" }
+
+[[observation]]
+  name = "bleeding"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "bleeding", ref = "Y/N" }
 
 [[observation]]
   name = "chest_pain"
@@ -387,10 +410,22 @@
   is_present = { field = "crf1a_chest_pain", ref = "Y/N" }
 
 [[observation]]
+  name = "chest_pain"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "chest_pain", ref = "Y/N" }
+
+[[observation]]
   name = "altered_consciousness_confusion"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_confusion", ref = "Y/N" }
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "confusion_fuzzy_head", ref = "Y/N" }
 
 [[observation]]
   name = "anorexia"
@@ -404,6 +439,11 @@
   phase = "admission"
   is_present = { field = "crf1a_cough", ref = "Y/N" }
 
+[[observation]]
+  name = "cough"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "psq_cough", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
@@ -424,6 +464,12 @@
   is_present = { field = "crf1a_diarrhoea", ref = "Y/N" }
 
 [[observation]]
+  name = "diarrhoea"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "diarrhoea", ref = "Y/N" }
+
+[[observation]]
   name = "ear_pain"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
@@ -436,10 +482,22 @@
   is_present = { field = "crf1a_fatigue", ref = "Y/N" }
 
 [[observation]]
+  name = "fatigue_malaise"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "psq_fatigue", ref = "Y/N" }
+
+[[observation]]
   name = "headache"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_headache", ref = "Y/N" }
+
+[[observation]]
+  name = "headache"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "headache", ref = "Y/N" }
 
 [[observation]]
   name = "history_of_fever"
@@ -447,10 +505,15 @@
   phase = "admission"
   is_present = { field = "crf1a_fever_history", ref = "Y/N" }
 
-# Q. Can you have 'inability to walk scale' without 'inability to walk'
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "psq_feverish", ref = "Y/N" }
+  
 [[observation]]
   name = "inability_to_walk_scale"
-  date = { field = "crf1a_date_ad" }
+  date = { ref = "eq5dDates" } # Q. Check if date is ok?'
   phase = "followup"
   value.field = "eq5d5l_q1"
   [observation.value.values]
@@ -461,10 +524,22 @@
     5 = 4 # I am unable to walk about
 
 [[observation]]
+  name = "inability_to_walk"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "patient_sq_l_t_walking", ref = "Y/N" }
+
+[[observation]]
   name = "joint_pain"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_join_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "joint_pain"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "joint_pain_or_swelling", ref = "Y/N" }
 
 [[observation]]
   name = "conjunctivitis"
@@ -485,6 +560,12 @@
   is_present = { field = "crf1a_loss_taste", ref = "Y/N" }
 
 [[observation]]
+  name = "loss_of_taste"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "loss_of_taste", ref = "Y/N" }
+
+[[observation]]
   name = "loss_of_smell_or_taste"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
@@ -495,6 +576,12 @@
       { field = "crf1a_loss_taste", ref = "Y/N" },
       { field = "crf1a_loss_smell", ref = "Y/N" },
     ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "loss_of_smell_or_taste" }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
@@ -515,6 +602,12 @@
   is_present = { field = "crf1a_muscle_aches", ref = "Y/N" }
 
 [[observation]]
+  name = "muscle_aches"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "aching_in_your_muscles_pai", ref = "Y/N" }
+  
+[[observation]]
   name = "runny_nose"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
@@ -525,6 +618,12 @@
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_seizures", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "seizures", ref = "Y/N" }
 
 [[observation]]
   name = "severe_dehydration"
@@ -546,10 +645,22 @@
   is_present = { field = "crf1a_shortness_breath", ref = "Y/N" }
 
 [[observation]]
+  name = "shortness_of_breath"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "psq_blness", ref = "Y/N" }
+
+[[observation]]
   name = "skin_rash"
   date = { field = "crf1a_date_adm" }
   phase = "admission"
   is_present = { field = "crf1a_skin_rash", ref = "Y/N" }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "skin_rash", ref = "Y/N" }
 
 [[observation]]
   name = "skin_ulcers"
@@ -575,6 +686,12 @@
   phase = "admission"
   is_present = { field = "crf1a_nausea", ref = "Y/N" }
 
+[[observation]]
+  name = "vomiting_nausea"
+  date = { field = "patient_sq_date" }
+  phase = "followup"
+  is_present = { field = "nausea_vomiting", ref = "Y/N" }
+  
 [[observation]]
   name = "wheezing"
   date = { field = "crf1a_date_adm" }
@@ -679,8 +796,8 @@
   value = { field = "crf4a_rest_temp" }
   if = { crf4a_rest_temp = { "!=" = "NA" } }
 
-  #[[observation]]
-  #  name = "other_symptom"
-  #  date = { field = "patient_sq_date" }
-  #  phase = "followup"
-  #  value = { field = "patient_sq_h_other_detail" } # can't find this field ...
+[[observation]]
+  name = "other_symptom"
+  phase = "followup"
+  date = { field = "patient_sq_date" }
+  text = { field = "patient_sq_h_other_detail" }
