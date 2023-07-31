@@ -57,6 +57,24 @@
     source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
     unit = "years"
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "add_date", if = { age_unit = 1 }, apply = { function = "startYear", params = [
+        "$age",
+      ] } },
+      { field = "add_date", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        "$age",
+        "%Y-%m-%d",
+        "months",
+      ] } },
+      { field = "add_date", if = { age_unit = 3 }, apply = { function = "startYear", params = [
+        "$age",
+        "%Y-%m-%d",
+        "days",
+      ] } },
+    ]
+
   [subject.sex]
     field = "sex"
     description = "Gender"

@@ -45,6 +45,24 @@
     source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
     unit = "years"
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "hospitalization_date", if = { age_unit = 1 }, apply = { function = "startYear", params = [
+        "$age",
+      ] } },
+      { field = "hospitalization_date", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        "$age",
+        "%d/%m/%Y",
+        "months",
+      ] } },
+      { field = "hospitalization_date", if = { age_unit = 3 }, apply = { function = "startYear", params = [
+        "$age",
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
   [subject.sex]
     field = "sex"
     values = { 1 = "male", 0 = "female" }

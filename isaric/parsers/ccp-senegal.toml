@@ -63,6 +63,20 @@
     unit = "years"
     source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years" } }
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "hostdat_year", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        "$age_estimateyears",
+        "%Y",
+      ] } },
+      # { field = "hostdat_year", if = { age_unit = 1 }, apply = { function = "startYear", params = [
+      #   "$age_estimateyears",
+      #   "%Y",
+      #   "months",
+      # ] } }, # how to do this - dates are made by combining d + m + y fields but can't do that within the function.
+    ]
+
   [subject.date_death]
     combinedType = "firstNonNull"
     fields = [

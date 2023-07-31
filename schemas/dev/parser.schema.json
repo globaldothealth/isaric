@@ -300,6 +300,22 @@
           "description": "Age in years",
           "$ref": "#/definitions/mapping"
         },
+        "date_of_birth": {
+          "description": "Date of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_year": {
+          "description": "Year of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_month": {
+          "description": "month of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_day": {
+          "description": "Day of birth",
+          "$ref": "#/definitions/mapping"
+        },
         "sex_at_birth": {
           "description": "Sex at birth",
           "$ref": "#/definitions/mapping"

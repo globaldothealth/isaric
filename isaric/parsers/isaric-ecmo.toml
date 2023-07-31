@@ -285,20 +285,31 @@
     description = "Employed as a healthcare worker?"
 
   [subject.age]
-    combinedType = "firstNonNull"
-    [[subject.age.fields]]
-      field = "age_estimate10"
-      unit = "years"
-      description = "Calculated age in years"
+    field = "age_estimateyears"
+    unit = "years"
+    description = "Age/Estimated age"
 
-    [[subject.age.fields]]
-      field = "age_estimateyears"
-      unit = "years"
-      description = "Age/Estimated age"
+    [subject.age.source_unit]
+      field = "age_estimateyearsu"
+      values = { 1 = "months", 2 = "years", 3 = "days" }
 
-      [subject.age.fields.source_unit]
-        field = "age_estimateyearsu"
-        values = { 1 = "months", 2 = "years", 3 = "days" }
+[subject.dob_year]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "hostdat", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+      "$age_estimateyears",
+    ] } },
+    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+      "$age_estimateyears",
+      "%Y-%m-%d",
+      "months",
+    ] } },
+    { field = "hostdat", if = { age_estimateyearsu = 3 }, apply = { function = "startYear", params = [
+      "$age_estimateyears",
+      "%Y-%m-%d",
+      "days",
+    ] } },
+  ]
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"

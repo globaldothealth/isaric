@@ -48,6 +48,19 @@
     unit = "years"
     source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years" } }
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "hostdat", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        "$age_estimateyears",
+      ] } },
+      { field = "hostdat", if = { age_unit = 1 }, apply = { function = "startYear", params = [
+        "$age_estimateyears",
+        "%Y-%m-%d",
+        "months",
+      ] } },
+    ]
+
   [subject.sex_at_birth]
     field = "sex"
     description = "Sex at birth:"

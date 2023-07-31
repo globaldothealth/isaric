@@ -29,7 +29,7 @@
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
-    { field = "Adm Date.AdmissionDate", source_date = "%m/%d/%y" },
+    { field = "Adm Date.AdmissionDate", source_date = "%m/%d/%Y" },
     { field = "date_of_admis_datcov" },
     { field = "flw_hospital_admit", description = "Roughly what date were you first admitted to hospital?" },
   ]
@@ -59,6 +59,29 @@
 
   [subject.age]
     field = "Age"
+
+  [subject.date_of_birth]
+    field = "BirthDate"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "BirthDate", apply = { function = "splitDate", params = [
+        "year",
+      ] } },
+      { field = "Adm Date.AdmissionDate", apply = { function = "startYear", params = [
+        "$Age",
+        "%m/%d/%Y",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["month"] }
+
+  [subject.dob_day]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["day"] }
 
   [subject.sex_at_birth]
     field = "BirthSex"
