@@ -75,6 +75,19 @@
       ] } },
     ]
 
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "add_date", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        "$age",
+      ] } },
+      { field = "add_date", if = { age_unit = 3 }, apply = { function = "startMonth", params = [
+        "$age",
+        "%Y-%m-%d",
+        "days",
+      ] } },
+    ]
+
   [subject.sex]
     field = "sex"
     description = "Gender"

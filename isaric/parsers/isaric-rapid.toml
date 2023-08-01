@@ -315,7 +315,7 @@
     { field = "brthdtc", apply = { function = "splitDate", params = [
       "year",
     ] } },
-    { field = "hostdat", if = { ageu = 2 }, apply = { function = "startDate", params = [
+    { field = "hostdat", if = { ageu = 2 }, apply = { function = "startYear", params = [
       "$age",
     ] } },
     { field = "hostdat", if = { ageu = 1 }, apply = { function = "startYear", params = [
@@ -326,8 +326,15 @@
   ]
 
 [subject.dob_month]
-  field = "brthdtc"
-  apply = { function = "splitDate", params = ["month"] }
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "brthdtc", apply = { function = "splitDate", params = [
+      "month",
+    ] } },
+    { field = "hostdat", if = { ageu = 1 }, apply = { function = "startMonth", params = [
+      "$age",
+    ] } },
+  ]
 
 [subject.dob_day]
   field = "brthdtc"

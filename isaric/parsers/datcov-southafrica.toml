@@ -29,7 +29,7 @@
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
-    { field = "Adm Date.AdmissionDate", source_date = "%m/%d/%Y" },
+    { field = "Adm Date.AdmissionDate", source_date = "%m/%d/%y" },
     { field = "date_of_admis_datcov" },
     { field = "flw_hospital_admit", description = "Roughly what date were you first admitted to hospital?" },
   ]
@@ -58,30 +58,40 @@
     ref = "admissionDateHierarchy"
 
   [subject.age]
-    field = "Age"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Age" },
+      { field = "BirthDate", apply = { function = "yearsElapsed", params = [
+        "$Adm Date.AdmissionDate",
+        "%m/%d/%y",
+        "%m/%d/%y",
+      ] } },
+    ]
 
-  [subject.date_of_birth]
+  [subject.date_of_birth] # NOTE: many dates have 2-digit years - this often autoconverts to 20xx not 19xx for older people.
     field = "BirthDate"
+    apply = { function = "correctOldDate", params = ["%m/%d/%y"] }
 
   [subject.dob_year]
     combinedType = "firstNonNull"
     fields = [
       { field = "BirthDate", apply = { function = "splitDate", params = [
         "year",
+        "%m/%d/%y",
       ] } },
       { field = "Adm Date.AdmissionDate", apply = { function = "startYear", params = [
         "$Age",
-        "%m/%d/%Y",
+        "%m/%d/%y",
       ] } },
     ]
 
   [subject.dob_month]
     field = "BirthDate"
-    apply = { function = "splitDate", params = ["month"] }
+    apply = { function = "splitDate", params = ["month", "%m/%d/%y"] }
 
   [subject.dob_day]
     field = "BirthDate"
-    apply = { function = "splitDate", params = ["day"] }
+    apply = { function = "splitDate", params = ["day", "%m/%d/%y"] }
 
   [subject.sex_at_birth]
     field = "BirthSex"

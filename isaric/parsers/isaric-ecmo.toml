@@ -311,6 +311,19 @@
     ] } },
   ]
 
+[subject.dob_month]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+      "$age_estimateyears",
+    ] } },
+    { field = "hostdat", if = { age_estimateyearsu = 3 }, apply = { function = "startMonth", params = [
+      "$age_estimateyears",
+      "%Y-%m-%d",
+      "days",
+    ] } },
+  ]
+
 [subject.pregnancy]
   field = "pregyn_rptestcd"
   ref = "Y/N/NK"

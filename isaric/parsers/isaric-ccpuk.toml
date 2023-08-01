@@ -129,8 +129,18 @@
   ]
 
 [subject.dob_month]
-  field = "dob"
-  apply = { function = "splitDate", params = ["month"] }
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "dob", apply = { function = "splitDate", params = [
+      "month",
+    ] } },
+    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+      "$age_estimateyears",
+      "%Y-%m-%d",
+      "months",
+    ] } },
+  ]
+
 
 [subject.dob_day]
   field = "dob"
