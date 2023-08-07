@@ -1,0 +1,695 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "predicovid"
+  description = ""
+  defaultDateFormat = "%d/%m/%Y"
+
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ['ethnicity']
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ['outcome_date']
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "subjid", sensitive = true } }
+
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    2 = false
+
+    # SUBJECT
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [
+      { field = "symptom_start_date", description = "first symptom date" },
+    ] # might need to use cestdat, from first symptom date file.
+
+  [subject.age]
+    field = "age_estimateyears"
+
+  [subject.sex_at_birth]
+    field = "sex"
+    description = "sex at birth"
+    values = { 1 = "male", 2 = "female" }
+
+  [subject.ethnicity]
+    description = "Ethnic groups"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ethnic___1", values = { 1 = "Arab" } },
+      { field = "ethnic___2", values = { 1 = "Black" } },
+      { field = "ethnic___3", values = { 1 = "East_Asian" } },
+      { field = "ethnic___4", values = { 1 = "South_Asian" } },
+      { field = "ethnic___5", values = { 1 = "West_Asian" } },
+      { field = "ethnic___6", values = { 1 = "Latin_American" } },
+      { field = "ethnic___7", values = { 1 = "White" } },
+      { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
+      { field = "ethnic___9", values = { 1 = "Other" } },
+      { field = "other_ethnic" },
+    ]
+
+  [subject.works_microbiology_lab]
+    field = "labwork_erterm"
+    ref = "Y/N/NK"
+
+  [subject.works_healthcare]
+    field = "healthwork_erterm"
+    ref = "Y/N/NK"
+
+  [subject.pregnancy]
+    field = "pregyn_rptestcd"
+    values = { 1 = true, 0 = false }
+
+  [subject.pregnancy_outcome]
+    field = "pregout_rptestcd"
+    values = { 1 = "live birth", 2 = "still birth" }
+
+  [subject.pregnancy_post_partum]
+    field = "postpart_rptestcd"
+    values = { 1 = true, 0 = false }
+
+  [subject.pregnancy_gestational_age_weeks]
+    field = "egestage_rptestcd"
+    description = "Gestational age (weeks amenorrhea)"
+
+    # [subject.has_chronic_hematologic_disease]
+    #   field = "chronhaemo_mhyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [subject.has_obesity]
+    #   field = "obesity_mhyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [subject.has_rheumatologic_disorder]
+    #   field = "rheumatology_mhyr"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [subject.has_hiv]
+    #   field = "aidshiv_mhyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [subject.has_malignant_neoplasm]
+    #   field = "malignantneo_mhyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+  [subject.has_smoking]
+    combinedType = "firstNonNull"
+    fields = [
+      # { field = "smoking_mhyn", values = { 1 = "yes", 2 = "never", 3 = "former" } },
+      { field = "tabac", description = "Just before your diagnosis, did you smoke", values = { 1 = "yes", 2 = "yes", 3 = "never" } },
+      { field = "tabac_two", description = "In the past, have you smoked?", values = { 1 = "yes", 2 = "yes", 3 = "never" } },
+    ]
+
+
+  [subject.has_asthma]
+    combinedType = "any"
+    fields = [
+      # { field = "asthma_mhyn", ref = "Y/N/NK" },
+      { field = "asthme", description = "Have you ever had asthma?", values = { 1 = true, 0 = false } },
+    ]
+
+
+    # [subject.has_chronic_cardiac_disease]
+    #   field = "chroniccard_mhyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+  [subject.has_chronic_kidney_disease]
+    combinedType = "any"
+    fields = [
+      # { field = "renal_mhyn", ref = "Y/N/NK" },
+      { field = "antec_five", values = { 1 = true, 0 = false }, description = "chronic renal failure dialysis" },
+    ]
+
+
+  [subject.has_diabetes]
+    combinedType = "any"
+    fields = [
+      # { field = "diabetiscomp_mhyn", ref = "Y/N/NK" },
+      # { field = "diabetes_mhyn", ref = "Y/N/NK" },
+      { field = "antec_one", values = { 1 = true, 0 = false }, description = "Diabetes (type 1 or 2)" },
+    ]
+
+  [subject.has_liver_disease]
+    combinedType = "any"
+    fields = [
+      # { field = "modliver_mhyn", ref = "Y/N/NK" },
+      # { field = "mildliv_mhyn", ref = "Y/N/NK" },
+      { field = "antec_six", values = { 1 = true, 0 = false }, description = "chronic liver disease" },
+    ]
+
+    # [subject.has_malnutrition]
+    #   field = "malnutrition_mhyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+  [subject.has_immunosuppression]
+    field = "antec_seven"
+    description = "a disease known to reeduce your immune defense"
+    values = { 1 = true, 0 = false }
+
+    # [subject.has_comorbidity_other] # type - array
+    #   combinedType = "set"
+    #   fields = [{ field = "otherrisktext" }]
+
+    # [subject.icu_admitted]
+    #   field = "icu_hoterm"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+  [subject.has_died]
+    field = "questionaire"        # added into merged data to distinguish between questionaires
+    values = { month_12 = false }
+
+    # VISIT
+
+[visit]
+  country_iso3 = "LUX" # Is this correct?
+
+  [visit.visit_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.start_date]
+    field = "symptom_start_date"
+
+    # [visit.treatment_dialysis]
+    #   combinedType = "any"
+    #   fields = [
+    #     { field = "rrt_prtrt", description = "", ref = "Y/N/NK" },
+    #     { field = "daily_rrt_cmtrt", description = "", ref = "Y/N/NK" },
+    # ]
+
+    # [visit.treatment_inotropes_vasopressors]
+    #   combinedType = "any"
+    #   fields = [
+    #     { field = "inotrop_cmtrt", description = "", ref = "Y/N/NK" },
+    #     { field = "daily_inotrop_cmyn", description = "", ref = "Y/N/NK" },
+    #   ]
+
+    # [visit.treatment_ecmo]
+    #   combinedType = "any"
+    #   fields = [
+    #     { field = "extracorp_prtrt", ref = "Y/N/NK" },
+    #     { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    #   ]
+
+    # [visit.treatment_corticosteroid]
+    #   field = "corticost_cmyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_oxygen_therapy]
+    #   field = "oxygen_cmoccur"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_prone_position]
+    #   field = "pronevent_prtrt"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_invasive_ventilation]
+    #   combinedType = "any"
+    #   fields = [
+    #     { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
+    #     { field = "invasive_proccur", ref = "Y/N/NK" },
+    #   ]
+
+    # [visit.treatment_antifungal_agent]
+    #   field = "antifung_cmyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_antivirals]
+    #   field = "antiviral_cmyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_antiviral_type]
+    #   field = "antiviral_cmtype"
+    #   description = ""
+    #   values = { 1 = "Ribavarin", 2 = "Lopinavir/Ritonvir", 3 = "Interferon alpha", 4 = "iterferon beta", 5 = "neuraminidase" }
+
+    # [visit.treatment_antibiotics]
+    #   field = "antibiotic_cmyn"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+  [visit.treatment_anticoagulation]
+    field = "traitement_six"
+    description = ""
+    values = { 1 = true, 0 = false }
+
+    # [visit.treatment_inhaled_nitric_oxide]
+    #   field = "inhalednit_cmtrt"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_noninvasive_ventilation]
+    #   combinedType = "any"
+    #   fields = [
+    #     { field = "daily_noninvasive_prtrt", description = "", ref = "Y/N/NK" },
+    #   ]
+
+    # [visit.treatment_high_flow_nasal_cannula]
+    #   field = "daily_nasaloxy_cmtrt"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.treatment_neuromuscular_blocking_agents]
+    #   field = "daily_neuro_cmtrt"
+    #   description = ""
+    #   ref = "Y/N/NK"
+
+    # [visit.outcome]
+    #   field = "dsterm"
+    #   description = "final status"
+
+    #   [visit.outcome.values]
+    #     1 = "discharged"
+    #     2 = "hospitalised"
+    #     3 = "transferred"
+    #     4 = "death"
+    #     5 = "palliative discharge"
+
+    # OBSERVATION
+    # required fields - phase, date, name
+
+    # [[observation]]
+    #   name = "avpu"
+    #   date = { field = "symptom_start_date" }
+    #   phase = "study"
+    #   text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
+
+    # [[observation]]
+    #   name = "diastolic_blood_pressure_mmHg"
+    #   date = { field = "symptom_start_date" }
+    #   phase = "study"
+    #   value = { field = "diastolic_vsorres" }
+
+    # [[observation]]
+    #   name = "glasgow_coma_score"
+    #   date = { field = "symptom_start_date" }
+    #   phase = "study"
+    #   value = { field = "daily_gcs_vsorres" }
+
+    # observations: symptom_start_date will always be on the wrong line...
+
+[[observation]]
+  name = "abdominal_pain"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "brulures_estomac", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "doul_abdo", values = { 1 = true, 2 = false, 0 = false } },
+    ]
+
+    # [[observation]]
+    #   name = "base_excess"
+    #   date = { field = "symptom_start_date" }
+    #   phase = "study"
+    #   value = { field = "daily_baseex_lborres" }
+
+[[observation]]
+  name = "chest_pain"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "doul_thorac", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "confusion"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "confusion_ment", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "inflammation_conjonct", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "admission"
+  is_present = { field = "QM4", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "toux_seche", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "crachats_sang", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "toux_grasse", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cyanosis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "doigts_bleus", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "diarrhee", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  is_present = { field = "QM8", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "sensation_malaise", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "fatigue", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "headache"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "maux_de_tete", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "headache"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "migraines", values = { 1 = true, 2 = false, 0 = false } }
+  context = ['migraines']
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  is_present = { field = "QM12", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "fievre", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "inability_to_walk"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "difficultes_a_marcher", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  is_present = { field = "QM7", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "perte_odorat", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "perte_de_gout", values = { 1 = true, 2 = false, 0 = false } }
+
+
+[[observation]]
+  name = "lymphadenopathy"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "adenopathies", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  is_present = { field = "QM9", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "doul_musc_sup", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "doul_musc_inf", values = { 1 = true, 2 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "runny_nose"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "ecoulement_nasal", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  is_present = { field = "QM15", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "souffle_court", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "eruptions", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  is_present = { field = "QM6", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "maux_gorge", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "nausees", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "vomissements", values = { 1 = true, 2 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "wheezing"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "respi_sifflante", values = { 1 = true, 2 = false, 0 = false } }
+
+  # [[observation]]
+  #   name = "mean_arterial_blood_pressure_mmHg"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "daily_meanart_vsorres" }
+
+  # [[observation]]
+  #   name = "oxygen_saturation_percent"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "oxy_vsorres" }
+
+  # [[observation]]
+  #   name = "pao2_mmHg"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborreu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
+
+  # [[observation]]
+  #   name = "pco2_mmHg"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "daily_pco2_lborres", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
+
+  # [[observation]]
+  #   name = "pH"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "daily_ph_lborres" }
+
+  # [[observation]]
+  #   name = "richmond_agitation-sedation_scale"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "rass_vsorres" }
+
+  # [[observation]]
+  #   name = "riker_sedation-agitation_scale"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "sas_vsorres" }
+
+  # [[observation]]
+  #   name = "systolic_blood_pressure_mmHg"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "systolic_vsorres" }
+
+  # [[observation]]
+  #   name = "temperature_celsius"
+  #   date = { field = "symptom_start_date" }
+  #   phase = "study"
+  #   value = { field = "temp_vsorres", source_unit = { field = "temp_vsorresu", values = { 1 = "celsius", 2 = 'farenheit' } }, unit = "celsius" }
