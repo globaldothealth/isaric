@@ -60,16 +60,32 @@
   [subject.dob_year]
     combinedType = "firstNonNull"
     fields = [
-      { field = "add_date", if = { age_unit = 1 }, apply = { function = "startYear", params = [
-        "$age",
+      { field = "age", if.any = [
+        { age_unit = 1 },
+        { age_unit = "" },
+      ], apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$onset_date",
+          "$investigate_date",
+        ],
+        2022,
       ] } },
-      { field = "add_date", if = { age_unit = 2 }, apply = { function = "startYear", params = [
-        "$age",
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$onset_date",
+        ],
+        2022,
         "%Y-%m-%d",
         "months",
       ] } },
-      { field = "add_date", if = { age_unit = 3 }, apply = { function = "startYear", params = [
-        "$age",
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$onset_date",
+        ],
+        2022,
         "%Y-%m-%d",
         "days",
       ] } },
@@ -78,11 +94,13 @@
   [subject.dob_month]
     combinedType = "firstNonNull"
     fields = [
-      { field = "add_date", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
-        "$age",
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        "$add_date",
+        2022,
       ] } },
-      { field = "add_date", if = { age_unit = 3 }, apply = { function = "startMonth", params = [
-        "$age",
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startMonth", params = [
+        "$add_date",
+        2022,
         "%Y-%m-%d",
         "days",
       ] } },

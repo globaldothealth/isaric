@@ -296,16 +296,37 @@
 [subject.dob_year]
   combinedType = "firstNonNull"
   fields = [
-    { field = "hostdat", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if.any = [
+      { age_estimateyearsu = 2 },
+      { age_estimateyearsu = "" },
+    ], apply = { function = "startYear", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
     ] } },
-    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
       "%Y-%m-%d",
       "months",
     ] } },
-    { field = "hostdat", if = { age_estimateyearsu = 3 }, apply = { function = "startYear", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startYear", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
       "%Y-%m-%d",
       "days",
     ] } },
@@ -314,11 +335,23 @@
 [subject.dob_month]
   combinedType = "firstNonNull"
   fields = [
-    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
     ] } },
-    { field = "hostdat", if = { age_estimateyearsu = 3 }, apply = { function = "startMonth", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startMonth", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
       "%Y-%m-%d",
       "days",
     ] } },

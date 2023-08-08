@@ -77,12 +77,36 @@
     fields = [
       { field = "dob", apply = { function = "splitDate", params = [
         "year",
+        2022,
       ] } },
-      { field = "add_date", if = { age_unit = 1 }, apply = { function = "startYear", params = [
-        "$age",
+      { field = "age", if.any = [
+        { age_unit = 1 },
+        { age_unit = "" },
+      ], apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$fever_date",
+          "$fatigue_date",
+          "$dyspnea_date",
+          "$anosmia_date",
+          "$sore_throat_date",
+          # "$headache_date",
+          # "$signs_symps_date",
+        ],
+        2022,
       ] } },
-      { field = "add_date", if = { age_unit = 2 }, apply = { function = "startYear", params = [
-        "$age",
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$fever_date",
+          "$fatigue_date",
+          "$dyspnea_date",
+          "$anosmia_date",
+          "$sore_throat_date",
+          # "$headache_date",
+          # "$signs_symps_date",
+        ],
+        2022,
         "%Y-%m-%d",
         "months",
       ] } },
@@ -93,16 +117,27 @@
     fields = [
       { field = "dob", apply = { function = "splitDate", params = [
         "month",
+        2022,
       ] } },
-      { field = "add_date", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
-        "$age",
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        [
+          "$add_date",
+          "$fever_date",
+          "$fatigue_date",
+          "$dyspnea_date",
+          "$anosmia_date",
+          "$sore_throat_date",
+          # "$headache_date",
+          # "$signs_symps_date",
+        ],
+        2022,
         "%Y-%m-%d",
       ] } },
     ]
 
   [subject.dob_day]
     field = "dob"
-    apply = { function = "splitDate", params = ["day"] }
+    apply = { function = "splitDate", params = ["day", 2022] }
 
   [subject.ethnicity]
     description = "race/ethnicity"

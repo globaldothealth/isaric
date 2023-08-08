@@ -107,22 +107,44 @@
         values = { 1 = "months", 2 = "years" }
 
 [subject.date_of_birth]
-  field = "dob"
+  field = "agedat"
 
-[subject.dob_year]
+[subject.dob_year] # for some reason if neither an admission date nor an enrolement date is present, this returns none even if a DoB is present?
   combinedType = "firstNonNull"
   fields = [
-    { field = "dob", apply = { function = "splitDate", params = [
+    { field = "agedat", apply = { function = "splitDate", params = [
       "year",
+      2022,
     ] } },
-    { field = "hostdat", apply = { function = "startYear", params = [
-      "$calc_age",
+    { field = "calc_age", apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
     ] } },
-    { field = "hostdat", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if.any = [
+      { age_estimateyearsu = 2 },
+      { age_estimateyearsu = "" },
+    ], apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
     ] } },
-    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
       "%Y-%m-%d",
       "months",
     ] } },
@@ -131,11 +153,18 @@
 [subject.dob_month]
   combinedType = "firstNonNull"
   fields = [
-    { field = "dob", apply = { function = "splitDate", params = [
+    { field = "agedat", apply = { function = "splitDate", params = [
       "month",
+      2022,
     ] } },
-    { field = "hostdat", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
-      "$age_estimateyears",
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
       "%Y-%m-%d",
       "months",
     ] } },
@@ -143,8 +172,8 @@
 
 
 [subject.dob_day]
-  field = "dob"
-  apply = { function = "splitDate", params = ["day"] }
+  field = "agedat"
+  apply = { function = "splitDate", params = ["day", 2022] }
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"

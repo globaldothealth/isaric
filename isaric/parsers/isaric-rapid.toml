@@ -299,7 +299,7 @@
 
     [[subject.age.fields]]
       field = "brthdtc"
-      apply = { function = "yearsElapsed", params = ["$dsstdat"] }
+      apply = { function = "yearsElapsed", params = ["$dsstdat", 2022] }
 
     [[subject.age.fields]]
       field = "age"
@@ -314,12 +314,23 @@
   fields = [
     { field = "brthdtc", apply = { function = "splitDate", params = [
       "year",
+      2022,
     ] } },
-    { field = "hostdat", if = { ageu = 2 }, apply = { function = "startYear", params = [
-      "$age",
+    { field = "age", if = { ageu = 2 }, apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+      ],
+      2022,
     ] } },
-    { field = "hostdat", if = { ageu = 1 }, apply = { function = "startYear", params = [
-      "$age",
+    { field = "age", if = { ageu = 1 }, apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+      ],
+      2022,
       "%Y-%m-%d",
       "months",
     ] } },
@@ -330,15 +341,21 @@
   fields = [
     { field = "brthdtc", apply = { function = "splitDate", params = [
       "month",
+      2022,
     ] } },
-    { field = "hostdat", if = { ageu = 1 }, apply = { function = "startMonth", params = [
-      "$age",
+    { field = "age", if = { ageu = 1 }, apply = { function = "startMonth", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+      ],
+      2022,
     ] } },
   ]
 
 [subject.dob_day]
   field = "brthdtc"
-  apply = { function = "splitDate", params = ["day"] }
+  apply = { function = "splitDate", params = ["day", 2022] }
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"
@@ -1500,7 +1517,7 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   context = ["highest"]
-  value = { field = "temp_vsorres" }        # there is no source unit field
+  value = { field = "temp_vsorres" }        # there is no source unit field, but a mix of celsius and farenheit in the data.
 
 [[observation]]
   name = "temperature_celsius"

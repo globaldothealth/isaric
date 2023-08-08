@@ -41,6 +41,7 @@
     fields = [
       { field = "an_nais", apply = { function = "yearsElapsed", params = [
         "$adm_hosp_dh",
+        2022,
         "%Y",
         "%Y-%m-%d %H:%M",
       ] } },

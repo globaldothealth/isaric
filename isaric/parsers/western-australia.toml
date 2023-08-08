@@ -79,8 +79,17 @@
     #   field = "brthdtc"
 
   [subject.dob_year]
-    field = "dsstdat"
-    apply = { function = "startYear", params = ["$age_calc", "%d/%m/%Y"] }
+    field = "age_calc"
+    apply = { function = "startYear", params = [
+      [
+        "$admission_date",
+        "$hostdat",
+        "$dsstdat",
+      ],
+      2022,
+      "%d/%m/%Y",
+    ] }
+
 
   [subject.works_healthcare]
     field = "healthwork_erterm"
