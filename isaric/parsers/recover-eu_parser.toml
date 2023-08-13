@@ -1,3 +1,5 @@
+#:schema ../../schemas/dev/parser.schema.json
+
 [adtl]
   name = "recover eu"
   description = "recover EU consortium"
