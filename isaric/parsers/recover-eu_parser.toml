@@ -1,3 +1,5 @@
+#:schema ../../schemas/dev/parser.schema.json
+
 [adtl]
   name = "recover eu"
   description = "recover EU consortium"
@@ -13,6 +15,7 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = [ "outcome", "country_iso3" ]
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -189,8 +192,6 @@
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
 [visit]
-  country_iso3 = "COUNTRY"
-
   [visit.visit_id]
     field = "subject"
     sensitive = true
@@ -235,7 +236,7 @@
     field = "AV"
     ref = "Y/N"
 
-  [visit.antifungal_agent]
+  [visit.treatment_antifungal_agent]
     field = "AF"
     ref = "Y/N"
 
@@ -256,9 +257,9 @@
     field = "AB"
     ref = "Y/N"
 
-[visit.date_outcome]
-  field = "disch_dt"
-  description = "Discharge date:"
+  [visit.date_outcome]
+    field = "disch_dt"
+    description = "Discharge date:"
 
     # OBSERVATION
     # required fields - phase, date, name
