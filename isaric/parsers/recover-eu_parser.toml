@@ -217,15 +217,15 @@
   [visit.treatment_corticosteroid]
     combinedType = "any"
     fields = [
-      { field = "steroids_op1", description = "Steroids - Inhaled corticosteroids", value = { 1 = true, 0 = false } },
-      { field = "steroids_op2", description = "Steroids  - Oral low  dose steroids", value = { 1 = true, 0 = false } },
-      { field = "steroids_op2", description = "Steroids - Oral high  dose  steroids", value = { 1 = true, 0 = false } },
+      { field = "steroids_op1", description = "Steroids - Inhaled corticosteroids", values = { 1 = true, 0 = false } },
+      { field = "steroids_op2", description = "Steroids  - Oral low  dose steroids", values = { 1 = true, 0 = false } },
+      { field = "steroids_op2", description = "Steroids - Oral high  dose  steroids", values = { 1 = true, 0 = false } },
       { field = "CORT", ref = "Y/N" },
     ]
 
   [visit.treatment_ace_inhibitors]
     field = "medication_op1"
-    value = { 1 = true, 0 = false }
+    values = { 1 = true, 0 = false }
     
   [visit.treatment_invasive_ventilation]
     field = "INTMV"
