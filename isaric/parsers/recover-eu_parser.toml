@@ -21,7 +21,7 @@
 
   [adtl.defs."Y/N".values]
     1 = true
-    0 = false
+    2 = false
 
   
     # SUBJECT
@@ -37,21 +37,21 @@
   [subject.enrolment_date] # is this correct?
     combinedType = "firstNonNull"
     fields = [
-      { field = "ICDATE_DT", description = "Date of consent signed:" },
-      { field = "inclusiondate", description = "inclusiondate" }
+      { field = "IC2_DATE", description = "Date of consent signed:" },
+      { field = "incldt", description = "inclusiondate" }
     ]
     
   [subject.earliest_admission_date]
     combinedType = "min"
-    fields = [{ field = "HOSP_ADM_DT", description = "Date of hospital admission:" }]
+    fields = [{ field = "adm_dt", description = "Date of hospital admission:" }]
 
   [subject.age]
-    field = "BIRTH_DTF"
+    field = "DOB"
     description = "Date of birth:"
-    apply = { function = "yearsElapsed", params = ["$HOSP_ADM_DT"] }
+    apply = { function = "yearsElapsed", params = ["$adm_dt"] }
 
   [subject.sex_at_birth]
-    field = "GENDER"
+    field = "sex"
     description = "Gender at birth:"
 
     [subject.sex_at_birth.values]
@@ -62,67 +62,55 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "ETHNIC_CAUC", description = "Ethnicity/background: White/Caucasian", ref = "Y/N" },
-    { field = "ETHNIC_BLACK", description = "Ethnicity/background: Black", ref = "Y/N" },
-    { field = "ETHNIC_ASIA", description = "Ethnicity/background: Asian", ref = "Y/N" },
-    { field = "ETHNIC_OTH", description = "Ethnicity/background: Other", ref = "Y/N" },
-    { field = "ETHNIC_OTH_SPEC", description = "Ethnicity/background: Other, please specify:" }
+    { field = "etn_opt1", description = "Ethnicity/background: White/Caucasian", ref = "Y/N" },
+    { field = "etn_opt2", description = "Ethnicity/background: Black", ref = "Y/N" },
+    { field = "etn_opt3", description = "Ethnicity/background: Asian", ref = "Y/N" },
+    { field = "etn_opt4", description = "Ethnicity/background: Other", ref = "Y/N" },
+    { field = "etn_opt4_spec", description = "Ethnicity/background: Other, please specify:" }
   ]
 
 [subject.pregnancy]
-  field = "PREGN"
-  values = { 1 = false, 3 = true }
-
-[subject.pregnancy_date_of_delivery]
-  field = "PPARTUM_YES_DT"
-  description = "Post-partum (= within 8 weeks of delivery) - Delivery date:"
-
-[subject.pregnancy_gestational_age_weeks]
-  field = "PREGN_YES_WK"
-  description = "Pregnant - Gestation age of foetus (nearest week):"
-
-[subject.has_asplenia]
-  field = "CID_SPEC_ASPLEN"
-  description = "D. Chronic Immunosuppression (due to disease) : Asplenia or splenic dysfunction"
+  field = "pregn"
   ref = "Y/N"
 
+[subject.pregnancy_date_of_delivery]
+  field = "P_PART_Y_DEL_DT"
+  description = "Post partum Delivery date"
+
 [subject.has_tuberculosis] # checkbox field?
-  field = "CPD_SPEC_TBC"
+  field = "CPD_TBC"
   description = "A. Chronic Pulmonary Disease: Tuberculosis"
   ref = "Y/N"
 
 [subject.has_dementia] # checkbox field
-  field = "CND_SPEC_DEMENT"
-  description = "E. Chronic Neurologic Disease : Dementia / Cognitive dysfunction"
+  field = "CNEURO_DEMENT"
+  description = "Chronic Neurologic Disease -  Dementia / Cognitive dysfunction"
   ref = "Y/N"
 
-[subject.has_obesity]
-  field = "OBES"
-  description = "G. Obesity (BMI >=30)"
-  values = { 1 = true, 2 = false }
-
 [subject.has_rheumatologic_disorder] # checkbox field
-  field = "CHOTH_SPEC_REUM"
-  description = "F. Chronic Other Disease : Rheumatologic/autoimmune disease (e.g. SLE, polymyositis, polymyalgia rheumatic, mixed conne"
+  field = "COTH_RHEUM"
+  description = "Chronic Other Disease -  Rheumatologic/autoimmune disease"
   ref = "Y/N"
 
 [subject.has_hiv]
-  field = "CID_SPEC_HIV"
-  description = "D. Chronic Immunosuppression (due to disease) : HIV"
+  field = "CIMMUN_HIV"
+  description = "D. Chronic Immunosuppression: HIV"
   ref = "Y/N"
 
 [subject.has_hypertension]
-  field = "CCD_SPEC_HT"
-  description = "B. Chronic Cardiovasculair Disease : Hypertension (medicated)	"
+  field = "CARD_HYPER"
+  description = "B. Chronic Cardiovasculair Disease : Hypertension"
   ref = "Y/N"
 
 [subject.has_malignant_neoplasm]
-  field = "CND_META"
-  description = "D. Chronic Immunosuppression (due to disease) - If any solid tumour: metastatic?"
-  values = { 1 = true, 2 = false }
-
+  combinedType = "any"
+  fields = [
+    { field = "CIMMUN_MALIGN_METAS", description = "Chronic Immunosuppression - Any malignancy within 5 years - metastatic?", ref = "Y/N" },
+    { field = "CIMMUN_MALIGN", description = "Chronic Immunosuppression - Any malignancy within 5 years", ref = "Y/N" }
+  ]
+  
 [subject.has_smoking]
-  field = "SMOKE"
+  field = "smoke"
   description = "Smoking:	"
 
   [subject.has_smoking.values]
@@ -131,65 +119,71 @@
     1 = "never" # 1="Never smiked regulary"
 
 [subject.has_asthma] # checkbox field
-  field = "CPD_SPEC_ASTHMA"
+  field = "CPD_AST"
   description = "A. Chronic Pulmonary Disease: Asthma"
   ref = "Y/N"
 
 [subject.has_chronic_cardiac_disease]
-  field = "CCD"
-  description = "B. Chronic Cardiovasculair Disease"
-  values = { 1 = true, 2 = false }
+  field = "chr_card"
+  description = "Chronic Cardiovascular Disease"
+  ref = "Y/N"
 
 [subject.has_chronic_kidney_disease]
-  field = "CHOTH_SPEC_CRD"
-  description = "F. Chronic Other Disease : Chronic Renal diseas"
+  field = "COTH_RENAL"
+  description = "Chronic Other Disease -  Chronic Renal disease"
   ref = "Y/N"
 
 [subject.has_diabetes] # checkbox fields
   combinedType = "any"
   fields = [
-    { field = "CMD_SPEC_DM1", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 1", ref = "Y/N" },
-    { field = "CMD_SPEC_DM2ORAL", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (only oral medication)", ref = "Y/N" },
-    { field = "CMD_SPEC_DM2INSUL", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "Y/N" }
+    { field = "CMETAB_DB1", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 1", ref = "Y/N" },
+    { field = "CMETAB_DB2A", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (only oral medication)", ref = "Y/N" },
+    { field = "CMETAB_DB2B", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "Y/N" }
   ]
 
 [subject.has_liver_disease] # checkbox field
-  field = "CHOTH_SPEC_CLD"
-  description = "F. Chronic Other Disease : Chronic Liver disease (e.g. cirrhosis)"
+  field = "COTH_LIVER"
+  description = "F. Chronic Other Disease : Chronic Liver disease"
   ref = "Y/N"
 
 [subject.has_solid_organ_transplant] # checkbox field
-  field = "CID_SPEC_SOT"
-  description = "D. Chronic Immunosuppression (due to disease) : Solid organ transplant"
+  field = "CIMMUN_ORG_TRANS"
+  description = "Chronic Immunosuppression - Solid organ transplant"
   ref = "Y/N"
 
 [subject.has_hiv_art]
-  field = "CID_ANTIRETR"
-  description = "D. Chronic Immunosuppression (due to disease) - If HIV: currently on antiretroviral therapy?"
-  values = { 1 = true, 2 = false }
+  field = "CIMMUN_HIV_ANTI_THER"
+  description = "Chronic Immunosuppression - HIV - Currently on antiretroviral therapy?"
+  ref = "Y/N"
 
 [subject.has_immunosuppression]
-  field = "CID"
-  description = "D. Chronic Immunosuppression (due to disease)"
-  values = { 1 = true, 2 = false }
+  field = "chr_immuno"
+  description = "Chronic Immunosuppression (due to disease)"
+  ref = "Y/N"
+
+[subject.has_asplenia]
+  field = "CIMMUN_ASPL"
+  ref = "Y/N"
 
 [subject.has_comorbidity_other] # type - array
-  field = "CHOTH_SPEC_OTH_SPEC"
-  description = "F. Chronic Other Disease : Other chronic disease, please specify:"
-
-[subject.has_died] # type - boolean
-  field = "DISCH_OUTCOME"
-  description = ""
-  values = { 1 = false, 2 = true }
+  combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "chr_other" },
+      { field = "COTH_OTHER" },
+      { field = "COTH_OTHER_SPEC" },
+    ]
 
 [subject.date_death]
-  field = "DISCH_DEATH_DT"
-  description = "Discharge: - Date of death:"
+  field = "ddate"
+  description = "Date of death"
 
 [subject.icu_admitted]
-  field = "CRITCARE_YN"
-  description = "Was the patient admitted to an intensive care unit or treated with critical care support at any point during the admission?"
-  ref = "Y/N"
+  combinedType = "any"
+    fields = [
+      { field = "COV19_ICU", description = "Was the patient treated in ICU?", ref = "Y/N" },
+      { field = "ICUadm_y", description = "Did episode included ICU/High Care Unit admission?", ref = "Y/N" },
+    ]
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
@@ -206,664 +200,124 @@
     sensitive = true
 
   [visit.start_date]
-    field = "HOSP_ADM_DT"
-
-  [visit.pathogen_test_date]
-    field = "SAMPLE_DT"
-    description = "Date of sampling"
+    field = "adm_dt"
 
   [visit.icu_admission]
-    field = "CRITCARE_YN"
-    description = "Was the patient admitted to an intensive care unit or treated with critical care support at any point during the admission?"
-    values = { 1 = true, 2 = false }
+    combinedType = "any"
+    fields = [
+      { field = "COV19_ICU", description = "Was the patient treated in ICU?", ref = "Y/N" },
+      { field = "ICUadm_y", description = "Did episode included ICU/High Care Unit admission?", ref = "Y/N" },
+    ]
 
   [visit.icu_admission_dates]
-    field = "CRITCARE_DT"
-    description = "- Date of commencing critical care support:"
-
-  [visit.treatment_dialysis] # Q. is this correct?
-    field = "CRDDIALYS"
-    description = "F. Chronic Other Disease - If renal disease: on dialysis?"
-    values = { 1 = true, 2 = false }
-
-  [visit.treatment_inotropes_vasopressors]
-    field = "CRITCARE_VASO_YN"
-    description = "- Vasopressor/ inotropic support:"
-    values = { 1 = true, 2 = false }
+    field = "ICUadm_dt"
+    description = "Admission date ICU/HCU:"
 
   [visit.treatment_corticosteroid]
-    field = "CORT_USE"
-    description = "1c. Corticosteroids?"
-    values = { 1 = true, 2 = false }
-
-  [visit.treatment_corticosteroid_type_other]
-    combinedType = "set"
+    combinedType = "any"
     fields = [
-      { field = "CORT_CLASS", description = " Please specify steroids: Specify steroids" }
+      { field = "steroids_op1", description = "Steroids - Inhaled corticosteroids", value = { 1 = true, 0 = false } },
+      { field = "steroids_op2", description = "Steroids  - Oral low  dose steroids", value = { 1 = true, 0 = false } },
+      { field = "steroids_op2", description = "Steroids - Oral high  dose  steroids", value = { 1 = true, 0 = false } },
+      { field = "CORT", ref = "Y/N" },
     ]
 
+  [visit.treatment_ace_inhibitors]
+    field = "medication_op1"
+    value = { 1 = true, 0 = false }
+    
   [visit.treatment_invasive_ventilation]
-    field = "CRITCARE_MV_YN"
-    description = "- Mechanical respiratory ventilation:"
-    values = { 1 = true, 2 = false }
+    field = "INTMV"
+    description = "Did participant receive any intubation and mechanical ventilation"
+    ref = "Y/N"
 
   [visit.treatment_antivirals]
-    field = "AV_USE"
-    description = "1b. Antivirals?"
-    values = { 1 = true, 2 = false }
+    field = "AV"
+    ref = "Y/N"
 
-  [visit.treatment_antiviral_type]
-    combinedType = "set"
+  [visit.antifungal_agent]
+    field = "AF"
+    ref = "Y/N"
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
     fields = [
-      { field = "AV_NAME", description = "- Please specify antivirals: Specify antivirals" }
+      { field = "O2", description = "Did participant receive any supplemental O2?", ref = "Y/N" },
+      { field = "NIMV", description = "Did participant receive any non-invasive mechanical ventilation", values = { 2 = true, 3 = false } },
+      { field = "INTMV", description = "Did participant receive any intubation and mechanical ventilation" },
+      { field = "Prone_pos", description = "Prone position ventilation (any time)" },
     ]
 
-  [visit.treatment_antiviral_type_other]
-    combinedType = "set"
-    fields = [
-      { field = "AV_SPEC", description = "- Please specify antivirals: If other, please specify:" }
-    ]
+  [visit.treatment_prone_position]
+    field = "Prone_pos"
+    ref = "Y/N"
 
   [visit.treatment_antibiotics]
-    field = "AB_USE"
-    description = "1a. Antibiotics?"
-    values = { 1 = true, 2 = false }
-
-  [visit.treatment_antibiotics_type]
-    combinedType = "set"
-    fields = [
-      { field = "AB_CLASS", description = "- Please specify antibiotics: class of antibiotic" }
-    ]
-
-  [visit.treatment_immunoglobulins]
-    field = "IMMUN_USE"
-    description = "1d. Immunotherapies or blood products?"
-    values = { 1 = true, 2 = false }
-
-  [visit.outcome]
-    field = "DISCH_OUTCOME"
-    description = "Discharge: Outcome"
-
-    [visit.outcome.values] # Q. Must these correspond to enums in the schema?
-      1 = "discharged" # 1 = "Alive"
-      2 = "death" # 2 = "Deceased"
+    field = "AB"
+    ref = "Y/N"
 
 [visit.date_outcome]
-  field = "DISCH_DISCHARGE_DT"
-  description = "Discharge: - Date of discharge:"
+  field = "disch_dt"
+  description = "Discharge date:"
 
     # OBSERVATION
     # required fields - phase, date, name
 
 [[observation]]
-  name = "avpu"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "clinical_classification_critical_illness_scale"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "pneumonia"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "clinical_frailty_score"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "glasgow_coma_score"
-  date = ""
-  phase = ""
-  value = { field = "CRITCARE_GCS_SCORE" }
-  
-[[observation]]
-  name = ""
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "abdominal_pain"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  value = { field = "values_diast" }
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "anorexia"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "base_excess"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "bleeding_haemorrhage"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "chest_pain"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  is_present = { field = "ment_conf", ref = "Y/N" }
 
 [[observation]]
   name = "confusion"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "conjunctivitis"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "cough"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "cough_with_haemoptysis"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "cyanosis"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "diarrhoea"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "ear_pain"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "fatigue_malaise"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "feeding_intolerance_peadiatrics"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "headache"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "hepatomegaly"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "history_of_fever"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "inability_to_walk"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "inability_to_walk_scale"
-  date = ""
-  phase = ""
-  # OR is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  text = { field = "", values = {} }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "irritability_peadiatrics"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "joint_pain"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "loss_of_smell"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "loss_of_taste"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "lower_chest_wall_indrawing"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "lung_sounds"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "lymphadenopathy"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "muscle_aches"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "runny_nose"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "seizures"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  is_present = { field = "ment_conf", ref = "Y/N" }
 
 [[observation]]
   name = "severe_dehydration"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "shortness_of_breath"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "skin_rash"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "skin_ulcers"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "sore_throat"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "sternal_capillary_refill_time_greater_2s"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "vomiting_nausea"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "wheezing"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  is_present = { field = "SHOCK", ref = "Y/N" }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "heart_sounds"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "mean_arterial_blood_pressure_mmHg"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "mid_upper_arm_circumference_cm"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "other_symptom"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "oxygen_o2hb"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  value = { field = "HRATE" }
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  date = ""
-  phase = "study"
-  value = { field = "SPO2_PERC" }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  value = { field = "SpO2_perc" }
   context.combinedType = "set"
   context.excludeWhen = "none"
   context.fields = [
-    { field = "SPO2_SPEC", values = { 1 = "Room air", 2 = "Supplemental O2 (any)" } }
+    { field = "SpO2_on", values = { 1 = "Room air", 2 = "Supplemental O2 (any)" } }
   ]
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "pao2_mmHg"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "pco2_mmHg"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "pH"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
   name = "respiratory_rate"
-  date = ""
-  phase = ""
-  value = { field = "RESPRATE_BPM" }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  value = { field = "RESP_RATE" }
   
 [[observation]]
-  name = "richmond_agitation-sedation_scale"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "riker_sedation-agitation_scale"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  value = { field = "values_syst" }
 
 [[observation]]
   name = "temperature_celsius"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "total_fluid_output_ml"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-#----- extra ..
-[[observation]]
-  name = ""
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
+  date = "adm_dt" # not sure about this??
+  phase = "admission" # not sure about this??
+  value = { field = "tempX" }
