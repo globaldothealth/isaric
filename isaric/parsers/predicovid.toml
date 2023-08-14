@@ -18,7 +18,7 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
-    optional-fields = ['outcome_date']
+    optional-fields = ['date_outcome']
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -200,6 +200,7 @@
     field = "subjid"
     sensitive = true
 
+  # Note that start dates were only provided as month and year, so all are assumed to start on the 1st.
   [visit.start_date]
     field = "symptom_start_date"
 
@@ -302,6 +303,12 @@
     #     3 = "transferred"
     #     4 = "death"
     #     5 = "palliative discharge"
+
+  # If a monthly or month 12 follow-up survey is found, the subject can be assumed to have recovered.
+  [visit.outcome]
+    field = "QM1"
+    apply = { function = "textIfNotNull", params = ['recovered'] }
+    if.any = [{ questionaire = "monthly" }, { questionaire = "month_12" }]
 
     # OBSERVATION
     # required fields - phase, date, name
