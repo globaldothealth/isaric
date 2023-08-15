@@ -109,7 +109,7 @@
 [subject.date_of_birth]
   field = "agedat"
 
-[subject.dob_year] # for some reason if neither an admission date nor an enrolement date is present, this returns none even if a DoB is present?
+[subject.dob_year]
   combinedType = "firstNonNull"
   fields = [
     { field = "agedat", apply = { function = "splitDate", params = [
@@ -1000,7 +1000,7 @@
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "mmHg" } }
+  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
