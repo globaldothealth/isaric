@@ -161,6 +161,34 @@ are recorded, the 'study' and 'followup' phases can be used in the visit
 table to distinguish between the primary visit and any followup
 treatments or subsequent visits, respectively.
 
+The field ``redcap_event_name`` is present source files from the REDCap
+database. This can be used as an additional information to determine the phase.
+Event names are usually of the form ``<token>_arm_<n>``, where in REDCap, arm
+refers to a group of events, that are separated when using different groups
+such as treatment groups or by study site. The token part of the event name can
+be used to determine phase:
+
++ ``adm`` or ``admission`` refers to admission phase
++ ``follow_up`` implies this is a followup phase
+
+Any other event names usually refer to within the visit, i.e study phase. An
+example of using redcap_event_name to categorise observations by phase is:
+
+.. code:: toml
+
+   [[observation]]
+     name = "diastolic_blood_pressure_mmHg"
+     phase = "admission"
+     if.all = [
+       { redcap_event_name = "on_admission_arm_1" },
+       { admission_diabp_vsorres = { "!=" = "" } },
+       { admission_diabp_vsorres = { "!=" = 9999 } },
+     ]
+     date = { field = "daily_assess_date" }
+
+The additional check on ``redcap_event_name`` ensures that observations with
+different phases are not incorrectly mapped
+
 Duration type
 -------------
 
