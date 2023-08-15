@@ -102,19 +102,24 @@
       "category": "demographics"
     },
     "dob_year": {
-      "type": "number",
+      "type": "integer",
       "description": "Year of birth",
-      "category": "demographics"
+      "category": "demographics",
+      "minimum": 1900
     },
     "dob_month": {
-      "type": "number",
+      "type": "integer",
       "description": "Month of birth",
-      "category": "demographics"
+      "category": "demographics",
+      "minimum": 1,
+      "maximum": 12
     },
     "dob_day": {
-      "type": "number",
+      "type": "integer",
       "description": "Day of birth",
-      "category": "demographics"
+      "category": "demographics",
+      "minimum": 1,
+      "maximum": 31
     },
     "sex_at_birth": {
       "enum": [
