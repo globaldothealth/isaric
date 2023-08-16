@@ -79,6 +79,7 @@
                   "items": {
                     "type": [
                       "string",
+                      "array",
                       "number"
                     ]
                   },

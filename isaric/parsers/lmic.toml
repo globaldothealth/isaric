@@ -152,7 +152,7 @@
 
   [subject.has_died]
     field = "dsterm"
-    values = { 2 = true }
+    values = { 1 = false, 2 = true, 4 = false, 5 = false } # 3=palliative discharge so relatively likely that patient died soon after...
 
   [subject.icu_admitted]
     combinedType = "any"
@@ -310,17 +310,31 @@
     { field = "corticost_cmyn_v2", description = "Corticosteroid?", ref = "Y/N/NK" },
   ]
 
-[visit.treatment_corticosteroid_type_other]
+[visit.treatment_corticosteroid_type]
   combinedType = "set"
   excludeWhen = "none"
-
-  [[visit.treatment_corticosteroid_type_other.fields]]
-    field = "corticost_cmdose_v2"
-    description = "If YES to Corticosteroid, specify agent and dose"
-
-  [[visit.treatment_corticosteroid_type_other.fields]]
-    field = "corticost_cmdose"
-    description = "If YES to Corticosteroid, specify agent and dose:"
+  fields = [
+    { field = "corticost_cmdose", apply = { function = "wordSubstituteSet", params = [
+      [
+        "Prednisolone",
+        "Prednisolone",
+      ],
+      [
+        "Aminophylin,  brown  and  blue inhaler",
+        "Aminophylline",
+      ],
+    ] } },
+    { field = "corticost_cmdose_v2", apply = { function = "wordSubstituteSet", params = [
+      [
+        "Dexamethasone,other medication are aminophylin,heparin",
+        "Dexamethasone",
+      ],
+      [
+        "Dexamethasone 6mg",
+        "Dexamethasone",
+      ],
+    ] } },
+  ]
 
 [visit.treatment_dialysis]
   combinedType = "any"
