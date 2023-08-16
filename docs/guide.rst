@@ -516,7 +516,7 @@ Superset, general level indicators:
 therapy and/or respiratory support has been administered. Subsets (all
 boolean indicators) are:
 
-+ *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
++ *treatment_oxygen_mask_prongs* - Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 
 + *treatment_high_flow_nasal_cannula*
 
@@ -590,8 +590,7 @@ agent(s)?
 
 **treatment_anticoagulation**: Bool. Treated with anticoagulants during
 the visit? (Note - this is often combines a general anticoagulation
-field with those specific to Heparin. NOTE TO DEVS: merge (if not
-already) with treatment_indication_anticoagulation)
+field with those specific to Heparin).
 
 **treatment_inhaled_nitric_oxide**: Bool. Treated with nitric oxide
 inhalation?
@@ -810,7 +809,7 @@ combined.
 **other_symptom**: Set (Text). List any other symptoms, or free text
 fields describing symptoms, here.
 
-**oxygen_o2hb**: Value. Heamoglobin level, lab test.
+**oxygen_o2hb**: Value (g/dL). Heamoglobin level, lab test.
 
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.

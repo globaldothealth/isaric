@@ -558,6 +558,10 @@
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_oxygen_mask_prongs": {
+          "description": "Oxygen therapy via mask or nasal prongs",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_prone_position": {
           "description": "Prone position",
           "$ref": "#/definitions/mapping"
@@ -666,10 +670,6 @@
           "description": "Respiratory support",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_indication_anticoagulation": {
-          "description": "Indication anticoagulation",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_cardiovascular_support": {
           "description": "Cardiovascular",
           "$ref": "#/definitions/mapping"
@@ -764,8 +764,7 @@
                   "riker_sedation-agitation_scale",
                   "systolic_blood_pressure_mmHg",
                   "temperature_celsius",
-                  "total_fluid_output_ml",
-                  "oxygen_flow_volume_max"
+                  "total_fluid_output_ml"
                 ]
               }
             }
