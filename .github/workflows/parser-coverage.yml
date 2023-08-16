@@ -23,7 +23,7 @@ jobs:
     - name: Compute parser coverage
       run: |
         URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
-        FILE=$(curl -s $URL | jq -r '.[] | .filename' | grep toml | head -n1)
+        FILE=$(curl -s $URL | jq -r '.[] | .filename' | grep 'isaric/parsers/.*\.toml$' | head -n1)
         echo $FILE
         bash ci/parser-coverage.sh $FILE > parser-coverage.txt
     - name: Comment on PR
