@@ -1016,6 +1016,45 @@
   for.n.range = [1, 5]
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_smell_ceoccur_2", values = { 1 = true, 0 = false } },
+      { field = "flw_taste_ceoccur_2", values = { 1 = true, 0 = false } }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cu_smell", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_of_smell", values = { 1 = true, 0 = false } },
+      { field = "cu_taste", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_of_taste", values = { 1 = true, 0 = false } }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  if.any = [{ "flw2_loss_of_smell_{n}" = 1 }, { "flw2_loss_of_smell_{n}" = 0 }]
+  for.n.range = [1, 5]
+
+  [observation.is_present]# TODO: not entirely sure this will work
+    combinedType = "any"
+    fields = [
+      { field = "flw2_loss_of_smell_{n}", values = { 1 = true, 0 = false } },
+      { field = "flw2_loss_of_taste_{n}", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
