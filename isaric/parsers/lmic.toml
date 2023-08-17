@@ -238,10 +238,34 @@
 [visit.treatment_antibiotics_type]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [
-    { field = "antibiotic_type_v2", description = "If YES to Antibiotic, specify:" },
-    { field = "antibiotic_type", description = "If YES to Antibiotic, specify:" },
-  ]
+
+  [[visit.treatment_antibiotics_type.fields]]
+    field = "antibiotic_type"
+    apply.function = "wordSubstituteSet"
+    apply.params = [
+      ["Cef?t?riaxone", "Ceftriaxone"],
+      ["cotrimoxazole", "Co-Trimoxazole"],
+      ["Amoxicillin", "Amoxicillin"],
+      ["metronidazole", "Metronidazole"],
+      ["benzathine", "Benzathine benzylpenicillin"]
+    ]
+
+  [[visit.treatment_antibiotics_type.fields]]
+    field = "antibiotic_type_v2"
+    apply.function = "wordSubstituteSet"
+    apply.params = [
+      # ["Cefriaxone","Ceftriaxone"],
+      ["Cerfitriazone", "Ceftriaxone"],
+      ["Cef?t?riaxone", "Ceftriaxone"],
+      # ["Cetraxone","Ceftriaxone"],
+      ["Amoxicillin", "Amoxicillin"],
+      ["flucloxacillin", "Flucloxacillin"],
+      ["metronidazole", "Metronidazole"],
+      ["azinthromycine", "Azinthromycine"],
+      ["Doxycycline", "Doxycycline"],
+      ["cotrimoxazole", "Co-Trimoxazole"],
+      ["Meropenem", "Meropenem"],
+    ]
 
 [visit.treatment_antifungal_agent]
   combinedType = "any"
@@ -320,18 +344,22 @@
         "Prednisolone",
       ],
       [
-        "Aminophylin,  brown  and  blue inhaler",
+        "Aminophylin",
         "Aminophylline",
       ],
     ] } },
     { field = "corticost_cmdose_v2", apply = { function = "wordSubstituteSet", params = [
       [
-        "Dexamethasone,other medication are aminophylin,heparin",
+        "Dexamethasone",
         "Dexamethasone",
       ],
       [
-        "Dexamethasone 6mg",
-        "Dexamethasone",
+        "Prednisolone",
+        "Prednisolone",
+      ],
+      [
+        "Hydrocortisone",
+        "Hydrocortisone",
       ],
     ] } },
   ]
