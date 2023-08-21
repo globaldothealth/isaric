@@ -106,6 +106,75 @@
         field = "age_estimateyearsu"
         values = { 1 = "months", 2 = "years" }
 
+[subject.date_of_birth]
+  field = "agedat"
+
+[subject.dob_year]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "agedat", apply = { function = "splitDate", params = [
+      "year",
+      2022,
+    ] } },
+    { field = "calc_age", apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
+    ] } },
+    { field = "age_estimateyears", if.any = [
+      { age_estimateyearsu = 2 },
+      { age_estimateyearsu = "" },
+    ], apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
+    ] } },
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
+      "%Y-%m-%d",
+      "months",
+    ] } },
+  ]
+
+[subject.dob_month]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "agedat", apply = { function = "splitDate", params = [
+      "month",
+      2022,
+    ] } },
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+        "$daily_dsstdat",
+      ],
+      2022,
+      "%Y-%m-%d",
+      "months",
+    ] } },
+  ]
+
+
+[subject.dob_day]
+  field = "agedat"
+  apply = { function = "splitDate", params = ["day", 2022] }
+
 [subject.pregnancy]
   field = "pregyn_rptestcd"
   ref = "Y/N/NK"
@@ -860,6 +929,30 @@
   is_present = { field = "dehydration_vsorres", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { ref = "followupDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_loss_smell", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
+    ]
+
+[[observation]]
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -931,7 +1024,7 @@
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, unit = "mmHg" } }
+  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"

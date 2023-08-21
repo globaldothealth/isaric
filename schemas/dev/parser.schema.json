@@ -79,7 +79,8 @@
                   "items": {
                     "type": [
                       "string",
-                      "number"
+                      "number",
+                      "array"
                     ]
                   },
                   "description": "Additional parameters to pass to the function"
@@ -304,6 +305,22 @@
           "description": "Age in years",
           "$ref": "#/definitions/mapping"
         },
+        "date_of_birth": {
+          "description": "Date of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_year": {
+          "description": "Year of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_month": {
+          "description": "month of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_day": {
+          "description": "Day of birth",
+          "$ref": "#/definitions/mapping"
+        },
         "sex_at_birth": {
           "description": "Sex at birth",
           "$ref": "#/definitions/mapping"
@@ -409,6 +426,10 @@
           "$ref": "#/definitions/mapping"
         },
         "has_chronic_cardiac_disease": {
+          "description": "Chronic cardiac disease",
+          "$ref": "#/definitions/mapping"
+        },
+        "has_chronic_respiratory_disease": {
           "description": "Chronic cardiac disease",
           "$ref": "#/definitions/mapping"
         },
@@ -751,6 +772,7 @@
                   "mid_upper_arm_circumference_cm",
                   "oxygen_o2hb",
                   "oxygen_saturation_percent",
+                  "oxygen_flow_volume_max",
                   "pao2_mmHg",
                   "pco2_mmHg",
                   "pH",
@@ -759,7 +781,8 @@
                   "riker_sedation-agitation_scale",
                   "systolic_blood_pressure_mmHg",
                   "temperature_celsius",
-                  "total_fluid_output_ml"
+                  "total_fluid_output_ml",
+                  "oxygen_flow_volume_max"
                 ]
               }
             }
