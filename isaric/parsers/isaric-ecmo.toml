@@ -1071,6 +1071,18 @@
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
