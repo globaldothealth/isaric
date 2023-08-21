@@ -278,6 +278,31 @@
     unit = "years"
     source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years", 3 = "days" } }
 
+  [subject.date_of_birth]
+    combinedType = "firstNonNull"
+    fields = [{ field = "flw_date_of_birth" }, { field = "flw2_date_of_birth" }]
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_date_of_birth", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+      ] } },
+      { field = "flw2_date_of_birth", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+      ] } },
+      { field = "age_estimateyears", apply = { function = "startYear", params = [
+        [
+          "$hostdat",
+          "$cestdat",
+          "$dsstdat",
+        ],
+        2022,
+      ] } },
+    ]
+
   [subject.sex_at_birth]
     combinedType = "firstNonNull"
     excludeWhen = "none"
