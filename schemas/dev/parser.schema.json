@@ -79,7 +79,8 @@
                   "items": {
                     "type": [
                       "string",
-                      "number"
+                      "number",
+                      "array"
                     ]
                   },
                   "description": "Additional parameters to pass to the function"
@@ -298,6 +299,22 @@
         },
         "age": {
           "description": "Age in years",
+          "$ref": "#/definitions/mapping"
+        },
+        "date_of_birth": {
+          "description": "Date of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_year": {
+          "description": "Year of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_month": {
+          "description": "month of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_day": {
+          "description": "Day of birth",
           "$ref": "#/definitions/mapping"
         },
         "sex_at_birth": {
@@ -777,7 +794,8 @@
                   "riker_sedation-agitation_scale",
                   "systolic_blood_pressure_mmHg",
                   "temperature_celsius",
-                  "total_fluid_output_ml"
+                  "total_fluid_output_ml",
+                  "oxygen_flow_volume_max"
                 ]
               }
             }

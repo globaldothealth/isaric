@@ -63,6 +63,40 @@
     unit = "years"
     source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years" } }
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age_estimateyears", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+        "$hostdat_year",
+        2022,
+        "%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+        "$hostdat_year",
+        2022,
+        "",
+        "months",
+        [
+          "$hostdat_month",
+          "$hostdat_day",
+        ],
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "age_estimateyears"
+    if = { age_estimateyearsu = 1 }
+    apply = { function = "startMonth", params = [
+      "$hostdat_year",
+      2022,
+      "",
+      "months",
+      [
+        "$hostdat_month",
+        "$hostdat_day",
+      ],
+    ] }
+
   [subject.date_death]
     combinedType = "firstNonNull"
     fields = [

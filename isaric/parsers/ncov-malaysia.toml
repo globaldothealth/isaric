@@ -41,10 +41,72 @@
     fields = [{ ref = "admissionDate" }]
 
   [subject.age]
-    field = "age_estimateyears"
-    description = "Age/Estimated age"
-    unit = "years"
-    source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years", 3 = "days" } }
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age_estimateyears", description = "Age/Estimated age", unit = "years", source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years", 3 = "days" } } },
+      { field = "dob", apply = { function = "yearsElapsed", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "%d/%m/%Y",
+      ] } },
+    ]
+
+  [subject.date_of_birth]
+    field = "dob"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "months",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startYear", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "month",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startMonth", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
+
+  [subject.dob_day]
+    field = "dob"
+    apply = { function = "splitDate", params = ["day", 2022, "%d/%m/%Y"] }
 
   [subject.sex_at_birth]
     field = "sex"
