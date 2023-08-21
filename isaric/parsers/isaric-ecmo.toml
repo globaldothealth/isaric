@@ -285,20 +285,77 @@
     description = "Employed as a healthcare worker?"
 
   [subject.age]
-    combinedType = "firstNonNull"
-    [[subject.age.fields]]
-      field = "age_estimate10"
-      unit = "years"
-      description = "Calculated age in years"
+    field = "age_estimateyears"
+    unit = "years"
+    description = "Age/Estimated age"
 
-    [[subject.age.fields]]
-      field = "age_estimateyears"
-      unit = "years"
-      description = "Age/Estimated age"
+    [subject.age.source_unit]
+      field = "age_estimateyearsu"
+      values = { 1 = "months", 2 = "years", 3 = "days" }
 
-      [subject.age.fields.source_unit]
-        field = "age_estimateyearsu"
-        values = { 1 = "months", 2 = "years", 3 = "days" }
+[subject.dob_year]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "age_estimateyears", if.any = [
+      { age_estimateyearsu = 2 },
+      { age_estimateyearsu = "" },
+    ], apply = { function = "startYear", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
+    ] } },
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
+      "%Y-%m-%d",
+      "months",
+    ] } },
+    { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startYear", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
+      "%Y-%m-%d",
+      "days",
+    ] } },
+  ]
+
+[subject.dob_month]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
+    ] } },
+    { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startMonth", params = [
+      [
+        "$icu_hostdat",
+        "$hostdat",
+        "$dsstdat",
+        "$cestdat",
+      ],
+      2022,
+      "%Y-%m-%d",
+      "days",
+    ] } },
+  ]
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"

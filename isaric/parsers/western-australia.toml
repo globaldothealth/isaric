@@ -70,14 +70,25 @@
     ]
 
   [subject.age]
-    combinedType = 'firstNonNull'
-    fields = [
-      { field = "age_calc", description = "Calculated age (form)" },
-      # { field = "age", unit = "years", source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } } },
-      # { field = "brthdtc", description = "Calculate from birth date", apply = { function = "yearsElapsed", params = [
-      # "admission_date",
-      # ] } },
-    ]
+    field = "age_calc"
+    description = "Calculated age (form)"
+    unit = "years"
+    # source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } }
+
+    # [subject.date_of_birth]
+    #   field = "brthdtc"
+
+  [subject.dob_year]
+    field = "age_calc"
+    apply = { function = "startYear", params = [
+      [
+        "$admission_date",
+        "$hostdat",
+        "$dsstdat",
+      ],
+      2022,
+      "%d/%m/%Y",
+    ] }
 
 
   [subject.works_healthcare]
@@ -909,13 +920,13 @@
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { field = "dsstdtc" }                                           # Can't find a date for the followup forms specifically
+  date = { field = "dsstdtc" }                                            # Can't find a date for the followup forms specifically
   value = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { field = "dsstdtc" }                                                    # Can't find a date for the followup forms specifically
+  date = { field = "dsstdtc" }                                                     # Can't find a date for the followup forms specifically
   value = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
 
 [[observation]]

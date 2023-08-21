@@ -45,6 +45,44 @@
     source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
     unit = "years"
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age", if = { age_unit = 1 }, apply = { function = "startYear", params = [
+        "$hospitalization_date",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        "$hospitalization_date",
+        2022,
+        "%d/%m/%Y",
+        "months",
+      ] } },
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startYear", params = [
+        "$hospitalization_date",
+        2022,
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        "$hospitalization_date",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startMonth", params = [
+        "$hospitalization_date",
+        2022,
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
   [subject.sex]
     field = "sex"
     values = { 1 = "male", 0 = "female" }
