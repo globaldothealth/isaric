@@ -46,9 +46,6 @@
     combinedType = "min"
     fields = [{ field = "hostdat" }]
 
-    # [subject.ethnicity]
-    #   field = "nugget"
-
   [subject.sex_at_birth]
     field = "sex"
     description = "Sex at Birth:"
@@ -59,9 +56,37 @@
     fields = [
       { field = "dateofbirth", apply = { function = "yearsElapsed", params = [
         "$hostdat",
+        2022,
       ] } },
       { field = "age_estimateyearsu", description = "estimated age in years" },
     ] # All other age fields are empty
+
+  [subject.date_of_birth]
+    field = "dateofbirth"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dateofbirth", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+      ] } },
+      { field = "age_estimateyearsu", apply = { function = "startYear", params = [
+        [
+          "$hostdat",
+          "$dsstdat",
+        ],
+        2022,
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "dateofbirth"
+    apply = { function = "splitDate", params = ["month", 2022] }
+
+  [subject.dob_day]
+    field = "dateofbirth"
+    apply = { function = "splitDate", params = ["day", 2022] }
 
   [subject.pregnancy]
     field = "pregyn_rptestcd"
