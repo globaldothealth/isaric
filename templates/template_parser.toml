@@ -805,6 +805,15 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
   name = "loss_of_smell"
   date = ""
   phase = ""
