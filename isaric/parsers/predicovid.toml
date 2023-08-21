@@ -47,6 +47,14 @@
   [subject.age]
     field = "age_estimateyears"
 
+  [subject.dob_year]
+    field = "age_estimateyears"
+    apply = { function = "startYear", params = [
+      "$symptom_start_date",
+      2022,
+      "%d/%m/%Y",
+    ] }
+
   [subject.sex_at_birth]
     field = "sex"
     description = "sex at birth"
