@@ -58,7 +58,43 @@
     ref = "admissionDateHierarchy"
 
   [subject.age]
-    field = "Age"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Age" },
+      { field = "BirthDate", apply = { function = "yearsElapsed", params = [
+        "$Adm Date.AdmissionDate",
+        2022,
+        "%m/%d/%y",
+        "%m/%d/%y",
+      ] } },
+    ]
+
+  [subject.date_of_birth] # NOTE: many dates have 2-digit years - this often autoconverts to 20xx not 19xx for older people.
+    field = "BirthDate"
+    apply = { function = "correctOldDate", params = [2022, "%m/%d/%y"] }
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "BirthDate", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%m/%d/%y",
+      ] } },
+      { field = "Age", apply = { function = "startYear", params = [
+        "$Adm Date.AdmissionDate",
+        2022,
+        "%m/%d/%y",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["month", 2022, "%m/%d/%y"] }
+
+  [subject.dob_day]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["day", 2022, "%m/%d/%y"] }
 
   [subject.sex_at_birth]
     field = "BirthSex"

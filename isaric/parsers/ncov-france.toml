@@ -41,11 +41,16 @@
     fields = [
       { field = "an_nais", apply = { function = "yearsElapsed", params = [
         "$adm_hosp_dh",
+        2022,
         "%Y",
         "%Y-%m-%d %H:%M",
       ] } },
       { field = "igs_age", description = "SAPS II: Age (years)", values = { 0 = "<40", 7 = "40-59", 12 = "60-69", 15 = "70-74", 16 = "75-79", 18 = ">=80" } },
     ]
+
+  [subject.dob_year]
+    field = "an_nais"
+    description = "year of birth"
 
   [subject.sex]
     field = "sexe"
