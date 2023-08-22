@@ -54,11 +54,11 @@
   [subject.age]
     combinedType = "firstNonNull"
     fields = [
+      { field = "age_estimateyearsu", description = "estimated age in years" },
       { field = "dateofbirth", apply = { function = "yearsElapsed", params = [
         "$hostdat",
         2022,
       ] } },
-      { field = "age_estimateyearsu", description = "estimated age in years" },
     ] # All other age fields are empty
 
   [subject.date_of_birth]
@@ -93,11 +93,6 @@
     values = { 1 = true, 0 = false }
     description = "Pregnant?"
 
-    # [subject.pregnancy_gestational_age_weeks]
-    #   field = "egestage_rptestcd"
-    #   values = { 1 = true, 0 = false }
-    #   description = "Gestational weeks assessment"
-
   [subject.pregnancy_birth_weight_kg]
     combinedType = "firstNonNull"
     fields = [
@@ -120,23 +115,15 @@
     description = "Chronic kidney disease"
     ref = "Y/N/NK"
 
-    # [subject.has_comorbidity_other]
-    #   combinedType = "set"
-    #   excludeWhen = "none"
-    #   fields = [{ field = "otherrisktext" }]
-
   [subject.has_diabetes]
     field = "diabetiscomp_mhyn"
     description = "Diabetes"
     ref = "Y/N/NK"
 
   [subject.has_hiv]
-    combinedType = "any"
-    fields = [
-      { field = "aidshiv_mhyn_child", description = "child hiv status", values = { 1 = true, 2 = true, 3 = false } },
-      # { field = "dy1_pcr_jhp_result", description = "HIV PCR result", values = { 1 = true, 2 = false } },
-      # { field = "dschrg_antbdy_test_result", description = "HIV rapid antibody test result", values = { 1 = true, 2 = false } },
-    ]
+    field = "aidshiv_mhyn_child"
+    description = "child hiv status"
+    values = { 1 = true, 2 = true, 3 = false }
 
   [subject.has_hiv_art]
     field = "aidshiv_mhyn_child"
@@ -171,16 +158,6 @@
     field = "ex_preterm_mhyn"
     values = { 1 = true, 0 = false }
     description = "Ex-preterm infant?"
-
-    # [subject.works_healthcare]
-    #   field = "healthwork_erterm"
-    #   description = "Does the child have a household contact who is a healthcare worker?"
-    #   ref = "Y/N/NK"
-
-    # [subject.works_microbiology_lab]
-    #   field = "labwork_erterm"
-    #   description = "Does the child have a household contact who is a laboratory worker?"
-    #   ref = "Y/N/NK"
 
   [subject.has_died]
     field = "dsterm"
@@ -263,10 +240,6 @@
     description = "Antiviral?"
     ref = "Y/N/NK"
 
-    # [visit.treatment_antiviral_type_other]
-    #   field = "antiviral_cmtype_v2"
-    #   description = "If YES to antiviral agent; specify:"
-
   [visit.treatment_cardiovascular_support]
     combinedType = "any"
     fields = [
@@ -300,10 +273,6 @@
     field = "exprmntl_cmyn_v2"
     description = "Experimental agent?"
     ref = "Y/N/NK"
-
-    # [visit.treatment_experimental_agent_type_other]
-    #   field = "experimental_cmtype_v2"
-    #   description = "If YES to Experimental agent; specify:"
 
   [visit.treatment_inotropes_vasopressors]
     field = "inotrop_prtrt_v3"
@@ -377,12 +346,6 @@
   phase = "admission"
   date = { field = "hostdat" }
   is_present = { field = "bleed_ceoccur_v2", description = "Bleeding (Haemorrhage)", ref = "Y/N/NK" }
-  # [observation.context]
-  #   combinedType = "set"
-  #   excludeWhen = "none"
-  #   fields = [
-  #     { field = "bleed_ceoccur_specify_v2", description = "If bleeding, specify site(s):" },
-  #   ]
 
 [[observation]]
   name = "chest_pain"
