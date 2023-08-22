@@ -785,7 +785,7 @@ scale <https://www.glasgowcomascale.org>`__
 
 **heart_sounds**: Bool.
 
-**hepatomegaly** Bool. Enlarged liver? (Unused)
+**hepatomegaly** Bool. Enlarged liver?
 
 **history_of_fever** Bool. Recently feverish? For admission/followup
 where the subject self-reports.
