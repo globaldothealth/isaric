@@ -1034,7 +1034,7 @@
   name = "oxygen_o2hb"
   phase = "study"
   date = { field = "hema_date" }
-  value = { field = "hemo", source_unit = { field = "hemo_type", values = { 1 = "g/L", 2 = "g/dL" } } }
+  value = { field = "hemo", unit = "g/dL", source_unit = { field = "hemo_type", values = { 1 = "g/L", 2 = "g/dL" } } }
 
 [[observation]]
   name = "oxygen_saturation_percent"
