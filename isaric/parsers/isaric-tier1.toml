@@ -7,17 +7,18 @@
     groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ['ethnicity']
 
-  # comment out the visit table for Ongoing follow-up data (no visit info)
-  [adtl.tables.visit]
-    kind = "groupBy"
-    groupBy = "visit_id"
-    aggregation = "lastNotNull"
-    schema = "../../schemas/dev/visit.schema.json"
-    optional-fields = [
-      'date_outcome',
-      'start_date',
-    ] # Tier-1 subjects usually weren't admitted to hospital
+    # comment out the visit table for Initial/Ongoing follow-up data (no visit info)
+    # [adtl.tables.visit]
+    #   kind = "groupBy"
+    #   groupBy = "visit_id"
+    #   aggregation = "lastNotNull"
+    #   schema = "../../schemas/dev/visit.schema.json"
+    #   optional-fields = [
+    #     'date_outcome',
+    #     'start_date',
+    #   ] # Tier-1 subjects usually weren't admitted to hospital
 
   [adtl.tables.observation]
     kind = "oneToMany"
