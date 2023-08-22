@@ -373,6 +373,10 @@
           "description": "Gestational assessment weeks",
           "$ref": "#/definitions/mapping"
         },
+        "preterm_infant": {
+          "description": "Subject born preterm (<37 weeks)",
+          "$ref": "#/definitions/mapping"
+        },
         "has_chronic_hematologic_disease": {
           "description": "Chronic hematologic disease",
           "$ref": "#/definitions/mapping"
@@ -575,6 +579,10 @@
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_oxygen_mask_prongs": {
+          "description": "Oxygen therapy via mask or nasal prongs",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_prone_position": {
           "description": "Prone position",
           "$ref": "#/definitions/mapping"
@@ -584,6 +592,10 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_antifungal_agent": {
+          "description": "Antifungal agent",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antifungal_agent_type": {
           "description": "Antifungal agent",
           "$ref": "#/definitions/mapping"
         },
@@ -765,6 +777,7 @@
                   "clinical_frailty_score",
                   "diastolic_blood_pressure_mmHg",
                   "glasgow_coma_score",
+                  "blantyre_coma_score",
                   "base_excess",
                   "inability_to_walk_scale",
                   "heart_rate_bpm",
@@ -781,8 +794,7 @@
                   "riker_sedation-agitation_scale",
                   "systolic_blood_pressure_mmHg",
                   "temperature_celsius",
-                  "total_fluid_output_ml",
-                  "oxygen_flow_volume_max"
+                  "total_fluid_output_ml"
                 ]
               }
             }

@@ -170,9 +170,13 @@
       "category": "pregnancy"
     },
     "pregnancy_birth_weight_kg": {
-      "type": "number",
+      "type": [
+        "number",
+        "string"
+      ],
       "description": "Birth weight (kg)",
-      "category": "pregnancy"
+      "category": "pregnancy",
+      "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
     "pregnancy_outcome": {
       "type": "string",
@@ -201,6 +205,11 @@
       "type": "number",
       "description": "Gestational assessment weeks",
       "category": "pregnancy"
+    },
+    "preterm_infant": {
+      "type": "boolean",
+      "description": "Subject born preterm (<37 weeks)",
+      "category": "comorbidities"
     },
     "has_chronic_hematologic_disease": {
       "type": "boolean",
