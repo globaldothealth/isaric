@@ -102,6 +102,7 @@
         "enum": [
           "Methylprednisolone",
           "Prednisolone",
+          "Prednisone",
           "Dexamethasone",
           "Hydrocortisone",
           "Other"
@@ -162,8 +163,10 @@
           "Anti-influenza antiviral",
           "Tocilizumab",
           "Anakinra",
-          "Favipravir",
+          "Favipiravir",
           "Atazanavir",
+          "Darunvir",
+          "Acyclovir/Ganiciclovir",
           "Other"
         ]
       },

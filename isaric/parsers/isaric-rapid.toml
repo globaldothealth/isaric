@@ -408,7 +408,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = "yes", 2 = "never" } # TODO: How to get has_smoking=former?
+  values = { 1 = "yes", 2 = "never" }
   description = "Current smoking"
 
 [subject.has_asthma]
@@ -1467,7 +1467,7 @@
     combinedType = "any"
     fields = [
       { field = "flw_loss_smell", values = { 1 = true, 0 = false } },
-      { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
+      { field = "flw_loss_taste", values = { 1 = true, 0 = false } },
     ]
 
 

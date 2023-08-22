@@ -13,6 +13,10 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = [
+      'date_outcome',
+      'start_date',
+    ] # Tier-1 subjects usually weren't admitted to hospital
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -246,11 +250,13 @@
       { field = "flw_antiv_agents___3", values = { 1 = "Remdesivir" } },
       { field = "flw_antiv_agents___4", values = { 1 = "Favipiravir" } },
       { field = "flw_antiv_agents___5", values = { 1 = "Acyclovir/Ganiciclovir" } },
-      { field = "flw_antiv_agents___6", values = { 1 = "Oseltamivir" } },
+      { field = "flw_antiv_agents___6", values = { 1 = "Oseltamivir (Tamiflu)" } },
     ]
 
   [visit.treatment_antiviral_type_other]
-    field = "flw_antiv_other"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "flw_antiv_other" }]
 
   [visit.treatment_antibiotics]
     field = "flw_antib"
@@ -261,8 +267,9 @@
     ref = "Y/N"
 
   [visit.treatment_other]
-    field = "flw_med_other_name"
-    description = ""
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "flw_med_other_name" }]
 
   [visit.date_outcome]
     field = "flw_first_disch"
