@@ -8,6 +8,7 @@
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
 
+  # comment out the visit table for Ongoing follow-up data (no visit info)
   [adtl.tables.visit]
     kind = "groupBy"
     groupBy = "visit_id"
@@ -21,13 +22,13 @@
   [adtl.tables.observation]
     kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "flw_subjid", sensitive = true } }
+    common = { visit_id = { combinedType = "firstNonNull", fields = [
+      { fieldPattern = 'flw\d*_subjid\d*', sensitive = true },
+    ] } }
 
   [adtl.defs."Y/N".values]
     1 = true
     0 = false
-
-    # other adtl.defs here ..
 
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
@@ -37,161 +38,169 @@
   has_died = false
 
   [subject.subject_id]
-    field = "flw_subjid"
-    sensitive = true
-
-    # [subject.enrolment_date]
-    #   field = ""
-    #   description = ""
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_subjid\d*', sensitive = true }]
 
   [subject.earliest_admission_date]
     combinedType = "firstNonNull"
     fields = [
-      { field = "flw_first_admit", description = "Approximately when were you first admitted to hospital?" },
-      { field = "flw_first_sym", description = "First symptom date" },
+      { field = "flw_first_admit", description = "Approximately when were you first admitted to hospital?", can_skip = true },
+      { field = "flw_first_sym", description = "First symptom date", can_skip = true },
     ]
 
-    # [subject.age]
-    #   field = ""
-    #   description = ""
-
   [subject.dob_year]
-    field = "flw_year_of_birth"
-    values = { 1 = 1915, 2 = 1916, 3 = 1917, 4 = 1918, 5 = 1919, 6 = 1920, 7 = 1921, 8 = 1922, 9 = 1923, 10 = 1924, 11 = 1925, 12 = 1926, 13 = 1927, 14 = 1928, 15 = 1929, 16 = 1930, 17 = 1931, 18 = 1932, 19 = 1933, 20 = 1934, 21 = 1935, 22 = 1936, 23 = 1937, 24 = 1938, 25 = 1939, 26 = 1940, 27 = 1941, 28 = 1942, 29 = 1943, 30 = 1944, 31 = 1945, 32 = 1946, 33 = 1947, 34 = 1948, 35 = 1949, 36 = 1950, 37 = 1951, 38 = 1952, 39 = 1953, 40 = 1954, 41 = 1955, 42 = 1956, 43 = 1957, 44 = 1958, 45 = 1959, 46 = 1960, 47 = 1961, 48 = 1962, 49 = 1963, 50 = 1964, 51 = 1965, 52 = 1966, 53 = 1967, 54 = 1968, 55 = 1969, 56 = 1970, 57 = 1971, 58 = 1972, 59 = 1973, 60 = 1974, 61 = 1975, 62 = 1976, 63 = 1977, 64 = 1978, 65 = 1979, 66 = 1980, 67 = 1981, 68 = 1982, 69 = 1983, 70 = 1984, 71 = 1985, 72 = 1986, 73 = 1987, 74 = 1988, 75 = 1989, 76 = 1990, 77 = 1991, 78 = 1992, 79 = 1993, 80 = 1994, 81 = 1995, 82 = 1996, 83 = 1997, 84 = 1998, 85 = 1999, 86 = 2000, 87 = 2001, 88 = 2002, 89 = 2003, 90 = 2004, 91 = 2005, 92 = 2006, 93 = 2007, 94 = 2008, 95 = 2009, 96 = 2010, 97 = 2011, 98 = 2012, 99 = 2013, 100 = 2014, 101 = 2015, 102 = 2016, 103 = 2017, 104 = 2018, 105 = 2019, 106 = 2020 }
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_year_of_birth', values = { 1 = 1915, 2 = 1916, 3 = 1917, 4 = 1918, 5 = 1919, 6 = 1920, 7 = 1921, 8 = 1922, 9 = 1923, 10 = 1924, 11 = 1925, 12 = 1926, 13 = 1927, 14 = 1928, 15 = 1929, 16 = 1930, 17 = 1931, 18 = 1932, 19 = 1933, 20 = 1934, 21 = 1935, 22 = 1936, 23 = 1937, 24 = 1938, 25 = 1939, 26 = 1940, 27 = 1941, 28 = 1942, 29 = 1943, 30 = 1944, 31 = 1945, 32 = 1946, 33 = 1947, 34 = 1948, 35 = 1949, 36 = 1950, 37 = 1951, 38 = 1952, 39 = 1953, 40 = 1954, 41 = 1955, 42 = 1956, 43 = 1957, 44 = 1958, 45 = 1959, 46 = 1960, 47 = 1961, 48 = 1962, 49 = 1963, 50 = 1964, 51 = 1965, 52 = 1966, 53 = 1967, 54 = 1968, 55 = 1969, 56 = 1970, 57 = 1971, 58 = 1972, 59 = 1973, 60 = 1974, 61 = 1975, 62 = 1976, 63 = 1977, 64 = 1978, 65 = 1979, 66 = 1980, 67 = 1981, 68 = 1982, 69 = 1983, 70 = 1984, 71 = 1985, 72 = 1986, 73 = 1987, 74 = 1988, 75 = 1989, 76 = 1990, 77 = 1991, 78 = 1992, 79 = 1993, 80 = 1994, 81 = 1995, 82 = 1996, 83 = 1997, 84 = 1998, 85 = 1999, 86 = 2000, 87 = 2001, 88 = 2002, 89 = 2003, 90 = 2004, 91 = 2005, 92 = 2006, 93 = 2007, 94 = 2008, 95 = 2009, 96 = 2010, 97 = 2011, 98 = 2012, 99 = 2013, 100 = 2014, 101 = 2015, 102 = 2016, 103 = 2017, 104 = 2018, 105 = 2019, 106 = 2020 } },
+    ]
 
   [subject.dob_month]
-    field = "flw_month_birth"
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_month_birth' }]
 
   [subject.dob_day]
-    field = "flw_day_birth"
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_day_birth' }]
 
   [subject.sex_at_birth]
-    field = "flw_sex_at_birth"
-    description = ""
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_sex_at_birth', values = { 1 = "male", 2 = "female" } },
+    ]
 
-    [subject.sex_at_birth.values]
-      1 = "male"
-      2 = "female"
+  [subject.ethnicity]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { fieldPattern = 'flw\d*_ethnicity___1', values = { 1 = "White" } },
+      { fieldPattern = 'flw\d*_ethnicity___2', values = { 1 = "Arab" } },
+      { fieldPattern = 'flw\d*_ethnicity___3', values = { 1 = "Black" } },
+      { fieldPattern = 'flw\d*_ethnicity___4', values = { 1 = "East_Asian" } },
+      { fieldPattern = 'flw\d*_ethnicity___5', values = { 1 = "South_Asian" } },
+      { fieldPattern = 'flw\d*_ethnicity___6', values = { 1 = "West_Asian" } },
+      { fieldPattern = 'flw\d*_ethnicity___7', values = { 1 = "Latin_American" } },
+      { fieldPattern = 'flw\d*_ethnicity___8', values = { 1 = "Other" } },
+      { fieldPattern = 'flw\d*_ethnicity___9', values = { 1 = "N/A" } },
+      { fieldPattern = 'flw\d*_ethnicity_oth' },
+    ]
 
-[subject.ethnicity]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "flw_ethnicity___1", values = { 1 = "White" } },
-    { field = "flw_ethnicity___2", values = { 1 = "Arab" } },
-    { field = "flw_ethnicity___3", values = { 1 = "Black" } },
-    { field = "flw_ethnicity___4", values = { 1 = "East_Asian" } },
-    { field = "flw_ethnicity___5", values = { 1 = "South_Asian" } },
-    { field = "flw_ethnicity___6", values = { 1 = "West_Asian" } },
-    { field = "flw_ethnicity___7", values = { 1 = "Latin_American" } },
-    { field = "flw_ethnicity___8", values = { 1 = "Other" } },
-    { field = "flw_ethnicity___9", values = { 1 = "N/A" } },
-    { field = "flw_ethnicity_oth" },
-  ]
+  [subject.pregnancy]
+    field = "flw_prg"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.pregnancy]
-  field = "flw_prg"
-  ref = "Y/N"
+  [subject.pregnancy_gestational_age_weeks]
+    field = "flw_preg_gest"
+    can_skip = true
 
-[subject.pregnancy_gestational_age_weeks]
-  field = "flw_preg_gest"
+  [subject.has_chronic_hematologic_disease]
+    field = "flw_spc_ongoing___12"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_chronic_hematologic_disease]
-  field = "flw_spc_ongoing___12"
-  ref = "Y/N"
+  [subject.has_asplenia]
+    field = "flw_spc_ongoing___10"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_asplenia]
-  field = "flw_spc_ongoing___10"
-  ref = "Y/N"
+  [subject.has_tuberculosis]
+    field = "flw_spc_ongoing___17"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_tuberculosis]
-  field = "flw_spc_ongoing___17"
-  ref = "Y/N"
+  [subject.has_dementia]
+    field = "flw_spc_ongoing___15"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_dementia]
-  field = "flw_spc_ongoing___15"
-  ref = "Y/N"
+  [subject.has_rheumatologic_disorder]
+    field = "flw_spc_ongoing___13"
+    ref = "Y/N"
+    can_skip = true
 
-  # [subject.has_obesity]
-  #   field = ""
-  #   description = ""
-  #   ref = "Y/N"
+  [subject.has_hiv]
+    field = "flw_spc_ongoing___16"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_rheumatologic_disorder]
-  field = "flw_spc_ongoing___13"
-  ref = "Y/N"
+  [subject.has_malignant_neoplasm]
+    field = "flw_spc_ongoing___11"
+    ref = "Y/N"
+    description = "Cancer"
+    can_skip = true
 
-[subject.has_hiv]
-  field = "flw_spc_ongoing___16"
-  ref = "Y/N"
+  [subject.has_smoking]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_smoking', values = { 1 = "yes", 2 = "yes", 3 = "yes" } },
+    ]
+    # 1/2/3 = more/less/no diference since covid, 4=I didn't smoke before C-19
 
-[subject.has_malignant_neoplasm]
-  field = "flw_spc_ongoing___11"
-  ref = "Y/N"
-  description = "Cancer"
+  [subject.has_asthma]
+    field = "flw_spc_ongoing___3"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_smoking]
-  field = "flw_smoking"
-  values = { 1 = "yes", 2 = "yes", 3 = "yes" } # 1/2/3 = more/less/no diference since covid, 4=I didn't smoke before C-19
+  [subject.has_chronic_cardiac_disease]
+    field = "flw_spc_ongoing___1"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_asthma]
-  field = "flw_spc_ongoing___3"
-  ref = "Y/N"
+  [subject.has_chronic_kidney_disease]
+    field = "flw_spc_ongoing___8"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_chronic_cardiac_disease]
-  field = "flw_spc_ongoing___1"
-  ref = "Y/N"
+  [subject.has_diabetes]
+    combinedType = "any"
+    fields = [
+      { field = "flw_spc_ongoing___5", ref = "Y/N", can_skip = true },
+      { field = "flw_spc_ongoing___6", ref = "Y/N", can_skip = true },
+      { field = "flw_spc_ongoing___7", ref = "Y/N", can_skip = true },
+    ]
 
-[subject.has_chronic_kidney_disease]
-  field = "flw_spc_ongoing___8"
-  ref = "Y/N"
+  [subject.diabetes_type]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_spc_ongoing___5", values = { 1 = "type-1" }, can_skip = true },
+      { field = "flw_spc_ongoing___6", values = { 1 = "type-2" }, can_skip = true },
+      { field = "flw_spc_ongoing___7", values = { 1 = "gestational" }, can_skip = true },
+    ]
 
-[subject.has_diabetes]
-  combinedType = "any"
-  fields = [
-    { field = "flw_spc_ongoing___5", ref = "Y/N" },
-    { field = "flw_spc_ongoing___6", ref = "Y/N" },
-    { field = "flw_spc_ongoing___7", ref = "Y/N" },
-  ]
+  [subject.has_liver_disease]
+    field = "flw_spc_ongoing___9"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.diabetes_type]
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "flw_spc_ongoing___5", values = { 1 = "type-1" } },
-    { field = "flw_spc_ongoing___6", values = { 1 = "type-2" } },
-    { field = "flw_spc_ongoing___7", values = { 1 = "gestational" } },
-  ]
+  [subject.has_comorbidity_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "flw_chron_other", can_skip = true }]
 
-[subject.has_liver_disease]
-  field = "flw_spc_ongoing___9"
-  ref = "Y/N"
+  [subject.icu_admitted]
+    field = "flw_hosp_icu"
+    ref = "Y/N"
+    can_skip = true
 
-[subject.has_comorbidity_other]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [{ field = "flw_chron_other" }]
-
-[subject.icu_admitted]
-  field = "flw_hosp_icu"
-  ref = "Y/N"
-
-  # VISIT
-  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+    # VISIT
+    # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
 [visit]
   outcome = "recovered"
 
   [visit.country_iso3] # Not sure that this isn't the person, not the 'site'
-    field = "flw_country"
-    values = { 1 = "AFG", 60 = "FRA", 76 = "IND", 81 = "ISR", 82 = "ITA", 131 = "NOR", 197 = "OTH" }
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_country', values = { 1 = "AFG", 60 = "FRA", 76 = "IND", 81 = "ISR", 82 = "ITA", 131 = "NOR", 197 = "OTH" } },
+    ]
 
   [visit.visit_id]
-    field = "flw_subjid"
-    sensitive = true
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_subjid\d*', sensitive = true }]
 
   [visit.subject_id]
-    field = "flw_subjid"
-    sensitive = true
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_subjid\d*', sensitive = true }]
 
   [visit.start_date]
     combinedType = "firstNonNull"
@@ -207,7 +216,7 @@
     combinedType = "any"
     fields = [
       { field = "flw_hosp_icu", ref = "Y/N" },
-      { field = "flw_icu", ref = "Y/N" },
+      { fieldPattern = 'flw\d*_icu', ref = "Y/N" },
     ]
 
   [visit.treatment_corticosteroid]
@@ -276,534 +285,362 @@
 
 
     # OBSERVATION
-    # required fields - phase, date, name
-
-    # [[observation]]
-    #   name = "avpu"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "clinical_classification_critical_illness_scale"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "pneumonia"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "clinical_frailty_score"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "diastolic_blood_pressure_mmHg"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "glasgow_coma_score"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = ""
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "abdominal_pain"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "altered_consciousness_confusion"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "anorexia"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "base_excess"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
 
 [[observation]]
   name = "bleeding"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_bleeding", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_bleeding", ref = "Y/N", can_skip = true },
+      { field = "flw2_bleeding", ref = "Y/N", can_skip = true },
+    ]
 
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "flw_bleeding_site" }]
+    fields = [{ fieldPattern = 'flw\d*_bleeding_site' }]
 
 [[observation]]
   name = "chest_pain"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_chest_pains", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_chest_pains", ref = "Y/N", can_skip = true },
+      { field = "flw2_chest_pains", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "confusion"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_confusion", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "conjunctivitis"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
-  # [[observation]]
-  #   name = "cough"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_confusion", ref = "Y/N", can_skip = true },
+      { field = "flw2_confusion", ref = "Y/N", can_skip = true },
+    ]
+
+    # [[observation]]
+    #   name = "cough"
+    #   date = ""
+    #   phase = ""
+    #   is_present = { field = "", ref = "Y/N" }
+    #   # OR value = { field = "" }
+    #   # OR text = { field = "", values = {  } }
+    #   # if = {  = { "!=" = } }
 
 [[observation]]
   name = "cough_dry"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_pers_cough_dry", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_pers_cough_dry", ref = "Y/N", can_skip = true },
+      { field = "flw2_pers_cough_dry", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "cough_with_sputum_production"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_pers_cough_ph", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "cyanosis"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_pers_cough_ph", ref = "Y/N", can_skip = true },
+      { field = "flw2_pers_cough_ph", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "diarrhoea"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_diarrhoea", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "ear_pain"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_diarrhoea", ref = "Y/N", can_skip = true },
+      { field = "flw2_diarrhoea", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "fatigue_malaise"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_fatigue", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_fatigue", ref = "Y/N", can_skip = true },
+      { field = "flw2_fatigue", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "headache"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_headache", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_headache", ref = "Y/N", can_skip = true },
+      { field = "flw2_headache", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "history_of_fever"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_fever", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_fever", ref = "Y/N", can_skip = true },
+      { field = "flw2_fever", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "inability_to_walk_scale"
-  date = { field = "flw_survey_date" }
+  context = ["Before COVID-19 illness"]
   phase = "followup"
-  value = { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.value]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 }, can_skip = true },
+    ]
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  phase = "followup"
   context = ["Before COVID-19 illness"]
 
-[[observation]]
-  name = "inability_to_walk_scale"
-  date = { field = "flw_survey_date" }
-  phase = "followup"
-  value = { field = "flw_walking_today_2" }
-  context = ["Before COVID-19 illness"]
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.value]
+    combinedType = "firstNonNull"
+    fields = [{ field = "flw_walking_today_2", can_skip = true }]
 
 [[observation]]
   name = "inability_to_walk_scale"
-  date = { field = "flw_survey_date" }
-  phase = "followup"
-  value = { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
   context = ["After COVID-19 illness"]
+  phase = "followup"
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.value]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 }, can_skip = true },
+      { field = "flw2_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 }, can_skip = true },
+    ]
 
 [[observation]]
   name = "inability_to_walk_scale"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  value = { field = "flw_walking_today" }
   context = ["After COVID-19 illness"]
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.value]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_walking_today", can_skip = true },
+      { field = "flw2_walking_today", can_skip = true },
+    ]
 
 [[observation]]
   name = "joint_pain"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_joint_pain", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_joint_pain", ref = "Y/N", can_skip = true },
+      { field = "flw2_joint_pain", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "loss_of_smell_or_taste"
-  date = { field = "flw_survey_date" }
   phase = "followup"
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "flw_loss_smell", ref = "Y/N" },
-      { field = "flw_loss_taste", ref = "Y/N" },
+      { field = "flw_loss_smell", ref = "Y/N", can_skip = true },
+      { field = "flw_loss_taste", ref = "Y/N", can_skip = true },
+      { field = "flw2_loss_of_smell", ref = "Y/N", can_skip = true },
+      { field = "flw2_loss_of_taste", ref = "Y/N", can_skip = true },
     ]
 
 [[observation]]
   name = "loss_of_smell"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_loss_smell", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_loss_smell", ref = "Y/N", can_skip = true },
+      { field = "flw2_loss_of_smell", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "loss_of_taste"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_loss_taste", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "lower_chest_wall_indrawing"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
-  # [[observation]]
-  #   name = "lung_sounds"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "lymphadenopathy"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_loss_taste", ref = "Y/N", can_skip = true },
+      { field = "flw2_loss_of_taste", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "muscle_aches"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_muscle_pain", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "runny_nose"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_muscle_pain", ref = "Y/N", can_skip = true },
+      { field = "flw2_muscle_pain", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "seizures"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_seizures", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "severe_dehydration"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date', can_skip = true }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_seizures", ref = "Y/N", can_skip = true },
+      { field = "flw2_seizures", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "shortness_of_breath"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_short_breath", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_short_breath", ref = "Y/N", can_skip = true },
+      { field = "flw2_short_breath", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "skin_rash"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_skin_rash", ref = "Y/N" }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_skin_rash", ref = "Y/N", can_skip = true },
+      { field = "flw2_skin_rash", ref = "Y/N", can_skip = true },
+    ]
 
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "flw_rash_bod___1", values = { 1 = "Face" } },
-      { field = "flw_rash_bod___2", values = { 1 = "Trunk" } },
-      { field = "flw_rash_bod___3", values = { 1 = "Arms" } },
-      { field = "flw_rash_bod___4", values = { 1 = "Legs" } },
-      { field = "flw_rash_bod___5", values = { 1 = "Buttocks" } },
-      { field = "flw_rash_bod___6", values = { 1 = "Toes" } },
-      { field = "flw_rash_bod___7", values = { 1 = "Fingers" } },
+      { fieldPattern = 'flw\d*_rash_bod___1', values = { 1 = "Face" } },
+      { fieldPattern = 'flw\d*_rash_bod___2', values = { 1 = "Trunk" } },
+      { fieldPattern = 'flw\d*_rash_bod___3', values = { 1 = "Arms" } },
+      { fieldPattern = 'flw\d*_rash_bod___4', values = { 1 = "Legs" } },
+      { fieldPattern = 'flw\d*_rash_bod___5', values = { 1 = "Buttocks" } },
+      { fieldPattern = 'flw\d*_rash_bod___6', values = { 1 = "Toes" } },
+      { fieldPattern = 'flw\d*_rash_bod___7', values = { 1 = "Fingers" } },
     ]
-
-
-    # [[observation]]
-    #   name = "skin_ulcers"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "sore_throat"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
-
-    # [[observation]]
-    #   name = "sternal_capillary_refill_time_greater_2s"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
 
 [[observation]]
   name = "vomiting_nausea"
-  date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_feeling_sick", ref = "Y/N" }
 
-  # [[observation]]
-  #   name = "wheezing"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
-  # [[observation]]
-  #   name = "heart_rate_bpm"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "heart_sounds"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "mean_arterial_blood_pressure_mmHg"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "mid_upper_arm_circumference_cm"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "other_symptom"
-  #   date = {field = "flw_survey_date"}
-  #   phase = "followup"
-  #   is_present = { field = "flw_other_symp", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "oxygen_o2hb"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "oxygen_saturation_percent"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "oxygen_flow_volume_max"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "pao2_mmHg"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "pco2_mmHg"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "pH"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "respiratory_rate"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "richmond_agitation-sedation_scale"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "riker_sedation-agitation_scale"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "systolic_blood_pressure_mmHg"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "temperature_celsius"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
-
-  # [[observation]]
-  #   name = "total_fluid_output_ml"
-  #   date = ""
-  #   phase = ""
-  #   is_present = { field = "", ref = "Y/N" }
-  #   # OR value = { field = "" }
-  #   # OR text = { field = "", values = {  } }
-  #   # if = {  = { "!=" = } }
+  [observation.is_present]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_feeling_sick", ref = "Y/N", can_skip = true },
+      { field = "flw2_feeling_sick", ref = "Y/N", can_skip = true },
+    ]
