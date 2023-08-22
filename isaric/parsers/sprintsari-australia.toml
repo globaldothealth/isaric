@@ -611,24 +611,10 @@
     values = { 1 = true, 2 = false }
 
 [[observation]]
-  name = "loss_of_smell"
+  name = "loss_of_smell_or_taste"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "lost_ceterm_v2"
-    description = "Loss of smell/taste"
-    values = { 1 = true, 2 = false }
-
-[[observation]]
-  name = "loss_of_taste"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "lost_ceterm_v2"
-    description = "Loss of smell/taste"
-    values = { 1 = true, 2 = false }
+  is_present = { field = "lost_ceterm_v2", description = "Loss of smell/taste", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
