@@ -1,3 +1,5 @@
+#:schema ../../schemas/dev/parser.schema.json
+
 [adtl]
   name = "isairc-tier1"
   description = "Freestanding tier 1 surevy (no hospital admission)"
@@ -7,7 +9,7 @@
     groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
-    optional-fields = ['ethnicity']
+    optional-fields = ['ethnicity', 'earliest_admission_date', 'enrolment_date']
 
     # comment out the visit table for Initial/Ongoing follow-up data (no visit info)
     # [adtl.tables.visit]
@@ -296,7 +298,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_bleeding", ref = "Y/N", can_skip = true },
       { field = "flw2_bleeding", ref = "Y/N", can_skip = true },
@@ -316,7 +318,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_chest_pains", ref = "Y/N", can_skip = true },
       { field = "flw2_chest_pains", ref = "Y/N", can_skip = true },
@@ -331,20 +333,28 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_confusion", ref = "Y/N", can_skip = true },
       { field = "flw2_confusion", ref = "Y/N", can_skip = true },
     ]
 
-    # [[observation]]
-    #   name = "cough"
-    #   date = ""
-    #   phase = ""
-    #   is_present = { field = "", ref = "Y/N" }
-    #   # OR value = { field = "" }
-    #   # OR text = { field = "", values = {  } }
-    #   # if = {  = { "!=" = } }
+[[observation]]
+  name = "cough"
+  phase = "followup"
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_pers_cough_dry", ref = "Y/N", can_skip = true },
+      { field = "flw2_pers_cough_dry", ref = "Y/N", can_skip = true },
+      { field = "flw_pers_cough_ph", ref = "Y/N", can_skip = true },
+      { field = "flw2_pers_cough_ph", ref = "Y/N", can_skip = true },
+    ]
 
 [[observation]]
   name = "cough_dry"
@@ -355,7 +365,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_pers_cough_dry", ref = "Y/N", can_skip = true },
       { field = "flw2_pers_cough_dry", ref = "Y/N", can_skip = true },
@@ -370,7 +380,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_pers_cough_ph", ref = "Y/N", can_skip = true },
       { field = "flw2_pers_cough_ph", ref = "Y/N", can_skip = true },
@@ -385,7 +395,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_diarrhoea", ref = "Y/N", can_skip = true },
       { field = "flw2_diarrhoea", ref = "Y/N", can_skip = true },
@@ -400,7 +410,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_fatigue", ref = "Y/N", can_skip = true },
       { field = "flw2_fatigue", ref = "Y/N", can_skip = true },
@@ -415,7 +425,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_headache", ref = "Y/N", can_skip = true },
       { field = "flw2_headache", ref = "Y/N", can_skip = true },
@@ -430,7 +440,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_fever", ref = "Y/N", can_skip = true },
       { field = "flw2_fever", ref = "Y/N", can_skip = true },
@@ -440,29 +450,15 @@
   name = "inability_to_walk_scale"
   context = ["Before COVID-19 illness"]
   phase = "followup"
-
-  [observation.date]
-    combinedType = "firstNonNull"
-    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
-
-  [observation.value]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 }, can_skip = true },
-    ]
+  date = { field = "flw_survey_date", can_skip = true }
+  value = { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 }, can_skip = true }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
+  date = { field = "flw_survey_date", can_skip = true }
+  value = { field = "flw_walking_today_2", can_skip = true }
   context = ["Before COVID-19 illness"]
-
-  [observation.date]
-    combinedType = "firstNonNull"
-    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
-
-  [observation.value]
-    combinedType = "firstNonNull"
-    fields = [{ field = "flw_walking_today_2", can_skip = true }]
 
 [[observation]]
   name = "inability_to_walk_scale"
@@ -505,7 +501,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_joint_pain", ref = "Y/N", can_skip = true },
       { field = "flw2_joint_pain", ref = "Y/N", can_skip = true },
@@ -537,7 +533,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_loss_smell", ref = "Y/N", can_skip = true },
       { field = "flw2_loss_of_smell", ref = "Y/N", can_skip = true },
@@ -552,7 +548,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_loss_taste", ref = "Y/N", can_skip = true },
       { field = "flw2_loss_of_taste", ref = "Y/N", can_skip = true },
@@ -567,7 +563,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_muscle_pain", ref = "Y/N", can_skip = true },
       { field = "flw2_muscle_pain", ref = "Y/N", can_skip = true },
@@ -582,7 +578,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date', can_skip = true }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_seizures", ref = "Y/N", can_skip = true },
       { field = "flw2_seizures", ref = "Y/N", can_skip = true },
@@ -597,7 +593,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_short_breath", ref = "Y/N", can_skip = true },
       { field = "flw2_short_breath", ref = "Y/N", can_skip = true },
@@ -612,7 +608,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_skin_rash", ref = "Y/N", can_skip = true },
       { field = "flw2_skin_rash", ref = "Y/N", can_skip = true },
@@ -640,7 +636,7 @@
     fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
-    combinedType = "firstNonNull"
+    combinedType = "any"
     fields = [
       { field = "flw_feeling_sick", ref = "Y/N", can_skip = true },
       { field = "flw2_feeling_sick", ref = "Y/N", can_skip = true },
