@@ -81,7 +81,7 @@
       { fieldPattern = 'flw\d*_ethnicity___6', values = { 1 = "West_Asian" } },
       { fieldPattern = 'flw\d*_ethnicity___7', values = { 1 = "Latin_American" } },
       { fieldPattern = 'flw\d*_ethnicity___8', values = { 1 = "Other" } },
-      { fieldPattern = 'flw\d*_ethnicity___9', values = { 1 = "N/A" } },
+      { fieldPattern = 'flw\d*_ethnicity___9', values = { 1 = "N/K" } },
       { fieldPattern = 'flw\d*_ethnicity_oth' },
     ]
 
@@ -192,7 +192,7 @@
   [visit.country_iso3] # Not sure that this isn't the person, not the 'site'
     combinedType = "firstNonNull"
     fields = [
-      { fieldPattern = 'flw\d*_country', values = { 1 = "AFG", 60 = "FRA", 76 = "IND", 81 = "ISR", 82 = "ITA", 131 = "NOR", 197 = "OTH" } },
+      { fieldPattern = 'flw\d*_country', values = { 1 = "AFG", 60 = "FRA", 76 = "IND", 81 = "ISR", 82 = "ITA", 131 = "NOR" } },
     ]
 
   [visit.visit_id]
@@ -255,8 +255,8 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "flw_antiv_agents___1", values = { 1 = "Lopinavir/Ritonvir" } },
-      { field = "flw_antiv_agents___2", values = { 1 = "Darunvir" } },
+      { field = "flw_antiv_agents___1", values = { 1 = "Lopinavir/Ritonavir" } },
+      { field = "flw_antiv_agents___2", values = { 1 = "Darunavir" } },
       { field = "flw_antiv_agents___3", values = { 1 = "Remdesivir" } },
       { field = "flw_antiv_agents___4", values = { 1 = "Favipiravir" } },
       { field = "flw_antiv_agents___5", values = { 1 = "Acyclovir/Ganiciclovir" } },

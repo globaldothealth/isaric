@@ -159,7 +159,7 @@
       "items": {
         "enum": [
           "Ribavirin",
-          "Lopinavir/Ritonvir",
+          "Lopinavir/Ritonavir",
           "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
@@ -176,7 +176,7 @@
           "Anakinra",
           "Favipiravir",
           "Atazanavir",
-          "Darunvir",
+          "Darunavir",
           "Acyclovir/Ganiciclovir",
           "Other"
         ]
