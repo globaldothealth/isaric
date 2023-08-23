@@ -299,12 +299,63 @@
 
     [[subject.age.fields]]
       field = "brthdtc"
-      apply = { function = "yearsElapsed", params = ["$dsstdat"] }
+      apply = { function = "yearsElapsed", params = ["$dsstdat", 2022] }
 
     [[subject.age.fields]]
       field = "age"
       unit = "years"
       source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } }
+
+[subject.date_of_birth]
+  field = "brthdtc"
+
+[subject.dob_year]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "brthdtc", apply = { function = "splitDate", params = [
+      "year",
+      2022,
+    ] } },
+    { field = "age", if = { ageu = 2 }, apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+      ],
+      2022,
+    ] } },
+    { field = "age", if = { ageu = 1 }, apply = { function = "startYear", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+      ],
+      2022,
+      "%Y-%m-%d",
+      "months",
+    ] } },
+  ]
+
+[subject.dob_month]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "brthdtc", apply = { function = "splitDate", params = [
+      "month",
+      2022,
+    ] } },
+    { field = "age", if = { ageu = 1 }, apply = { function = "startMonth", params = [
+      [
+        "$hostdat",
+        "$cestdat",
+        "$dsstdat",
+      ],
+      2022,
+    ] } },
+  ]
+
+[subject.dob_day]
+  field = "brthdtc"
+  apply = { function = "splitDate", params = ["day", 2022] }
 
 [subject.pregnancy]
   field = "pregyn_rptestcd"
@@ -1408,6 +1459,19 @@
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { ref = "followupDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_loss_smell", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
+    ]
+
+
+[[observation]]
   name = "loss_of_smell"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
@@ -1441,7 +1505,7 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  value = { field = "flw_walking_today" } #, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
+  value = { field = "flw_walking_today" }  #, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
 
 [[observation]]
   name = "inability_to_walk_scale"
@@ -1453,7 +1517,7 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  value = { field = "flw2_walking_today" }#, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
+  value = { field = "flw2_walking_today" } #, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
 
 [[observation]]
   name = "clinical_frailty_score"
@@ -1466,7 +1530,7 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   context = ["highest"]
-  value = { field = "temp_vsorres" }        # there is no source unit field
+  value = { field = "temp_vsorres" }        # there is no source unit field, but a mix of celsius and farenheit in the data.
 
 [[observation]]
   name = "temperature_celsius"

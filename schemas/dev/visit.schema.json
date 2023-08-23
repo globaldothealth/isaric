@@ -122,6 +122,11 @@
       "description": "Oxygen therapy",
       "category": "treatments"
     },
+    "treatment_oxygen_mask_prongs": {
+      "type": "boolean",
+      "description": "Oxygen therapy via nasal prongs or a mask",
+      "category": "treatments"
+    },
     "treatment_prone_position": {
       "type": "boolean",
       "description": "Prone position",
@@ -135,6 +140,12 @@
     "treatment_antifungal_agent": {
       "type": "boolean",
       "description": "Antifungal agent",
+      "category": "treatments"
+    },
+    "treatment_antifungal_agent_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antifungal agents",
       "category": "treatments"
     },
     "treatment_antivirals": {

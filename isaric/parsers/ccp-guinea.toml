@@ -252,10 +252,78 @@
     values = { 0 = "female", 1 = "male" }
 
   [subject.age]
-    field = "age"
-    description = "Age"
-    source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
-    unit = "years"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age", description = "Age", source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }, unit = "years" },
+      { field = "dob", apply = { function = "yearsElapsed", params = [
+        "$signes_date_t",
+        2022,
+        "%d/%m/%Y",
+        "%d/%m/%Y %H:%M",
+      ] } },
+    ]
+
+  [subject.date_of_birth]
+    field = "dob"
+    source_date = "%d/%m/%Y"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age", if.any = [
+        { age_unit = 1 },
+        { age_unit = "" },
+      ], apply = { function = "startYear", params = [
+        [
+          "$signes_date_t",
+          "$demo_date_t",
+        ],
+        2022,
+        "%d/%m/%Y %H:%M",
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        "$signes_date_t",
+        2022,
+        "%d/%m/%Y %H:%M",
+        "months",
+      ] } },
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startYear", params = [
+        "$signes_date_t",
+        2022,
+        "%d/%m/%Y %H:%M",
+        "days",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "month",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        "$signes_date_t",
+        2022,
+        "%d/%m/%Y %H:%M",
+      ] } },
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startMonth", params = [
+        "$signes_date_t",
+        2022,
+        "%d/%m/%Y %H:%M",
+        "days",
+      ] } },
+    ]
+
+  [subject.dob_day]
+    field = "dob"
+    apply = { function = "splitDate", params = ["day", 2022, "%d/%m/%Y"] }
 
   [subject.ethnicity]
     combinedType = "set"
@@ -826,6 +894,44 @@
   phase = "study"
   is_present = { field = "fatigue_v2", ref = "Y/N/NK" }
   date = { field = "fatigue_v2_date" }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "pre-admission"
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "anosmia_date" },
+      { field = "ageusia_date" }
+    ]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
+      { field = "ageusia", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "study"
+
+  [observation.date]
+    combinedType = "min"
+    fields = [
+      { field = "anosmia_v2_date" },
+      { field = "ageusia_v2_date" }
+    ]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia_v2", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
+      { field = "ageusia_v2", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
+    ]
 
 [[observation]]
   name = "loss_of_smell"

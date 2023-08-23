@@ -79,7 +79,8 @@
                   "items": {
                     "type": [
                       "string",
-                      "number"
+                      "number",
+                      "array"
                     ]
                   },
                   "description": "Additional parameters to pass to the function"
@@ -300,6 +301,22 @@
           "description": "Age in years",
           "$ref": "#/definitions/mapping"
         },
+        "date_of_birth": {
+          "description": "Date of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_year": {
+          "description": "Year of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_month": {
+          "description": "month of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_day": {
+          "description": "Day of birth",
+          "$ref": "#/definitions/mapping"
+        },
         "sex_at_birth": {
           "description": "Sex at birth",
           "$ref": "#/definitions/mapping"
@@ -354,6 +371,10 @@
         },
         "pregnancy_gestational_age_weeks": {
           "description": "Gestational assessment weeks",
+          "$ref": "#/definitions/mapping"
+        },
+        "preterm_infant": {
+          "description": "Subject born preterm (<37 weeks)",
           "$ref": "#/definitions/mapping"
         },
         "has_chronic_hematologic_disease": {
@@ -558,6 +579,10 @@
           "description": "Oxygen therapy",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_oxygen_mask_prongs": {
+          "description": "Oxygen therapy via mask or nasal prongs",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_prone_position": {
           "description": "Prone position",
           "$ref": "#/definitions/mapping"
@@ -567,6 +592,10 @@
           "$ref": "#/definitions/mapping"
         },
         "treatment_antifungal_agent": {
+          "description": "Antifungal agent",
+          "$ref": "#/definitions/mapping"
+        },
+        "treatment_antifungal_agent_type": {
           "description": "Antifungal agent",
           "$ref": "#/definitions/mapping"
         },
@@ -748,6 +777,7 @@
                   "clinical_frailty_score",
                   "diastolic_blood_pressure_mmHg",
                   "glasgow_coma_score",
+                  "blantyre_coma_score",
                   "base_excess",
                   "inability_to_walk_scale",
                   "heart_rate_bpm",
