@@ -3,6 +3,7 @@
 [adtl]
   name = "ccp-netherlands"
   description = "MST Enschede"
+  defaultDateFormat = "%m/%d/%Y"
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -24,10 +25,6 @@
   [adtl.defs."Y/N".values] # THIS CAN CHANGE BETWEEN DATASETS
     1 = true
     2 = false
-    3 = false
-
-    # other adtl.defs here ..
-
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
@@ -60,20 +57,20 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "ethnic_group#Arab", values = { 1 = "Arab" } },
-    { field = "ethnic_group#Black", values = { 1 = "Black" } },
-    { field = "ethnic_group#East_Asian", values = { 1 = "East Asian" } },
-    { field = "ethnic_group#South_Asian", values = { 1 = "South Asian" } },
-    { field = "ethnic_group#West_Asian", values = { 1 = "West Asian" } },
-    { field = "ethnic_group#Latin_America", values = { 1 = "Latin American" } },
-    { field = "ethnic_group#White", values = { 1 = "White" } },
-    { field = "ethnic_group#AboriginalFirst_Nations", values = { 1 = "Aboriginal/First Nations" } },
-    { field = "ethnic_group#Unknown", values = { 1 = "Unknown" } },
+    { field = "ethnic_group#Arab", values = { "1.0" = "Arab" } },
+    { field = "ethnic_group#Black", values = { "1.0" = "Black" } },
+    { field = "ethnic_group#East_Asian", values = { "1.0" = "East Asian" } },
+    { field = "ethnic_group#South_Asian", values = { "1.0" = "South Asian" } },
+    { field = "ethnic_group#West_Asian", values = { "1.0" = "West Asian" } },
+    { field = "ethnic_group#Latin_America", values = { "1.0" = "Latin American" } },
+    { field = "ethnic_group#White", values = { "1.0" = "White" } },
+    { field = "ethnic_group#AboriginalFirst_Nations", values = { "1.0" = "Aboriginal/First Nations" } },
+    { field = "ethnic_group#Unknown", values = { "1.0" = "Unknown" } },
   ]
 
 
 [subject.works_microbiology_lab]
-  field = "mocrobiology_worker"
+  field = "microbiology_worker"
   ref = "Y/N"
 
 [subject.works_healthcare]
@@ -100,11 +97,11 @@
   ref = "Y/N"
 
 [subject.has_chronic_kidney_disease]
-  field = "hkd"
+  field = "ckd"
   ref = "Y/N"
 
 [subject.has_chronic_respiratory_disease]
-  field = "hpd" # pulmonary disease?
+  field = "cpd" # pulmonary disease?
   ref = "Y/N"
 
 [subject.has_dementia]
@@ -161,12 +158,10 @@
   field = "Malnutrition"
   ref = "Y/N"
 
-  [subject.has_comorbidity_other]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      {field = "Specif_other_risk_factors"}
-    ]
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "Specif_other_risk_factors" }]
 
 [subject.has_died]
   field = "Outcome"
@@ -209,7 +204,9 @@
     ]
 
   [visit.icu_admission_dates]
-    field = "Admission_dt_icu"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "Admission_dt_icu" }]
 
   [visit.transfer_from_other_facility]
     field = "facility_transfer"
@@ -305,11 +302,11 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "specify_Antiviral_agent#Ribavirin", values = { 1 = "Ribavarin" } },
-      { field = "specify_Antiviral_agent#LopinavirRitonavir", values = { 1 = "Lopinavir/Ritonavir" } },
-      { field = "specify_Antiviral_agent#Interferon_alpha", values = { 1 = "Interferon_alpha" } },
-      { field = "specify_Antiviral_agent#Interferon_beta", values = { 1 = "Interferon_beta" } },
-      { field = "specify_Antiviral_agent#Neuraminidase_inhibitor", values = { 1 = "Neuraminidase inhibitor" } },
+      { field = "specify_Antiviral_agent#Ribavirin", values = { "1.0" = "Ribavirin" } },
+      { field = "specify_Antiviral_agent#LopinavirRitonavir", values = { "1.0" = "Lopinavir/Ritonavir" } },
+      { field = "specify_Antiviral_agent#Interferon_alpha", values = { "1.0" = "Interferon_alpha" } },
+      { field = "specify_Antiviral_agent#Interferon_beta", values = { "1.0" = "Interferon_beta" } },
+      { field = "specify_Antiviral_agent#Neuraminidase_inhibitor", values = { "1.0" = "Neuraminidase inhibitor" } },
     ]
 
   [visit.treatment_antiviral_type_other]
@@ -411,18 +408,35 @@
   date = { field = "admission_dt" }
   phase = "admission"
   value = { field = "dias_bp" }
+  if.all = [
+    { dias_bp = { "!=" = -96 } },
+    { dias_bp = { "!=" = -98 } },
+    { dias_bp = { "!=" = -99 } },
+    { dias_bp = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   date = { field = "assessment_dt" }
   phase = "study"
   value = { field = "Diastolic_bp_value" }
+  if.all = [
+    { Diastolic_bp_value = { "!=" = -96 } },
+    { Diastolic_bp_value = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "glasgow_coma_score"
   date = { field = "assessment_dt" }
   phase = "study"
   value = { field = "Glasgow_Coma_Score" }
+  if.all = [
+    { Glasgow_Coma_Score = { "!=" = -96 } },
+    { Glasgow_Coma_Score = { "!=" = -97 } },
+    { Glasgow_Coma_Score = { "!=" = -98 } },
+    { Glasgow_Coma_Score = { "!=" = -99 } },
+    { Glasgow_Coma_Score = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "abdominal_pain"
@@ -458,18 +472,18 @@
   name = "conjunctivitis"
   date = { field = "admission_dt" }
   phase = "admission"
-  is_present = { field = "Conjunctavitis", ref = "Y/N" }
+  is_present = { field = "Conjunctivitis", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
-  date = {field = "admission_dt"}
+  date = { field = "admission_dt" }
   phase = "admission"
 
   [observation.is_present]
     combinedType = "any"
     fields = [
-      {field = "cough_sputum_haemoptysis", ref = "Y/N"},
-      { field = "cough_sputum", ref = "Y/N" }
+      { field = "cough_sputum_haemoptysis", ref = "Y/N" },
+      { field = "cough_sputum", ref = "Y/N" },
     ]
 
 [[observation]]
@@ -611,6 +625,7 @@
   date = { field = "admission_dt" }
   phase = "admission"
   value = { field = "HtR" }
+  if.all = [{ HtR = { "!=" = -98 } }, { HtR = { "!=" = "" } }]
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
@@ -620,7 +635,7 @@
 
 [[observation]]
   name = "oxygen_o2hb"
-  date = { field = "daily_crf_date" }
+  date = { field = "daily_crf_dt" }
   phase = "study"
   value = { field = "Haemoglobin_value", unit = "g/dL", source_unit = { field = "Haemoglobin_unit", values = { 2 = "g/dL", 1 = "g/L", 3 = "mg/dL" } } }
 
@@ -629,9 +644,15 @@
   date = { field = "admission_dt" }
   phase = "admission"
   value = { field = "oxygen_saturation" }
+  if.all = [
+    { oxygen_saturation = { "!=" = -96 } },
+    { oxygen_saturation = { "!=" = -98 } },
+    { oxygen_saturation = { "!=" = "" } },
+  ]
 
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "oxygen_saturation_on", values = { 1 = "room air", 2 = "on oxygen" } },
     ]
@@ -661,12 +682,19 @@
   date = { field = "admission_dt" }
   phase = "admission"
   value = { field = "rtr" }
+  if.all = [
+    { rtr = { "!=" = -96 } },
+    { rtr = { "!=" = -98 } },
+    { rtr = { "!=" = -99 } },
+    { rtr = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "richmond_agitation-sedation_scale"
   date = { field = "assessment_dt" }
   phase = "study"
   value = { field = "RASS_value" }
+  if.all = [{ RASS_value = { "!=" = -96 } }, { RASS_value = { "!=" = "" } }]
 
 [[observation]]
   name = "riker_sedation-agitation_scale"
@@ -679,15 +707,30 @@
   date = { field = "admission_dt" }
   phase = "admission"
   value = { field = "sys_bp" }
+  if.all = [
+    { sys_bp = { "!=" = -98 } },
+    { sys_bp = { "!=" = -99 } },
+    { sys_bp = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   date = { field = "assessment_dt" }
   phase = "study"
   value = { field = "Systolic_bp_value" }
+  if.all = [
+    { Systolic_bp_value = { "!=" = -96 } },
+    { Systolic_bp_value = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "temperature_celsius"
   date = { field = "admission_dt" }
   phase = "admission"
   value = { field = "Temperature", source_unit = { field = "Temperature_units", values = { 1 = "celsius", 2 = "farenheit" } }, unit = "celsius" }
+  if.all = [
+    { Temperature = { "!=" = -98 } },
+    { Temperature = { "!=" = -97 } },
+    { Temperature = { "!=" = -96 } },
+    { Temperature = { "!=" = "" } },
+  ]
