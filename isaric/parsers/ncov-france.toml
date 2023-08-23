@@ -212,7 +212,7 @@
     excludeWhen = "none"
     fields = [
       { field = "atv_type___1", values = { 1 = "Remdesivir" } },
-      { field = "atv_type___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "atv_type___2", values = { 1 = "Lopinavir/Ritonavir" } },
     ]
 
   [visit.treatment_antiviral_type_other]
