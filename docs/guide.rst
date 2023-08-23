@@ -609,8 +609,7 @@ agent(s)?
 
 **treatment_anticoagulation**: Bool. Treated with anticoagulants during
 the visit? (Note - this is often combines a general anticoagulation
-field with those specific to Heparin. NOTE TO DEVS: merge (if not
-already) with treatment_indication_anticoagulation)
+field with those specific to Heparin.
 
 **treatment_inhaled_nitric_oxide**: Bool. Treated with nitric oxide
 inhalation?

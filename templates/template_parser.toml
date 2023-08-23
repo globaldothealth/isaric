@@ -463,11 +463,6 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_indication_anticoagulation]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_cardiovascular_support]
     field = ""
     description = ""
