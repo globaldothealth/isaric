@@ -16,7 +16,7 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
-    optional-fields = [ "outcome", "country_iso3", "date_outcome" ]
+    optional-fields = ["outcome", "country_iso3", "date_outcome"]
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -27,7 +27,7 @@
     1 = true
     2 = false
 
-  
+
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
@@ -42,17 +42,37 @@
     combinedType = "firstNonNull"
     fields = [
       { field = "IC2_DATE", description = "Date of consent signed:" },
-      { field = "incldt", description = "inclusiondate" }
+      { field = "incldt", description = "inclusiondate" },
     ]
-    
+
   [subject.earliest_admission_date]
-    field = "adm_dt" 
+    field = "adm_dt"
     description = "Date of hospital admission:"
 
   [subject.age]
     field = "DOB"
     description = "Date of birth:"
-    apply = { function = "yearsElapsed", params = [ "$adm_dt", 2022, "%m/%d/%Y", "%m/%d/%Y", ] }
+    apply = { function = "yearsElapsed", params = [
+      "$adm_dt",
+      2022,
+      "%m/%d/%Y",
+      "%m/%d/%Y",
+    ] }
+
+  [subject.date_of_birth]
+    field = "DOB"
+
+  [subject.dob_year]
+    field = "DOB"
+    apply = { function = "splitDate", params = ["year", 2022, "%m/%d/%Y"] }
+
+  [subject.dob_month]
+    field = "DOB"
+    apply = { function = "splitDate", params = ["month", 2022, "%m/%d/%Y"] }
+
+  [subject.dob_day]
+    field = "DOB"
+    apply = { function = "splitDate", params = ["day", 2022, "%m/%d/%Y"] }
 
   [subject.sex_at_birth]
     field = "sex"
@@ -70,7 +90,7 @@
     { field = "etn_opt2", description = "Ethnicity/background: Black", values = { 1 = "Black" } },
     { field = "etn_opt3", description = "Ethnicity/background: Asian", values = { 1 = "Asian" } },
     { field = "etn_opt4", description = "Ethnicity/background: Other", values = { 1 = "Other" } },
-    { field = "etn_opt4_spec", description = "Ethnicity/background: Other, please specify:" }
+    { field = "etn_opt4_spec", description = "Ethnicity/background: Other, please specify:" },
   ]
 
 [subject.pregnancy]
@@ -110,17 +130,17 @@
   combinedType = "any"
   fields = [
     { field = "CIMMUN_MALIGN_METAS", description = "Chronic Immunosuppression - Any malignancy within 5 years - metastatic?", ref = "Y/N" },
-    { field = "CIMMUN_MALIGN", description = "Chronic Immunosuppression - Any malignancy within 5 years", ref = "Y/N" }
+    { field = "CIMMUN_MALIGN", description = "Chronic Immunosuppression - Any malignancy within 5 years", ref = "Y/N" },
   ]
-  
+
 [subject.has_smoking]
   field = "smoke"
   description = "Smoking:	"
 
   [subject.has_smoking.values]
-    3 = "yes" # 3="Current smoker (>=1 cigarette per day)"
+    3 = "yes"    # 3="Current smoker (>=1 cigarette per day)"
     2 = "former" # 2="Stopped smoking but used to smoke regularly"
-    1 = "never" # 1="Never smiked regulary"
+    1 = "never"  # 1="Never smiked regulary"
 
 [subject.has_asthma] # checkbox field
   field = "CPD_AST"
@@ -142,7 +162,7 @@
   fields = [
     { field = "CMETAB_DB1", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 1", ref = "Y/N" },
     { field = "CMETAB_DB2A", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (only oral medication)", ref = "Y/N" },
-    { field = "CMETAB_DB2B", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "Y/N" }
+    { field = "CMETAB_DB2B", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "Y/N" },
   ]
 
 [subject.has_liver_disease] # checkbox field
@@ -171,10 +191,8 @@
 
 [subject.has_comorbidity_other] # type - array
   combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "COTH_OTHER_SPEC" },
-    ]
+  excludeWhen = "none"
+  fields = [{ field = "COTH_OTHER_SPEC" }]
 
 [subject.date_death]
   field = "ddate"
@@ -182,10 +200,10 @@
 
 [subject.icu_admitted]
   combinedType = "any"
-    fields = [
-      { field = "COV19_ICU", description = "Was the patient treated in ICU?", ref = "Y/N" },
-      { field = "ICUadm_y", description = "Did episode included ICU/High Care Unit admission?", ref = "Y/N" },
-    ]
+  fields = [
+    { field = "COV19_ICU", description = "Was the patient treated in ICU?", ref = "Y/N" },
+    { field = "ICUadm_y", description = "Did episode included ICU/High Care Unit admission?", ref = "Y/N" },
+  ]
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
@@ -210,8 +228,9 @@
     ]
 
   [visit.icu_admission_dates]
-    field = "ICUadm_dt"
-    description = "Admission date ICU/HCU:"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "ICUadm_dt", description = "Admission date ICU/HCU:" }]
 
   [visit.treatment_corticosteroid]
     combinedType = "any"
@@ -225,7 +244,7 @@
   [visit.treatment_ace_inhibitors]
     field = "medication_op1"
     values = { 1 = true, 0 = false }
-    
+
   [visit.treatment_invasive_ventilation]
     field = "INTMV"
     description = "Did participant receive any intubation and mechanical ventilation"
@@ -265,32 +284,32 @@
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }            # not sure about this??
+  phase = "admission"                    # not sure about this??
   value = { field = "values_diast" }
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }                       # not sure about this??
+  phase = "admission"                               # not sure about this??
   is_present = { field = "ment_conf", ref = "Y/N" }
 
 [[observation]]
   name = "confusion"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }                       # not sure about this??
+  phase = "admission"                               # not sure about this??
   is_present = { field = "ment_conf", ref = "Y/N" }
 
 [[observation]]
   name = "severe_dehydration"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }                   # not sure about this??
+  phase = "admission"                           # not sure about this??
   is_present = { field = "SHOCK", ref = "Y/N" }
 
 [[observation]]
   name = "heart_rate_bpm"
   date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  phase = "admission"         # not sure about this??
   value = { field = "HRATE" }
 
 [[observation]]
@@ -301,24 +320,23 @@
   context.combinedType = "set"
   context.excludeWhen = "none"
   context.fields = [
-    { field = "SpO2_on", values = { 1 = "Room air", 2 = "Supplemental O2 (any)" } }
+    { field = "SpO2_on", values = { 1 = "Room air", 2 = "Supplemental O2 (any)" } },
   ]
 
 [[observation]]
   name = "respiratory_rate"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }     # not sure about this??
+  phase = "admission"             # not sure about this??
   value = { field = "RESP_RATE" }
-  
+
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }           # not sure about this??
+  phase = "admission"                   # not sure about this??
   value = { field = "values_syst" }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "adm_dt" }  # not sure about this??
+  phase = "admission"          # not sure about this??
   value = { field = "tempX" }
-
