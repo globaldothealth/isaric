@@ -306,6 +306,11 @@
     description = "53) Level of respiratory support now"
     values = { 2 = true }
   
+  [visit.treatment_noninvasive_ventilation]
+    field = "q_53"
+    description = "53) Level of respiratory support now"
+    values = { 5 = true, 6 = true }
+
   [visit.treatment_oxygen_therapy]
     field = "q_53" 
     description = "53) Level of respiratory support now" 
