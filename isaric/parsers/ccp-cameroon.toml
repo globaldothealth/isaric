@@ -29,15 +29,15 @@
   [adtl.defs.admissionObsDate]
     combinedType = "firstNonNull"
     fields = [
-      { field = "q0_signs_symptoms", if = { redcap_event_name = "recruitment_arm_1" } }, 
-      { field = "q2_onset" }
+      { field = "q0_signs_symptoms", if = { redcap_event_name = "recruitment_arm_1" } },
+      { field = "q2_onset" },
     ]
 
   [adtl.defs.outcomeDate]
     combinedType = "firstNonNull"
     fields = [
       { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
-      { field = "q9_outcome", description = "9) Outcome- transfer date /Date de sortie- transfert" }
+      { field = "q9_outcome", description = "9) Outcome- transfer date /Date de sortie- transfert" },
     ]
 
 [subject]
@@ -162,7 +162,7 @@
   combinedType = "any"
   fields = [
     { field = "q11_co_morbidities", description = "11) AIDS - HIV / VIH -SIDA", ref = "Y/N" },
-    { field = "q5_pathogen_testing", ref = "Y/N" }
+    { field = "q5_pathogen_testing", ref = "Y/N" },
   ]
 
 [subject.has_hypertension]
@@ -278,9 +278,9 @@
   field = "q2_onset"
 
 [visit.treatment_antibiotics]
-  field = "q5_medication" 
-  description = "5) Antibiotic / Antibiotique ?" 
-  ref = "Y/N" 
+  field = "q5_medication"
+  description = "5) Antibiotic / Antibiotique ?"
+  ref = "Y/N"
 
 [visit.treatment_antivirals]
   field = "q2_medication"
@@ -399,7 +399,7 @@
   combinedType = "set"
   fields = [
     { field = "q1_treatment_outcome", description = "1) Outcome of treatment /Issue du traitement" },
-    { field = "q1_outcome", description = "1) Outcome of healthcare facility / Issue de la FOSA " }
+    { field = "q1_outcome", description = "1) Outcome of healthcare facility / Issue de la FOSA " },
   ]
 
   [visit.outcome.values]
@@ -414,8 +414,12 @@
 [visit.date_outcome]
   combinedType = "firstNonNull"
   fields = [
-    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement", apply = { function = "isNotNull", params = [ "q1_treatment_outcome" ] } },
-    { field = "q9_outcome", apply = { function = "isNotNull", params = [ "q1_outcome" ] } } 
+    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement", apply = { function = "isNotNull", params = [
+      "q1_treatment_outcome",
+    ] } },
+    { field = "q9_outcome", apply = { function = "isNotNull", params = [
+      "q1_outcome",
+    ] } },
   ]
 
 [[observation]]
@@ -523,7 +527,7 @@
   start_date = { field = "q2_onset" }
   date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
   duration_type = "event"
-  
+
   [observation.value]
     field = "q6_signs_symptoms"
     source_unit = "mmHg"
@@ -565,7 +569,7 @@
   start_date = { field = "q2_onset" }
   date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
   duration_type = "event"
-  value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque" }
+  value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque", if = { redcap_event_name = "week_2_d14_arm_1" } }
 
 [[observation]]
   name = "history_of_fever"
@@ -811,7 +815,7 @@
   name = "vomiting_nausea"
   phase = "admission"
   date = { ref = "admissionObsDate" }
-  
+
   [observation.is_present]
     field = "q31_signs_symptoms"
     description = "31) Vomiting / Nausea /Vomissements/ Nausées"
