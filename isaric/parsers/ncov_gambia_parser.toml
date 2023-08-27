@@ -1,0 +1,814 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "ncov-gambia"
+  description = "CVRVRNJ PREVENTION AND TREATMENT FOR COVID-19 ASSOCIATED SEVERE PNEUMONIA IN THE GAMBIA A  RANDOMIZED CLINICAL TRIAL"
+  defaultDateFormat = "dmy"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = [ "outcome", "date_outcome" ]
+
+  [adtl.tables.observation]
+    kind = "groupBy"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "q_1", sensitive = true } }
+
+  [adtl.defs]
+  "Y/N" = { values = { 1 = true, 2 = false } }
+
+  [adtl.defs."ss_date"]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_3", description = "3) Date/Time of data collection" },
+      { field = "q_sd_3", description = "3) Date/Time of data collection" }
+    ] 
+
+  [adtl.defs."ss_flw_date"]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_1e_tire_fllw", description = "1e) Date of readmission" }, # not sure if this applies here ..
+      { field = "q_2_tire_fllw"	, description = "1l) Date you did this survey" }
+    ]
+
+  [adtl.defs."ss_flw2_date"]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_1e_tire_fllw_d_90", description = "1e) Date of readmission" }, # not sure if this applies here ..
+      { field = "q_2_tire_fllw_d_90", description = "1l) Date you did this survey" }
+    ]
+
+
+  [adtl.defs.inabilityWalk.values]
+    1 = 1 # "No difficulty"
+    2 = 2 # "Some difficulty"
+    3 = 2 # "Some difficulty"
+    4 = 3 # "Lots of difficulty"
+    5 = 4 # "Unable to walk"
+
+  [adtl.defs.inabilityWalkToday.values]
+    1 = 1 # "No difficulty"
+    2 = 2 # "Some difficulty"
+    3 = 3 # "Lots of difficulty"
+    4 = 4 # "Unable to walk"
+
+# SUBJECT
+  # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id] # Is this valid / sensible?
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_1", description = "1) Screening number", sensitive = true },
+      { field = "q_sd_1", description = "1) Screening number", sensitive = true },
+      { field = "q_1a_tire_fllw", description = "1a) Screening number", sensitive = true }, # this is a followup field. should it be here?
+      { field = "q_1a_tire_fllw_d_90",	description = "1a) Screening Number", sensitive = true }, # this is a followup field. should it be here?
+    ]
+    
+  [subject.dataset_id]
+    field = "CTRSIPC"
+
+  [subject.enrolment_date] # optional field
+    combinedType = "min"
+    fields = [
+      { field = "q_3", description = "3) Date/Time of data collection"},
+      { field = "q_sd_3", description = "3) Date/Time of data collection" }
+    ]
+    
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "q_6", description = "6) Hospital admission date & time" }]
+
+  [subject.age]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_5b", unit = "years" , description = "5b) Age (years)" },
+      { field = "q_5a", description = "5a) DOB", apply = { function = "yearsElapsed", params = [ "$q_6", 2022, ] } },
+    ]
+
+  [subject.date_of_birth]
+   field = "q_5a"
+
+  [subject.sex]
+    field = "q_4"
+    description = "4) Sex"
+
+    [subject.sex.values]
+      1 = "male"
+      2 = "female"
+
+[subject.ethnicity]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "q_sd_6", description = "6) Ethnicity", values = { 1 = "Wollof", 2 = "Mandinka", 3 = "Fula", 4 = "Jola", 5 = "Serehule", 6 = "manjago", 8 = "Other" } },
+    { field = "q_sd_6a",	description = "6a) Ethnicity other" },
+  ]
+
+[subject.works_microbiology_lab]
+  field = "q_sd_9___2"
+  description = "9) Occupation (choice=Laboratory worker)"
+  ref = "Y/N"
+
+[subject.works_healthcare]
+  field = "q_sd_9___1"
+  description = "9) Occupation (choice=Health worker)"
+  ref = "Y/N"
+
+[subject.has_tuberculosis]
+  field = "q_13a"
+  description = "13a) Active TB"
+  ref = "Y/N"
+
+[subject.has_tuberculosis_past]
+  field = "q_13b"
+  description = "13b) previously treated TB"
+
+[subject.has_dementia]
+  field = "q_22"
+  description = "22) Dementia"
+  ref = "Y/N"
+
+[subject.has_obesity]
+  field = "q_24"
+  description = "24) Obesity"
+  ref = "Y/N"
+
+[subject.has_rheumatologic_disorder]
+  field = "q_21"
+  description = "21) Rheumatologic disorder"
+  ref = "Y/N"
+
+[subject.has_hiv]
+  field = "q_19"
+  description = "19) HIV / AIDS Positive"
+  ref = "Y/N"
+
+[subject.has_hypertension]
+  field = "q_11"
+  description = "11) Hypertension"
+  ref = "Y/N"
+
+[subject.has_malignant_neoplasm]
+  field = "q_17"
+  description = "17) Malignant neoplasm"
+  ref = "Y/N"
+
+[subject.has_smoking]
+  field = "q_27"
+  description = "27) Smoking"
+
+  [subject.has_smoking.values]
+    1 = "yes"
+    2 = "never"
+    3 = "former"
+    
+[subject.has_asthma]
+  field = "q_13e"
+  description = "13e) Asthma"
+  ref = "Y/N"
+
+[subject.has_chronic_cardiac_disease]
+  field = "q_12"
+  description = "12) Chronic heart disease"
+  ref = "Y/N"
+
+[subject.has_chronic_kidney_disease]
+  field = "q_14"
+  description = "14) Chronic kidney disease"
+  ref = "Y/N"
+
+[subject.has_diabetes]
+  field = "q_20"
+  description = "20) Diabetes"
+  ref = "Y/N"
+
+[subject.has_liver_disease]
+  field = "q_26"
+  description = "26) Chronic liver disease"
+  ref = "Y/N"
+
+[subject.has_hiv_art]
+  field = "q_19a"
+  description = "19a) If ''Yes'On antiretroviral medications (ARVs)?"
+  ref = "Y/N"
+
+[subject.has_malnutrition]
+  field = "q_23"
+  description = "23) Malnutrition"
+  ref = "Y/N"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "q_28a",	description = "28a) Specify other" }
+  ]
+
+[subject.has_died]
+  combinedType = "any"
+  fields = [
+    { field = "q_1d_tire_fllw", values = { 5 = true } }, # followup field at day 28
+    { field = "q_1d_tire_fllw_d_90", values = { 5 = true } }, # followup field at day 90
+  ]
+  
+[subject.date_death]
+  combinedType = "min"
+  fields = [
+    { field = "q_1j_tire_fllw", description = "1j) Date of Death", if.any = { q_1d_tire_fllw = 5, q_1ia_death_date = 1 } }, # followup field at day 28
+    { field = "q_1j_tire_fllw_d_90", description = "1j) Date of Death", if.any = { q_1d_tire_fllw_d_90 = 5, q_1ia_death_date_d_90 = 1 } }, # followup field at day 90
+  ]
+ 	 
+# VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = "GMB"
+
+  [visit.visit_id]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_1", description = "1) Screening number", sensitive = true },
+      { field = "q_sd_1", description = "1) Screening number", sensitive = true },
+    ]
+
+  [visit.subject_id]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "q_1", description = "1) Screening number", sensitive = true },
+      { field = "q_sd_1", description = "1) Screening number", sensitive = true },
+    ]
+
+  [visit.dataset_id]
+    field = "CTRSIPC"
+
+  [visit.start_date]
+    field = "q_6"
+
+  [visit.treatment_corticosteroid_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q_66b___12", values = { 1 = "Dexamthasone" } },
+      { field = "q_66b___13", values = { 1 = "Prednisone" } },
+      { field = "q_66b___14", values = { 1 = "Other" } },
+    ]
+
+  [visit.treatment_antibiotics_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q_66b___1", values = { 1 = "Ampicillin" } },
+      { field = "q_66b___2", values = { 1 = "Azithromycin" } },
+      { field = "q_66b___3", values = { 1 = "Ceftriaxone" } },
+      { field = "q_66b___4", values = { 1 = "CoAmoxiclav" } },
+      { field = "q_66b___5", values = { 1 = "Chloramphenico" } },
+      { field = "q_66b___6", values = { 1 = "Gentamicin" } },
+      { field = "q_66b___7", values = { 1 = "Pencillin" } },
+      { field = "q_66b___8", values = { 1 = "Metronidazole" } }, 
+    ]
+
+  [visit.treatment_anticoagulation]
+    combinedType = "any"
+    fields = [
+      { field = "q_66b___10", values = { 1 = true } },
+      { field = "q_66b___11", values = { 1 = true } },
+    ]
+
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q_66b___21", values = { 1 = "Hydroxchloroquine/Chloroquine" } },
+    ]
+
+  [visit.treatment_indication_anticoagulation]
+    combinedType = "any"
+    fields = [
+      { field = "q_66b___10", values = { 1 = true } },
+      { field = "q_66b___11", values = { 1 = true } },
+    ]
+
+  [visit.treatment_high_flow_nasal_cannula]
+    field = "q_53"
+    description = "53) Level of respiratory support now"
+    values = { 2 = true }
+  
+  [visit.treatment_oxygen_therapy]
+    field = "q_53" 
+    description = "53) Level of respiratory support now" 
+    values = { 2 = true, 3 = true, 4 = true, 5 = true, 6 = true, 7 = true }
+
+  [visit.treatment_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q_66b___29" },
+      { field = "q_66b___30" }, 
+      { field = "q_66b___31" },
+      { field = "q_66b___32" },
+    ]
+
+# OBSERVATION
+  # required fields - phase, date, name
+  # phase - could be admission?
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_60a", description = "60a) Diastolic blood pressure" }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_42", description = "42) Abdominal pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_stomach_6b6304", description = "4m) Stomach/abdominal pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_stomach_6b6304_d_90", description = "4m) Stomach/abdominal pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "chest_pain"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_36", description = "36) Chest pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "chest_pain"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_chest_pains_10edac", description = "4i) Chest pains", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "chest_pain"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_chest_pains_10edac_d_90", description = "4i) Chest pains", values = { 1 = true, 0 = false } }
+  	
+[[observation]]
+  name = "cough"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_33", description = "33) Cough", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_pers_cough", description = "4b) Persistent cough", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_pers_cough_d_90", description = "4b) Persistent cough", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_pers_cough_dr", description = "4c) Was the persistent cough dry?", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_pers_cough_dr_d_90", description = "4c) Was the persistent cough dry?", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_33b", description = "33b) blood / haemoptysis", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_pers_cough_ph_0f5e08", description = "4d) Was the persistent cough with phlegm?", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_pers_cough_ph_0f5e08_d_90", description = "4d) Was the persistent cough with phlegm?", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_33a", description = "33a) sputum production", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_45", description = "45) Diarrhoea", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_diarrhoea_8c3a40", description = "4p) Diarrhoea", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_diarrhoea_8c3a40_d_90", description = "4p) Diarrhoea", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "ear_pain"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_35", description = "35) Ear pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_39", description = "39) Fatigue / malaise", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_fati", description = "4w) Fatigue", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_fati_d_90", description = "4w) Fatigue", values = { 1 = true, 0 = false } }
+
+[[observation]] # Q. is this the correct observation name?
+  name = "inability_to_walk"
+  phase = "followup"
+  date = { ref = "ss_flw_date" }
+  is_present = { field = "flw_walking_today_fc839e", description = "8e) Do you have difficulty walking or climbing steps?", ref = "inabilityWalkToday" }
+
+[[observation]] # Q. is this the correct observation name?
+  name = "inability_to_walk"
+  phase = "followup"
+  date = { ref = "ss_flw2_date" }
+  is_present = { field = "flw_walking_today_fc839e_d_90", description = "8e) Do you have difficulty walking or climbing steps?", ref = "inabilityWalkToday" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  value = { field = "flw_eq5d_mb_5l_uk_eng", description = "5a) GETTING ABOUT", ref = "inabilityWalk" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  value = { field = "flw_eq5d_mb_5l_uk_eng_2_8cbd79", description = "6a) GETTING ABOUT", ref = "inabilityWalk" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  value = { field = "flw_eq5d_mb_5l_uk_eng_d_90", description = "5a) GETTING ABOUT", ref = "inabilityWalk" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  value = { field = "flw_eq5d_mb_5l_uk_eng_2_8cbd79_d_90", description = "6a) GETTING ABOUT", ref = "inabilityWalk" }
+
+[[observation]]
+  name = "headache"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_40", description = "40) Headache", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "headache"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_headache_5b5b33", description = "4a) Headache", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "headache"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_headache_5b5b33_d_90", description = "4a) Headache", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_29", description = "29) Fever or Chills", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw_fever_2f9dc6", description = "2b) Have you felt feverish recently? ", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw_fever_2f9dc6_d_90", description = "2b) Have you felt feverish recently? ", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "joint_pain"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_38", description = "38) Joint pain / athraigia", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "joint_pain"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_joint_pain_f420c7", description = "4y) Joint pain or swelling", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "joint_pain"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_joint_pain_f420c7_d_90", description = "4y) Joint pain or swelling", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "confusion"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_confusion_3a0bff", description = "4a_i) Confusion/lack of concentration", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "confusion"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_confusion_3a0bff_d_90", description = "4a_i) Confusion/lack of concentration", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { ref = "ss_date" }
+  phase = "study"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "q_46", description = "46) Loss of smell", values = { 1 = true, 0 = false } },
+      { field = "q_47", description = "47) loss of taste", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw1_loss_of_smell_c17660", description = "4e) Loss of smell", values = { 1 = true, 0 = false } },
+      { field = "flw1_loss_of_taste_5988ec", description = "4f) Loss of taste", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw1_loss_of_smell_c17660_d_90", description = "4e) Loss of smell", values = { 1 = true, 0 = false } },
+      { field = "flw1_loss_of_taste_5988ec_d_90", description = "4f) Loss of taste", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_46", description = "46) Loss of smell", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_loss_of_smell_c17660", description = "4e) Loss of smell", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_loss_of_smell_c17660_d_90", description = "4e) Loss of smell", values = { 1 = true, 0 = false } }
+  	
+[[observation]]
+  name = "loss_of_taste"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_47", description = "47) loss of taste", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_loss_of_taste_5988ec", description = "4f) Loss of taste", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_loss_of_taste_5988ec_d_90", description = "4f) Loss of taste", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_37", description = "37) Myalgia / muscle aches", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_muscle_pain_5ef4eb", description = "4x) Persistent muscle pain", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_muscle_pain_5ef4eb_d_90", description = "4x) Persistent muscle pain", values = { 1 = true, 0 = false } }
+	
+[[observation]]
+  name = "runny_nose"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_31", description = "31) Rhinorrhoea (runny nose)", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "seizures"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_41", description = "41) Seizures", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "seizures"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_seizures_4a426f", description = "4a_g) Seizures/fits", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "seizures"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_seizures_4a426f_d_90", description = "4a_g) Seizures/fits", values = { 1 = true, 0 = false } }
+  	
+[[observation]]
+  name = "shortness_of_breath"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_30", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_short_breath_0a74bf", description = "4g) Shortness of breath/breathlessness", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_short_breath_0a74bf_d_90", description = "4g) Shortness of breath/breathlessness", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_48", description = "48) Rash", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw_skin_rash_f929e7", description = "4a_p) Skin rash", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw_skin_rash_f929e7_d_90", description = "4a_p) Skin rash", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_34", description = "34) Sore throat", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_43", description = "43) Nausea", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { ref = "ss_date" }
+  phase = "study"
+  is_present = { field = "q_44", description = "44) Vomiting", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw1_feeling_sick_0a8d2a", description = "4n) Feeling sick/vomiting", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw1_feeling_sick_0a8d2a_d_90", description = "4n) Feeling sick/vomiting", values = { 1 = true, 0 = false } }
+  	
+[[observation]]
+  name = "heart_rate_bpm"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_59", description = "59) Heart Rate" }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "ss_date" }
+  phase = "study"
+  text = { field = "q_50a", description = "50a) Other symptom" }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  text = { field = "flw_new_symptoms_319393", description = "4a_u) Any other NEW symptoms?" }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  text = { field = "flw_new_symptoms_319393_d_90", description = "4a_r) Any other NEW symptoms?" }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  text = { field = "flw_new_symptoms_319393_d_90", description = "4a_r) If yes (to any other NEW symptoms), specify:" }
+
+[[observation]]
+  name = "bleeding"
+  date = { ref = "ss_flw_date" }
+  phase = "followup"
+  is_present = { field = "flw_bleeding_4b40d6", description = "4a_r) Bleeding" }
+
+[[observation]]
+  name = "bleeding"
+  date = { ref = "ss_flw2_date" }
+  phase = "followup"
+  is_present = { field = "flw_bleeding_4b40d6_d_90", description = "4a_r) Bleeding" }
+  
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_57", description = "57) Oxygen saturation 1" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_58b", description = "58b) Final Oxygen saturation " }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_56", description = "56) Respiratory rate 1" }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_58a", description = "58a) Final Respiratory rate " }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = { ref = "ss_date" }
+  phase = "study"
+  value = { field = "q_60", description = "60) Systolic BP" }
