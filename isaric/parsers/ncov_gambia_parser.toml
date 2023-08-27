@@ -77,8 +77,8 @@
       { field = "q_1a_tire_fllw_d_90",	description = "1a) Screening Number", sensitive = true }, # this is a followup field. should it be here?
     ]
     
-  [subject.dataset_id]
-    field = "CTRSIPC"
+  #[subject.dataset_id]
+  #  field = "CTRSIPC"
 
   [subject.enrolment_date] # optional field
     combinedType = "min"
