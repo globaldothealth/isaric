@@ -2,14 +2,14 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |10728  |16046  |66.857784% |
+|subject        |15131  |16046  |94.297644% |
 |visit          |15533  |16046  |96.802942% |
-|observation    |318977 |318977 |100.000000% |
+|observation    |332808 |332808 |100.000000% |
 
 ## subject
 
-* 5180: data cannot be validated by any definition
-* 138: data must be valid exactly by one definition (0 matches found)
+* 887: data must be valid exactly by one definition (0 matches found)
+* 28: data cannot be validated by any definition
 
 ## visit
 
