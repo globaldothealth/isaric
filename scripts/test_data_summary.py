@@ -8,10 +8,13 @@ TEST_DATA = "test_data.csv"
 
 
 def test_data_summary():
-    assert main(TEST_DATA, id_field="record_id") == dict(
+    assert main(
+        TEST_DATA, parser_name="isaric/parsers/parser.toml", id_field="record_id"
+    ) == dict(
         encoding="utf-8-sig",
         file="test_data.csv",
         id_field="record_id",
+        parser="isaric/parsers/parser.toml",
         mimetype="text/csv",
         n_id=2,
         non_empty_fields=["diabetes_mhyn", "record_id", "renal_mhyn"],

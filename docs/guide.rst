@@ -161,6 +161,34 @@ are recorded, the 'study' and 'followup' phases can be used in the visit
 table to distinguish between the primary visit and any followup
 treatments or subsequent visits, respectively.
 
+The field ``redcap_event_name`` is present source files from the REDCap
+database. This can be used as an additional information to determine the phase.
+Event names are usually of the form ``<token>_arm_<n>``, where in REDCap, arm
+refers to a group of events, that are separated when using different groups
+such as treatment groups or by study site. The token part of the event name can
+be used to determine phase:
+
++ ``adm`` or ``admission`` refers to admission phase
++ ``follow_up`` implies this is a followup phase
+
+Any other event names usually refer to within the visit, i.e study phase. An
+example of using redcap_event_name to categorise observations by phase is:
+
+.. code:: toml
+
+   [[observation]]
+     name = "diastolic_blood_pressure_mmHg"
+     phase = "admission"
+     if.all = [
+       { redcap_event_name = "on_admission_arm_1" },
+       { admission_diabp_vsorres = { "!=" = "" } },
+       { admission_diabp_vsorres = { "!=" = 9999 } },
+     ]
+     date = { field = "daily_assess_date" }
+
+The additional check on ``redcap_event_name`` ensures that observations with
+different phases are not incorrectly mapped
+
 Duration type
 -------------
 
@@ -332,16 +360,31 @@ Subject
 **subject_id**: Text. Unique ID for the subject (NOTE: currently this is
 the same as the visit ID, prior to implementation of RELSUB matching).
 
-**dataset_id**: Text. Refers to the specifc ID/Version of the dataset
-being used (NOTE TO DEVS: should this be study metadata instead?)
-
 **enrolment_date**: Date. Date of subject enrolment into the study.
 
 **earliest_admission_date**: Date. Date of admission for the first study
 visit. Use ``combinedType = "min"`` To allow the earliest date to be
 chosen from across multiple visits.
 
-**age**: Value. Age of the subject in years.
+**age**: Value. Age of the subject in years. Provided age should be used where
+possible, if not present age can be estimated from the date of birth and admission
+date. Where age is provided as months/days, it will be converted to years such that
+6 months = 0.5 years, 7 days = 0.02 years.
+
+**date_of_birth**: Text. Date of birth in yyyy-mm-dd format. Should only be
+filled if provided in the data, not calculated.
+
+**dob_year**: Value. 4-digit year of birth. Should be filled from the date of
+birth if provided, otherwise can be calculated from age and admission date. As
+year can be estimated, if date_of_birth is blank there is a +/- 1 year error margin.
+
+**dob_month**: Value. Month of birth. Should be filled using the date of birth
+if provided, otherwise can be calculated from age *if provided in months* and
+and admission date. If age is provided in years, the month cannot be accurately
+estimated and should therefore be left blank.
+
+**dob_day**: Value. Day of birth. Should only be filled if a date of birth is
+provided, otherwise left blank.
 
 **sex_at_birth**: Text. One of
 
@@ -381,6 +424,8 @@ breastfeeding/ did they breastfeed during the study period?
 
 **pregnancy_post_partum**: Bool. Is the subject post-partum (up to 6
 weeks post-delivery) at the point of enrolment?
+
+**preterm_infant**: Bool. For pediatric subjects: was the child born pre-term (<37 weeks)?
 
 **has_asplenia**: Bool. Does the subject have asplenia?
 
@@ -431,6 +476,9 @@ cardiac disease?
 
 **has_chronic_kidney_disease**: Bool. Does the subject have a chronic
 kidney disease?
+
+**has_chronic_respiratory_disease**: Bool. Does the subject have a chronic
+respiratory (not asthma) disease?
 
 **has_diabetes**: Bool. Does the subject have diabetes?
 
@@ -485,7 +533,7 @@ Superset, general level indicators:
 therapy and/or respiratory support has been administered. Subsets (all
 boolean indicators) are:
 
-+ *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
++ *treatment_oxygen_mask_prongs* - Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 
 + *treatment_high_flow_nasal_cannula*
 
@@ -506,21 +554,23 @@ support has been administered. Subsets (all boolean indicators) are:
 
 + *treatment_ecmo*
 
++ *treatment_cpr*
+
 Overarching fields denoting 'cardiovascular support' can also include CPR,
 or other forms of mechanical cardiovascular support.
 
 General drug types
 ~~~~~~~~~~~~~~~~~~
 
-The general drug categories *antiviral*, *antibiotic*, *corticosteroid*
-and *experimental_agent* all have a set of three hierarchical
-attributes, e.g. for antivirals:
+The general drug categories *antiviral*, *antibiotic*, *corticosteroid*,
+*experimental_agent*, *antimalarial* and *delirium* all have a set of three
+hierarchical attributes, e.g. for antivirals:
 
 + **treatment_antiviral**: Bool. If antivirals have been administered during the visit
 
 + **treatment_antiviral_type**: Set. Lists all the different types of antiviral administered. Should only be used where values are mapped, as there is a restricted list of accepted values defined in the schema - i.e. do not map a free text field here.
 
-+ **treatment_antiviral_type_other**: Set. For free text fields listing the names of antivirals used.
++ **treatment_antiviral_type_other**: Set. For free text fields listing the names of antivirals used. (only for corticosteroids, anvirials and experimental agents)
 
 other fields
 ~~~~~~~~~~~~
@@ -670,11 +720,19 @@ into the subtypes for the phase. For example:
 
 .. _other-fields-1:
 
+**loss_of_smell_or_taste**: Bool. Supertype for loss of smell or loss of taste,
+and can also be used as a single indicator where both symptoms are combined in
+a dataset.
+Subtypes are:
+
++ *loss_of_smell*
++ *loss_of_taste*
+
 Other fields
 ~~~~~~~~~~~~
 
-**avpu**: Text. Where is the subject on the AVPU consciousness scale
-(Alert, Voice, Pain, Unresponsive)
+**avpu**: Text. Where is the subject on the AVPU consciousness scale, one of
+*Alert, Voice, Pain, Unresponsive*.
 
 **abdominal_pain**: Bool.
 
@@ -685,6 +743,8 @@ confusion, not altered consciousness, use confusion_
 
 **base_excess**: Value. Difference between observed and normal buffer
 base concentration for oxygenated blood.
+
+**blantyre_coma_score**: Value (0-5). Coma scale modified from the pediatric glasgow coma scale.
 
 **bleeding**: Bool. For bleeding (other) observations. If field is
 described as bleeding (haemorrhage) or similar, use
@@ -697,7 +757,7 @@ described as bleeding (haemorrhage) or similar, use
 **clinical_classification_critical_illness_scale**: Currently Unused.
 Traffic-light suggests only in one parser, suggest editing or removal.
 
-**clinical_frailty_score**: Value. `Frailty
+**clinical_frailty_score**: Value (1-9). `Frailty
 scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/rockwood_cfs.pdf>`__
 
 .. _confusion:
@@ -710,28 +770,28 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **diarrhoea**: Bool.
 
-**diastolic_blood_pressure_mmHg**: Value.
+**diastolic_blood_pressure_mmHg**: Value (30-250).
 
-**systolic_blood_pressure_mmHg**: Value.
+**systolic_blood_pressure_mmHg**: Value (30-250).
 
-**mean_arterial_blood_pressure_mmHg**: Value.
+**mean_arterial_blood_pressure_mmHg**: Value (30-250).
 
 **ear_pain**: Bool.
 
 **fatigue_malaise**: Bool.
 
-**feeding_intolerance_pediatrics** Bool. Unused.
+**feeding_intolerance_pediatrics** Bool.
 
-**glasgow_coma_score**: Value. `Coma
+**glasgow_coma_score**: Value (3-15). `Coma
 scale <https://www.glasgowcomascale.org>`__
 
 **headache**: Bool.
 
-**heart_rate_bpm**: Value.
+**heart_rate_bpm**: Value (1-250).
 
 **heart_sounds**: Bool.
 
-**hepatomegaly** Bool. Enlarged liver? (Unused)
+**hepatomegaly** Bool. Enlarged liver
 
 **history_of_fever** Bool. Recently feverish? For admission/followup
 where the subject self-reports.
@@ -745,26 +805,18 @@ inability_to_walk_scale_
 .. _inability_to_walk_scale:
 
 **inability_to_walk_scale**: Use a 1-4 scale to indicate the degree of
-difficulty a subject has walking. Values should map to: *1-No
-difficulty, 2-Some difficulty, 3-Lots of difficulty, 4-Unable to walk*.
+difficulty a subject has walking. Values should map to integers 1-4: 1 (No
+difficulty), 2 (Some difficulty), 3 (Lots of difficulty), 4 (Unable to walk).
 If the field contains a greater number of options, they should be mapped
 onto a 1-4 scale, rounding down. E.g., for a 1-5 scale of: *1-no
 inability, 2-slight inability, 3-moderate inability, 4-severe inability,
 5-unable*, option 3 (moderate inability) should be rounded down and
-mapped to *2-some difficulty* in the 1-4 scale. If a relevant field
+mapped to 2 in the 1-4 scale. If a relevant field
 instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
 **irritability_pediatrics**: Bool. Unused.
 
 **joint_pain**: Bool.
-
-**loss_of_smell**: Bool. If loss of smell/taste, use combined attribute
-below.
-
-**loss_of_smell_or_taste**: Bool. For where smell/taste loss is
-combined.
-
-**loss_of_taste**: Bool.
 
 **lower_chest_wall_indrawing**: Bool.
 
@@ -772,29 +824,29 @@ combined.
 
 **lymphadenopathy**: Bool. Combines adenopathy and lymphadenopathy.
 
-**mid_upper_arm_circumference_cm**: Value.
+**mid_upper_arm_circumference_cm**: Value (5-100).
 
 **muscle_aches**: Bool.
 
 **other_symptom**: Set (Text). List any other symptoms, or free text
 fields describing symptoms, here.
 
-**oxygen_o2hb**: Unused, not sure what it relates to.
+**oxygen_o2hb**: Value (g/dL). Heamoglobin level, lab test.
 
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.
 
-**oxygen_saturation_percent**: Value. Use context to note whether
+**oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
 
-**pao2_mmHg**: Value. Use context to record whether this is an arterial,
+**pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the
 default unit.
 
-**pco2_mmHg**: Value. Use context to note if this is from the same blood
+**pco2_mmHg**: Value (10-100). Use context to note if this is from the same blood
 gas record as the *pao2*/*pH* observation.
 
-**pH**: Value. Use context to note if this is from the same blood gas
+**pH**: Value (4-10). Use context to note if this is from the same blood gas
 record as the *pao2*/*pco2* observation.
 
 **pneumonia**: Bool. Use context to note if bacterial, viral or COP, and
@@ -802,11 +854,11 @@ if the patient requires oxygen as a result (if specified in that field,
 don’t assume that if the patient is recorded as being on oxygen
 elsewhere, it is related to this record of pneumonia).
 
-**respiratory_rate**: Value.
+**respiratory_rate**: Value (1-90).
 
-**richmond_agitation-sedation_scale**: Value.
+**richmond_agitation-sedation_scale**: Value (-5 to 4, including 0).
 
-**riker_sedation-agitation_scale**: Value.
+**riker_sedation-agitation_scale**: Value (1-7).
 
 **runny_nose**: Bool.
 
@@ -826,7 +878,7 @@ elsewhere, it is related to this record of pneumonia).
 conditional statements if the refill time is given rather than a yes/no
 response.
 
-**temperature_celsius**: Value
+**temperature_celsius**: Value (25-50)
 
 **total_fluid_output_ml**: Value.
 

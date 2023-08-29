@@ -1,0 +1,945 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "ccp-uganda"
+  description = "uganda - CPPInUseV20_Data"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ["ethnicity"]
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "record_id", sensitive = true } }
+
+  [adtl.defs."Y/N".values]
+    1 = true
+    0 = false
+
+[adtl.defs.admissionDateHierarchy]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "add_date", description = "Admission date at this facility" },
+    { field = "onset_date", description = "Date of onset of symptoms (within 10days)" },
+    { field = "signs_symps_date" },
+  ]
+
+
+  # SUBJECT
+  # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "record_id"
+    sensitive = true
+
+  [subject.enrolment_date]
+    field = "investigate_date"
+
+  [subject.earliest_admission_date]
+    ref = "admissionDateHierarchy"
+    description = "Admission date at this facility"
+
+  [subject.age]
+    field = "age"
+    source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months", 3 = "days" } }
+    unit = "years"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age", if.any = [
+        { age_unit = 1 },
+        { age_unit = "" },
+      ], apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$onset_date",
+          "$investigate_date",
+        ],
+        2022,
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$onset_date",
+        ],
+        2022,
+        "%Y-%m-%d",
+        "months",
+      ] } },
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$onset_date",
+        ],
+        2022,
+        "%Y-%m-%d",
+        "days",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        "$add_date",
+        2022,
+      ] } },
+      { field = "age", if = { age_unit = 3 }, apply = { function = "startMonth", params = [
+        "$add_date",
+        2022,
+        "%Y-%m-%d",
+        "days",
+      ] } },
+    ]
+
+  [subject.sex]
+    field = "sex"
+    description = "Gender"
+    values = { 0 = "female", 1 = "male" }
+
+  [subject.works_microbiology_lab]
+    field = "occupation"
+    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
+
+  [subject.works_healthcare]
+    field = "occupation"
+    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
+
+  [subject.pregnancy]
+    combinedType = "any"
+    fields = [
+      { field = "pregnant", values = { 1 = true, 0 = false } },
+      { field = "preg", values = { 1 = true, 2 = false, 3 = false } },
+    ]
+
+  [subject.pregnancy_date_of_delivery]
+    field = "del_date"
+    description = "Delivery date"
+
+  [subject.pregnancy_birth_weight_kg]
+    field = "birthweigh"
+    description = "What was the birth weight"
+
+  [subject.pregnancy_outcome]
+    field = "del_outcome"
+    description = "Outcome of Pregnancy"
+    values = { 0 = "Still birth", 1 = "Live birth" }
+
+  [subject.pregnancy_gestational_outcome]
+    field = "gest_out"
+    description = "What was the gestational outcome?"
+    values = { 1 = "preterm_birth", 2 = "term_birth" }
+
+  [subject.pregnancy_whether_breastfed]
+    combinedType = "any"
+    fields = [
+      { field = "breastfed", description = "Was the child breastfed?", ref = "Y/N" },
+      { field = "curr_breatfeed", ref = "Y/N" },
+    ]
+
+  [subject.pregnancy_post_partum]
+    field = "preg"
+    description = "Is the client pregnant or in postpartum period"
+    values = { 1 = false, 2 = true, 3 = false }
+
+  [subject.pregnancy_gestational_age_weeks]
+    field = "gest"
+    description = "Gestational age"
+
+  [subject.has_hiv]
+    combinedType = "any"
+    fields = [
+      { field = "hiv_aids", description = "Known history of HIV/AIDS", ref = "Y/N" },
+      { field = "rct_hiv", description = "Results of rapid testing for HIV:", ref = "Y/N" },
+    ]
+
+  [subject.has_hypertension]
+    field = "hypertens"
+    ref = "Y/N"
+
+  [subject.has_malignant_neoplasm]
+    combinedType = "any"
+    fields = [
+      { field = "neopla", ref = "Y/N" },
+      { field = "hem_dse", ref = "Y/N" },
+    ]
+
+  [subject.has_smoking]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "smok", values = { 0 = "never", 1 = "yes", 2 = "former" } },
+      { field = "smoke", values = { 0 = "never", 1 = "yes", 2 = "former" } },
+    ]
+
+  [subject.has_asthma]
+    field = "asthma"
+    ref = "Y/N"
+
+  [subject.has_chronic_kidney_disease]
+    field = "kidney_dse"
+    ref = "Y/N"
+
+  [subject.has_chronic_cardiac_disease]
+    field = "heart_dse"
+    ref = "Y/N"
+
+  [subject.has_diabetes]
+    field = "diab"
+    ref = "Y/N"
+
+  [subject.has_liver_disease]
+    field = "liver_dse"
+    ref = "Y/N"
+
+  [subject.has_hiv_art]
+    field = "art"
+    ref = "Y/N"
+
+  [subject.has_tuberculosis]
+    field = "activ_tb"
+    ref = "Y/N"
+
+  [subject.has_tuberculosis_past]
+    field = "priortb"
+    ref = "Y/N"
+
+  [subject.has_immunosuppression]
+    field = "other_imm_supps_premed"
+    apply = { function = "isNotNull" }
+
+  [subject.has_died]
+    field = "outcome"
+    values = { 1 = false, 2 = true, 3 = false, 4 = false }
+
+  [subject.has_comorbidity_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "oth_risk_spec" }]
+
+  [subject.date_death]
+    field = "outcome_date"
+    if = { "outcome" = 2 }
+
+  [subject.icu_admitted]
+    combinedType = "any"
+    fields = [
+      { field = "overall_icu_hoterm", ref = "Y/N" },
+      { field = "on_admn", values = { 1 = true, 0 = false }, description = "Current admission to ICU/ITU/IMC/HDU?" },
+      { field = "overall_icu_hostdat", apply = { function = "isNotNull" } },
+      { field = "icu_date", apply = { function = "isNotNull" } },
+    ]
+
+    # VISIT
+    # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = "UGA"
+
+  [visit.visit_id]
+    field = "record_id"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "record_id"
+    sensitive = true
+
+  [visit.start_date]
+    ref = "admissionDateHierarchy"
+
+  [visit.pathogen_test_date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "oro_date" }, { field = "path_date" }]
+
+  [visit.icu_admission]
+    combinedType = "any"
+    fields = [
+      { field = "overall_icu_hoterm", ref = "Y/N" },
+      { field = "on_admn", values = { 1 = true, 0 = false }, description = "Current admission to ICU/ITU/IMC/HDU?" },
+    ]
+
+  [visit.icu_admission_dates]
+    description = "Date of ICU admission:"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "overall_icu_hostdat" }]
+
+  [visit.transfer_from_other_facility]
+    field = "was_trans"
+    values = { 1 = true, 0 = false }
+
+  [visit.treatment_dialysis]
+    combinedType = "any"
+    fields = [
+      { field = "overall_rrt_hem", description = "Dialysis/Hemofiltration?", ref = "Y/N" },
+      { field = "dialys", description = "Dialysis/Hemofiltration?", values = { 1 = true, 0 = false } },
+    ]
+
+  [visit.treatment_inotropes_vasopressors]
+    combinedType = "any"
+    fields = [
+      { field = "overall_inotrop_cmtrt", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+      { field = "vaso_or_inot", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+    ]
+
+  [visit.treatment_ecmo]
+    combinedType = "any"
+    fields = [
+      { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
+      { field = "ecls", ref = "Y/N" },
+    ]
+
+  [visit.treatment_corticosteroid]
+    field = "meds_given"
+    values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = false, 6 = false, 7 = false, 8 = true, 9 = false }
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    fields = [
+      { field = "overall_oxygen_cmoccur", values = { 1 = true, 0 = false } },
+      { field = "can_oxy_ther", values = { 1 = true, 0 = false } },
+      { field = "overall_invasive_proccur", values = { 1 = true, 0 = false } },
+      { field = "inv_vent", values = { 1 = true, 0 = false } },
+      { field = "overall_noninvasive_proccur", values = { 1 = true, 0 = false } },
+      { field = "non_inv_vent", values = { 1 = true, 0 = false } },
+      { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
+    ]
+
+  [visit.treatment_prone_position]
+    combinedType = "any"
+    fields = [
+      { field = "overall_prone_prtrt", values = { 1 = true, 0 = false } },
+      { field = "prone", values = { 1 = true, 0 = false } },
+    ]
+
+  [visit.treatment_invasive_ventilation]
+    combinedType = "any"
+    fields = [
+      { field = "overall_invasive_proccur", values = { 1 = true, 0 = false } },
+      { field = "inv_vent", values = { 1 = true, 0 = false } },
+    ]
+
+  [visit.treatment_antivirals]
+    combinedType = "any"
+    fields = [
+      { field = "meds_given", values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false, 8 = false, 9 = false } },
+      { field = "sup_meds_antivirals", apply = { function = "isNotNull" } },
+    ]
+
+  [visit.treatment_antiviral_type]
+    combinedType = "set"
+    excludeWhen = "none"
+
+    [[visit.treatment_antiviral_type.fields]]
+      field = "sup_meds_antivirals"
+
+      [visit.treatment_antiviral_type.fields.values]
+        1 = "Ribavirin"
+        2 = "Lopinavir/Ritonavir"
+        3 = "Interferon alpha"
+        4 = "Interferon beta"
+        5 = "Neuraminidase inhibitor"
+        6 = "Other"
+
+[visit.treatment_antibiotics]
+  combinedType = "any"
+  fields = [
+    { field = "meds_given", values = { 1 = false, 2 = false, 3 = true, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false } },
+    { field = "daily_antibiotic", ref = "Y/N" },
+    { field = "antibio_meds_oth", apply = { function = "isNotNull" } },
+  ]
+
+[visit.treatment_antibiotics_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "antibio_meds_oth" },
+    { field = "daily_antibiotic_type___1", values = { 1 = "Ceftriaxone" } },
+    { field = "daily_antibiotic_type___2", values = { 1 = "Metronidazole" } },
+    { field = "daily_antibiotic_type___3", values = { 1 = "Erythromycin" } },
+    { field = "daily_antibiotic_type___4", values = { 1 = "Levofloxacin" } },
+    { field = "daily_antibiotic_type___5", values = { 1 = "Cirofloxacin" } },
+    { field = "daily_antibiotic_type___6", values = { 1 = "Gentamicin" } },
+    { field = "daily_antibiotic_type___7", values = { 1 = "Co-trimoxazole" } },
+    { field = "daily_antibiotic_type___8", values = { 1 = "Amoxacillin" } },
+    { field = "daily_antibiotic_type___9", values = { 1 = "Penicillin" } },
+    { field = "daily_antibiotic_type___10", values = { 1 = "Fluconazole" } },
+    { field = "daily_antibiotic_type___11", values = { 1 = "Other" } },
+  ]
+
+[visit.treatment_anticoagulation]
+  field = "meds_given"
+  values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 6 = false, 7 = false, 8 = false, 9 = false }
+
+[visit.treatment_inhaled_nitric_oxide]
+  combinedType = "any"
+  fields = [
+    { field = "overall_nitrcoxid", values = { 1 = true, 0 = false } },
+    { field = "nitric_oxide", values = { 1 = true, 0 = false } },
+  ]
+
+[visit.treatment_noninvasive_ventilation]
+  combinedType = "any"
+  fields = [
+    { field = "overall_noninvasive_proccur", values = { 1 = true, 0 = false } },
+    { field = "non_inv_vent", values = { 1 = true, 0 = false } },
+  ]
+
+[visit.treatment_antimalarial]
+  combinedType = "any"
+  fields = [
+    { field = "daily_antimal", ref = "Y/N" },
+    { field = "meds_given", values = { 1 = true, 2 = true } },
+  ]
+
+[visit.treatment_antimalarial_type]
+  field = "meds_given"
+  values = { 1 = "Hydroxychloroquine", 2 = "Chloroquine phosphate" }
+
+[visit.treatment_high_flow_nasal_cannula]
+  field = "can_oxy_ther"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_intravenous_fluids]
+  field = "daily_iv_fluids"
+  ref = "Y/N"
+
+[visit.treatment_neuromuscular_blocking_agents]
+  field = "neuro_block"
+  values = { 1 = true, 0 = false }
+
+[visit.treatment_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "oth_interv_sp", description = "Specify Other intervention or procedure?", if = { oth_interv_sp = { "!=" = 0 } } },
+    { field = "sup_antibiotic_agent", if = { oth_interv_sp = { "!=" = 0 } } },
+  ]
+
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
+    { field = "overall_inotrop_cmtrt", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+    { field = "vaso_or_inot", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+  ]
+
+[visit.outcome]
+  field = "outcome"
+  values = { 1 = "discharged", 2 = "death", 4 = "transferred" }
+
+[visit.date_outcome]
+  field = "outcome_date"
+
+
+  # OBSERVATION
+  # required fields - phase, date, name
+
+  # NOTE: Phase is unclear in some cases, data not provided for one of the main symptom forms.
+
+[[observation]]
+  name = "avpu"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  text = { field = "avpu", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
+
+[[observation]]
+  name = "avpu"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  text = { field = "avpu_study", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
+
+[[observation]]
+  name = "pneumonia"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "clipneu", ref = "Y/N" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = "comp_date"
+  is_present = { field = "viral_pneumo", values = { 1 = true, 0 = false } }
+  context = ["viral"]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = "comp_date"
+  is_present = { field = "bact_pneumo", values = { 1 = true, 0 = false } }
+  context = ["bacterial"]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = "comp_date"
+  is_present = { field = "cop", values = { 1 = true, 0 = false } }
+  context = ["cryptogenic organising pneumonia (COP)"]
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  value = { field = "diastol_iso" }
+  if.all = [{ diastol_iso = { "!=" = "" } }, { diastol_iso = { "!=" = 0 } }]
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  value = { field = "diastol" }
+  if.all = [{ diastol = { "!=" = "" } }, { diastol = { "!=" = 0 } }]
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = { field = "vitals_date" }
+  phase = "study"
+  value = { field = "diastolic" }
+  if.all = [{ diastolic = { "!=" = "" } }, { diastolic = { "!=" = 0 } }]
+
+[[observation]]
+  name = "pco2_mmHg"
+  date = { field = "icu_date" }
+  phase = "study"
+  value = { field = "pcc02", unit = "mmHg", source_unit = { field = "pc02_type", values = { 1 = "kPa", 2 = "mmHg" } } }
+  context = ["same blood-gas record as paO2"]
+
+[[observation]]
+  name = "glasgow_coma_score"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "gcs" }
+
+[[observation]]
+  name = "glasgow_coma_score"
+  date = { field = "vitals_date" }
+  phase = "study"
+  value = { field = "gcs_val" }
+
+[[observation]] # This might actually be a pre-admission symptom
+  name = "confusion"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "confused", ref = "Y/N" }
+
+
+[[observation]]
+  name = "base_excess"
+  date = { field = "icu_date" }
+  phase = "study"
+  value = { field = "base_excess" }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "bleed", ref = "Y/N" }
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "bleed_loc", values = { 1 = "mouth", 2 = "nose", 3 = "ear", 4 = "urethra", 5 = "vagina", 6 = "anus", 7 = "petechia" } },
+    ]
+
+[[observation]]
+  name = "chest_pain"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "chest", ref = "Y/N" }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "conjunct", ref = "Y/N" }
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cof", ref = "Y/N" },
+      { field = "sick_symp___2", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "cough"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough", ref = "Y/N" },
+      { field = "dry_cough", ref = "Y/N" },
+      { field = "wet_cough", ref = "Y/N" },
+      { field = "blood_cough", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "dry_cough", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "wet_cough", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  is_present = { field = "blood_cough", ref = "Y/N" }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "onset_date" }
+  start_date = { field = "onset_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "admission"
+  is_present = { field = "sick_symp___3", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "diarr", ref = "Y/N" }
+
+[[observation]]
+  name = "ear_pain"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "ear_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "fatig", ref = "Y/N" }
+
+[[observation]]
+  name = "headache"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "head", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "onset_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  date = { field = "onset_date" }
+  duration_type = "event"
+  phase = "admission"
+  is_present = { field = "sick_symp___1", values = { 1 = true } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "fever_hist", ref = "Y/N" }
+
+[[observation]]
+  name = "inability_to_walk"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "assist", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "inability_to_walk"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  is_present = { field = "assist_study", values = { 1 = true, 0 = false } }
+
+  # there are more 'walking' fields ..
+
+[[observation]]
+  name = "joint_pain"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "joint", ref = "Y/N" }
+
+[[observation]]
+  name = "joint_pain"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "jt_ache", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "smell", ref = "Y/N" },
+      { field = "taste", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "smell", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "taste", ref = "Y/N" }
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "indraw", ref = "Y/N" }
+
+[[observation]]
+  name = "mid_upper_arm_circumference_cm"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "mauc_mm", apply = { function = "getFloat" } }   # dd states mm as units, but data looks to be exclusively cm to me.
+  if.all = [{ mauc_mm = { "!=" = "" } }, { mauc_mm = { "!=" = 0 } }]
+
+[[observation]]
+  name = "muscle_aches"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "muscle", ref = "Y/N" }
+
+[[observation]]
+  name = "runny_nose"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "runny_nose", ref = "Y/N" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "breath", ref = "Y/N" }
+
+[[observation]]
+  name = "skin_rash"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "rash_skin", ref = "Y/N" }
+
+[[observation]]
+  name = "skin_ulcers"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "ulcer_skin", ref = "Y/N" }
+
+[[observation]]
+  name = "sore_throat"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "throat", ref = "Y/N" }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  if.all = [{ caps = { "!=" = "" } }, { caps = { ">" = 2 } }]
+  is_present = { field = "caps", apply = { function = "isNotNull" } }
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  date = { field = "vitals_date" }
+  phase = "study"
+  if.all = [{ caps_tm = { "!=" = "" } }, { caps_tm = { ">" = 2 } }]
+  [observation.is_present]
+    field = "caps_tm"
+    apply = { function = "isNotNull" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "vomi", ref = "Y/N" }
+
+[[observation]]
+  name = "wheezing"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "wheez", ref = "Y/N" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  value = { field = "pulse_iso" }
+  if.all = [{ pulse_iso = { "!=" = "" } }, { pulse_iso = { "!=" = 0 } }]
+
+[[observation]]
+  name = "heart_rate_bpm"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "hr_study" }
+  if.all = [{ hr_study = { "!=" = "" } }, { hr_study = { "!=" = 0 } }]
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  value = { field = "oxy_satu" }
+  if.all = [{ oxy_satu = { "!=" = "" } }, { oxy_satu = { "!=" = 0 } }]
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "o2_satu" }
+  if.all = [{ o2_satu = { "!=" = "" } }, { o2_satu = { "!=" = 0 } }]
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ox_type", values = { 1 = "Room air", 2 = "Oxygen therapy" } },
+    ]
+
+[[observation]]
+  name = "pao2_mmHg"
+  phase = "study"
+  date = { field = "icu_date" }
+  value = { field = "pa02", description = "PaO2 at time of FiO2 above", unit = "mmHg", source_unit = { field = "pa02_type", values = { 1 = "kPa", 2 = "mmHg" } } }
+  if.all = [{ pa02 = { "!=" = "" } }, { pa02 = { "!=" = 0 } }]
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "pa02_samp_type", values = { 1 = "Arterial", 2 = "Venous", 3 = "Capillary" } },
+    ]
+
+[[observation]]
+  name = "pH"
+  date = { field = "icu_date" }
+  phase = "study"
+  value = { field = "ph" }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  value = { field = "rr_iso" }
+  if.all = [
+    { rr_iso = { "!=" = "" } },
+    { rr_iso = { "!=" = 0 } },
+    { rr_iso = { "!=" = 999 } },
+  ]
+
+[[observation]]
+  name = "respiratory_rate"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "rr_study" }
+  if.all = [{ rr_study = { "!=" = "" } }, { rr_study = { "!=" = 0 } }]
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  value = { field = "systol_iso" }
+  if.all = [{ systol_iso = { "!=" = "" } }, { systol_iso = { "!=" = 0 } }]
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "systol" }
+  if.all = [{ systol = { "!=" = "" } }, { systol_iso = { "!=" = 0 } }]
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = { field = "vitals_date" }
+  phase = "study"
+  value = { field = "systoll" }
+  if.all = [{ systoll = { "!=" = "" } }, { systoll = { "!=" = 0 } }]
+
+[[observation]]
+  name = "temperature_celsius"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  value = { field = "temperature_iso" }
+  if.all = [
+    { temperature_iso = { "!=" = "" } },
+    { temperature_iso = { "!=" = 0 } },
+  ]
+
+[[observation]]
+  name = "temperature_celsius"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  phase = "study"
+  value = { field = "temp_study" }
+  if.all = [{ temp_study = { "!=" = "" } }, { temp_study = { "!=" = 0 } }]
+
+[[observation]]
+  name = "oxygen_flow_volume_max"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "study"
+  value = { field = "ttl_oxy" }
+  if.all = [{ ttl_oxy = { "!=" = "" } }, { ttl_oxy = { "!=" = 999 } }]
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "outcome_date" }
+  duration_type = "event"
+  value = { field = "heamogl" }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  date = { field = "signs_symps_date" }
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "other_0_v2" },
+      { field = "other_1_v2" },
+      { field = "other_2_v2" },
+    ]

@@ -43,11 +43,11 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Some difficulty"
-  4 = "Lots of difficulty"
-  5 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 2 # "Some difficulty"
+  4 = 3 # "Lots of difficulty"
+  5 = 4 # "Unable to walk"
 
 [subject]
   pathogen = "COVID-19"
@@ -70,14 +70,25 @@
     ]
 
   [subject.age]
-    combinedType = 'firstNonNull'
-    fields = [
-      { field = "age_calc", description = "Calculated age (form)" },
-      # { field = "age", unit = "years", source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } } },
-      # { field = "brthdtc", description = "Calculate from birth date", apply = { function = "yearsElapsed", params = [
-      # "admission_date",
-      # ] } },
-    ]
+    field = "age_calc"
+    description = "Calculated age (form)"
+    unit = "years"
+    # source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } }
+
+    # [subject.date_of_birth]
+    #   field = "brthdtc"
+
+  [subject.dob_year]
+    field = "age_calc"
+    apply = { function = "startYear", params = [
+      [
+        "$admission_date",
+        "$hostdat",
+        "$dsstdat",
+      ],
+      2022,
+      "%d/%m/%Y",
+    ] }
 
 
   [subject.works_healthcare]
@@ -357,19 +368,19 @@
   excludeWhen = "none"
   fields = [
     { field = "overall_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "overall_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "overall_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "overall_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "overall_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -909,14 +920,14 @@
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { field = "dsstdtc" }                                           # Can't find a date for the followup forms specifically
-  text = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
+  date = { field = "dsstdtc" }                                            # Can't find a date for the followup forms specifically
+  value = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { field = "dsstdtc" }                                                    # Can't find a date for the followup forms specifically
-  text = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
+  date = { field = "dsstdtc" }                                                     # Can't find a date for the followup forms specifically
+  value = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
 
 [[observation]]
   name = "temperature_celsius"
