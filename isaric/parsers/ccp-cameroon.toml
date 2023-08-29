@@ -17,6 +17,7 @@
     groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ["date_outcome"]
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -29,15 +30,8 @@
   [adtl.defs.admissionObsDate]
     combinedType = "firstNonNull"
     fields = [
-      { field = "q0_signs_symptoms", if = { redcap_event_name = "recruitment_arm_1" } },
+      { field = "q0_signs_symptoms" },
       { field = "q2_onset" },
-    ]
-
-  [adtl.defs.outcomeDate]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement" },
-      { field = "q9_outcome", description = "9) Outcome- transfer date /Date de sortie- transfert" },
     ]
 
 [subject]
@@ -52,10 +46,8 @@
     description = "1) Enrolment date / Date d'inclusion"
 
   [subject.earliest_admission_date]
-    combinedType = "min"
-    fields = [
-      { field = "q2_onset", description = "2) Admission date at this facility / Date de consultation dans la FOSA de l'étude:" },
-    ]
+    field = "q2_onset"
+    description = "2) Admission date at this facility / Date de consultation dans la FOSA de l'étude:"
 
   [subject.age]
     combinedType = "firstNonNull"
@@ -63,6 +55,7 @@
       { field = "q5_demographics", description = "5) Estimated Age / Age estimé" },
       { field = "q4_demographics", description = "4) Date of birth / Date de naissance", apply = { function = "yearsElapsed", params = [
         "$q1_demographics",
+        2022,
         "%d/%m/%Y",
         "%d/%m/%Y",
       ] } },
@@ -78,7 +71,7 @@
   [subject.works_healthcare]
     field = "q7_demographics"
     description = "7) Employed as a health care worker / Employé en tant que travailleur de la santé ?                                                                                                "
-    values = { 1 = true, 2 = false }
+    ref = "Y/N"
 
   [subject.works_microbiology_lab]
     field = "q8_demographics"
@@ -395,82 +388,174 @@
     { field = "q10_health_care" },
   ]
 
-[visit.outcome]
-  combinedType = "set"
+[visit.outcome] # Q: Should we distinguish between not admitted (discharged before treatment) and discharged?
+# Q1_outcome and q1_treatment_outcome are present on different rows, so using "set" to get both (and therefore have 'discharged' vs ['hospitalised', 'discharged']) won't work.
+  combinedType = "firstNonNull"
+  excludeWhen = "none"
   fields = [
-    { field = "q1_treatment_outcome", description = "1) Outcome of treatment /Issue du traitement" },
-    { field = "q1_outcome", description = "1) Outcome of healthcare facility / Issue de la FOSA " },
+    { field = "q1_treatment_outcome", description = "1) Outcome of treatment /Issue du traitement", values = { 1 = "hospitalised", 2 = "discharged", 3 = "transferred", 4 = "transferred", 5 = "death", 6 = "discharged", 7 = "palliative discharge" } },
+    { field = "q1_outcome", description = "1) Outcome of healthcare facility / Issue de la FOSA ", values = { 1 = "hospitalised", 2 = "discharged", 3 = "transferred", 4 = "transferred", 5 = "death", 6 = "discharged", 7 = "palliative discharge" } },
   ]
-
-  [visit.outcome.values]
-    1 = "hospitalised"
-    2 = "discharged"
-    3 = "transferred"
-    4 = "transferred"
-    5 = "death"
-    6 = "discharged"
-    7 = "palliative discharge"
 
 [visit.date_outcome]
   combinedType = "firstNonNull"
   fields = [
-    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement", apply = { function = "isNotNull", params = [
-      "q1_treatment_outcome",
-    ] } },
-    { field = "q9_outcome", apply = { function = "isNotNull", params = [
-      "q1_outcome",
-    ] } },
+    { field = "q14_treatment_outcome", description = "14) End date of treatment / Date d'arrêt du traitement", if = { q1_treatment_outcome = { "!=" = "" } } },
+    { field = "q9_outcome", if = { q1_outcome = { "!=" = "" } } },
   ]
 
 [[observation]]
   name = "abdominal_pain"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q30_signs_symptoms = {"!=" = ""}}]
 
   [observation.is_present]
     field = "q30_signs_symptoms"
     description = "30) Abdominal pain /Douleur abdominale"
-    values = { 1 = true, 2 = false }
+    ref = "Y/N"
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q30_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q30_signs_symptoms"
+    description = "30) Abdominal pain /Douleur abdominale"
+    ref = "Y/N"
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q30_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q30_signs_symptoms"
+    description = "30) Abdominal pain /Douleur abdominale"
+    ref = "Y/N"
 
 [[observation]]
   name = "altered_consciousness_confusion"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q28_signs_symptoms = {"!=" = ""}}]
 
   [observation.is_present]
     field = "q28_signs_symptoms"
     description = "28) Altered consciousness/confusion / Altération de la conscience/confusion"
-    values = { 1 = true, 2 = false }
+    ref = "Y/N"
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q28_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q28_signs_symptoms"
+    description = "28) Altered consciousness/confusion / Altération de la conscience/confusion"
+    ref = "Y/N"
+
+[[observation]]
+  name = "altered_consciousness_confusion"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q28_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q28_signs_symptoms"
+    description = "28) Altered consciousness/confusion / Altération de la conscience/confusion"
+    ref = "Y/N"
 
 [[observation]]
   name = "bleeding_haemorrhage"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q37_signs_symptoms = {"!=" = ""}}]
 
   [observation.is_present]
     field = "q37_signs_symptoms"
     description = "37) Bleeding (Haemorrhage) /Saignement (Haemorragie)"
-    values = { 1 = true, 2 = false }
+    ref = "Y/N"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q37_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q37_signs_symptoms"
+    description = "37) Bleeding (Haemorrhage) /Saignement (Haemorragie)"
+    ref = "Y/N"
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q37_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q37_signs_symptoms"
+    description = "37) Bleeding (Haemorrhage) /Saignement (Haemorragie)"
+    ref = "Y/N"
 
 [[observation]]
   name = "chest_pain"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q19_signs_symptoms = {"!=" = ""}}]
 
   [observation.is_present]
     field = "q19_signs_symptoms"
     description = "19) Chest pain /Douleur thoracique"
-    values = { 1 = true, 2 = false }
+    ref = "Y/N"
+
+[[observation]]
+  name = "chest_pain"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q19_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q19_signs_symptoms"
+    description = "19) Chest pain /Douleur thoracique"
+    ref = "Y/N"
+
+[[observation]]
+  name = "chest_pain"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q19_signs_symptoms = {"!=" = ""}}]
+
+  [observation.is_present]
+    field = "q19_signs_symptoms"
+    description = "19) Chest pain /Douleur thoracique"
+    ref = "Y/N"
 
 [[observation]]
   name = "conjunctivitis"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q33_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q33_signs_symptoms", description = "33) Conjunctivitis", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q33_signs_symptoms"
-    description = "33) Conjunctivitis / Yeux rouge/ conjonctivite"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "conjunctivitis"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q33_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q33_signs_symptoms", description = "33) Conjunctivitis", ref = "Y/N"}
+
+[[observation]]
+  name = "conjunctivitis"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q33_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q33_signs_symptoms", description = "33) Conjunctivitis", ref = "Y/N"}
 
 [[observation]]
   name = "cough"
@@ -480,116 +565,241 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "q12_signs_symptoms", description = "12) Cough / Toux", values = { 1 = true, 2 = false } },
-      { field = "q13_signs_symptoms", description = "13) Cough - with sputum production / Toux Grasse/ productive", values = { 1 = true, 2 = false } },
-      { field = "q14_signs_symptoms", description = "14) Cough - bloodysputum/haemoptysis / Toux, Hémopthysie/ Crachats sanguinolents", values = { 1 = true, 2 = false } },
+      { field = "q12_signs_symptoms", description = "12) Cough / Toux", ref = "Y/N" },
+      { field = "q13_signs_symptoms", description = "13) Cough - with sputum production / Toux Grasse/ productive", ref = "Y/N" },
+      { field = "q14_signs_symptoms", description = "14) Cough - bloodysputum/haemoptysis / Toux, Hémopthysie/ Crachats sanguinolents", ref = "Y/N" },
     ]
 
 [[observation]]
   name = "cough_dry"
   phase = "admission"
   date = { ref = "admissionObsDate" }
-  is_present = { field = "q12_signs_symptoms", description = "12) Cough / Toux", values = { 1 = true, 2 = false } }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q12_signs_symptoms = {"!=" = ""}}]
+  is_present = { field = "q12_signs_symptoms", description = "12) Cough / Toux", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_dry"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q12_signs_symptoms = {"!=" = ""}}]
+  is_present = { field = "q12_signs_symptoms", description = "12) Cough / Toux", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q12_signs_symptoms = {"!=" = ""}}]
+  is_present = { field = "q12_signs_symptoms", description = "12) Cough / Toux", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q13_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q13_signs_symptoms", description = "13) Cough - with sputum production", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q13_signs_symptoms"
-    description = "13) Cough - with sputum production / Toux Grasse/ productive"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q13_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q13_signs_symptoms", description = "13) Cough - with sputum production", ref = "Y/N"}
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q13_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q13_signs_symptoms", description = "13) Cough - with sputum production", ref = "Y/N"}
 
 [[observation]]
   name = "cough_with_haemoptysis"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q14_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q14_signs_symptoms", description = "14) Cough - bloodysputum", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q14_signs_symptoms"
-    description = "14) Cough - bloodysputum/haemoptysis / Toux, Hémopthysie/ Crachats sanguinolents"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q14_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q14_signs_symptoms", description = "14) Cough - bloodysputum", ref = "Y/N"}
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q14_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q14_signs_symptoms", description = "14) Cough - bloodysputum", ref = "Y/N"}
 
 [[observation]]
   name = "diarrhoea"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q32_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q32_signs_symptoms", description = "32) Diarrhoea", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q32_signs_symptoms"
-    description = "32) Diarrhoea / Diarrhée"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "diarrhoea"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q32_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q32_signs_symptoms", description = "32) Diarrhoea", ref = "Y/N"}
+
+[[observation]]
+  name = "diarrhoea"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q32_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q32_signs_symptoms", description = "32) Diarrhoea", ref = "Y/N"}
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q6_signs_symptoms = {"!=" = ""}}]
+  value = {field = "q6_signs_symptoms", source_unit = "mmHg", description = "6) Diastolic BP"}
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
-  start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
-  duration_type = "event"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q6_signs_symptoms = {"!=" = ""}}]
+  value = {field = "q6_signs_symptoms", source_unit = "mmHg", description = "6) Diastolic BP"}
 
-  [observation.value]
-    field = "q6_signs_symptoms"
-    source_unit = "mmHg"
-    description = "6) Diastolic BP / Tension artérielle diastolique"
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q6_signs_symptoms = {"!=" = ""}}]
+  value = {field = "q6_signs_symptoms", source_unit = "mmHg", description = "6) Diastolic BP"}
 
 [[observation]]
   name = "ear_pain"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q17_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q17_signs_symptoms", description = "17) Ear pain", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q17_signs_symptoms"
-    description = "17) Ear pain / Otalgie"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "ear_pain"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q17_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q17_signs_symptoms", description = "17) Ear pain", ref = "Y/N"}
+
+[[observation]]
+  name = "ear_pain"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q17_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q17_signs_symptoms", description = "17) Ear pain", ref = "Y/N"}
 
 [[observation]]
   name = "fatigue_malaise"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q22_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q22_signs_symptoms", description = "22) Fatigue , Malaise", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q22_signs_symptoms"
-    description = "22) Fatigue , Malaise"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q22_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q22_signs_symptoms", description = "22) Fatigue , Malaise", ref = "Y/N"}
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q22_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q22_signs_symptoms", description = "22) Fatigue , Malaise", ref = "Y/N"}
 
 [[observation]]
   name = "headache"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q27_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q27_signs_symptoms", description = "27) Headache", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q27_signs_symptoms"
-    description = "27) Headache / Céphalées"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "headache"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q27_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q27_signs_symptoms", description = "27) Headache", ref = "Y/N"}
+
+[[observation]]
+  name = "headache"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q27_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q27_signs_symptoms", description = "27) Headache", ref = "Y/N"}
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q3_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque"}
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "study"
-  start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
-  duration_type = "event"
-  value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque", if = { redcap_event_name = "week_2_d14_arm_1" } }
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q3_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque"}
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q3_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q3_signs_symptoms", description = "3) HR/ Fréquence cardiaque"}
 
 [[observation]]
   name = "history_of_fever"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q11_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q11_signs_symptoms", description = "11) History of fever", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q11_signs_symptoms"
-    description = "11) History of fever / Histoire de fièvre"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "history_of_fever"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q11_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q11_signs_symptoms", description = "11) History of fever", ref = "Y/N"}
+
+[[observation]]
+  name = "history_of_fever"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q11_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q11_signs_symptoms", description = "11) History of fever", ref = "Y/N"}
 
 [[observation]]
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q21_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q21_signs_symptoms", description = "21) Joint pain (Arthralgia)", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q21_signs_symptoms"
-    description = "21) Joint pain (Arthralgia) / Douleur articulaire (Arthralgie)"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "joint_pain"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q21_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q21_signs_symptoms", description = "21) Joint pain (Arthralgia)", ref = "Y/N"}
+
+[[observation]]
+  name = "joint_pain"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q21_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q21_signs_symptoms", description = "21) Joint pain (Arthralgia)", ref = "Y/N"}
 
 [[observation]]
   name = "loss_of_smell_or_taste"
@@ -598,67 +808,121 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "q24_signs_symptoms", description = "24) Loss of sense of smell", values = { 1 = true, 2 = false } },
-      { field = "q25_signs_symptoms", description = "25) Loss of flavour", values = { 1 = true, 2 = false } },
+      { field = "q24_signs_symptoms", description = "24) Loss of sense of smell", ref = "Y/N" },
+      { field = "q25_signs_symptoms", description = "25) Loss of flavour", ref = "Y/N" },
     ]
 
 [[observation]]
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q24_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q24_signs_symptoms", description = "24) Loss of sense of smell", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q24_signs_symptoms"
-    description = "24) Loss of sense of smell / Perte de l'odorat"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "loss_of_smell"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q24_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q24_signs_symptoms", description = "24) Loss of sense of smell", ref = "Y/N"}
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q24_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q24_signs_symptoms", description = "24) Loss of sense of smell", ref = "Y/N"}
 
 [[observation]]
   name = "loss_of_taste"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q25_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q25_signs_symptoms", description = "25) Loss of flavour", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q25_signs_symptoms"
-    description = "25) Loss of flavour / Perte de saveur"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "loss_of_taste"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q25_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q25_signs_symptoms", description = "25) Loss of flavour", ref = "Y/N"}
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q25_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q25_signs_symptoms", description = "25) Loss of flavour", ref = "Y/N"}
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q26_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q26_signs_symptoms", description = "26) Lower chest wall indrawing", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q26_signs_symptoms"
-    description = "26) Lower chest wall indrawing / Tiraillement de la paroi thoracique inférieure"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q26_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q26_signs_symptoms", description = "26) Lower chest wall indrawing", ref = "Y/N"}
+
+[[observation]]
+  name = "lower_chest_wall_indrawing"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q26_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q26_signs_symptoms", description = "26) Lower chest wall indrawing", ref = "Y/N"}
 
 [[observation]]
   name = "lymphadenopathy"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q36_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q36_signs_symptoms", description = "36) Lymphadenopathy", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q36_signs_symptoms"
-    description = "36) Lymphadenopathy / Lymphadenopathie"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "lymphadenopathy"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q36_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q36_signs_symptoms", description = "36) Lymphadenopathy", ref = "Y/N"}
+
+[[observation]]
+  name = "lymphadenopathy"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q36_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q36_signs_symptoms", description = "36) Lymphadenopathy", ref = "Y/N"}
 
 [[observation]]
   name = "muscle_aches"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q20_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q20_signs_symptoms", description = "20) Muscle aches (Myalgia)", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q20_signs_symptoms"
-    description = "20) Muscle aches (Myalgia) / Douleur musculaire (Myalgie)"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "muscle_aches"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q20_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q20_signs_symptoms", description = "20) Muscle aches (Myalgia)", ref = "Y/N"}
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q20_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q20_signs_symptoms", description = "20) Muscle aches (Myalgia)", ref = "Y/N"}
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  phase = "study"
-  start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
-  duration_type = "event"
-  value = { field = "q9_signs_symptoms", description = "9) Oxygen saturation / Saturation en oxygéne" }
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q9_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q9_signs_symptoms", description = "9) Oxygen saturation" }
 
   [observation.context]
     combinedType = "set"
@@ -668,165 +932,365 @@
     ]
 
 [[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q9_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q9_signs_symptoms", description = "9) Oxygen saturation" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q10_signs_symptoms", description = "on", values = { 1 = "room air", 2 = "oxygen therapy" } },
+    ]
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q9_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q9_signs_symptoms", description = "9) Oxygen saturation" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q10_signs_symptoms", description = "on", values = { 1 = "room air", 2 = "oxygen therapy" } },
+    ]
+
+[[observation]] # TODO: units
   name = "oxygen_o2hb"
   phase = "study"
   date = { field = "q1_lab_results" }
-  value = { field = "q3_lab_results" }
+  value = { field = "q3_lab_results", apply = {function = "getFloat"} }
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  date = { field = "q14_treatment_outcome"}
   duration_type = "event"
-  is_present = { field = "q1_complications", if = { redcap_event_name = "week_2_d14_arm_1" } }
+  is_present = { field = "q1_complications", ref = "Y/N"}
+  if.all = [{ redcap_event_name = "week_2_d14_arm_1" }, {q1_complications = { "!=" = ""}}]
   context = ['viral']
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  date = { field = "q14_treatment_outcome"}
   duration_type = "event"
-  is_present = { field = "q2_complications", if = { redcap_event_name = "week_2_d14_arm_1" } }
+  is_present = { field = "q2_complications", ref = "Y/N"}
+  if.all = [{ redcap_event_name = "week_2_d14_arm_1" }, {q2_complications = { "!=" = ""}}]
   context = ['bacterial']
 
 [[observation]]
   name = "pneumonia"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  date = { field = "q14_treatment_outcome"}
   duration_type = "event"
-  is_present = { field = "q7_complications", if = { redcap_event_name = "week_2_d14_arm_1" } }
+  is_present = { field = "q7_complications", ref = "Y/N"}
+  if.all = [{ redcap_event_name = "week_2_d14_arm_1" }, {q7_complications = { "!=" = ""}}]
   context = ['cryptogenic organizing pneumonia (COP)']
 
 [[observation]]
   name = "respiratory_rate"
+  phase = "admission"
+  date = {ref = "admissionObsDate"}
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q4_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q4_signs_symptoms", description = "4) RR / Fréquence Respiratoire" }
+
+[[observation]]
+  name = "respiratory_rate"
   phase = "study"
-  start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
-  duration_type = "event"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q4_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q4_signs_symptoms", description = "4) RR / Fréquence Respiratoire" }
+
+[[observation]]
+  name = "respiratory_rate"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q4_signs_symptoms = {"!=" = ""}}]
   value = { field = "q4_signs_symptoms", description = "4) RR / Fréquence Respiratoire" }
 
 [[observation]]
   name = "runny_nose"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q16_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q16_signs_symptoms", description = "16) Runny nose (Rhinorrhoea)", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q16_signs_symptoms"
-    description = "16) Runny nose (Rhinorrhoea) /Ecoulement nasal (Rhinorrhée)"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "runny_nose"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q16_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q16_signs_symptoms", description = "16) Runny nose (Rhinorrhoea)", ref = "Y/N"}
+
+[[observation]]
+  name = "runny_nose"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q16_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q16_signs_symptoms", description = "16) Runny nose (Rhinorrhoea)", ref = "Y/N"}
 
 [[observation]]
   name = "seizures"
   phase = "admission"
   date = { ref = "admissionObsDate" }
-  is_present = { field = "q29_signs_symptoms", description = "29) Seizures /Convulsions", values = { 1 = true, 2 = false } }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q29_signs_symptoms = {"!=" = ""}}]
+  is_present = { field = "q29_signs_symptoms", description = "29) Seizures /Convulsions", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q29_signs_symptoms = {"!=" = ""}}]
+  is_present = { field = "q29_signs_symptoms", description = "29) Seizures /Convulsions", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q29_signs_symptoms = {"!=" = ""}}]
+  is_present = { field = "q29_signs_symptoms", description = "29) Seizures /Convulsions", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
   phase = "study"
   start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
+  date = { field = "q14_treatment_outcome" }
   duration_type = "event"
-  is_present = { field = "q10_complications" }
+  is_present = { field = "q10_complications", ref = "Y/N" }
+  if.all = [{ redcap_event_name = "week_2_d14_arm_1" }, {q10_complications = { "!=" = ""}}]
 
 [[observation]]
   name = "severe_dehydration"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q7_signs_symptoms = {"!=" = ""}}, {q7_signs_symptoms = {"!=" = 3}}]
+  is_present = {field = "q7_signs_symptoms", description = "7) Severe dehydration", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q7_signs_symptoms"
-    description = "7) Severe dehydration / Déshydratation sévère"
-    ref = "Y/N"
+[[observation]]
+  name = "severe_dehydration"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q7_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q7_signs_symptoms", description = "7) Severe dehydration", ref = "Y/N"}
+
+[[observation]]
+  name = "severe_dehydration"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q7_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q7_signs_symptoms", description = "7) Severe dehydration", ref = "Y/N"}
 
 [[observation]]
   name = "shortness_of_breath"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q23_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q23_signs_symptoms", description = "23) Shortness of breath (Dyspnea)", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q23_signs_symptoms"
-    description = "23) Shortness of breath (Dyspnea) / Difficulté respiratoire/ essoufflement (Dyspnée)"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q23_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q23_signs_symptoms", description = "23) Shortness of breath (Dyspnea)", ref = "Y/N"}
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q23_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q23_signs_symptoms", description = "23) Shortness of breath (Dyspnea)", ref = "Y/N"}
 
 [[observation]]
   name = "skin_rash"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q34_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q34_signs_symptoms", description = "34) Skin rash / Eruption cutanée", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q34_signs_symptoms"
-    description = "34) Skin rash / Eruption cutanée"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "skin_rash"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q34_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q34_signs_symptoms", description = "34) Skin rash / Eruption cutanée", ref = "Y/N"}
+
+[[observation]]
+  name = "skin_rash"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q34_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q34_signs_symptoms", description = "34) Skin rash / Eruption cutanée", ref = "Y/N"}
 
 [[observation]]
   name = "skin_ulcers"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q35_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q35_signs_symptoms", description = "35) Skin ulcers", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q35_signs_symptoms"
-    description = "35) Skin ulcers / Ulcères de la peau"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "skin_ulcers"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q35_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q35_signs_symptoms", description = "35) Skin ulcers", ref = "Y/N"}
+
+[[observation]]
+  name = "skin_ulcers"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q35_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q35_signs_symptoms", description = "35) Skin ulcers", ref = "Y/N"}
 
 [[observation]]
   name = "sore_throat"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q15_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q15_signs_symptoms", description = "15) Sore throat", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q15_signs_symptoms"
-    description = "15) Sore throat /Mal de gorge"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "sore_throat"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q15_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q15_signs_symptoms", description = "15) Sore throat", ref = "Y/N"}
+
+[[observation]]
+  name = "sore_throat"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q15_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q15_signs_symptoms", description = "15) Sore throat", ref = "Y/N"}
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
   phase = "admission"
   date = { ref = "admissionObsDate" }
-  is_present = { field = "q8_signs_symptoms", description = "8) Sternal capillary refill time < 2seconds  / Temps de recoloration cutané < 2secondes", values = { 1 = false, 0 = true } }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q8_signs_symptoms = {"!=" = ""}}, {q8_signs_symptoms = {"!=" = 3}}]
+  is_present = { field = "q8_signs_symptoms", description = "8) Sternal capillary refill time < 2seconds", values = { 1 = false, 2 = true } }
+  # question asks for time LESS than 2secs so reversed the true/false response
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q8_signs_symptoms = {"!=" = ""}}, {q8_signs_symptoms = {"!=" = 3}}]
+  is_present = { field = "q8_signs_symptoms", description = "8) Sternal capillary refill time < 2seconds", values = { 1 = false, 2 = true } }
+  # question asks for time LESS than 2secs so reversed the true/false response
+
+[[observation]]
+  name = "sternal_capillary_refill_time_greater_2s"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q8_signs_symptoms = {"!=" = ""}}, {q8_signs_symptoms = {"!=" = 3}}]
+  is_present = { field = "q8_signs_symptoms", description = "8) Sternal capillary refill time < 2seconds", values = { 1 = false, 2 = true } }
   # question asks for time LESS than 2secs so reversed the true/false response
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q5_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q5_signs_symptoms", description = "5) Systolic BP / Tension artérielle systolique", source_unit = "mmHg" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
   phase = "study"
-  start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
-  duration_type = "event"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q5_signs_symptoms = {"!=" = ""}}]
+  value = { field = "q5_signs_symptoms", description = "5) Systolic BP / Tension artérielle systolique", source_unit = "mmHg" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q5_signs_symptoms = {"!=" = ""}}]
   value = { field = "q5_signs_symptoms", description = "5) Systolic BP / Tension artérielle systolique", source_unit = "mmHg" }
 
 [[observation]]
   name = "temperature_celsius"
-  phase = "study"
-  start_date = { field = "q2_onset" }
-  date = { field = "q14_treatment_outcome", apply = { function = "isNotNull" } }
-  duration_type = "event"
-  #context = ["Highest in first 24hrs"]
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q1_signs_symptoms = {"!=" = ""}}]
 
   [observation.value]
     field = "q1_signs_symptoms"
     description = "1) Temperature"
     unit = "°C"
-    source_unit = { field = "q1_signs_symptoms", description = "2) Temperature unit / Unité de la température", values = { 1 = "°C", 2 = "°F" } }
+    source_unit = { field = "q2_signs_symptoms", description = "2) Temperature unit", values = { 1 = "°C", 2 = "°F" } }
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q1_signs_symptoms = {"!=" = ""}}]
+
+  [observation.value]
+    field = "q1_signs_symptoms"
+    description = "1) Temperature"
+    unit = "°C"
+    source_unit = { field = "q2_signs_symptoms", description = "2) Temperature unit", values = { 1 = "°C", 2 = "°F" } }
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q1_signs_symptoms = {"!=" = ""}}]
+
+  [observation.value]
+    field = "q1_signs_symptoms"
+    description = "1) Temperature"
+    unit = "°C"
+    source_unit = { field = "q2_signs_symptoms", description = "2) Temperature unit", values = { 1 = "°C", 2 = "°F" } }
 
 [[observation]]
   name = "vomiting_nausea"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q31_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q31_signs_symptoms", description = "31) Vomiting / Nausea", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q31_signs_symptoms"
-    description = "31) Vomiting / Nausea /Vomissements/ Nausées"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q31_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q31_signs_symptoms", description = "31) Vomiting / Nausea", ref = "Y/N"}
+
+[[observation]]
+  name = "vomiting_nausea"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q31_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q31_signs_symptoms", description = "31) Vomiting / Nausea", ref = "Y/N"}
 
 [[observation]]
   name = "wheezing"
   phase = "admission"
   date = { ref = "admissionObsDate" }
+  if.all = [{redcap_event_name = "recruitment_arm_1"}, {q18_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q18_signs_symptoms", description = "18) Wheezing", ref = "Y/N"}
 
-  [observation.is_present]
-    field = "q18_signs_symptoms"
-    description = "18) Wheezing / Sifflement"
-    values = { 1 = true, 2 = false }
+[[observation]]
+  name = "wheezing"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q18_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q18_signs_symptoms", description = "18) Wheezing", ref = "Y/N"}
+
+[[observation]]
+  name = "wheezing"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q18_signs_symptoms = {"!=" = ""}}]
+  is_present = {field = "q18_signs_symptoms", description = "18) Wheezing", ref = "Y/N"}
