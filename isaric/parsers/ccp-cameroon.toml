@@ -52,7 +52,7 @@
   [subject.age]
     combinedType = "firstNonNull"
     fields = [
-      { field = "q5_demographics", description = "5) Estimated Age / Age estimé" },
+      { field = "q5_demographics", description = "5) Estimated Age / Age estimé", unit = "years", source_unit = { field = "q6_demographics", description = "6) Unité de l' âge du participant", values = { 2 = "months", 1 = "years" } } },
       { field = "q4_demographics", description = "4) Date of birth / Date de naissance", apply = { function = "yearsElapsed", params = [
         "$q1_demographics",
         2022,
@@ -60,8 +60,29 @@
         "%d/%m/%Y",
       ] } },
     ]
-    unit = "years"
-    source_unit = { field = "q6_demographics", description = "6) Unité de l' âge du participant", values = { 2 = "months", 1 = "years" } }
+
+  [subject.date_of_birth]
+    field = "q4_demographics"
+    source_date = "%d/%m/%Y"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      {field = "q4_demographics", apply = { function = "splitDate", params = ["year", 2022, "%d/%m/%Y"]}},
+      {field = "q5_demographics", if = {q6_demographics = 1}, apply = { function = "startYear", params = ["$q2_onset", 2022, "%d/%m/%Y", "years"]}},
+      {field = "q5_demographics", if = {q6_demographics = 2}, apply = { function = "startYear", params = ["$q2_onset", 2022, "%d/%m/%Y", "months"]}}
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      {field = "q4_demographics", apply = { function = "splitDate", params = ["month", 2022, "%d/%m/%Y"]}},
+      {field = "q5_demographics", if = {q6_demographics = 2}, apply = { function = "startMonth", params = ["$q2_onset", 2022, "%d/%m/%Y", "months"]}},
+    ]
+
+  [subject.dob_day]
+    field = "q4_demographics"
+    apply = { function = "splitDate", params = ["day", 2022, "%d/%m/%Y"]}
 
   [subject.sex]
     field = "q2_demographics"
