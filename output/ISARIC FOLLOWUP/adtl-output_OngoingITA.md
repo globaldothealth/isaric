@@ -2,12 +2,12 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |0      |332    |0.000000% |
+|subject        |196    |332    |59.036145% |
 |observation    |5769   |10851  |53.165607% |
 
 ## subject
 
-* 332: data cannot be validated by any definition
+* 136: data must be valid exactly by one definition (0 matches found)
 
 ## observation
 
