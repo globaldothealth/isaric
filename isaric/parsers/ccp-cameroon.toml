@@ -233,7 +233,7 @@
   field = "q1_treatment"
   description = "1) ICU or High Dependency Unit admission / Admission à l'Unité de Soins Intensifs ?"
   ref = "Y/N"
-  if = { redcap_event_name = "week_2_d14_arm_1" }
+  # if = { redcap_event_name = "week_2_d14_arm_1" }
 
 [subject.has_died]
   combinedType = "any"
@@ -272,11 +272,11 @@
   [visit.icu_admission_dates]
     combinedType = "set"
     excludeWhen = "none"
-    if = { redcap_event_name = "week_2_d14_arm_1" }
 
     [[visit.icu_admission_dates.fields]]
       field = "q4_treatment"
       description = "4) Date of ICU admission / Date d'admission à l'USI"
+      if = { redcap_event_name = "week_2_d14_arm_1" }
 
 [visit.transfer_from_other_facility]
   field = "q3_onset"
@@ -1034,11 +1034,11 @@
       { field = "q10_signs_symptoms", description = "on", values = { 1 = "room air", 2 = "oxygen therapy" } },
     ]
 
-[[observation]] # TODO: units
+[[observation]]
   name = "oxygen_o2hb"
   phase = "study"
   date = { field = "q1_lab_results" }
-  value = { field = "q3_lab_results", apply = {function = "getFloat"} }
+  value = { field = "q3_lab_results", apply = {function = "getFloat"}, unit= "g/dL", source_unit = { field = "q4_lab_results", values = {1="g/L", 2="g/dL"}}}
 
 [[observation]]
   name = "pneumonia"
