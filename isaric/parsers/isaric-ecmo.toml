@@ -587,7 +587,7 @@
   excludeWhen = 'none'
   fields = [
     { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -1069,6 +1069,18 @@
   phase = "admission"
   date = { ref = "dailyDateHierarchy" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "anosmia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" },
+    ]
 
 [[observation]]
   name = "loss_of_smell"

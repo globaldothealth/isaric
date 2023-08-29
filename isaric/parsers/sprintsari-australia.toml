@@ -315,7 +315,7 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "antiviral_cmtrt", description = "IF YES to antiviral agent", values = { 1 = "Ribavirin", 2 = "Lopinavir/Ritonvir", 3 = "Interferon alpha", 4 = "Interferon beta", 5 = "Neuraminidase inhibitor", 6 = "Other" } },
+    { field = "antiviral_cmtrt", description = "IF YES to antiviral agent", values = { 1 = "Ribavirin", 2 = "Lopinavir/Ritonavir", 3 = "Interferon alpha", 4 = "Interferon beta", 5 = "Neuraminidase inhibitor", 6 = "Other" } },
   ]
 
 [visit.treatment_antiviral_type_other]
@@ -611,24 +611,10 @@
     values = { 1 = true, 2 = false }
 
 [[observation]]
-  name = "loss_of_smell"
+  name = "loss_of_smell_or_taste"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "lost_ceterm_v2"
-    description = "Loss of smell/taste"
-    values = { 1 = true, 2 = false }
-
-[[observation]]
-  name = "loss_of_taste"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "lost_ceterm_v2"
-    description = "Loss of smell/taste"
-    values = { 1 = true, 2 = false }
+  is_present = { field = "lost_ceterm_v2", description = "Loss of smell/taste", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
