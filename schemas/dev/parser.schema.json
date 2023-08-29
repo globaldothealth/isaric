@@ -253,19 +253,44 @@
       "type": "object",
       "required": [
         "subject_id",
-        "age",
         "ethnicity",
         "pathogen"
       ],
       "anyOf": [
         {
           "required": [
-            "earliest_admission_date"
+            "earliest_admission_date",
+            "age"
           ]
         },
         {
           "required": [
-            "enrolment_date"
+            "earliest_admission_date",
+            "date_of_birth"
+          ]
+        },
+        {
+          "required": [
+            "earliest_admission_date",
+            "dob_year"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "age"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "date_of_birth"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "dob_year"
           ]
         }
       ],
