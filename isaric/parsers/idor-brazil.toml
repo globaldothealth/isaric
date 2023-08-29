@@ -516,7 +516,7 @@
   excludeWhen = "none"
   fields = [
     { field = "antiviral_cmtrt", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt", values = { 2 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt", values = { 2 = "Lopinavir/Ritonavir" } },
     { field = "antiviral_cmtrt", values = { 3 = "Interferon alpha" } },
     { field = "antiviral_cmtrt", values = { 4 = "Interferon beta" } },
     { field = "antiviral_cmtrt", values = { 5 = "Neuraminidase inhibitor" } },

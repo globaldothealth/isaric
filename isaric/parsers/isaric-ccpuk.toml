@@ -447,7 +447,7 @@
     excludeWhen = "none"
     fields = [
       { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-      { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
       { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
       { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
       { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -937,7 +937,7 @@
     combinedType = "any"
     fields = [
       { field = "anosmia_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" }
+      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" },
     ]
 
 [[observation]]
@@ -949,7 +949,7 @@
     combinedType = "any"
     fields = [
       { field = "flw_loss_smell", values = { 1 = true, 0 = false } },
-      { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
+      { field = "flw_loss_taste", values = { 1 = true, 0 = false } },
     ]
 
 [[observation]]

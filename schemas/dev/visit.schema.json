@@ -164,7 +164,7 @@
       "items": {
         "enum": [
           "Ribavirin",
-          "Lopinavir/Ritonvir",
+          "Lopinavir/Ritonavir",
           "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
