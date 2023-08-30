@@ -1192,16 +1192,13 @@
 
   [observation.start_date]
     combinedType = "min"
-    fields = [
-      { field = "anosmia_date" },
-      { field = "ageusia_date" }
-    ]
+    fields = [{ field = "anosmia_date" }, { field = "ageusia_date" }]
 
   [observation.is_present]
     combinedType = "any"
     fields = [
       { field = "anosmia", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
-      { field = "ageusia", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
+      { field = "ageusia", description = "Ageusia (loss of taste)", ref = "Y/N/NK" },
     ]
 
 [[observation]]
@@ -1213,7 +1210,7 @@
     combinedType = "any"
     fields = [
       { field = "anosmia_v2", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
-      { field = "ageusia_v2", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
+      { field = "ageusia_v2", description = "Ageusia (loss of taste)", ref = "Y/N/NK" },
     ]
 
 [[observation]]

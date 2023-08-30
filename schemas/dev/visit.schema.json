@@ -100,11 +100,16 @@
       "type": "array",
       "items": {
         "enum": [
+          "Budesonide",
+          "Cortisonal",
+          "Dexamethasone",
+          "Fluticasone",
+          "Hydrocortisone",
           "Methylprednisolone",
+          "Mometasone",
           "Prednisolone",
           "Prednisone",
-          "Dexamethasone",
-          "Hydrocortisone",
+          "Salmeterol",
           "Other"
         ]
       },
