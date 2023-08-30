@@ -1,0 +1,387 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "peru-pediatric"
+  description = "CVVRQQU Pediatric COVID-19 Peru"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N/NK".values] # THIS CAN CHANGE BETWEEN DATASETS
+    1 = true
+    2 = false
+
+    # other adtl.defs here ..
+
+    # SUBJECT
+    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "study_id"
+    sensitive = true
+
+  [subject.earliest_admission_date]
+    field = "fecha_de_ingreso_al_insnsb"
+    description = "Admission date"
+
+  [subject.age]
+    combinedType = 'firstNonNull'
+    fields = [
+      { field = "dob", description = "Calculate from birth date", apply = { function = "yearsElapsed", params = [
+      "fecha_de_ingreso_al_insnsb"
+      ] } }
+    ]
+
+  [subject.date_of_birth]
+    field = "dob"
+
+    [subject.dob_day]
+    field = "dob"
+    apply = { function = "splitDate", params = ["day", 2022, "%m/%d/%y"] }
+
+  [subject.dob_month]
+    field = "dob"
+    apply = { function = "splitDate", params = ["month", 2022, "%m/%d/%y"] }
+
+  [subject.dob_year]
+    field = "dob"
+    apply_ = { function = "splitDate", params = ["year", 2022, "%m/%d/%y"] }
+
+
+  [subject.sex_at_birth]
+    field = "sexo"
+    description = "Sex"
+
+    [subject.sex_at_birth.values] # THIS CAN CHANGE BETWEEN DATASETS
+      1 = "male"
+      0 = "female"
+
+[subject.has_chronic_hematologic_disease]
+  field = "hemato"
+  description = "Hematologic comorbility"
+  ref = "Y/N/NK"
+
+[subject.has_tuberculosis] 
+  field = "co_neumo"
+  description = "Tuberculosis?"
+  values = { 2 = true}
+
+[subject.has_hiv]
+  field = "hiv_v2"
+  description = "HIV based on serological test?"
+  ref = "Y/N/NK"
+
+[subject.has_malignant_neoplasm]
+  field = "onco"
+  description = "Oncological comorbility?"
+  ref = "Y/N/NK"
+
+[subject.has_asthma]
+  field = "co_neumo"
+  description = "Asthma?"
+  values = { 3 = true }
+
+[subject.has_chronic_cardiac_disease]
+  field = "cardio"
+  description = "Cardiac comorbility?"
+  ref = "Y/N/NK"
+
+[subject.has_chronic_kidney_disease]
+  field = "nefro"
+  description = "Kidney disease?"
+  ref = "Y/N/NK"
+
+[subject.has_diabetes]
+  field = "co_endocrino"
+  description = "Has diabetes?"
+  values = { 1 = true, 5 = true }
+
+[subject.diabetes_type]
+  field = "co_endocrino"
+  description = "Diabetes type?"
+
+  [subject.diabetes_type.values]
+    1 = "type-1"
+    5 = "type-2"
+
+[subject.has_liver_disease]
+  field = "hepato"
+  description = "Hepatic comorbility?"
+  ref = "Y/N/NK"
+
+[subject.has_immunosuppression]
+  field = "inmuno"
+  description = "Has inmumosuppressive comorbidity?"
+  ref = "Y/N/NK"
+
+[subject.has_comorbidity_other] # type - array
+  combinedType = "set"
+  excludeWhen = "false-like"
+  text = {field = "otra2"}
+  description = "Any other comorbidity"
+
+[subject.has_died] # type - boolean
+  field = "est_final"
+  description = "Has died"
+  value = {0 = true, 1 = false, 2 = false}
+
+[subject.icu_admitted]
+  field = "ingreso_uci"
+  description = "Admitted to ICU?"
+  ref = "Y/N/NK"
+
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = "Peru"
+
+  [visit.subject_id]
+    field = "study_id"
+    sensitive = true
+
+  [visit.visit_id]
+    field = "study_id"
+    sensitive = true
+
+  [visit.start_date]
+    field = "fecha_de_ingreso_al_insnsb"
+    description = "Admission date"
+
+  [visit.pathogen_test_date]
+    field = "fecha_muestra1"
+    description = "Pathogen test date"
+
+  [visit.icu_admission]
+    field = "ingreso_uci"
+    description = "ICU admission"
+    ref = "Y/N/NK"
+
+  [visit.icu_admission_dates]
+    field = "fecha_uci"
+    description = "Date of ICU admission"
+
+  [visit.treatment_ecmo]
+    field = "toxigenot"
+    description = "ECMO?"
+    values = {7 = true}
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    
+    [[visit.treatment_oxygen_therapy.fields]]
+        field = "toxigenot"
+        description = "Oxygen therapy?"
+        values = { 1 = true, 2 = true, 3 = true, 4 = true, 5 = true, 6 = true, 7 = true }
+
+  [visit.treatment_invasive_ventilation] 
+    field = "toxigenot"
+    description = "Invasive ventilation"
+    values = {6 = true}
+
+  [visit.treatment_noninvasive_ventilation]
+    field = "toxigenot"
+    description = "Noninvasive ventilation"
+    values = { 5 = true }
+
+  [visit.treatment_high_flow_nasal_cannula]
+    field = "toxigenot"
+    description = "High flow nasal canula"
+    value = { 3 = true }
+
+  [visit.treatment_cardiovascular_support]
+    field = "toxigenot"
+    values = {7 = true, description = "ECMO?"}
+
+  [visit.outcome]
+    field = "est_final"
+    description = "Final outcome"
+
+    [visit.outcome.values] # check correspondence of these values
+      1 = "discharged"
+      2 = "hospitalised"
+      0 = "death"
+
+[visit.date_outcome]
+  field = "fecha_alta"
+  description = "Date discharged"
+
+    # OBSERVATION
+    # required fields - phase, date, name
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "presartd" }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = {field = "fecha_de_ingreso_al_insnsb"}
+  phase = "admission"
+  is_present = { field = "dolor_abdominal", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "tos", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "exudado_faringeo", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "diarrhoea"
+  date = {field = "fecha_de_ingreso_al_insnsb"}
+  phase = "admission"
+  is_present = { field = "diarrea", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = {field = "fecha_de_ingreso_al_insnsb"}
+  phase = "admission"
+  is_present = { field = "malestar_general", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "fiebre_reg", ref = "Y/N/NK" }
+  
+[[observation]]
+  name = "lung_sounds"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  combinedType = "any"
+  fields = [
+    { field = "crepitantes", ref = "Y/N/NK", description = "Respiratory Crackling"},
+    { field = "subcrepitantes", ref = "Y/N/NK", description = "Respiratory Crackling" }
+    ]
+
+[[observation]] # potentially missing part of this
+  name = "lymphadenopathy"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "adenopatias", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "seizures", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "disnea", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "skin_rash"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "rash", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "sore_throat"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "dolor_faringeo", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  combinedType = "any"
+  fields = [
+    { field = "nauseas", ref = "Y/N/NK" },
+    { field = "vomitos", ref = "Y/N/NK"}
+  ]  
+
+[[observation]] 
+  name = "wheezing"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  is_present = { field = "sibilantes", ref = "Y/N/NK" }
+
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "frec_card" }
+
+[[observation]]
+  name = "mean_arterial_blood_pressure_mmHg"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "presarts" }
+
+[[observation]] # to be filled in with info from pages 3,4,5
+  name = "other_symptom"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  text = { field = "otra1" }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  date = "fecha_muestra"
+  phase = "admission"
+  value = { field = "vld41" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "sato2" }
+
+[[observation]]
+  name = "pco2_mmHg"
+  date = "fecha_muestra"
+  phase = "admission"
+  value = { field = "vld27" }
+
+[[observation]]
+  name = "pH"
+  date = "fecha_muestra"
+  phase = "admission"
+  value = { field = "vld25" }
+
+[[observation]]
+  name = "respiratory_rate"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "frec_resp" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "presarts" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = "fecha_de_ingreso_al_insnsb"
+  phase = "admission"
+  value = { field = "temp" }
