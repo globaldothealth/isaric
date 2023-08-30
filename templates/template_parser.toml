@@ -27,11 +27,10 @@
 
     # other adtl.defs here ..
 
-# SUBJECT
-# required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+    # SUBJECT
+    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
-  country_iso3 = ""
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -47,9 +46,9 @@
     field = ""
     description = ""
 
-  [subject.admission_date]
-    field = ""
-    description = ""
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "", description = "" }]
 
   [subject.age]
     field = ""
@@ -62,7 +61,6 @@
     [subject.sex_at_birth.values] # THIS CAN CHANGE BETWEEN DATASETS
       1 = "male"
       2 = "female"
-      3 = "non_binary"
 
 [subject.ethnicity]
   field = ""
@@ -113,7 +111,7 @@
   description = ""
   ref = "Y/N/NK"
 
-[subject.pregnancy_gestational_assessment_weeks]
+[subject.pregnancy_gestational_age_weeks]
   field = ""
   description = ""
 
@@ -240,7 +238,7 @@
   description = ""
   ref = "Y/N/NK"
 
-[subject.has_immunosuppression_therapy_treatment]
+[subject.has_immunosuppression]
   field = ""
   description = ""
   ref = "Y/N/NK"
@@ -263,8 +261,8 @@
   description = ""
   ref = "Y/N/NK"
 
-# VISIT
-# required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
 [visit]
   country_iso3 = ""
@@ -300,6 +298,11 @@
     field = ""
     description = ""
 
+  [visit.transfer_from_other_facility]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
   [visit.treatment_dialysis]
     field = ""
     description = ""
@@ -321,6 +324,11 @@
     ref = "Y/N/NK"
 
   [visit.treatment_corticosteroid_type]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_corticosteroid_type_other]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -355,7 +363,17 @@
     description = ""
     ref = "Y/N/NK"
 
+  [visit.treatment_antiviral_type_other]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
   [visit.treatment_antibiotics]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_antibiotics_type]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -371,6 +389,11 @@
     ref = "Y/N/NK"
 
   [visit.treatment_experimental_agent_type]
+    field = ""
+    description = ""
+    ref = "Y/N/NK"
+
+  [visit.treatment_experimental_agent_type_other]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -400,11 +423,6 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_dexamethasone]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_high_flow_nasal_cannula]
     field = ""
     description = ""
@@ -430,16 +448,6 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_neuraminidase]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
-  [visit.treatment_oxygen_interface]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_cpr]
     field = ""
     description = ""
@@ -455,17 +463,12 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_tocilizumab]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_indication_anticoagulation]
     field = ""
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_cardiovascular]
+  [visit.treatment_cardiovascular_support]
     field = ""
     description = ""
     ref = "Y/N/NK"
@@ -498,11 +501,6 @@
   [visit.treatment_other]
     field = ""
     description = ""
-
-  [visit.treatment_oxygen_mechanical_support]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
 
   [visit.treatment_pacing]
     field = ""
@@ -555,7 +553,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "clinical_classification_pneumonia_needing_oxygen"
+  name = "pneumonia"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -807,6 +805,15 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
+  name = "loss_of_smell_or_taste"
+  date = ""
+  phase = ""
+  is_present = { field = "", ref = "Y/N/NK" }
+  # OR value = { field = "" }
+  # OR text = { field = "", values = {  } }
+  # if = {  = { "!=" = } }
+
+[[observation]]
   name = "loss_of_smell"
   date = ""
   phase = ""
@@ -853,15 +860,6 @@
 
 [[observation]]
   name = "muscle_aches"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -934,15 +932,6 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "time_of_admission"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1041,7 +1030,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1050,7 +1039,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }
@@ -1114,15 +1103,6 @@
 
 [[observation]]
   name = "total_fluid_output_ml"
-  date = ""
-  phase = ""
-  is_present = { field = "", ref = "Y/N/NK" }
-  # OR value = { field = "" }
-  # OR text = { field = "", values = {  } }
-  # if = {  = { "!=" = } }
-
-[[observation]]
-  name = "transfer_from_other_facility"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }

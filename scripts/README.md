@@ -2,6 +2,40 @@
 
 Miscellaneous scripts used in ISARIC ETL
 
+## `data_summary.py`: Dataset summary
+
+Produces a dataset summary that can be used by other programs to verify integrity
+(using SHA256 hash), basic statistics like number of unique IDs, metadata like
+the mimetype and encoding, and a list
+of non-empty fields. The output is in JSON in the following format:
+
+```json
+{
+    "file": "CVOLRQ Antarctica 2023-04-05.csv"
+    "sha256": "a98942bbcccdde9898924989901293aa111ff",
+    "parser": "isaric/parsers/antarctica.toml",
+    "mimetype": "text/csv",
+    "encoding": "utf-8-sig",
+    "id_field": "record_id",
+    "n_id": 6187,
+    "non_empty_fields": [
+        "record_id",
+        "ethnicity",
+        "diabetes_mhyn"
+    ]
+}
+```
+
+The script requires only Python and can be run as
+
+```shell
+python3 scripts/data_summary.py <parser path> <file> <id-field> [--encoding <encoding>]
+```
+
+An optional `--encoding` flag can be used if the auto-detection of encoding fails.
+The output is also stored in a `metadata` folder under a parser subfolder; this
+folder can be changed by passing the `-o` (`--output-folder`) option.
+
 ## `relsub.py`: REDCap RELSUB matcher
 
 In many REDCap datasets, patients are assigned a new ID each time they come in

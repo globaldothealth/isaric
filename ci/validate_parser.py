@@ -6,6 +6,7 @@ import sys
 import json
 from pathlib import Path
 from typing import Tuple, Any
+from more_itertools import unique_everseen
 
 import tomli
 import fastjsonschema
@@ -21,6 +22,25 @@ def make_fields_optional(
                 set(schema["properties"][table]["required"])
                 - set(optional_fields[table] or [])
             )
+            for opt in ["oneOf", "anyOf"]:
+                if opt in schema["properties"][table]:
+                    for x in range(len(schema["properties"][table][opt])):
+                        schema["properties"][table][opt][x]["required"] = list(
+                            set(schema["properties"][table][opt][x]["required"])
+                            - set(optional_fields[table] or [])
+                        )
+                    if all(
+                        all(
+                            bool(v) == False
+                            for v in schema["properties"][table][opt][x].values()
+                        )
+                        for x in range(len(schema["properties"][table][opt]))
+                    ):
+                        schema["properties"][table].pop(opt)
+                    else:
+                        schema["properties"][table][opt] = list(
+                            unique_everseen(schema["properties"][table][opt])
+                        )
         elif table == "observation":
             schema["properties"][table]["items"]["required"] = list(
                 set(schema["properties"][table]["items"]["required"])

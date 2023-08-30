@@ -16,6 +16,7 @@
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "PatientId", sensitive = true } } # Using the ref doesn't work, but nec. for observations to receive an ID
 
   [adtl.defs."Y/N/NK".values]
     1 = true
@@ -35,21 +36,20 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Some difficulty"
-  4 = "Lots of difficulty"
-  5 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 2 # "Some difficulty"
+  4 = 3 # "Lots of difficulty"
+  5 = 4 # "Unable to walk"
 
 [adtl.defs.inabilityWalkToday.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Lots of difficulty"
-  4 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 3 # "Lots of difficulty"
+  4 = 4 # "Unable to walk"
 
 [subject]
   # study_id = "datcov-southafrica"
-  country_iso3 = "ZAF"
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -59,7 +59,43 @@
     ref = "admissionDateHierarchy"
 
   [subject.age]
-    field = "Age"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Age" },
+      { field = "BirthDate", apply = { function = "yearsElapsed", params = [
+        "$Adm Date.AdmissionDate",
+        2022,
+        "%m/%d/%y",
+        "%m/%d/%y",
+      ] } },
+    ]
+
+  [subject.date_of_birth] # NOTE: many dates have 2-digit years - this often autoconverts to 20xx not 19xx for older people.
+    field = "BirthDate"
+    apply = { function = "correctOldDate", params = [2022, "%m/%d/%y"] }
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "BirthDate", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%m/%d/%y",
+      ] } },
+      { field = "Age", apply = { function = "startYear", params = [
+        "$Adm Date.AdmissionDate",
+        2022,
+        "%m/%d/%y",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["month", 2022, "%m/%d/%y"] }
+
+  [subject.dob_day]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["day", 2022, "%m/%d/%y"] }
 
   [subject.sex_at_birth]
     field = "BirthSex"
@@ -74,8 +110,9 @@
       { field = "ethnic", values = { 1 = "Black", 2 = "White", 3 = "Indian", 4 = "Coloured" } },
     ]
 
-  [subject.admission_date]
-    ref = "admissionDateHierarchy"
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ ref = "admissionDateHierarchy" }]
 
   [subject.works_healthcare]
     combinedType = "any"
@@ -214,7 +251,7 @@
     values = { 'Yes' = true, 'No' = false }
     # values = [nan, 'Yes', 'Unknown', 'No']
 
-  [subject.has_immunosuppression_therapy_treatment]
+  [subject.has_immunosuppression]
     field = "Admission Medications.Immunosuppressants"
     values = { TRUE = true, FALSE = false }
 
@@ -357,7 +394,7 @@
   ]
 
 [visit.treatment_invasive_ventilation]
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "Ever InvasiveVentilation", values = { 0 = false, 1 = true } },
     { field = "Admission Intervention.Ventilated", values = { FALSE = false, TRUE = true } }, # values = False,  True
@@ -384,11 +421,12 @@
   fields = [
     { field = "Medication during hospitalisation.Ribavirin", values = { 1 = "Ribavirin" } },
     { field = "Medication during hospitalisation.Remdesivir", values = { 1 = "Remdesivir" } },
-    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "Medication during hospitalisation.InterferonAlpha", values = { 1 = "Interferon alpha" } },
     { field = "Medication during hospitalisation.InterferonBeta", values = { 1 = "Interferon beta" } },
     { field = "Medication during hospitalisation.Neuraminidase", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "Medication during hospitalisation.OtherAntiviralAdministered", values = { 1 = "Other" } },
+    { field = "Medication during hospitalisation.Tocilizumab", values = { 1 = "Tocilizumab" } },
   ]
 
 [visit.treatment_antibiotics]
@@ -406,7 +444,7 @@
   ]
 
 [visit.treatment_noninvasive_ventilation]
-  combinedType = "firstNonNull"
+  combinedType = "any"
   fields = [
     { field = "Admission Intervention.Ventilated", values = { FALSE = false, TRUE = true } },
     { field = "Intervention during hospitalisation.NonInvasiveVentilation", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
@@ -416,11 +454,6 @@
   field = "Admission Medications.AceInhibitor"
   values = { FALSE = false, TRUE = true }
 
-[visit.treatment_dexamethasone]
-  field = "Medication during hospitalisation.Dexamethasone"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
 [visit.treatment_high_flow_nasal_cannula]
   combinedType = "any"
   fields = [
@@ -428,12 +461,21 @@
     { field = "Intervention during hospitalisation.HighFlowNasalOxygen", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
   ]
 
-[visit.treatment_steroids]
+[visit.treatment_steroids] # should this just be corticosteroids? - they are 2 different things in the data dict, but only steroids are in the data.
   combinedType = "any"
   fields = [
     { field = "Ever Steroids", values = { 1 = true, 0 = false } },                         # values = [0, 1];
     { field = "Admission Medications.Steroids", values = { FALSE = false, TRUE = true } },
     { field = "Medication during hospitalisation.SteroidsAdministered", ref = "Y/N/NK" },  # values = ['0', 'Unknown', '1']
+  ]
+
+[visit.treatment_corticosteroid_type]
+  combinedType = "set"
+  excludeWhen = "false-like"
+  fields = [
+    { field = "Medication during hospitalisation.Dexamethasone", values = { 1 = "Dexamethasone" } },
+    { field = "Medication during hospitalisation.Hydrocortisone", values = { 1 = "Hydrocortisone" } },
+    { field = "Medication during hospitalisation.OtherSteroids", values = { 1 = "Other" } },
   ]
 
 [visit.treatment_immunosuppressant]
@@ -444,26 +486,18 @@
     { field = "Admission Medications.Immunosuppressants", values = { FALSE = false, TRUE = true } },
   ]
 
-[visit.treatment_neuraminidase]
-  field = "Medication during hospitalisation.Neuraminidase"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
 [visit.treatment_cpr]
   field = "Intervention during hospitalisation.CPR"
   ref = "Y/N/NK"
   # values = ['0', 'Unknown', '1']
 
-[visit.treatment_tocilizumab]
-  field = "Medication during hospitalisation.Tocilizumab"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
-
-[visit.treatment_cardiovascular]
+[visit.treatment_cardiovascular_support]
   combinedType = "any"
   fields = [
     { field = "Ever CardiovascularSupport", values = { 1 = true, 0 = false } },
-    { field = "Intervention during hospitalisation.CardiovascularSupport", ref = "Y/N/NK" }, # values = ['0', 'Unknown', '1']
+    { field = "Intervention during hospitalisation.CardiovascularSupport", ref = "Y/N/NK" },               # values = ['0', 'Unknown', '1']
+    { field = 'Intervention during hospitalisation.MechanicalSupport', values = { 1 = true, 0 = false } },
+    { field = "Ever ECMO", values = { 0 = false, 1 = true } },
   ]
 
 [visit.treatment_colchicine]
@@ -481,11 +515,6 @@
 [visit.treatment_nsaid]
   field = "Ever NonSteroidal"
   values = { 1 = true, 0 = false }
-
-[visit.treatment_oxygen_mechanical_support]
-  field = "Intervention during hospitalisation.MechanicalSupport"
-  ref = "Y/N/NK"
-  # values = ['0', 'Unknown', '1']
 
 [visit.treatment_pacing]
   field = "Intervention during hospitalisation.Pacing"
@@ -542,21 +571,108 @@
 
 [[observation]]
   name = "cough"
-  phase = "admission"
+  phase = "pre-admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_cough_ceoccur_2", values = { 0 = false, 1 = true }, description = "Signs and symptoms pre-covid19 diagnosis" },
+      { field = "flw_coughsput_ceoccur_2", values = { 0 = false, 1 = true } },
+      { field = "flw_coughhb_ceoccur_2", values = { 0 = false, 1 = true } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_cough_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "admission"
+  phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_coughsput_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "admission"
+  phase = "pre-admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_coughhb_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_pers_cough_dry", values = { 0 = false, 1 = true } },
+      { field = "flw_pers_cough_ph", values = { 0 = false, 1 = true } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  is_present = { field = "flw_pers_cough_dry", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  is_present = { field = "flw_pers_cough_ph", values = { 0 = false, 1 = true } }
+
+[[observation]]
+  name = "cough"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  for.n.range = [1, 5]
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw2_pers_cough_dry_{n}", values = { 0 = false, 1 = true } },
+      { field = "flw2_pers_cough_ph_{n}", values = { 0 = false, 1 = true } },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  is_present = { field = "flw2_pers_cough_dry_{n}", values = { 0 = false, 1 = true } }
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  start_date = { field = "flw2_survey_date_{n}", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  is_present = { field = "flw2_pers_cough_ph_{n}", values = { 0 = false, 1 = true } }
+  for.n.range = [1, 5]
 
 [[observation]]
   name = "shortness_of_breath"
@@ -764,6 +880,10 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "Mid-Upper-Arm Circumference" }
+  if.all = [
+    { "Mid-Upper-Arm Circumference" = { "!=" = 0 } },
+    { "Mid-Upper-Arm Circumference" = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "sore_throat"
@@ -834,19 +954,19 @@
   date = { field = "flw_survey_date" }
   name = "inability_to_walk_scale"
   phase = "followup"
-  text = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
+  value = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
 
 [[observation]]
   date = { field = "flw_survey_date" }
   name = "inability_to_walk_scale"
   phase = "followup"
-  text = { field = "flw_walking_today", ref = "inabilityWalkToday" }
+  value = { field = "flw_walking_today", ref = "inabilityWalkToday" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
-  text = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
+  value = { field = "flw2_eq5d_mb_5l_uk_eng_2_{n}", ref = "inabilityWalk" }
   if.not = { "flw2_eq5d_mb_5l_uk_eng_2_{n}" = "" }
   for.n.range = [1, 5]
 
@@ -854,7 +974,7 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { field = "flw2_survey_date_{n}" }
-  text = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
+  value = { field = "flw2_walking_today_{n}", ref = "inabilityWalkToday" }
   if.not = { "flw2_walking_today_{n}" = "" }
   for.n.range = [1, 5]
 
@@ -924,17 +1044,61 @@
 
 [[observation]]
   date = { field = "flw_survey_date" }
-  name = "bleeding_haemorrhage"
+  name = "bleeding"
   phase = "followup"
   is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false } }
 
 [[observation]]
-  name = "bleeding_haemorrhage"
+  name = "bleeding"
   date = { field = "flw2_survey_date_{n}" }
   phase = "followup"
   is_present = { field = "flw2_bleeding_{n}", values = { 1 = true, 0 = false } }
   if.any = [{ "flw2_bleeding_{n}" = 1 }, { "flw2_bleeding_{n}" = 0 }]
   for.n.range = [1, 5]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_smell_ceoccur_2", values = { 1 = true, 0 = false } },
+      { field = "flw_taste_ceoccur_2", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cu_smell", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_of_smell", values = { 1 = true, 0 = false } },
+      { field = "cu_taste", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_of_taste", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  if.any = [
+    { "flw2_loss_of_smell_{n}" = 1 },
+    { "flw2_loss_of_smell_{n}" = 0 },
+    { "flw2_loss_of_taste_{n}" = 1 },
+    { "flw2_loss_of_taste_{n}" = 0 },
+  ]
+  for.n.range = [1, 5]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw2_loss_of_smell_{n}", values = { 1 = true, 0 = false } },
+      { field = "flw2_loss_of_taste_{n}", values = { 1 = true, 0 = false } },
+    ]
 
 [[observation]]
   name = "loss_of_smell"
@@ -994,12 +1158,6 @@
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_lowerchest_ceoccur_2", values = { 1 = true, 0 = false } }
 
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "Intervention during hospitalisation.RenalDialysis", values = { 1 = true, 0 = false } }
-
   # [[observation]]
   #   name = "severe_dehydration"
   #   # free text, mostly in
@@ -1009,3 +1167,31 @@
   # [[observation]]
   #   name = "lymphadenopathy"
   #   # free text, sometimes appears under 'new symptoms'
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "pneumonia"
+  phase = "followup"
+  is_present = { field = "flw_comp_pneum", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  date = { field = "flw_survey_date" }
+  name = "pneumonia"
+  phase = "followup"
+  is_present = { field = "flw_comp_pcpneum", values = { 1 = true, 0 = false } }
+  context = ['post-COVID pneumonia']
+
+[[observation]]
+  name = "pneumonia"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_comp_pneum_{n}", values = { 1 = true, 0 = false } }
+  for.n.range = [1, 5]
+
+[[observation]]
+  name = "pneumonia"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  is_present = { field = "flw2_comp_pcpneum_{n}", values = { 1 = true, 0 = false } }
+  for.n.range = [1, 5]
+  context = ['post-COVID pneumonia']

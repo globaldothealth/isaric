@@ -1,0 +1,32 @@
+name: parser coverage
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+    - 'isaric/parsers/*.toml'
+  workflow_dispatch:
+
+jobs:
+  parser-coverage:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: python3 -m pip install -r scripts/checkfields/requirements.txt
+    - name: Compute parser coverage
+      run: |
+        URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+        FILE=$(curl -s $URL | jq -r '.[] | .filename' | grep 'isaric/parsers/.*\.toml$' | head -n1)
+        echo $FILE
+        bash ci/parser-coverage.sh $FILE > parser-coverage.txt
+    - name: Comment on PR
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        filePath: parser-coverage.txt

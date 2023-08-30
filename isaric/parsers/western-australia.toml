@@ -10,7 +10,7 @@
     groupBy = "subject_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/subject.schema.json"
-    optional-fields = ["ethnicity", "sex_at_birth"]
+    optional-fields = ["ethnicity", "sex_at_birth", "sex"]
 
   [adtl.tables.visit]
     kind = "groupBy"
@@ -43,14 +43,13 @@
   ]
 
 [adtl.defs.inabilityWalk.values]
-  1 = "No difficulty"
-  2 = "Some difficulty"
-  3 = "Some difficulty"
-  4 = "Lots of difficulty"
-  5 = "Unable to walk"
+  1 = 1 # "No difficulty"
+  2 = 2 # "Some difficulty"
+  3 = 2 # "Some difficulty"
+  4 = 3 # "Lots of difficulty"
+  5 = 4 # "Unable to walk"
 
 [subject]
-  country_iso3 = "AUS"  # this should be a map
   pathogen = "COVID-19"
 
   [subject.subject_id]
@@ -63,24 +62,33 @@
     description = "Date of enrollment"
     source_date = "%d/%m/%Y"
 
-  [subject.admission_date]
-    combinedType = "firstNonNull"
+  [subject.earliest_admission_date]
+    combinedType = "min"
     fields = [
       { field = "admission_date" },
       { field = "hostdat", description = "Admission date at this facility" },
-      { field = "dsstdat", description = "Date of enrolment" },
-      { field = "cestdat", description = "Symptom onset (date of first/earliest symptom):" },
     ]
 
   [subject.age]
-    combinedType = 'firstNonNull'
-    fields = [
-      { field = "age_calc", description = "Calculated age (form)" },
-      # { field = "age", unit = "years", source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } } },
-      # { field = "brthdtc", description = "Calculate from birth date", apply = { function = "yearsElapsed", params = [
-      # "admission_date",
-      # ] } },
-    ]
+    field = "age_calc"
+    description = "Calculated age (form)"
+    unit = "years"
+    # source_unit = { field = "ageu", values = { 1 = "months", 2 = "years" } }
+
+    # [subject.date_of_birth]
+    #   field = "brthdtc"
+
+  [subject.dob_year]
+    field = "age_calc"
+    apply = { function = "startYear", params = [
+      [
+        "$admission_date",
+        "$hostdat",
+        "$dsstdat",
+      ],
+      2022,
+      "%d/%m/%Y",
+    ] }
 
 
   [subject.works_healthcare]
@@ -98,7 +106,7 @@
     description = "Pregnant?"
     values = { 1 = true, 2 = false } #, 998 = false, 999 = false - unknown shouldn't be mapped to false, it indicates the question wasn't asked.
 
-  [subject.pregnancy_gestational_assessment_weeks]
+  [subject.pregnancy_gestational_age_weeks]
     field = "egestage_rptestcd"
     description = "If YES: Gestational weeks assessment:"
 
@@ -115,7 +123,7 @@
   [subject.has_hiv]
     combinedType = "any"
     fields = [
-      { field = "aidshiv_mhyn", values = { 1 = true, 2 = false, 4 = true } }, # , 3 = false
+      { field = "aidshiv_mhyn", values = { 1 = true, 2 = false, 4 = true } }, # , 3 = false (NK)
       { field = "hiv_mborres", values = { 1 = true, 0 = false } },
     ]
     description = "HIV"
@@ -132,7 +140,7 @@
 
   [subject.has_smoking]
     field = "smoking_mhyn"
-    description = "Current smoking"
+    description = "Current smoking? (Yes/No/Unknown)"
     values = { 1 = "yes" }
 
   [subject.has_asthma]
@@ -204,18 +212,18 @@
     description = "Subject ID"
     sensitive = true
 
-    # [visit.dataset_id]
-    #   field = ""
-    #   description = ""
-
   [visit.start_date]
     combinedType = "firstNonNull"
     fields = [
       { field = "admission_date" },
+      { field = "cestdat", description = "Onset date of first/earliest symptom" },
       { field = "hostdat", description = "Admission date at this facility" },
       { field = "dsstdat", description = "Date of enrolment" },
-      { field = "cestdat", description = "Onset date of first/earliest symptom" },
     ]
+
+  [visit.pathogen_test_date]
+    field = "date_of_confiurmation"
+    description = "covid swab result on admission - date of confirmation"
 
   [visit.icu_admission]
     description = "ICU or High Dependency admission"
@@ -270,6 +278,13 @@
       ref = "Y/N/NK"
       description = "Extracorporeal (ECMO) support on the first day of admission?"
 
+[visit.treatment_cardiovascular_support]
+  combinedType = "any"
+  fields = [
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
+    { fieldPattern = "inotrop_cmtrt", ref = "Y/N/NK" },
+  ]
+
 [visit.treatment_corticosteroid]
   description = "Corticosteroid"
   combinedType = "any"
@@ -300,7 +315,6 @@
     { field = "corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
     { field = "corticost_cmtrt___5", values = { 1 = "Other" } },
   ]
-  if.any = { corticost_cmyn = 1, daily_corticost_cmyn = 1, overall_corticost_cmyn = 1 } # is this correct?
 
 [visit.treatment_oxygen_therapy]
   description = "Oxygen therepy"
@@ -354,19 +368,19 @@
   excludeWhen = "none"
   fields = [
     { field = "overall_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "overall_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "overall_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "overall_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "overall_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -419,16 +433,6 @@
     { field = "exper_cmtype___7", values = { 1 = "Other" } },
   ]
 
-[visit.treatment_tocilizumab]
-  description = "Tocilizumab used?"
-  combinedType = "any"
-  excludeWhen = "none"
-  fields = [
-    { field = "overall_exper_cmtype___4", values = { 1 = true } },
-    { field = "daily_exper_cmtype___4", values = { 1 = true } },
-    { field = "exper_cmtype___4", values = { 1 = true } },
-  ]
-
 [visit.treatment_noninvasive_ventilation]
   description = "Noninvasive ventilation"
   combinedType = "any"
@@ -476,28 +480,6 @@
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
   ]
 
-[visit.treatment_dexamethasone]
-  description = "Dexamethasone used?"
-  combinedType = "any"
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "overall_corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-    if = { overall_corticost_cmyn = 1 }
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "daily_corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-    if = { daily_corticost_cmyn = 1 }
-
-  [[visit.treatment_dexamethasone.fields]]
-    field = "corticost_cmtrt___1"
-    description = "Dexamethasone used?"
-    values = { 0 = false, 1 = true }
-    if = { corticost_cmyn = 1 }
-
 [visit.treatment_high_flow_nasal_cannula]
   description = "High flow nasal cannula"
   combinedType = "any"
@@ -505,17 +487,14 @@
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "overall_oxygen_cmtype___2"
     values = { 0 = false, 1 = true }
-    if = { overall_oxygen_cmoccur = 1 }
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "daily_oxygen_cmtype"
     values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false }
-    if = { daily_oxygen_cmoccur = 1 }
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "oxygen_cmtype"
     values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false }
-    if = { oxygen_cmoccur = 1 }
 
 [visit.treatment_nsaid]
   description = "NSAID"
@@ -545,28 +524,6 @@
     { field = "iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids on the first day of admission?" },
   ]
 
-[visit.treatment_neuraminidase]
-  description = "Antiviral type"
-  combinedType = "any"
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "overall_antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true, 0 = false }
-    if = { overall_antiviral_cmyn = 1 }
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "daily_antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true, 0 = false }
-    if = { daily_antiviral_cmyn = 1 }
-
-  [[visit.treatment_neuraminidase.fields]]
-    field = "antiviral_cmtrt___5"
-    description = "Neuraminidase used?"
-    values = { 1 = true, 0 = false }
-    if = { antiviral_cmyn = 1 }
-
 [visit.outcome]
   field = "dsterm"
 
@@ -588,42 +545,71 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
-  if = { avpu_vsyn = 1 }
 
 [[observation]]
   name = "avpu"
   date = { field = "daily_date" }
   phase = "study"
   text = { field = "daily_avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
-  if = { daily_avpu_vsyn = 1 }
 
 [[observation]]
   name = "bleeding_haemorrhage"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
-  # if = { bleed_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "cough"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "coughsput_ceoccur_v2", ref = "Y/N" },
+      { field = "coughhb_ceoccur_v2", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
   is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
-  # if = { cough_ceoccur_v2 = { "!=" = 3 } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
   date = { field = "daily_date" }
   phase = "study"
-  is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N" }
-  # if = { daily_cough_ceoccur_v2 = { "!=" = 3 } }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "daily_cough_ceoccur_v2", ref = "Y/N" },
+      { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" },
+    ]
 
 [[observation]]
-  name = "cough"
-  date = { ref = "admissionDateHierarchy" }
-  phase = "admission"
-  is_present = { field = "symptoms_cough", values = { 1 = true, 0 = false } }
-  # if = { symptoms_cough = { "!=" = "" } }
+  name = "cough_dry"
+  date = { field = "daily_date" }
+  phase = "study"
+  is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" }
 
   # [[observation]] # oxy_vsorres is missing - but oxy_vsorresu isn't!
   #   name = "oxygen_saturation_percent"
@@ -659,14 +645,12 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "gcs_vsorres" }
-  if = { gcs_vsyn = 1 }
 
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_gcs_vsorres" }
-  if = { daily_gcs_vsyn = 1 }
   #description = "Glasgow Coma Score (GCS/15)"
 
 [[observation]]
@@ -674,21 +658,18 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "conjunct_ceoccur_v2", ref = "Y/N" }
-  # if = { conjunct_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "conjunctivitis"
   phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_conjunct_ceoccur_v2", ref = "Y/N" }
-  # if = { daily_conjunct_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "runny_nose"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "runnynose_ceoccur_v2", ref = "Y/N" }
-  # if = { runnynose_ceoccur_v2 = { "!=" = 3 } }
 
 [[observation]]
   name = "seizures"
@@ -769,6 +750,12 @@
   is_present = { field = "myalgia_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  name = "muscle_aches"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_myalgia_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
   name = "lymphadenopathy"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -800,7 +787,7 @@
 
 [[observation]]
   name = "diarrhoea"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_diarrhoea_ceoccur_v2", ref = "Y/N" }
 
@@ -829,84 +816,64 @@
   is_present = { field = "fever_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  if.all = [
+    { fever_ceoccur_v2 = { "!=" = 1 } },
+    { fever_ceoccur_v2 = { "!=" = 2 } },
+    { symptoms_fever = { "!=" = "" } },
+  ]
+
   name = "history_of_fever"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "symptoms_fever", values = { 1 = true, 0 = false } }
 
 [[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "study"
-  date = { field = "daily_date" }
-  is_present = { field = "daily_coughsput_ceoccur_v2", ref = "Y/N" }
-
-[[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "diabp_vsorres" }
-  if = { diabp_vsyn = 1 }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "diastolic_vsorres" }
-  if = { diastolic_vsyn = 1 }
 
 [[observation]]
   name = "heart_rate_bpm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "hr_vsorres" }
-  if = { hr_vsyn = 1 }
 
 [[observation]]
   name = "heart_rate_bpm"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_hr_vsorres" }
-  if = { daily_hr_vsyn = 1 }
 
 [[observation]]
   name = "respiratory_rate"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "rr_vsorres" }
-  if = { rr_vsyn = 1 }
 
 [[observation]]
   name = "respiratory_rate"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_rr_vsorres" }
-  if = { daily_rr_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "sysbp_vsorres" }
-  if = { sysbp_vsyn = 1 }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "systolic_vsorres" }
-  if = { systolic_vsyn = 1 }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
@@ -928,7 +895,7 @@
 
 [[observation]]
   name = "severe_dehydration"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_dehydration_vsorres", values = { 1 = true, 0 = false } }
 
@@ -940,7 +907,7 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
 
@@ -953,14 +920,14 @@
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { field = "dsstdtc" }                                           # Can't find a date for the followup forms specifically
-  text = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
+  date = { field = "dsstdtc" }                                            # Can't find a date for the followup forms specifically
+  value = { field = "basline_mobility_discharge", ref = "inabilityWalk" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { field = "dsstdtc" }                                                    # Can't find a date for the followup forms specifically
-  text = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
+  date = { field = "dsstdtc" }                                                     # Can't find a date for the followup forms specifically
+  value = { field = "basline_mobility_discharge_followup", ref = "inabilityWalk" }
 
 [[observation]]
   name = "temperature_celsius"
@@ -968,23 +935,23 @@
   date = { ref = "admissionDateHierarchy" }
   context = ["highest"]
   value = { field = "temp_vsorres" }        # there is no source unit field
-  if = { temp_vsyn = 1 }
 
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_temp_vsorres" } # there is no source unit field and no conditional field
-  if = { daily_temp_vsyn = 1 }
-
-[[observation]]
-  name = "renal_replacement_therapy_dialysis"
-  date = { field = "daily_date" }
-  phase = "study"
-  is_present = { field = "daily_rrt_prtrt", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "mid_upper_arm_circumference_cm"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "muac_vsorres", source_unit = "mm", unit = "cm" }
+
+[[observation]]
+  name = "pneumonia"
+  phase = "study"
+  is_present = { field = "pneu_ceterm", ref = "Y/N" }
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"

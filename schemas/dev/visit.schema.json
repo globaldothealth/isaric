@@ -18,7 +18,10 @@
       "category": "metadata"
     },
     "subject_id": {
-      "type": "string",
+      "type": [
+        "string",
+        "integer"
+      ],
       "description": "Unique ID of subject",
       "category": "metadata"
     },
@@ -68,6 +71,11 @@
       "uniqueItems": true,
       "description": "Date(s) of admission to ICU"
     },
+    "transfer_from_other_facility": {
+      "type": "boolean",
+      "description": "Transferred to site from another facility",
+      "category": "treatments"
+    },
     "treatment_dialysis": {
       "type": "boolean",
       "description": "Dialysis",
@@ -92,10 +100,16 @@
       "type": "array",
       "items": {
         "enum": [
-          "Methylprednisolone",
-          "Prednisolone",
+          "Budesonide",
+          "Cortisonal",
           "Dexamethasone",
+          "Fluticasone",
           "Hydrocortisone",
+          "Methylprednisolone",
+          "Mometasone",
+          "Prednisolone",
+          "Prednisone",
+          "Salmeterol",
           "Other"
         ]
       },
@@ -103,9 +117,20 @@
       "description": "Corticosteroid type",
       "category": "treatments"
     },
+    "treatment_corticosteroid_type_other": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Corticosteroid name - others",
+      "category": "treatments"
+    },
     "treatment_oxygen_therapy": {
       "type": "boolean",
       "description": "Oxygen therapy",
+      "category": "treatments"
+    },
+    "treatment_oxygen_mask_prongs": {
+      "type": "boolean",
+      "description": "Oxygen therapy via nasal prongs or a mask",
       "category": "treatments"
     },
     "treatment_prone_position": {
@@ -123,6 +148,12 @@
       "description": "Antifungal agent",
       "category": "treatments"
     },
+    "treatment_antifungal_agent_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antifungal agents",
+      "category": "treatments"
+    },
     "treatment_antivirals": {
       "type": "boolean",
       "description": "Antivirals",
@@ -133,7 +164,8 @@
       "items": {
         "enum": [
           "Ribavirin",
-          "Lopinavir/Ritonvir",
+          "Lopinavir/Ritonavir",
+          "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
           "Chloroquine/Hydroxychloroquine",
@@ -145,6 +177,10 @@
           "Neuraminidase inhibitor",
           "Convalescent plasma",
           "Anti-influenza antiviral",
+          "Tocilizumab",
+          "Anakinra",
+          "Favipravir",
+          "Atazanavir",
           "Other"
         ]
       },
@@ -152,9 +188,21 @@
       "description": "Antivirals administered",
       "category": "treatments"
     },
+    "treatment_antiviral_type_other": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antiviral name - other agents",
+      "category": "treatments"
+    },
     "treatment_antibiotics": {
       "type": "boolean",
       "description": "Antibiotics",
+      "category": "treatments"
+    },
+    "treatment_antibiotics_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antibiotics administered",
       "category": "treatments"
     },
     "treatment_anticoagulation": {
@@ -215,9 +263,10 @@
       "description": "Antimalarial",
       "category": "treatments"
     },
-    "treatment_dexamethasone": {
-      "type": "boolean",
-      "description": "Dexamethasone",
+    "treatment_antimalarial_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antimalarials administered",
       "category": "treatments"
     },
     "treatment_high_flow_nasal_cannula": {
@@ -245,19 +294,9 @@
       "description": "Nsaid",
       "category": "treatments"
     },
-    "treatment_neuraminidase": {
-      "type": "boolean",
-      "description": "Neuraminidase",
-      "category": "treatments"
-    },
     "treatment_neuromuscular_blocking_agents": {
       "type": "boolean",
       "description": "Neuromuscular blocking agents",
-      "category": "treatments"
-    },
-    "treatment_oxygen_interface": {
-      "type": "boolean",
-      "description": "Oxygen interface",
       "category": "treatments"
     },
     "treatment_cpr": {
@@ -275,17 +314,12 @@
       "description": "Respiratory support",
       "category": "treatments"
     },
-    "treatment_tocilizumab": {
-      "type": "boolean",
-      "description": "Tocilizumab",
-      "category": "treatments"
-    },
     "treatment_indication_anticoagulation": {
       "type": "boolean",
       "description": "Indication anticoagulation",
       "category": "treatments"
     },
-    "treatment_cardiovascular": {
+    "treatment_cardiovascular_support": {
       "type": "boolean",
       "description": "Cardiovascular",
       "category": "treatments"
@@ -302,7 +336,13 @@
     },
     "treatment_delirium": {
       "type": "boolean",
-      "description": "Delirium",
+      "description": "treatment for delirium",
+      "category": "treatments"
+    },
+    "treatment_delirium_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "treatments for delirium types administered",
       "category": "treatments"
     },
     "treatment_monoclonal_antibody": {
@@ -317,11 +357,6 @@
       },
       "uniqueItems": true,
       "description": "Other treatments",
-      "category": "treatments"
-    },
-    "treatment_oxygen_mechanical_support": {
-      "type": "boolean",
-      "description": "Oxygen mechanical support",
       "category": "treatments"
     },
     "treatment_pacing": {
