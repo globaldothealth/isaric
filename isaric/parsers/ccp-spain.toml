@@ -3,7 +3,7 @@
 [adtl]
   name = "ccp-spain"
   description = "COVID-19 patient data, Hospital del Mar, Barcelona, Spain"
-  # defaultDateFormat = "%d/%m/%Y"
+  defaultDateFormat = "%d/%m/%Y"
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -21,12 +21,12 @@
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "record_id", sensitive = true } }
+    common = { visit_id = { field = "record_id", sensitive = true } } 
 
   [adtl.defs."Y/N/NK".values]
     0 = false
     1 = true
-    # 2 = "Unknown"
+    # 2 = "Unknown"  
 
 [subject]
   study_id = "ccp-spain"
@@ -43,10 +43,10 @@
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
   [subject.earliest_admission_date]
-    fields = [{ field = "fchadminsion" }]
+    fields = [{field = "fchadminsion"}]
     combinedType = "min"
     description = "Date of admission to first study visit"
-    # there is no field that maps to enrolment_date
+     # there is no field that maps to enrolment_date
 
   [subject.ethnicity]
     description = "Ethnic groups"
@@ -59,33 +59,31 @@
   [subject.works_microbiology_lab]
     field = "infhospi"
     description = "Employed in a microbiology laboratory?"
-    values = { 2 = true }                                  # if not 2 - gives FALSE
+    values = { 2 = true }                         
 
   [subject.works_healthcare]
     field = "infhospi"
-    values = { 1 = true }                            # if not 1 - gives FALSE
+    values = { 1 = true }                         
     description = "Employed as a healthcare worker?"
 
   [subject.age]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "edad", unit = "years", description = "Calculated age in years" },
-      { field = "meses", unit = "months", description = "Age in Months", if = { edad = 0 } },
-    ]
+    field = "edad"
+    unit = "years"
+    description = "Calculated age in years" 
 
   [subject.pregnancy]
     field = "embarazo"
     ref = "Y/N/NK"
     description = "Pregnant ?"
 
-  [subject.pregnancy_gestational_age_weeks]
+  [subject.pregnancy_gestational_assessment_weeks]
     field = "semgest"
     description = "Gestational weeks assessment"
 
-    # [subject.has_chronic_hematologic_disease]
-    #   field = "chronichaemo_mhyn"
-    #   ref = "Y/N/NK"
-    #   description = "Chronic hematologic disease"
+  [subject.has_chronic_hematologic_disease]
+    field = "co_tumorhemato"
+    ref = "Y/N/NK"
+    description = "Chronic hematologic disease (malignancy)"
 
   [subject.has_dementia]
     field = "co_demencia"
@@ -101,11 +99,6 @@
     field = "vih"
     ref = "Y/N/NK"
     description = "AIDS/HIV"
-
-  [subject.has_hiv_art]
-    field = "tto_art"
-    description = "If HIV positive, ART received"
-    ref = "Y/N/NK"
 
   [subject.has_hypertension]
     field = "co_hta"
@@ -131,17 +124,29 @@
     ref = "Y/N/NK"
     description = "Chronic kidney disease"
 
+  [subject.has_malignant_neoplasm]
+    field = "co_neosolido"
+    ref = "Y/N/NK"
+    description = "Malignant neoplasm"
+
+  [subject.has_chronic_respiratory_disease]
+    field = "co_enfpulm"
+    ref = "Y/N/NK"
+    description = "Chronic respiratory disease"
+
   [subject.has_diabetes]
     field = "co_dm"
     ref = "Y/N/NK"
     description = "Diabetes without complications"
+  
+  [subject.has_comorbidity_other]
+    text = {field = "co_otros2"}
+    if = { "co_otros" = 1 }
+    description = "Any other comorbidity"
 
   [subject.has_liver_disease]
-    combinedType = "any"
-    fields = [
-      { field = "co_cirrosis", ref = "Y/N/NK" },
-      { field = "c_ih", ref = "Y/N/NK" },
-    ]
+    field = "co_cirrosis"
+    ref = "Y/N/NK" 
     description = "Has liver disease"
 
   [subject.has_malnutrition]
@@ -171,11 +176,8 @@
     combinedType = "firstNonNull"
     description = "Outcome date"
     fields = [
-      { field = "fch_alta", description = "Date of hospital discharge" },
-      { field = "fch_exitus", description = "Date of death" },
-      { field = "fch_ulticont", description = "Date of last contact" },
-      { field = "fcha_1eralta" },
-      { field = "fch_pcr_neg" },
+      { field = "fch_alta" , if = {"outcome" = 2}},
+      { field = "fch_exitus", if = {"outcome" = 3}}
     ]
 
   [visit.visit_id]
@@ -187,13 +189,12 @@
     sensitive = true
 
   [visit.start_date]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "fchadminsion", description = "Admission date at this facility" },
-      { field = "fch_sv", description = "Date for Vital Signs upon admission" },
-    ]
+    field = "fchadminsion"
+    description = "Admission date at this facility" }
+
 
   [visit.icu_admission]
+    combinedType = "any"
     field = "uci"
     values = { 0 = false, 1 = true }
 
@@ -201,7 +202,9 @@
     description = "ICU admission date"
     combinedType = "list"
     excludeWhen = "none"
-    fields = [{ field = "fecha_uci" }]
+    fields = [
+      { field = "fecha_uci" }
+    ]
 
   [visit.pathogen_test_date]
     field = "fch_covid19"
@@ -214,10 +217,10 @@
   [visit.treatment_antibiotics_type]
     combinedType = "set"
     excludeWhen = 'false-like'
-    fields = [{ field = "azt", values = { 1 = "Anthromycin" } }]
+    fields = [{ field = "azt", values = { 1 = "Azithromycin" } }]
 
   [visit.treatment_antifungal_agent]
-    description = "Antibiotic agent?"
+    description = "Antifungal agent?"
     field = "antif"
     values = { 0 = false, 1 = true }
 
@@ -225,22 +228,47 @@
     description = "Antiviral agent?"
     combinedType = "any"
     fields = [
-      { field = "tozi", values = { 0 = false, 1 = true }, description = "Tocilizumab Antiviral?" },
       { field = "rbv", values = { 0 = false, 1 = true }, description = "Ribavirin Antiviral?" },
       { field = "remdi", values = { 0 = false, 1 = true }, description = "Remdesivir Antiviral?" },
       { field = "lopr", values = { 0 = false, 1 = true }, description = "Lopinavir/Ritonvir Antiviral?" },
+      {field = "oselt", values = { 0 = false, 1 = true }, description = "Neuraminidase inhibitors"},
+      {field = "drv_c", values = { 0 = false, 1 = true }, description = "Darunavir/Cobicistat"},
+      {field = "drv_r", values = { 0 = false, 1 = true }, description = "Darunavir/Ritonavir"}
     ]
 
-  [visit.treatment_antiviral_type]
+  [visit.treatment_antivitals_type]
     description = "Type of antiviral agent used"
-    combinedType = "set"
     excludeWhen = "none"
+    combinedType = "set"
     fields = [
-      { field = "tozi", values = { 1 = "Tocilizumab" } },
       { field = "rbv", values = { 1 = "Ribavirin" } },
       { field = "remdi", values = { 1 = "Remdesivir" } },
       { field = "lopr", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "oselt", values = { 1 = "Neuraminidase inhibitor" } },
+      { field = "drv_c", values = { 1 = "Darunavir/Cobicistat" } } ,
+      { field = "drv_r", values = { 1 = "Lopinavir/Ritonvir" } }
     ]
+
+  [visit.treatment_antimalarial]
+    description = "Antimalarial"
+    combinedType = "any"
+    fields = [
+      { field = "cloroq", values = { 0 = false, 1 = true }, description = "Hydroxychloroquine" },
+      { field = "cloroquina", values = { 0 = false, 1 = true}, description = "Chloroquine" }
+    ]
+
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "cloroq", values = { 1 = "Hydroxychloroquine" } },
+      { field = "cloroquina", values = { 1 = "Chloroquine" } },
+    ]
+
+  [visit.treatment_immunosuppressant]
+    description = "Other immunosuppressant (non-steroidal)"
+    field = "tozi"
+    values = { 0 = false, 1 = true }
 
   [visit.treatment_corticosteroid]
     description = "Corticosteroid agent?"
@@ -272,6 +300,13 @@
     field = "t_iot"
     values = { 0 = false, 1 = true }
 
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      {field = "t_dva", description = "Inotropes / vasopressors", values = { 0 = false, 1 = true }},
+      {field = "t_ecmo", description = "Extracorporeal (ECMO) support", values = { 0 = false, 1 = true }}
+    ]
+
   [visit.treatment_inotropes_vasopressors]
     description = "Inotropes / vasopressors"
     field = "t_dva"
@@ -292,176 +327,193 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "otro_tto", description = "Any other treatments?" },
-    { field = "cloroquina", values = { 1 = "Chloroquine" } },
-    { field = "cloroq", values = { 1 = "Hydroxychloroquine" } },
+    { field = "otro_tto", description = "Any other treatments for Covid?" },
+    { field = "t_otros1", description = "Any other treatments?"}
+  ]
+
+[visit.outcome_date]
+  description = "Date the visit outcome was recorded"
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "fch_alta", description = "Date of hospital discharge" },
+    { field = "fch_exitus", description = "Date of death" },
+    { field = "fch_ulticont", description = "Date of last contact" },
   ]
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   value = { field = "sv_tad" }
 
 [[observation]]
   name = "abdominal_pain"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_dolorabdominal", ref = "Y/N/NK" }
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_consciencia", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "bleeding_haemorrhage"
-  date = { field = "fch_sv" }
-  phase = "admission"
-  is_present = { field = "c_hdab", ref = "Y/N/NK" }
-
-[[observation]]
   name = "chest_pain"
-  date = { field = "fch_sv" }
-  phase = "admission"
-  is_present = { field = "ss_dt", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "confusion"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_dt", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_tos", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_hemop", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_sputum_production"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_exp", ref = "Y/N/NK" }
 
 [[observation]]
   name = "diarrhoea"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_diarrea", ref = "Y/N/NK" }
 
 [[observation]]
   name = "headache"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_cefalea", ref = "Y/N/NK" }
 
 [[observation]]
   name = "history_of_fever"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_fever", ref = "Y/N/NK" }
 
 [[observation]]
   name = "joint_pain"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_mialartral", ref = "Y/N/NK" }
 
 [[observation]]
   name = "loss_of_smell"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_anosmia", ref = "Y/N/NK" }
 
 [[observation]]
   name = "loss_of_smell_or_taste"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_anosmia", ref = "Y/N/NK" }
 
 [[observation]]
   name = "seizures"
-  date = { field = "fch_sv" }
-  phase = "admission"
+  date = { field = "date_outcome" }
+  start_date = { field = "fchadminsion" }
+  duration_type = "event"
+  phase = "study"
   is_present = { field = "c_crisis", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "seizures"
+  date = { field = "fchadminsion" }
+  phase = "admission"
+  is_present = { field = "ss_convulsion", ref = "Y/N/NK" }
+
+[[observation]]
   name = "shortness_of_breath"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_disnea", ref = "Y/N/NK" }
 
 [[observation]]
   name = "skin_rash"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_rash", ref = "Y/N/NK" }
 
 [[observation]]
   name = "vomiting_nausea"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_nausea", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "pneumonia"
+  phase = "study"
+  date = {field = "date_outcome"}
+  is_present = { field = "c_nb", ref = "Y/N/NK"}
+  context = ["bacterial"]
+
+[[observation]]
   name = "heart_rate_bpm"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   value = { field = "sv_fc" }
 
 [[observation]]
-  name = "other_symptom"
-  phase = "admission"
-  date = { field = "fch_sv" }
-  text = { field = "c_otrosv", description = "Other treatment" }
-
-[[observation]]
   name = "oxygen_saturation_percent"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   value = { field = "sv_sat" }
 
 [[observation]]
   name = "pao2_mmHg"
-  date = { field = "fch_sv" }
+  date = { field = "fecha_gas" }
   phase = "admission"
   value = { field = "pa02" }
 
 [[observation]]
   name = "pco2_mmHg"
-  date = { field = "fch_sv" }
+  date = { field = "fecha_gas" }
   phase = "admission"
   value = { field = "pco2" }
 
+[observation]
+  name = "oxygen_o2hb"
+  date = { field = "fch_hemat" }
+  phase = "admission"
+  value = { field = "hb"}
+
 [[observation]]
   name = "respiratory_rate"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   value = { field = "sv_fresp" }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   value = { field = "sv_tas" }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "fch_sv" }
+  date = { field = "fchadminsion" }
   phase = "admission"
   value = { field = "sv_temp" }
 
+[[observation]]
+  name = "fatigue_malaise"
+  date = {field = "fchadminsion"}
+  phase = "admission"
+  value = { field = "ss_malest"} # this field onlz captured malaise, not fatigue
+
   ### Obervation attributes not mapped here...
   # bleeding
-  # has_immunosuppression
+  # has_immunosuppression 
   # avpu
   # clinical_classification_critical_illness_scale
   # clinical_classification_pneumonia_needing_oxygen
