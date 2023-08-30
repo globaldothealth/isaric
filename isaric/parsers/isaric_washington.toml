@@ -61,10 +61,6 @@
 [subject]
   pathogen = "COVID-19"
 
-  [subject.country_iso3]
-    field = "country"
-    ref = "countryMap"
-
   [subject.subject_id]
     # field = "patient_study_id"
     field = "icu_id" # The ID needs to be on every row for this to work - the ICU ID is the one that repeats, so has been chosen here.
@@ -73,12 +69,16 @@
   [subject.enrolment_date] # optional field
     field = "date_filling_first_form"
 
-  [subject.admission_date] # fill here!
+  [subject.earliest_admission_date]
     field = "ADMIT DATE"
 
   [subject.age] # need fixing here for age '>90' to consider a character ..
     field = "age"
     # no age unit?
+
+    # [subject.dob_year]
+    #   field = "age"
+    #   apply = { function = "startYear", params = ["$ADMIT DATE", 2022] }
 
   [subject.sex_at_birth] # this is just 'sex' in the CRF - you can't be trans at birth, maybe we need some nuance here/ a different 'current_sex' variable or similar
     field = "sex"
@@ -90,6 +90,13 @@
     fields = [
       { field = "race", values = { 1 = "American Indian or Alaska Native", 2 = "Asian American", 3 = "Black or African American", 4 = "Native Hawaiian or Other Pacific Islander", 5 = "White Caucasian", 7 = "East Asian (China, Hongkong, Japan, S. Korea etc.)", 8 = "South Asian (India, Pakistan, Sri Lanka etc.)", 9 = "West Asian (including Arabic)", 10 = "South East Asian (Philippines, Thailand, Malaysia, Singapore, VietNam etc.)", 11 = "Mixed Race", 12 = "Unknown", 6 = "Other" } },
     ]
+
+  [subject.pregnancy]
+    field = "prgnant"
+    ref = "Y/N"
+
+  [subject.pregnancy_gestational_age_weeks]
+    field = "gestational_age"
 
   [subject.works_microbiology_lab]
     field = "employed_as_a_healthcare_w"
@@ -144,6 +151,23 @@
     field = "comorbidities___10"
     ref = "Y/N"
 
+  [subject.has_chronic_cardiac_disease]
+    combinedType = "any"
+    fields = [
+      { field = "comorbidities___2", ref = "Y/N", description = "Coronary artery disease" },
+      { field = "comorbidities___4", ref = "Y/N", description = "Cardiac arrhythmia" },
+      { field = "comorbidities___5", ref = "Y/N", description = "Congestive heart failure" },
+      { field = "comorbidities___6", ref = "Y/N", description = "Valvular heart disease" },
+    ]
+
+  [subject.has_chronic_respiratory_disease]
+    field = "comorbidities___7"
+    ref = "Y/N"
+
+  [subject.has_rheumatologic_disorder]
+    field = "comorbidities___25"
+    ref = "Y/N"
+
   [subject.has_diabetes]
     field = "comorbidities___12"
     ref = "Y/N"
@@ -172,12 +196,21 @@
     field = "pre_hospital_medication___3"
     ref = "Y/N"
 
+  [subject.has_immunosuppression]
+    field = "comorbidities___22"
+    ref = "Y/N"
+
   [subject.has_died]
     combinedType = "any"
     fields = [
       { field = "hosp_status", description = "Hospital discharge status?", values = { 1 = true, 0 = false } },
       { field = "mort_28_days", description = "28 day mortality?", values = { 1 = true, 0 = false } },
     ]
+
+  [subject.date_death]
+    field = "ADMIT DATE"
+    apply = { function = "endDate", params = ["$hospital_los"] }
+    if = { hosp_status = 1 }
 
   [subject.icu_admitted]
     field = "admitted_to_icu"
@@ -210,9 +243,17 @@
     ]
 
   [visit.icu_admission_dates] # calculated from admission date + hospital day - CHECK IF THIS IS CORRECT?
-    field = "ADMIT DATE"
-    description = "icu admission date calculated from admission and hospital day"
-    apply = { function = "endDate", params = ["day_to_icu"] }
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ADMIT DATE", description = "icu admission date calculated from admission and hospital day", apply = { function = "endDate", params = [
+        "$day_to_icu",
+      ] } },
+    ]
+
+  [visit.transfer_from_other_facility]
+    field = "hospital_admission_source"
+    values = { 5 = true }
 
   [visit.pathogen_test_date]
     field = "covid19_test_date"
@@ -244,6 +285,17 @@
       { field = "oxygenation___5", ref = "Y/N" },
       { field = "oxygenation___6", ref = "Y/N" },
       { field = "oxygenation___11", ref = "Y/N" },
+      { field = "oxygenation_methods_2___1", ref = "Y/N" },
+      { field = "oxygenation_methods_2___2", ref = "Y/N" },
+      { field = "oxygenation_methods_2___3", ref = "Y/N" },
+    ]
+
+  [visit.treatment_oxygen_mask_prongs]
+    combinedType = "any"
+    fields = [
+      { field = "oxygenation___4", ref = "Y/N" },
+      { field = "oxygenation___5", ref = "Y/N" },
+      { field = "oxygenation___6", ref = "Y/N" },
     ]
 
   [visit.treatment_prone_position]
@@ -333,10 +385,6 @@
     field = "medications___16"
     ref = "Y/N"
 
-  [visit.treatment_neuraminidase]
-    field = "name_of_antiviral___4"
-    ref = "Y/N"
-
   [visit.treatment_neuromuscular_blocking_agents]
     combinedType = "any"
     fields = [
@@ -348,13 +396,17 @@
     field = "good_death___1"
     ref = "Y/N"
 
-  [visit.treatment_tocilizumab]
-    field = "mis_medications___1"
-    ref = "Y/N"
+    # [visit.treatment_tocilizumab]
+    #   field = "mis_medications___1"
+    #   ref = "Y/N"
 
   [visit.treatment_immunoglobulins]
     field = "blood_products___6"
     ref = "Y/N"
+
+  [visit.treatment_dialysis]
+    field = "crrt_duration"
+    apply = { function = "isNotNull" }
 
   [visit.outcome]
     field = "hosp_status"
@@ -364,13 +416,13 @@
   [visit.date_outcome] # calculate: hospital length of stay (hospital_los) + the admission date - CHECK THIS!
     field = "ADMIT DATE"
     description = "outcome date calculated from admission and hospital los"
-    apply = { function = "endDate", params = ["hospital_los"] }
+    apply = { function = "endDate", params = ["$hospital_los"] }
 
 
 [[observation]]
   name = "avpu"
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_e1",
+    "$hospital_day_core_e1",
   ] } }
   phase = "study"
 
@@ -383,35 +435,27 @@
       { field = "avpu_score_v2___4", values = { 1 = "Unresponsive" } },
     ]
 
-  [observation.if] # need to improve the auto-if for this,
-    any = [
-      { avpu_score_v2___1 = 1 },
-      { avpu_score_v2___2 = 1 },
-      { avpu_score_v2___3 = 1 },
-      { avpu_score_v2___4 = 1 },
-    ]
-
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_e1",
+    "$hospital_day_core_e1",
   ] } }
   phase = "study"
   value = { field = "dbp_echo" }
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_e1",
+    "$hospital_day_core_e1",
   ] } }
   phase = "study"
   value = { field = "pao2_at_time_of_fio2_above" }
   context = ["Arterial", "Same blood gas record"]
 
 [[observation]]
-  name = "pco2"
+  name = "pco2_mmHg"
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_e1",
+    "$hospital_day_core_e1",
   ] } }
   phase = "study"
   value = { field = "pco2_from_same_blood_gas_r" }
@@ -427,9 +471,9 @@
   context = ["Same blood gas record"]
 
 [[observation]]
-  name = "pao2"
+  name = "pao2_mmHg"
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_e2",
+    "$hospital_day_core_e2",
   ] } }
   phase = "study"
   value = { field = "pao2_lowest_plods2", source_unit = "mmHg" }
@@ -438,7 +482,7 @@
 [[observation]]
   name = "glasgow_coma_score"
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_e2",
+    "$hospital_day_core_e2",
   ] } }
   phase = "study"
   value = { field = "gcs_lowest_plods2" }
@@ -484,6 +528,18 @@
   name = "cough"
   date = { field = "ADMIT DATE" }
   phase = "admission"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "signs_and_symptoms_at_hosp___10", ref = "Y/N" },
+      { field = "signs_and_symptoms_at_hosp___11", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "ADMIT DATE" }
+  phase = "admission"
   is_present = { field = "signs_and_symptoms_at_hosp___10", ref = "Y/N" }
 
 [[observation]]
@@ -512,9 +568,11 @@
 
 [[observation]]
   name = "hepatomegaly"
+  start_date = { field = "ADMIT DATE" }
   date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
-    "hospital_day_core_vii",
+    "$hospital_los",
   ] } }
+  duration_type = "event"
   phase = "study"
   is_present = { field = "complications___19", ref = "Y/N" }
 
@@ -629,7 +687,7 @@
     "hospital_day_core_e1",
   ] } }
   phase = "study"
-  is_present = { field = "rr" }
+  value = { field = "rr" }
 
 [[observation]]
   name = "respiratory_rate"
@@ -637,7 +695,7 @@
     "hospital_day_core_e1",
   ] } }
   phase = "study"
-  is_present = { field = "rr_lo" }
+  value = { field = "rr_lo" }
 
 [[observation]]
   name = "richmond_agitation-sedation_scale"
@@ -669,7 +727,7 @@
     "hospital_day_core_e1",
   ] } }
   phase = "study"
-  text = { field = "temperature", values = { 1 = "≤37·3°C", 2 = "37·3-38.0°C", 3 = "38.1-39.0°C", 4 = ">39.0°C" } }
+  value = { field = "temperature", values = { 1 = "≤37·3°C", 2 = "37·3-38.0°C", 3 = "38.1-39.0°C", 4 = ">39.0°C" } }
 
 [[observation]]
   name = "temperature_celsius"
@@ -677,7 +735,7 @@
     "hospital_day_core_e1",
   ] } }
   phase = "study"
-  text = { field = "temperature_lo", values = { 1 = "≤37·3°C", 2 = "37·3-38.0°C", 3 = "38.1-39.0°C", 4 = ">39.0°C" } }
+  value = { field = "temperature_lo", values = { 1 = "≤37·3°C", 2 = "37·3-38.0°C", 3 = "38.1-39.0°C", 4 = ">39.0°C" } }
 
 [[observation]]
   name = "total_fluid_output_ml"
@@ -688,7 +746,31 @@
   value = { field = "uo_v2" }
 
 [[observation]]
-  name = "transfer_from_other_facility"
-  date = { field = "ADMIT DATE" }
-  phase = "admission"
-  value = { field = "hospital_admission_source" }
+  name = "oxygen_o2hb"
+  date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
+    "hospital_day_core_e1",
+  ] } }
+  phase = "study"
+  value = { field = "haemoglobin" }
+
+[[observation]]
+  name = "pneumonia"
+  start_date = { field = "ADMIT DATE" }
+  date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
+    "$hospital_los",
+  ] } }
+  duration_type = "event"
+  phase = "study"
+  is_present = { field = "complications___5", ref = "Y/N" }
+  context = ['bacterial']
+
+[[observation]]
+  name = "pneumonia"
+  start_date = { field = "ADMIT DATE" }
+  date = { field = "ADMIT DATE", apply = { function = "endDate", params = [
+    "$hospital_los",
+  ] } }
+  duration_type = "event"
+  phase = "study"
+  is_present = { field = "complications___14", ref = "Y/N" }
+  context = ['COP']
