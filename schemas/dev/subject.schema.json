@@ -5,19 +5,44 @@
   "description": "A study subject in the ISARIC schema, contains demographics and comorbidities information",
   "required": [
     "subject_id",
-    "age",
     "ethnicity",
     "pathogen"
   ],
   "anyOf": [
     {
       "required": [
-        "earliest_admission_date"
+        "earliest_admission_date",
+        "age"
       ]
     },
     {
       "required": [
-        "enrolment_date"
+        "earliest_admission_date",
+        "date_of_birth"
+      ]
+    },
+    {
+      "required": [
+        "earliest_admission_date",
+        "dob_year"
+      ]
+    },
+    {
+      "required": [
+        "enrolment_date",
+        "age"
+      ]
+    },
+    {
+      "required": [
+        "enrolment_date",
+        "date_of_birth"
+      ]
+    },
+    {
+      "required": [
+        "enrolment_date",
+        "dob_year"
       ]
     }
   ],
@@ -70,6 +95,32 @@
       "maximum": 120,
       "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth",
+      "category": "demographics"
+    },
+    "dob_year": {
+      "type": "integer",
+      "description": "Year of birth",
+      "category": "demographics",
+      "minimum": 1900
+    },
+    "dob_month": {
+      "type": "integer",
+      "description": "Month of birth",
+      "category": "demographics",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "dob_day": {
+      "type": "integer",
+      "description": "Day of birth",
+      "category": "demographics",
+      "minimum": 1,
+      "maximum": 31
+    },
     "sex_at_birth": {
       "enum": [
         "male",
@@ -119,9 +170,13 @@
       "category": "pregnancy"
     },
     "pregnancy_birth_weight_kg": {
-      "type": "number",
+      "type": [
+        "number",
+        "string"
+      ],
       "description": "Birth weight (kg)",
-      "category": "pregnancy"
+      "category": "pregnancy",
+      "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
     "pregnancy_outcome": {
       "type": "string",
@@ -150,6 +205,11 @@
       "type": "number",
       "description": "Gestational assessment weeks",
       "category": "pregnancy"
+    },
+    "preterm_infant": {
+      "type": "boolean",
+      "description": "Subject born preterm (<37 weeks)",
+      "category": "comorbidities"
     },
     "has_chronic_hematologic_disease": {
       "type": "boolean",

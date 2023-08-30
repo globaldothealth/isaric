@@ -48,6 +48,31 @@
     unit = "years"
     source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years" } }
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age_estimateyears", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+        "$hostdat",
+        2022,
+        "%Y-%m-%d %H:%M",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+        "$hostdat",
+        2022,
+        "%Y-%m-%d %H:%M",
+        "months",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "age_estimateyears"
+    if = { age_estimateyearsu = 1 }
+    apply = { function = "startMonth", params = [
+      "$hostdat",
+      2022,
+      "%Y-%m-%d %H:%M",
+    ] }
+
   [subject.sex_at_birth]
     field = "sex"
     description = "Sex at birth:"
@@ -290,7 +315,7 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "antiviral_cmtrt", description = "IF YES to antiviral agent", values = { 1 = "Ribavirin", 2 = "Lopinavir/Ritonvir", 3 = "Interferon alpha", 4 = "Interferon beta", 5 = "Neuraminidase inhibitor", 6 = "Other" } },
+    { field = "antiviral_cmtrt", description = "IF YES to antiviral agent", values = { 1 = "Ribavirin", 2 = "Lopinavir/Ritonavir", 3 = "Interferon alpha", 4 = "Interferon beta", 5 = "Neuraminidase inhibitor", 6 = "Other" } },
   ]
 
 [visit.treatment_antiviral_type_other]
@@ -428,7 +453,7 @@
   name = "bleeding"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "bleed_ceterm_v2", ref = "Y/N/NK", description = "Bleeding (others)" }
+  is_present = { field = "bleed_ceterm_v2", ref = "Y/N", description = "Bleeding (others)" }
 
 [[observation]]
   name = "chest_pain"
@@ -586,24 +611,10 @@
     values = { 1 = true, 2 = false }
 
 [[observation]]
-  name = "loss_of_smell"
+  name = "loss_of_smell_or_taste"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "lost_ceterm_v2"
-    description = "Loss of smell/taste"
-    values = { 1 = true, 2 = false }
-
-[[observation]]
-  name = "loss_of_taste"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-
-  [observation.is_present]
-    field = "lost_ceterm_v2"
-    description = "Loss of smell/taste"
-    values = { 1 = true, 2 = false }
+  is_present = { field = "lost_ceterm_v2", description = "Loss of smell/taste", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
