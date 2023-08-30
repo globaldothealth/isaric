@@ -3,7 +3,6 @@
 [adtl]
   name = "ccp-spain"
   description = "COVID-19 patient data, Hospital del Mar, Barcelona, Spain"
-  defaultDateFormat = "%d/%m/%Y"
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -21,12 +20,20 @@
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "record_id", sensitive = true } } 
+    common = { visit_id = { field = "record_id", sensitive = true } }
 
   [adtl.defs."Y/N/NK".values]
     0 = false
     1 = true
-    # 2 = "Unknown"  
+    # 2 = "Unknown"
+
+[adtl.defs."outcomeDate"]
+  combinedType = "firstNonNull"
+  description = "Outcome date"
+  fields = [
+    { field = "fch_alta", if = { "outcome" = 2 } },
+    { field = "fch_exitus", if = { "outcome" = 3 } },
+  ]
 
 [subject]
   study_id = "ccp-spain"
@@ -43,10 +50,10 @@
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
   [subject.earliest_admission_date]
-    fields = [{field = "fchadminsion"}]
+    fields = [{ field = "fchadminsion" }]
     combinedType = "min"
     description = "Date of admission to first study visit"
-     # there is no field that maps to enrolment_date
+    # there is no field that maps to enrolment_date
 
   [subject.ethnicity]
     description = "Ethnic groups"
@@ -59,17 +66,17 @@
   [subject.works_microbiology_lab]
     field = "infhospi"
     description = "Employed in a microbiology laboratory?"
-    values = { 2 = true }                         
+    values = { 2 = true }
 
   [subject.works_healthcare]
     field = "infhospi"
-    values = { 1 = true }                         
+    values = { 1 = true }
     description = "Employed as a healthcare worker?"
 
   [subject.age]
     field = "edad"
     unit = "years"
-    description = "Calculated age in years" 
+    description = "Calculated age in years"
 
   [subject.pregnancy]
     field = "embarazo"
@@ -138,15 +145,17 @@
     field = "co_dm"
     ref = "Y/N/NK"
     description = "Diabetes without complications"
-  
+
   [subject.has_comorbidity_other]
-    text = {field = "co_otros2"}
-    if = { "co_otros" = 1 }
-    description = "Any other comorbidity"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "co_otros2", if = { co_otros = 1 }, description = "Any other comorbidity" },
+    ]
 
   [subject.has_liver_disease]
     field = "co_cirrosis"
-    ref = "Y/N/NK" 
+    ref = "Y/N/NK"
     description = "Has liver disease"
 
   [subject.has_malnutrition]
@@ -176,8 +185,8 @@
     combinedType = "firstNonNull"
     description = "Outcome date"
     fields = [
-      { field = "fch_alta" , if = {"outcome" = 2}},
-      { field = "fch_exitus", if = {"outcome" = 3}}
+      { field = "fch_alta", if = { "outcome" = 2 } },
+      { field = "fch_exitus", if = { "outcome" = 3 } },
     ]
 
   [visit.visit_id]
@@ -190,7 +199,7 @@
 
   [visit.start_date]
     field = "fchadminsion"
-    description = "Admission date at this facility" }
+    description = "Admission date at this facility"
 
 
   [visit.icu_admission]
@@ -202,9 +211,7 @@
     description = "ICU admission date"
     combinedType = "list"
     excludeWhen = "none"
-    fields = [
-      { field = "fecha_uci" }
-    ]
+    fields = [{ field = "fecha_uci" }]
 
   [visit.pathogen_test_date]
     field = "fch_covid19"
@@ -231,9 +238,9 @@
       { field = "rbv", values = { 0 = false, 1 = true }, description = "Ribavirin Antiviral?" },
       { field = "remdi", values = { 0 = false, 1 = true }, description = "Remdesivir Antiviral?" },
       { field = "lopr", values = { 0 = false, 1 = true }, description = "Lopinavir/Ritonvir Antiviral?" },
-      {field = "oselt", values = { 0 = false, 1 = true }, description = "Neuraminidase inhibitors"},
-      {field = "drv_c", values = { 0 = false, 1 = true }, description = "Darunavir/Cobicistat"},
-      {field = "drv_r", values = { 0 = false, 1 = true }, description = "Darunavir/Ritonavir"}
+      { field = "oselt", values = { 0 = false, 1 = true }, description = "Neuraminidase inhibitors" },
+      { field = "drv_c", values = { 0 = false, 1 = true }, description = "Darunavir/Cobicistat" },
+      { field = "drv_r", values = { 0 = false, 1 = true }, description = "Darunavir/Ritonavir" },
     ]
 
   [visit.treatment_antivitals_type]
@@ -245,8 +252,8 @@
       { field = "remdi", values = { 1 = "Remdesivir" } },
       { field = "lopr", values = { 1 = "Lopinavir/Ritonvir" } },
       { field = "oselt", values = { 1 = "Neuraminidase inhibitor" } },
-      { field = "drv_c", values = { 1 = "Darunavir/Cobicistat" } } ,
-      { field = "drv_r", values = { 1 = "Lopinavir/Ritonvir" } }
+      { field = "drv_c", values = { 1 = "Darunavir/Cobicistat" } },
+      { field = "drv_r", values = { 1 = "Lopinavir/Ritonvir" } },
     ]
 
   [visit.treatment_antimalarial]
@@ -254,7 +261,7 @@
     combinedType = "any"
     fields = [
       { field = "cloroq", values = { 0 = false, 1 = true }, description = "Hydroxychloroquine" },
-      { field = "cloroquina", values = { 0 = false, 1 = true}, description = "Chloroquine" }
+      { field = "cloroquina", values = { 0 = false, 1 = true }, description = "Chloroquine" },
     ]
 
   [visit.treatment_antimalarial_type]
@@ -303,8 +310,8 @@
   [visit.treatment_cardiovascular_support]
     combinedType = "any"
     fields = [
-      {field = "t_dva", description = "Inotropes / vasopressors", values = { 0 = false, 1 = true }},
-      {field = "t_ecmo", description = "Extracorporeal (ECMO) support", values = { 0 = false, 1 = true }}
+      { field = "t_dva", description = "Inotropes / vasopressors", values = { 0 = false, 1 = true } },
+      { field = "t_ecmo", description = "Extracorporeal (ECMO) support", values = { 0 = false, 1 = true } },
     ]
 
   [visit.treatment_inotropes_vasopressors]
@@ -328,7 +335,7 @@
   excludeWhen = "none"
   fields = [
     { field = "otro_tto", description = "Any other treatments for Covid?" },
-    { field = "t_otros1", description = "Any other treatments?"}
+    { field = "t_otros1", description = "Any other treatments?" },
   ]
 
 [visit.outcome_date]
@@ -420,7 +427,7 @@
 
 [[observation]]
   name = "seizures"
-  date = { field = "date_outcome" }
+  date = { ref = "outcomeDate" }
   start_date = { field = "fchadminsion" }
   duration_type = "event"
   phase = "study"
@@ -453,8 +460,8 @@
 [[observation]]
   name = "pneumonia"
   phase = "study"
-  date = {field = "date_outcome"}
-  is_present = { field = "c_nb", ref = "Y/N/NK"}
+  date = { ref = "outcomeDate" }
+  is_present = { field = "c_nb", ref = "Y/N/NK" }
   context = ["bacterial"]
 
 [[observation]]
@@ -473,7 +480,7 @@
   name = "pao2_mmHg"
   date = { field = "fecha_gas" }
   phase = "admission"
-  value = { field = "pa02" }
+  value = { field = "pa02", source_unit = "mmHg" }
 
 [[observation]]
   name = "pco2_mmHg"
@@ -481,11 +488,11 @@
   phase = "admission"
   value = { field = "pco2" }
 
-[observation]
+[[observation]]
   name = "oxygen_o2hb"
   date = { field = "fch_hemat" }
   phase = "admission"
-  value = { field = "hb"}
+  value = { field = "hb" }
 
 [[observation]]
   name = "respiratory_rate"
@@ -507,13 +514,13 @@
 
 [[observation]]
   name = "fatigue_malaise"
-  date = {field = "fchadminsion"}
+  date = { field = "fchadminsion" }
   phase = "admission"
-  value = { field = "ss_malest"} # this field onlz captured malaise, not fatigue
+  is_present = { field = "ss_malest", ref = "Y/N/NK" } # this field onlz captured malaise, not fatigue
 
   ### Obervation attributes not mapped here...
   # bleeding
-  # has_immunosuppression 
+  # has_immunosuppression
   # avpu
   # clinical_classification_critical_illness_scale
   # clinical_classification_pneumonia_needing_oxygen
