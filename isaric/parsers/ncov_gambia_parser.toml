@@ -3,7 +3,7 @@
 [adtl]
   name = "ncov-gambia"
   description = "CVRVRNJ PREVENTION AND TREATMENT FOR COVID-19 ASSOCIATED SEVERE PNEUMONIA IN THE GAMBIA A  RANDOMIZED CLINICAL TRIAL"
-  defaultDateFormat = "dmy"
+  defaultDateFormat = "%Y-%m-%d %H:%M:%S"                                                                                              #
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -19,10 +19,9 @@
     optional-fields = ["outcome", "date_outcome"]
 
   [adtl.tables.observation]
-    kind = "groupBy"
-    aggregation = "lastNotNull"
+    kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "q_1", sensitive = true } }
+    common = { visit_id = { field = "record_id", sensitive = true } }
 
 [adtl.defs]
   "Y/N" = { values = { 1 = true, 2 = false } }
@@ -37,15 +36,15 @@
   [adtl.defs."ss_flw_date"]
     combinedType = "firstNonNull"
     fields = [
-      { field = "q_1e_tire_fllw", description = "1e) Date of readmission" },     # not sure if this applies here ..
-      { field = "q_2_tire_fllw", description = "1l) Date you did this survey" },
+      { field = "q_1e_tire_fllw", description = "1e) Date of readmission" },                               # not sure if this applies here ..
+      { field = "q_2_tire_fllw", description = "1l) Date you did this survey", source_date = "%Y-%m-%d" },
     ]
 
   [adtl.defs."ss_flw2_date"]
     combinedType = "firstNonNull"
     fields = [
-      { field = "q_1e_tire_fllw_d_90", description = "1e) Date of readmission" },     # not sure if this applies here ..
-      { field = "q_2_tire_fllw_d_90", description = "1l) Date you did this survey" },
+      { field = "q_1e_tire_fllw_d_90", description = "1e) Date of readmission" },                               # not sure if this applies here ..
+      { field = "q_2_tire_fllw_d_90", description = "1l) Date you did this survey", source_date = "%Y-%m-%d" },
     ]
 
 
@@ -68,14 +67,9 @@
 [subject]
   pathogen = "COVID-19"
 
-  [subject.subject_id] # Is this valid / sensible?
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "q_1", description = "1) Screening number", sensitive = true },
-      { field = "q_sd_1", description = "1) Screening number", sensitive = true },
-      { field = "q_1a_tire_fllw", description = "1a) Screening number", sensitive = true },      # this is a followup field. should it be here?
-      { field = "q_1a_tire_fllw_d_90", description = "1a) Screening Number", sensitive = true }, # this is a followup field. should it be here?
-    ]
+  [subject.subject_id]
+    field = "record_id"
+    sensitive = true
 
     #[subject.dataset_id]
     #  field = "CTRSIPC"
@@ -100,6 +94,8 @@
       { field = "q_5a", description = "5a) DOB", apply = { function = "yearsElapsed", params = [
         "$q_6",
         2022,
+        "%Y-%m-%d",
+        "%Y-%m-%d %H:%M:%S",
       ] } },
     ]
 
@@ -112,25 +108,25 @@
       { field = "q_5a", apply = { function = "splitDate", params = [
         "year",
         2022,
-        "%d/%m/%Y", # is this (and below) date format correct?
+        "%Y-%m-%d",
       ] } },
       { field = "q_5b", apply = { function = "startYear", params = [
         [
           "$q_6",
-          "$q_sd_3", # correct? 
+          "$q_sd_3",
         ],
         2022,
-        "%d/%m/%Y %H:%M",
+        "%Y-%m-%d %H:%M:%S",
       ] } },
     ]
 
   [subject.dob_month]
     field = "q_5a"
-    apply = { function = "splitDate", params = ["month", 2022, "%d/%m/%Y"] }
+    apply = { function = "splitDate", params = ["month", 2022, "%Y-%m-%d"] }
 
   [subject.dob_day]
     field = "q_5a"
-    apply = { function = "splitDate", params = ["day", 2022, "%d/%m/%Y"] }
+    apply = { function = "splitDate", params = ["day", 2022, "%Y-%m-%d"] }
 
   [subject.sex]
     field = "q_4"
@@ -166,6 +162,7 @@
 [subject.has_tuberculosis_past]
   field = "q_13b"
   description = "13b) previously treated TB"
+  ref = "Y/N"
 
 [subject.has_dementia]
   field = "q_22"
@@ -256,8 +253,14 @@
 [subject.date_death]
   combinedType = "min"
   fields = [
-    { field = "q_1j_tire_fllw", description = "1j) Date of Death", if.any = { q_1d_tire_fllw = 5, q_1ia_death_date = 1 } },                # followup field at day 28
-    { field = "q_1j_tire_fllw_d_90", description = "1j) Date of Death", if.any = { q_1d_tire_fllw_d_90 = 5, q_1ia_death_date_d_90 = 1 } }, # followup field at day 90
+    { field = "q_1j_tire_fllw", description = "1j) Date of Death", if.any = [
+      { q_1d_tire_fllw = 5 },
+      { q_1ia_death_date = 1 },
+    ] }, # followup field at day 28
+    { field = "q_1j_tire_fllw_d_90", description = "1j) Date of Death", if.any = [
+      { q_1d_tire_fllw_d_90 = 5 },
+      { q_1ia_death_date_d_90 = 1 },
+    ] }, # followup field at day 90
   ]
 
   # VISIT
@@ -267,21 +270,12 @@
   country_iso3 = "GMB"
 
   [visit.visit_id]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "q_1", description = "1) Screening number", sensitive = true },
-      { field = "q_sd_1", description = "1) Screening number", sensitive = true },
-    ]
+    field = "record_id"
+    sensitive = true
 
   [visit.subject_id]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "q_1", description = "1) Screening number", sensitive = true },
-      { field = "q_sd_1", description = "1) Screening number", sensitive = true },
-    ]
-
-  [visit.dataset_id]
-    field = "CTRSIPC"
+    field = "record_id"
+    sensitive = true
 
   [visit.start_date]
     field = "q_6"
@@ -290,9 +284,9 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "q_66b___12", values = { 1 = "Dexamthasone" } },
-      { field = "q_66b___13", values = { 1 = "Prednisone" } },
-      { field = "q_66b___14", values = { 1 = "Other" } },
+      { field = "q_66b___12", values = { 1 = "Dexamethasone" } },
+      { field = "q_66b___13", values = { 1 = "Prednisolone" } },
+      # { field = "q_66b___14", values = { 1 = "Other" } },
     ]
 
   [visit.treatment_antibiotics_type]
@@ -349,10 +343,10 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "q_66b___29" },
-      { field = "q_66b___30" },
-      { field = "q_66b___31" },
-      { field = "q_66b___32" },
+      { field = "q_66e" },
+      { field = "q_66f" },
+      { field = "q_66g" },
+      { field = "q_66h" },
     ]
 
 # OBSERVATION
@@ -496,17 +490,17 @@
   phase = "followup"
   is_present = { field = "flw1_fati_d_90", description = "4w) Fatigue", values = { 1 = true, 0 = false } }
 
-[[observation]] # Q. is this the correct observation name?
-  name = "inability_to_walk"
+[[observation]]
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "ss_flw_date" }
-  is_present = { field = "flw_walking_today_fc839e", description = "8e) Do you have difficulty walking or climbing steps?", ref = "inabilityWalkToday" }
+  value = { field = "flw_walking_today_fc839e", description = "8e) Do you have difficulty walking or climbing steps?", ref = "inabilityWalkToday" }
 
-[[observation]] # Q. is this the correct observation name?
-  name = "inability_to_walk"
+[[observation]]
+  name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "ss_flw2_date" }
-  is_present = { field = "flw_walking_today_fc839e_d_90", description = "8e) Do you have difficulty walking or climbing steps?", ref = "inabilityWalkToday" }
+  value = { field = "flw_walking_today_fc839e_d_90", description = "8e) Do you have difficulty walking or climbing steps?", ref = "inabilityWalkToday" }
 
 [[observation]]
   name = "inability_to_walk_scale"
@@ -809,13 +803,13 @@
   name = "bleeding"
   date = { ref = "ss_flw_date" }
   phase = "followup"
-  is_present = { field = "flw_bleeding_4b40d6", description = "4a_r) Bleeding" }
+  is_present = { field = "flw_bleeding_4b40d6", description = "4a_r) Bleeding", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "bleeding"
   date = { ref = "ss_flw2_date" }
   phase = "followup"
-  is_present = { field = "flw_bleeding_4b40d6_d_90", description = "4a_r) Bleeding" }
+  is_present = { field = "flw_bleeding_4b40d6_d_90", description = "4a_r) Bleeding", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "oxygen_saturation_percent"
