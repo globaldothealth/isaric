@@ -408,7 +408,7 @@
   excludeWhen = "none"
   fields = [
     { field = "outcome_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "outcome_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "outcome_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "outcome_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "outcome_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "outcome_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
