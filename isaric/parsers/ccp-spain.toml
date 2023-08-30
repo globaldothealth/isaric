@@ -83,7 +83,7 @@
     ref = "Y/N/NK"
     description = "Pregnant ?"
 
-  [subject.pregnancy_gestational_assessment_weeks]
+  [subject.pregnancy_gestational_age_weeks]
     field = "semgest"
     description = "Gestational weeks assessment"
 
@@ -181,14 +181,6 @@
 [visit]
   country_iso3 = "ESP"
 
-  [visit.date_outcome]
-    combinedType = "firstNonNull"
-    description = "Outcome date"
-    fields = [
-      { field = "fch_alta", if = { "outcome" = 2 } },
-      { field = "fch_exitus", if = { "outcome" = 3 } },
-    ]
-
   [visit.visit_id]
     field = "record_id"
     sensitive = true
@@ -204,8 +196,7 @@
 
   [visit.icu_admission]
     combinedType = "any"
-    field = "uci"
-    values = { 0 = false, 1 = true }
+    fields = [{ field = "uci", values = { 0 = false, 1 = true } }]
 
   [visit.icu_admission_dates]
     description = "ICU admission date"
@@ -243,17 +234,17 @@
       { field = "drv_r", values = { 0 = false, 1 = true }, description = "Darunavir/Ritonavir" },
     ]
 
-  [visit.treatment_antivitals_type]
+  [visit.treatment_antiviral_type]
     description = "Type of antiviral agent used"
     excludeWhen = "none"
     combinedType = "set"
     fields = [
       { field = "rbv", values = { 1 = "Ribavirin" } },
       { field = "remdi", values = { 1 = "Remdesivir" } },
-      { field = "lopr", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "lopr", values = { 1 = "Lopinavir/Ritonavir" } },
       { field = "oselt", values = { 1 = "Neuraminidase inhibitor" } },
       { field = "drv_c", values = { 1 = "Darunavir/Cobicistat" } },
-      { field = "drv_r", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "drv_r", values = { 1 = "Lopinavir/Ritonavir" } },
     ]
 
   [visit.treatment_antimalarial]
@@ -338,13 +329,12 @@
     { field = "t_otros1", description = "Any other treatments?" },
   ]
 
-[visit.outcome_date]
-  description = "Date the visit outcome was recorded"
+[visit.date_outcome]
   combinedType = "firstNonNull"
+  description = "Outcome date"
   fields = [
-    { field = "fch_alta", description = "Date of hospital discharge" },
-    { field = "fch_exitus", description = "Date of death" },
-    { field = "fch_ulticont", description = "Date of last contact" },
+    { field = "fch_alta", if = { "outcome" = 2 } },
+    { field = "fch_exitus", if = { "outcome" = 3 } },
   ]
 
 [[observation]]
