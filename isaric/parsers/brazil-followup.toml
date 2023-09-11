@@ -16,15 +16,15 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
-    optional-fields = ["outcome"]
+    optional-fields = ["outcome", "date_outcome"]
 
   [adtl.tables.observation]
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "subjid", sensitive = true } }
+    common = { visit_id = { field = "flw_subjid", sensitive = true } }
 
-  [adtl.defs."Y/N/NK".values]
+  [adtl.defs."Y/N".values]
     1 = true
     0 = false
 
@@ -59,14 +59,17 @@
     field = "flw_first_admit"
     description = "Aproximadamente em que data você foi internado pela primeira vez no hospital com COVID-19? / At what date you were first hospitalized at the hospital with Covid-19?"
 
-  [subject.age]
-    field = "flw_year_of_birth"
-    apply = { function = "yearsElapsed", params = [
-      "$flw_survey_date",
-      2022,
-      "%d/%m/%Y",
-      "%d/%m/%Y",
-    ] }
+    # [subject.age] - NOTE: the year has mapped values, won't work like this
+    #   field = "flw_year_of_birth"
+    #   apply = { function = "yearsElapsed", params = [
+    #     "$flw_survey_date",
+    #     2022,
+    #     "%d/%m/%Y",
+    #     "%d/%m/%Y",
+    #   ] }
+
+    # [subject.date_of_birth] - neither will this
+
 
   [subject.dob_year]
     combinedType = "firstNonNull"
@@ -75,16 +78,10 @@
     ]
 
   [subject.dob_month]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "flw_month_birth", values = { 1 = "Janeiro", 2 = "Fevereiro", 3 = "Março", 4 = "Abril", 5 = "Maio", 6 = "Junho", 7 = "Julho", 8 = "Agosto", 9 = "Setembro", 10 = "Outubro", 11 = "Novembro", 12 = "Dezembro" } },
-    ]
+    field = "flw_month_birth"
 
   [subject.dob_day]
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "flw_day_birth", values = { 1 = "1", 2 = "2", 3 = "3", 4 = "4", 5 = "5", 6 = "6", 7 = "7", 8 = "8", 9 = "9", 10 = "10", 11 = "11", 12 = "12", 13 = "13", 14 = "14", 15 = "15", 16 = "16", 17 = "17", 18 = "18", 19 = "19", 20 = "20", 21 = "21", 22 = "22", 23 = "23", 24 = "24", 25 = "25", 26 = "26", 27 = "27", 28 = "28", 29 = "29", 30 = "30", 31 = "31" } },
-    ]
+    field = "flw_day_birth"
 
   [subject.sex_at_birth]
     field = "flw_sex_at_birth_new"
@@ -98,7 +95,13 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "flw_ethnicity", values = { 1 = "branco", 2 = "árabe", 3 = "preto", 4 = "Leste Asiático", 5 = "sul da Ásia", 6 = "oeste asiático", 7 = "latino-americano", 8 = "outro", 9 = "prefiro não dizer" } },
+    { field = "flw_ethnicity___1", values = { 1 = "White" } },
+    { field = "flw_ethnicity___2", values = { 1 = "Arab" } },
+    { field = "flw_ethnicity___3", values = { 1 = "Black" } },
+    { field = "flw_ethnicity___4", values = { 1 = "East Asian" } },
+    { field = "flw_ethnicity___5", values = { 1 = "South Asian" } },
+    { field = "flw_ethnicity___6", values = { 1 = "West Asian" } },
+    { field = "flw_ethnicity___7", values = { 1 = "Latin American" } },
     { field = "flw_ethnicity_oth" },
   ]
 
@@ -309,13 +312,13 @@
   name = "altered_consciousness_confusion"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_confusion", ref = "Y/N/NK" }
+  is_present = { field = "flw1_confusion", ref = "Y/N" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_bleeding", ref = "Y/N/NK" }
+  is_present = { field = "flw_bleeding", ref = "Y/N" }
 
 [[observation]]
   name = "chest_pain"
@@ -327,7 +330,7 @@
   name = "confusion"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_confusion", ref = "Y/N/NK" }
+  is_present = { field = "flw1_confusion", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
@@ -338,8 +341,8 @@
     combinedType = "any"
     fields = [
       { field = "flw1_pers_cough", ref = "Y/N" },
-      { field = "flw1_pers_cough_dr", description = "Dry cough", ref = "Y/N/NK" },
-      { field = "flw1_pers_cough_ph", description = "Dry cough", ref = "Y/N/NK" },
+      { field = "flw1_pers_cough_dr", description = "Dry cough", ref = "Y/N" },
+      { field = "flw1_pers_cough_ph", description = "Dry cough", ref = "Y/N" },
     ]
 
 [[observation]]
@@ -352,7 +355,7 @@
   name = "diarrhoea"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_diarrhoea", ref = "Y/N/NK" }
+  is_present = { field = "flw1_diarrhoea", ref = "Y/N" }
 
 [[observation]]
   name = "fatigue_malaise"
@@ -364,13 +367,13 @@
   name = "headache"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_headache", ref = "Y/N/NK" }
+  is_present = { field = "flw1_headache", ref = "Y/N" }
 
 [[observation]]
   name = "history_of_fever"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_fever", ref = "Y/N/NK" }
+  is_present = { field = "flw_fever", ref = "Y/N" }
 
 [[observation]]
   name = "inability_to_walk_scale"
@@ -401,7 +404,7 @@
   name = "joint_pain"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_joint_pain", ref = "Y/N/NK" }
+  is_present = { field = "flw1_joint_pain", ref = "Y/N" }
 
 [[observation]]
   name = "loss_of_smell"
@@ -431,25 +434,25 @@
   name = "muscle_aches"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_muscle_pain", ref = "Y/N/NK" }
+  is_present = { field = "flw1_muscle_pain", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw1_seizures", ref = "Y/N/NK" }
+  is_present = { field = "flw1_seizures", ref = "Y/N" }
 
 [[observation]]
   name = "shortness_of_breath"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_short_breath", ref = "Y/N/NK" }
+  is_present = { field = "flw_short_breath", ref = "Y/N" }
 
 [[observation]]
   name = "skin_rash"
   date = { field = "flw_survey_date" }
   phase = "followup"
-  is_present = { field = "flw_skin_rash", ref = "Y/N/NK" }
+  is_present = { field = "flw_skin_rash", ref = "Y/N" }
 
 [[observation]]
   name = "vomiting_nausea"
