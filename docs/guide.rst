@@ -360,16 +360,31 @@ Subject
 **subject_id**: Text. Unique ID for the subject (NOTE: currently this is
 the same as the visit ID, prior to implementation of RELSUB matching).
 
-**dataset_id**: Text. Refers to the specifc ID/Version of the dataset
-being used (NOTE TO DEVS: should this be study metadata instead?)
-
 **enrolment_date**: Date. Date of subject enrolment into the study.
 
 **earliest_admission_date**: Date. Date of admission for the first study
 visit. Use ``combinedType = "min"`` To allow the earliest date to be
 chosen from across multiple visits.
 
-**age**: Value. Age of the subject in years.
+**age**: Value. Age of the subject in years. Provided age should be used where
+possible, if not present age can be estimated from the date of birth and admission
+date. Where age is provided as months/days, it will be converted to years such that
+6 months = 0.5 years, 7 days = 0.02 years.
+
+**date_of_birth**: Text. Date of birth in yyyy-mm-dd format. Should only be
+filled if provided in the data, not calculated.
+
+**dob_year**: Value. 4-digit year of birth. Should be filled from the date of
+birth if provided, otherwise can be calculated from age and admission date. As
+year can be estimated, if date_of_birth is blank there is a +/- 1 year error margin.
+
+**dob_month**: Value. Month of birth. Should be filled using the date of birth
+if provided, otherwise can be calculated from age *if provided in months* and
+and admission date. If age is provided in years, the month cannot be accurately
+estimated and should therefore be left blank.
+
+**dob_day**: Value. Day of birth. Should only be filled if a date of birth is
+provided, otherwise left blank.
 
 **sex_at_birth**: Text. One of
 
@@ -409,6 +424,8 @@ breastfeeding/ did they breastfeed during the study period?
 
 **pregnancy_post_partum**: Bool. Is the subject post-partum (up to 6
 weeks post-delivery) at the point of enrolment?
+
+**preterm_infant**: Bool. For pediatric subjects: was the child born pre-term (<37 weeks)?
 
 **has_asplenia**: Bool. Does the subject have asplenia?
 
@@ -536,6 +553,8 @@ support has been administered. Subsets (all boolean indicators) are:
 + *treatment_pacing*
 
 + *treatment_ecmo*
+
++ *treatment_cpr*
 
 Overarching fields denoting 'cardiovascular support' can also include CPR,
 or other forms of mechanical cardiovascular support.
@@ -700,6 +719,14 @@ into the subtypes for the phase. For example:
 
 .. _other-fields-1:
 
+**loss_of_smell_or_taste**: Bool. Supertype for loss of smell or loss of taste,
+and can also be used as a single indicator where both symptoms are combined in
+a dataset.
+Subtypes are:
+
++ *loss_of_smell*
++ *loss_of_taste*
+
 Other fields
 ~~~~~~~~~~~~
 
@@ -715,6 +742,8 @@ confusion, not altered consciousness, use confusion_
 
 **base_excess**: Value. Difference between observed and normal buffer
 base concentration for oxygenated blood.
+
+**blantyre_coma_score**: Value (0-5). Coma scale modified from the pediatric glasgow coma scale.
 
 **bleeding**: Bool. For bleeding (other) observations. If field is
 described as bleeding (haemorrhage) or similar, use
@@ -750,7 +779,7 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **fatigue_malaise**: Bool.
 
-**feeding_intolerance_pediatrics** Bool. Unused.
+**feeding_intolerance_pediatrics** Bool.
 
 **glasgow_coma_score**: Value (3-15). `Coma
 scale <https://www.glasgowcomascale.org>`__
@@ -761,7 +790,7 @@ scale <https://www.glasgowcomascale.org>`__
 
 **heart_sounds**: Bool.
 
-**hepatomegaly** Bool. Enlarged liver? (Unused)
+**hepatomegaly** Bool. Enlarged liver
 
 **history_of_fever** Bool. Recently feverish? For admission/followup
 where the subject self-reports.
@@ -787,14 +816,6 @@ instead contains a boolean Y/N response, use inability_to_walk_ instead.
 **irritability_pediatrics**: Bool. Unused.
 
 **joint_pain**: Bool.
-
-**loss_of_smell**: Bool. If loss of smell/taste, use combined attribute
-below.
-
-**loss_of_smell_or_taste**: Bool. For where smell/taste loss is
-combined.
-
-**loss_of_taste**: Bool.
 
 **lower_chest_wall_indrawing**: Bool.
 
@@ -832,7 +853,7 @@ if the patient requires oxygen as a result (if specified in that field,
 don’t assume that if the patient is recorded as being on oxygen
 elsewhere, it is related to this record of pneumonia).
 
-**respiratory_rate**: Value (1-50).
+**respiratory_rate**: Value (1-90).
 
 **richmond_agitation-sedation_scale**: Value (-5 to 4, including 0).
 

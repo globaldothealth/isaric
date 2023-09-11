@@ -141,6 +141,23 @@
       ],
       "properties": {
         "name": {
+          "const": "blantyre_coma_score"
+        },
+        "value": {
+          "type": [
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 5
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
           "const": "heart_rate_bpm"
         },
         "value": {

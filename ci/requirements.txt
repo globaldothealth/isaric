@@ -1,2 +1,3 @@
 tomli
 fastjsonschema
+more_itertools

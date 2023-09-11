@@ -79,8 +79,8 @@
                   "items": {
                     "type": [
                       "string",
-                      "array",
-                      "number"
+                      "number",
+                      "array"
                     ]
                   },
                   "description": "Additional parameters to pass to the function"
@@ -253,19 +253,44 @@
       "type": "object",
       "required": [
         "subject_id",
-        "age",
         "ethnicity",
         "pathogen"
       ],
       "anyOf": [
         {
           "required": [
-            "earliest_admission_date"
+            "earliest_admission_date",
+            "age"
           ]
         },
         {
           "required": [
-            "enrolment_date"
+            "earliest_admission_date",
+            "date_of_birth"
+          ]
+        },
+        {
+          "required": [
+            "earliest_admission_date",
+            "dob_year"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "age"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "date_of_birth"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "dob_year"
           ]
         }
       ],
@@ -299,6 +324,22 @@
         },
         "age": {
           "description": "Age in years",
+          "$ref": "#/definitions/mapping"
+        },
+        "date_of_birth": {
+          "description": "Date of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_year": {
+          "description": "Year of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_month": {
+          "description": "month of birth",
+          "$ref": "#/definitions/mapping"
+        },
+        "dob_day": {
+          "description": "Day of birth",
           "$ref": "#/definitions/mapping"
         },
         "sex_at_birth": {
@@ -355,6 +396,10 @@
         },
         "pregnancy_gestational_age_weeks": {
           "description": "Gestational assessment weeks",
+          "$ref": "#/definitions/mapping"
+        },
+        "preterm_infant": {
+          "description": "Subject born preterm (<37 weeks)",
           "$ref": "#/definitions/mapping"
         },
         "has_chronic_hematologic_disease": {
@@ -575,6 +620,10 @@
           "description": "Antifungal agent",
           "$ref": "#/definitions/mapping"
         },
+        "treatment_antifungal_agent_type": {
+          "description": "Antifungal agent",
+          "$ref": "#/definitions/mapping"
+        },
         "treatment_antivirals": {
           "description": "Antivirals",
           "$ref": "#/definitions/mapping"
@@ -750,6 +799,7 @@
                   "clinical_frailty_score",
                   "diastolic_blood_pressure_mmHg",
                   "glasgow_coma_score",
+                  "blantyre_coma_score",
                   "base_excess",
                   "inability_to_walk_scale",
                   "heart_rate_bpm",
@@ -832,23 +882,30 @@
             "description": "Reference to link to this observation"
           },
           "phase": {
-            "description": "Phase of study",
-            "enum": [
-              "pre-admission",
-              "admission",
-              "study",
-              "followup"
-            ],
-            "x-taplo": {
-              "docs": {
-                "enumValues": [
-                  "Strictly before admission",
-                  "Taken at or before admission",
-                  "Observation during study period",
-                  "Recorded in followup survey"
-                ]
+            "anyOf": [
+              {
+                "description": "Phase of study",
+                "enum": [
+                  "pre-admission",
+                  "admission",
+                  "study",
+                  "followup"
+                ],
+                "x-taplo": {
+                  "docs": {
+                    "enumValues": [
+                      "Strictly before admission",
+                      "Taken at or before admission",
+                      "Observation during study period",
+                      "Recorded in followup survey"
+                    ]
+                  }
+                }
+              },
+              {
+                "$ref": "#/definitions/mapping"
               }
-            }
+            ]
           },
           "date": {
             "description": "Date of observation, or end date of observation period",

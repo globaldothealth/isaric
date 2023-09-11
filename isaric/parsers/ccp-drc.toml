@@ -69,6 +69,76 @@
     description = "Age"
     source_unit = { field = "age_unit", unit = "years", values = { 1 = "years", 2 = "months", 3 = "days" } }
 
+  [subject.date_of_birth]
+    field = "dob"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+      ] } },
+      { field = "age", if.any = [
+        { age_unit = 1 },
+        { age_unit = "" },
+      ], apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$fever_date",
+          "$fatigue_date",
+          "$dyspnea_date",
+          "$anosmia_date",
+          "$sore_throat_date",
+          # "$headache_date",
+          # "$signs_symps_date",
+        ],
+        2022,
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        [
+          "$add_date",
+          "$fever_date",
+          "$fatigue_date",
+          "$dyspnea_date",
+          "$anosmia_date",
+          "$sore_throat_date",
+          # "$headache_date",
+          # "$signs_symps_date",
+        ],
+        2022,
+        "%Y-%m-%d",
+        "months",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "month",
+        2022,
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startMonth", params = [
+        [
+          "$add_date",
+          "$fever_date",
+          "$fatigue_date",
+          "$dyspnea_date",
+          "$anosmia_date",
+          "$sore_throat_date",
+          # "$headache_date",
+          # "$signs_symps_date",
+        ],
+        2022,
+        "%Y-%m-%d",
+      ] } },
+    ]
+
+  [subject.dob_day]
+    field = "dob"
+    apply = { function = "splitDate", params = ["day", 2022] }
+
   [subject.ethnicity]
     description = "race/ethnicity"
     combinedType = "set"
@@ -338,7 +408,7 @@
   excludeWhen = "none"
   fields = [
     { field = "outcome_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "outcome_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "outcome_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "outcome_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "outcome_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "outcome_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -964,7 +1034,7 @@
   name = "oxygen_o2hb"
   phase = "study"
   date = { field = "hema_date" }
-  value = { field = "hemo", source_unit = { field = "hemo_type", values = { 1 = "g/L", 2 = "g/dL" } } }
+  value = { field = "hemo", unit = "g/dL", source_unit = { field = "hemo_type", values = { 1 = "g/L", 2 = "g/dL" } } }
 
 [[observation]]
   name = "oxygen_saturation_percent"

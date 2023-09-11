@@ -100,11 +100,17 @@
       "type": "array",
       "items": {
         "enum": [
-          "Methylprednisolone",
-          "Prednisolone",
+          "Budesonide",
+          "Cortisonal",
           "Dexamethasone",
+          "Fluticasone",
           "Hydrocortisone",
           "Aminophylline",
+          "Methylprednisolone",
+          "Mometasone",
+          "Prednisolone",
+          "Prednisone",
+          "Salmeterol",
           "Other"
         ]
       },
@@ -143,6 +149,12 @@
       "description": "Antifungal agent",
       "category": "treatments"
     },
+    "treatment_antifungal_agent_type": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "Antifungal agents",
+      "category": "treatments"
+    },
     "treatment_antivirals": {
       "type": "boolean",
       "description": "Antivirals",
@@ -153,7 +165,7 @@
       "items": {
         "enum": [
           "Ribavirin",
-          "Lopinavir/Ritonvir",
+          "Lopinavir/Ritonavir",
           "Ritonavir",
           "Interferon alpha",
           "Interferon beta",

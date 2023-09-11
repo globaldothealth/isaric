@@ -4,11 +4,11 @@
 |---------------|-------|-------|----------------|
 |subject        |493980 |494547 |99.885350% |
 |visit          |494143 |494547 |99.918309% |
-|observation    |2190779        |2190799        |99.999087% |
+|observation    |2197083        |2197508        |99.980660% |
 
 ## subject
 
-* 316: data must contain ['subject_id', 'age', 'sex_at_birth', 'ethnicity', 'pathogen'] properties
+* 316: data must be valid exactly by one definition (0 matches found)
 * 251: data.age must be smaller than or equal to 120
 
 ## visit
@@ -17,4 +17,5 @@
 
 ## observation
 
-* 20: data must contain ['phase', 'date', 'name'] properties
+* 404: data must be valid exactly by one definition (0 matches found)
+* 21: data must contain ['phase', 'date', 'name'] properties
