@@ -78,6 +78,10 @@
     description = "Chronic kidney disease"
     ref = "Y/N/NK"
 
+  [subject.has_chronic_respiratory_disease]
+    field = "chronicpul_mhyn"
+    ref = "Y/N/NK"
+
   [subject.has_comorbidity_other]
     combinedType = "set"
     excludeWhen = "none"
@@ -152,7 +156,7 @@
 
   [subject.has_died]
     field = "dsterm"
-    values = { 1 = false, 2 = true, 4 = false, 5 = false } # 3=palliative discharge so relatively likely that patient died soon after...
+    values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false }
 
   [subject.icu_admitted]
     combinedType = "any"
@@ -206,16 +210,7 @@
   excludeWhen = "none"
 
   [[visit.icu_admission_dates.fields]]
-    field = "icu_hostdat_trt_v2"
-    description = "Date of Intensive Care Unit admission"
-
-  [[visit.icu_admission_dates.fields]]
-    field = "icu_admdat_trt_v2"
-    description = "Date of Intensive Care Unit admission"
-
-  [[visit.icu_admission_dates.fields]]
-    field = "hdu_hostdat_trt_v2"
-    description = "Date of High Dependency Unit admission"
+    field = "hdu_admdat_trt_v2"
 
 [visit.outcome]
   field = "dsterm"
@@ -231,7 +226,6 @@
 [visit.treatment_antibiotics]
   combinedType = "any"
   fields = [
-    { field = "antibiotic_cmyn", description = "Antibiotic?", ref = "Y/N/NK" },
     { field = "antibiotic_cmyn_v2", description = "Antibiotic?", ref = "Y/N/NK" },
   ]
 
@@ -243,11 +237,26 @@
     field = "antibiotic_type"
     apply.function = "wordSubstituteSet"
     apply.params = [
-      ["Cef?t?riaxone", "Ceftriaxone"],
-      ["cotrimoxazole", "Co-Trimoxazole"],
-      ["Amoxicillin", "Amoxicillin"],
-      ["metronidazole", "Metronidazole"],
-      ["benzathine", "Benzathine benzylpenicillin"]
+      [
+        "Cef?t?riaxone",
+        "Ceftriaxone",
+      ],
+      [
+        "cotrimoxazole",
+        "Co-Trimoxazole",
+      ],
+      [
+        "Amoxicillin",
+        "Amoxicillin",
+      ],
+      [
+        "metronidazole",
+        "Metronidazole",
+      ],
+      [
+        "benzathine",
+        "Benzathine benzylpenicillin",
+      ],
     ]
 
   [[visit.treatment_antibiotics_type.fields]]
@@ -270,7 +279,6 @@
 [visit.treatment_antifungal_agent]
   combinedType = "any"
   fields = [
-    { field = "antifung_cmyn", description = "Antifungal agent ?", ref = "Y/N/NK" },
     { field = "antifung_cmyn_v2", description = "Antifungal agent ?", ref = "Y/N/NK" },
   ]
 
@@ -278,14 +286,12 @@
   combinedType = "any"
   fields = [
     { field = "antimlrl_cmyn_v2", description = "Antimalarial agent?", ref = "Y/N/NK" },
-    { field = "antimlrl_cmyn", description = "Antimalarial agent?", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_antimalarial_type]
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "antimalarial_cmtype", description = "If YES to antimalarial agent; specify:" },
     { field = "antimalarial_cmtype_v2", description = "If YES to antimalarial agent; specify:" },
   ]
 
@@ -294,13 +300,11 @@
   excludeWhen = "none"
   fields = [
     { field = "antiviral_cmtype_v2", description = "If YES to antiviral agent; specify:" },
-    { field = "antiviral_cmtype", description = "If YES to antiviral agent; specify ART:" },
   ]
 
 [visit.treatment_antivirals]
   combinedType = "any"
   fields = [
-    { field = "antiviral_cmyn", description = "Antiviral?", ref = "Y/N/NK" },
     { field = "antiviral_cmyn_v2", description = "Antiviral?", ref = "Y/N/NK" },
   ]
 
@@ -394,15 +398,6 @@
   combinedType = "any"
   fields = [
     { field = "exprmntl_cmyn_v2", description = "Experimental agent?", ref = "Y/N/NK" },
-    { field = "exprmntl_cmyn", description = "Experimental agent?", ref = "Y/N/NK" },
-  ]
-
-[visit.treatment_experimental_agent_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "experimental_cmtype", description = "If YES to Experimental agent; specify:" },
-    { field = "experimental_cmtype_v2", description = "If YES to Experimental agent; specify:" },
   ]
 
 [visit.treatment_inotropes_vasopressors]
@@ -415,7 +410,6 @@
 [visit.treatment_intravenous_fluids]
   combinedType = "any"
   fields = [
-    { field = "intrvns_cmyn", description = "Intravenous fluids?", ref = "Y/N/NK" },
     { field = "intrvns_cmyn_v2", description = "Intravenous fluids?", ref = "Y/N/NK" },
   ]
 
@@ -476,14 +470,14 @@
     ref = "Y/N/NK"
 
 [[observation]]
-  name = "avpu"
+  name = "acvpu"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
 
   [observation.text]
     field = "avpu_vsorres"
     description = "AVPU"
-    values = { 1 = "Alert", 2 = "Verbal", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
+    values = { 1 = "Alert", 2 = "Confused", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
@@ -613,7 +607,7 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "oxy_vsorresu", values = { 1 = "on oxygen", 2 = "on room air" } },
+      { field = "oxy_vsorresu", values = { 1 = "room air", 2 = "on oxygen" } },
     ]
 
 [[observation]]
@@ -625,7 +619,7 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "oxy_vsorresu_v2", values = { 1 = "on oxygen", 2 = "on room air" } },
+      { field = "oxy_vsorresu_v2", values = { 1 = "room air", 2 = "on oxygen" } },
     ]
 
 [[observation]]
@@ -801,3 +795,9 @@
   phase = "study"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "sysbp_vsorres_v2" }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  text = { field = "other_ceoccur_specify_v2" }
