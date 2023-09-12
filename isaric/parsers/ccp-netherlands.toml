@@ -22,11 +22,17 @@
     schema = "../../schemas/dev/observation.schema.json"
     common = { visit_id = { field = "record_id", sensitive = true } }
 
-  [adtl.defs."Y/N".values] # THIS CAN CHANGE BETWEEN DATASETS
+  [adtl.defs."Y/N".values]
     1 = true
     2 = false
-    # SUBJECT
-    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[adtl.defs.admissionDateHierarchy]
+  combinedType = "firstNonNull"
+  fields = [{ field = "admission_dt" }, { field = "Enrolment_date" }]
+
+
+  # SUBJECT
+  # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
 [subject]
   pathogen = "COVID-19"
@@ -46,10 +52,32 @@
     source_unit = { field = "age_unit", values = { 1 = "years", 2 = "months" } } # best guess at units
     unit = "years"
 
-  [subject.sex]
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age", if = { age_unit = 1 }, apply = { function = "startYear", params = [
+        [
+          "$admission_dt",
+          "$Enrolment_date",
+        ],
+        2022,
+        "%m/%d/%Y",
+      ] } },
+      { field = "age", if = { age_unit = 2 }, apply = { function = "startYear", params = [
+        [
+          "$admission_dt",
+          "$Enrolment_date",
+        ],
+        2022,
+        "%m/%d/%Y",
+        "months",
+      ] } },
+    ]
+
+  [subject.sex_at_birth]
     field = "gender"
 
-    [subject.sex.values] # This is standard...
+    [subject.sex_at_birth.values]
       1 = "male"
       2 = "female"
 
@@ -89,7 +117,7 @@
   field = "gestational_weeks"
 
 [subject.has_chronic_hematologic_disease]
-  field = "chd" # ?
+  field = "chd"
   ref = "Y/N"
 
 [subject.has_chronic_cardiac_disease]
@@ -101,7 +129,7 @@
   ref = "Y/N"
 
 [subject.has_chronic_respiratory_disease]
-  field = "cpd" # pulmonary disease?
+  field = "cpd"
   ref = "Y/N"
 
 [subject.has_dementia]
@@ -131,10 +159,10 @@
 [subject.has_smoking]
   field = "Smoking"
 
-  [subject.has_smoking.values] # these 3 are present, who knows if the mapping is correct
+  [subject.has_smoking.values]
     1 = "yes"
-    2 = "former"
-    3 = "never"
+    2 = "never"
+    3 = "former"
 
 [subject.has_asthma]
   field = "asthma"
@@ -172,8 +200,13 @@
   if = { Outcome = 4 }
 
 [subject.icu_admitted]
-  field = "ICU_High_Dependency_admission"
-  ref = "Y/N"
+  combinedType = "any"
+  fields = [
+    { field = "ICU_High_Dependency_admission", ref = "Y/N" },
+    { field = "current_in_ICU_ITU_IMU_HDU", ref = "Y/N" },
+    { field = "unit_admission", ref = "Y/N" },
+  ]
+
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
@@ -190,7 +223,7 @@
     sensitive = true
 
   [visit.start_date]
-    field = "admission_dt"
+    ref = "admissionDateHierarchy"
 
   [visit.pathogen_test_date]
     field = "collection_dt"
@@ -352,12 +385,15 @@
   [visit.treatment_other]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "Specify_other_intervention_procedure" }]
+    fields = [
+      { field = "Specify_other_intervention_procedure" },
+      { field = "Specify_Other_intervention" },
+    ]
 
   [visit.outcome]
     field = "Outcome"
 
-    [visit.outcome.values] # check correspondence of these values
+    [visit.outcome.values]
       1 = "discharged"
       2 = "hospitalised"
       3 = "transferred"
@@ -378,7 +414,7 @@
 
 [[observation]]
   name = "pneumonia"
-  start_date = { field = "admission_dt" }
+  start_date = { ref = "admissionDateHierarchy" }
   date = { field = "Outcome_dt" }
   duration_type = "event"
   phase = "study"
@@ -387,7 +423,7 @@
 
 [[observation]]
   name = "pneumonia"
-  start_date = { field = "admission_dt" }
+  start_date = { ref = "admissionDateHierarchy" }
   date = { field = "Outcome_dt" }
   duration_type = "event"
   phase = "study"
@@ -396,7 +432,7 @@
 
 [[observation]]
   name = "pneumonia"
-  start_date = { field = "admission_dt" }
+  start_date = { ref = "admissionDateHierarchy" }
   date = { field = "Outcome_dt" }
   duration_type = "event"
   phase = "study"
@@ -405,7 +441,7 @@
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "dias_bp" }
   if.all = [
@@ -440,13 +476,13 @@
 
 [[observation]]
   name = "abdominal_pain"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Abdominal_pain", ref = "Y/N" }
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "confusion", ref = "Y/N" }
 
@@ -458,25 +494,25 @@
 
 [[observation]]
   name = "bleeding_haemorrhage"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Bleeding_Haemorrhage", ref = "Y/N" }
 
 [[observation]]
   name = "chest_pain"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Chest_pain", ref = "Y/N" }
 
 [[observation]]
   name = "conjunctivitis"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Conjunctivitis", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
 
   [observation.is_present]
@@ -488,85 +524,85 @@
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "cough_sputum_haemoptysis", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_sputum_production"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "cough_sputum", ref = "Y/N" }
 
 [[observation]]
   name = "diarrhoea"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Diarrhoea", ref = "Y/N" }
 
 [[observation]]
   name = "ear_pain"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "ear_pain", ref = "Y/N" }
 
 [[observation]]
   name = "fatigue_malaise"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Fatigue_Malaise", ref = "Y/N" }
 
 [[observation]]
   name = "headache"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Headache", ref = "Y/N" }
 
 [[observation]]
   name = "history_of_fever"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "fever", ref = "Y/N" }
 
 [[observation]]
   name = "joint_pain"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Arthralgia", ref = "Y/N" }
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Lower_chest_wall_indrawing", ref = "Y/N" }
 
 [[observation]]
   name = "lymphadenopathy"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Lymphadenopathy", ref = "Y/N" }
 
 [[observation]]
   name = "muscle_aches"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Myalgia", ref = "Y/N" }
 
 [[observation]]
   name = "runny_nose"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Rhinorrhoea", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Seizures", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
-  start_date = { field = "admission_dt" }
+  start_date = { ref = "admissionDateHierarchy" }
   date = { field = "Outcome_dt" }
   duration_type = "event"
   phase = "study"
@@ -574,55 +610,55 @@
 
 [[observation]]
   name = "severe_dehydration"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "dehydration", ref = "Y/N" }
 
 [[observation]]
   name = "shortness_of_breath"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Dyspnea", ref = "Y/N" }
 
 [[observation]]
   name = "skin_rash"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Skin_rash", ref = "Y/N" }
 
 [[observation]]
   name = "skin_ulcers"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Skin_ulcers", ref = "Y/N" }
 
 [[observation]]
   name = "sore_throat"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Sore_throat", ref = "Y/N" }
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "sternal_capillary_refill_time", ref = "Y/N" }
 
 [[observation]]
   name = "vomiting_nausea"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Vomiting_Nausea", ref = "Y/N" }
 
 [[observation]]
   name = "wheezing"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Wheezing", ref = "Y/N" }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "HtR" }
   if.all = [{ HtR = { "!=" = -98 } }, { HtR = { "!=" = "" } }]
@@ -637,11 +673,11 @@
   name = "oxygen_o2hb"
   date = { field = "daily_crf_dt" }
   phase = "study"
-  value = { field = "Haemoglobin_value", unit = "g/dL", source_unit = { field = "Haemoglobin_unit", values = { 2 = "g/dL", 1 = "g/L", 3 = "mg/dL" } } }
+  value = { field = "Haemoglobin_value", unit = "g/dL", source_unit = { field = "Haemoglobin_unit", values = { 2 = "g/dL", 1 = "g/L" } } } #3 = "mmol/L" - can't convert this
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "oxygen_saturation" }
   if.all = [
@@ -661,7 +697,7 @@
   name = "pao2_mmHg"
   date = { field = "assessment_dt" }
   phase = "study"
-  value = { field = "Specify_PaO2_at_FIO2" } # unit?
+  value = { field = "Specify_PaO2_at_FIO2", source_unit = { field = "PaO2_at_FIO2_unit", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
   if.all = [
     { report_name_custom = { "=~" = "Daily case record form" } },
     { Specify_PaO2_at_FIO2 = { "!=" = "" } },
@@ -671,7 +707,7 @@
   name = "pco2_mmHg"
   date = { field = "assessment_dt" }
   phase = "study"
-  value = { field = "Specify_PCO2" }
+  value = { field = "Specify_PCO2", unit = "mmHg", source_unit = { field = "PCO2_unit", values = { 1 = "kPa", 2 = "mmHg" } } }
   if.all = [
     { report_name_custom = { "=~" = "Daily case record form" } },
     { Specify_PCO2 = { "!=" = "" } },
@@ -679,7 +715,7 @@
 
 [[observation]]
   name = "respiratory_rate"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "rtr" }
   if.all = [
@@ -704,7 +740,7 @@
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "sys_bp" }
   if.all = [
@@ -725,7 +761,7 @@
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "admission_dt" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "Temperature", source_unit = { field = "Temperature_units", values = { 1 = "celsius", 2 = "farenheit" } }, unit = "celsius" }
   if.all = [
