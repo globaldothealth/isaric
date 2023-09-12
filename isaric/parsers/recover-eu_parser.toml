@@ -16,7 +16,6 @@
     groupBy = "visit_id"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/visit.schema.json"
-    optional-fields = ["outcome", "country_iso3", "date_outcome"]
 
   [adtl.tables.observation]
     kind = "oneToMany"
@@ -27,6 +26,8 @@
     1 = true
     2 = false
 
+  [adtl.defs."checkbox".values]
+    1 = true
 
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
@@ -38,12 +39,9 @@
     field = "subject"
     sensitive = true
 
-  [subject.enrolment_date] # is this correct?
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "IC2_DATE", description = "Date of consent signed:" },
-      { field = "incldt", description = "inclusiondate" },
-    ]
+  [subject.enrolment_date]
+    field = "incldt"
+    description = "inclusiondate"
 
   [subject.earliest_admission_date]
     field = "adm_dt"
@@ -82,7 +80,7 @@
       1 = "male"
       2 = "female"
 
-[subject.ethnicity] # Not sure about below and field names
+[subject.ethnicity]
   combinedType = "set"
   excludeWhen = "none"
   fields = [
@@ -97,41 +95,35 @@
   field = "pregn"
   ref = "Y/N"
 
-[subject.pregnancy_date_of_delivery]
-  field = "P_PART_Y_DEL_DT"
-  description = "Post partum Delivery date"
-
-[subject.has_tuberculosis] # checkbox field?
+[subject.has_tuberculosis]
   field = "CPD_TBC"
   description = "A. Chronic Pulmonary Disease: Tuberculosis"
-  ref = "Y/N"
+  ref = "checkbox"
 
-[subject.has_dementia] # checkbox field
+[subject.has_dementia]
   field = "CNEURO_DEMENT"
   description = "Chronic Neurologic Disease -  Dementia / Cognitive dysfunction"
-  ref = "Y/N"
+  ref = "checkbox"
 
-[subject.has_rheumatologic_disorder] # checkbox field
+[subject.has_rheumatologic_disorder]
   field = "COTH_RHEUM"
   description = "Chronic Other Disease -  Rheumatologic/autoimmune disease"
-  ref = "Y/N"
+  ref = "checkbox"
 
 [subject.has_hiv]
   field = "CIMMUN_HIV"
   description = "D. Chronic Immunosuppression: HIV"
-  ref = "Y/N"
+  ref = "checkbox"
 
 [subject.has_hypertension]
   field = "CARD_HYPER"
   description = "B. Chronic Cardiovasculair Disease : Hypertension"
-  ref = "Y/N"
+  ref = "checkbox"
 
 [subject.has_malignant_neoplasm]
-  combinedType = "any"
-  fields = [
-    { field = "CIMMUN_MALIGN_METAS", description = "Chronic Immunosuppression - Any malignancy within 5 years - metastatic?", ref = "Y/N" },
-    { field = "CIMMUN_MALIGN", description = "Chronic Immunosuppression - Any malignancy within 5 years", ref = "Y/N" },
-  ]
+  field = "CIMMUN_MALIGN"
+  description = "Chronic Immunosuppression - Any malignancy within 5 years"
+  ref = "checkbox"
 
 [subject.has_smoking]
   field = "smoke"
@@ -145,7 +137,7 @@
 [subject.has_asthma] # checkbox field
   field = "CPD_AST"
   description = "A. Chronic Pulmonary Disease: Asthma"
-  ref = "Y/N"
+  ref = "checkbox"
 
 [subject.has_chronic_cardiac_disease]
   field = "chr_card"
@@ -155,30 +147,37 @@
 [subject.has_chronic_kidney_disease]
   field = "COTH_RENAL"
   description = "Chronic Other Disease -  Chronic Renal disease"
+  ref = "checkbox"
+
+[subject.has_chronic_respiratory_disease]
+  field = "chr_pulm"
   ref = "Y/N"
 
 [subject.has_diabetes] # checkbox fields
   combinedType = "any"
   fields = [
-    { field = "CMETAB_DB1", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 1", ref = "Y/N" },
-    { field = "CMETAB_DB2A", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (only oral medication)", ref = "Y/N" },
-    { field = "CMETAB_DB2B", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "Y/N" },
+    { field = "CMETAB_DB1", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 1", ref = "checkbox" },
+    { field = "CMETAB_DB2A", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (only oral medication)", ref = "checkbox" },
+    { field = "CMETAB_DB2B", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "checkbox" },
+  ]
+
+[subject.diabetes_type]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "CMETAB_DB1", values = { 1 = "type-1" } },
+    { field = "CMETAB_DB2A", values = { 1 = "type-2" } },
+    { field = "CMETAB_DB2B", values = { 1 = "type-2" } },
   ]
 
 [subject.has_liver_disease] # checkbox field
   field = "COTH_LIVER"
   description = "F. Chronic Other Disease : Chronic Liver disease"
-  ref = "Y/N"
+  ref = "checkbox"
 
 [subject.has_solid_organ_transplant] # checkbox field
   field = "CIMMUN_ORG_TRANS"
   description = "Chronic Immunosuppression - Solid organ transplant"
-  ref = "Y/N"
-
-[subject.has_hiv_art]
-  field = "CIMMUN_HIV_ANTI_THER"
-  description = "Chronic Immunosuppression - HIV - Currently on antiretroviral therapy?"
-  ref = "Y/N"
+  ref = "checkbox"
 
 [subject.has_immunosuppression]
   field = "chr_immuno"
@@ -187,23 +186,29 @@
 
 [subject.has_asplenia]
   field = "CIMMUN_ASPL"
-  ref = "Y/N"
+  ref = "checkbox"
+
+[subject.has_malnutrition]
+  field = "CMETAB_CACHEX"
+  ref = "checkbox"
 
 [subject.has_comorbidity_other] # type - array
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "COTH_OTHER_SPEC" }]
+  fields = [{ field = "COTH_OTHER_SPEC" }, { field = "CMETAB_OTH_SPEC"}]
+
+[subject.has_died]
+  field = "STAT28"
+  values = { 4 = true }
 
 [subject.date_death]
-  field = "ddate"
+  field = "STAT28_STAT4_DT"
   description = "Date of death"
 
 [subject.icu_admitted]
-  combinedType = "any"
-  fields = [
-    { field = "COV19_ICU", description = "Was the patient treated in ICU?", ref = "Y/N" },
-    { field = "ICUadm_y", description = "Did episode included ICU/High Care Unit admission?", ref = "Y/N" },
-  ]
+  field = "ICUadm_y"
+  description = "Did episode included ICU/High Care Unit admission?"
+  ref = "Y/N"
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
@@ -217,15 +222,26 @@
     field = "subject"
     sensitive = true
 
+  [visit.country_iso3]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "site", apply = { function = "wordSubstituteSet", params = [
+        ["Rijeka", "HRV"],
+        ["Rostock", "DEU"],
+        [
+          "AMC", # is this the amsterdam medical centre?
+          "NLD",
+        ],
+      ] } },
+    ]
+
   [visit.start_date]
     field = "adm_dt"
 
   [visit.icu_admission]
-    combinedType = "any"
-    fields = [
-      { field = "COV19_ICU", description = "Was the patient treated in ICU?", ref = "Y/N" },
-      { field = "ICUadm_y", description = "Did episode included ICU/High Care Unit admission?", ref = "Y/N" },
-    ]
+    field = "ICUadm_y"
+    description = "Did episode included ICU/High Care Unit admission?"
+    ref = "Y/N"
 
   [visit.icu_admission_dates]
     combinedType = "set"
@@ -235,19 +251,23 @@
   [visit.treatment_corticosteroid]
     combinedType = "any"
     fields = [
-      { field = "steroids_op1", description = "Steroids - Inhaled corticosteroids", values = { 1 = true, 0 = false } },
-      { field = "steroids_op2", description = "Steroids  - Oral low  dose steroids", values = { 1 = true, 0 = false } },
-      { field = "steroids_op2", description = "Steroids - Oral high  dose  steroids", values = { 1 = true, 0 = false } },
+      { field = "steroids_op1", description = "Steroids - Inhaled corticosteroids", ref = "checkbox" },
+      { field = "steroids_op2", description = "Steroids  - Oral low  dose steroids", ref = "checkbox" },
+      { field = "steroids_op2", description = "Steroids - Oral high  dose  steroids", ref = "checkbox" },
       { field = "CORT", ref = "Y/N" },
     ]
 
   [visit.treatment_ace_inhibitors]
     field = "medication_op1"
-    values = { 1 = true, 0 = false }
+    ref = "checkbox"
+
+  [visit.treatment_noninvasive_ventilation]
+    field = "NIMV"
+    ref = "Y/N"
 
   [visit.treatment_invasive_ventilation]
     field = "INTMV"
-    description = "Did participant receive any intubation and mechanical ventilation"
+    description = "Did participant receive any intubation and mechanical ventilation"
     ref = "Y/N"
 
   [visit.treatment_antivirals]
@@ -261,9 +281,9 @@
   [visit.treatment_oxygen_therapy]
     combinedType = "any"
     fields = [
-      { field = "O2", description = "Did participant receive any supplemental O2?", ref = "Y/N" },
-      { field = "NIMV", description = "Did participant receive any non-invasive mechanical ventilation", values = { 2 = true, 3 = false } },
-      { field = "INTMV", description = "Did participant receive any intubation and mechanical ventilation" },
+      { field = "O2", description = "Did participant receive any supplemental O2?", ref = "Y/N" },
+      { field = "NIMV", description = "Did participant receive any non-invasive mechanical ventilation", values = { 2 = true, 3 = false } },
+      { field = "INTMV", description = "Did participant receive any intubation and mechanical ventilation" },
       { field = "Prone_pos", description = "Prone position ventilation (any time)" },
     ]
 
@@ -275,68 +295,80 @@
     field = "AB"
     ref = "Y/N"
 
+  [visit.outcome]
+    field = "STAT28"
+    values = { 1 = "discharged", 2 = "transfered", 3 = "hospitalised", 4 = "death" }
+
   [visit.date_outcome]
-    field = "disch_dt"
-    description = "Discharge date:"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "STAT28_STAT_DT" },
+      { field = "STAT28_STAT2_DT" },
+      { field = "STAT28_STAT4_DT" },
+    ]
 
     # OBSERVATION
     # required fields - phase, date, name
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "adm_dt" }            # not sure about this??
-  phase = "admission"                    # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   value = { field = "values_diast" }
 
 [[observation]]
-  name = "altered_consciousness_confusion"
-  date = { field = "adm_dt" }                       # not sure about this??
-  phase = "admission"                               # not sure about this??
-  is_present = { field = "ment_conf", ref = "Y/N" }
-
-[[observation]]
   name = "confusion"
-  date = { field = "adm_dt" }                       # not sure about this??
-  phase = "admission"                               # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   is_present = { field = "ment_conf", ref = "Y/N" }
 
 [[observation]]
   name = "severe_dehydration"
-  date = { field = "adm_dt" }                   # not sure about this??
-  phase = "admission"                           # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   is_present = { field = "SHOCK", ref = "Y/N" }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission"         # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   value = { field = "HRATE" }
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  date = { field = "adm_dt" } # not sure about this??
-  phase = "admission" # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   value = { field = "SpO2_perc" }
   context.combinedType = "set"
   context.excludeWhen = "none"
-  context.fields = [
-    { field = "SpO2_on", values = { 1 = "Room air", 2 = "Supplemental O2 (any)" } },
-  ]
+  context.fields = [{ field = "SpO2_on" }]
 
 [[observation]]
   name = "respiratory_rate"
-  date = { field = "adm_dt" }     # not sure about this??
-  phase = "admission"             # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   value = { field = "RESP_RATE" }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "adm_dt" }           # not sure about this??
-  phase = "admission"                   # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   value = { field = "values_syst" }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "adm_dt" }  # not sure about this??
-  phase = "admission"          # not sure about this??
+  date = { field = "ASS_DT" }
+  phase = "admission"
   value = { field = "tempX" }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  date = { field = "adm_dt" }
+  phase = "admission"
+
+  [observation.value]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Hemo1_val1", source_unit = "g/dL", unit = "g/dL" },
+      # { field = "Hemo1_val2", source_unit = { field = "Hemo1_un" }, unit = "g/dL" }, # contains mmol/L which we can't convert... need to fix that.
+    ]
