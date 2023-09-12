@@ -248,7 +248,9 @@
 
   [subject.subject_id]
     field = "subjid"
+    ref = "relsub"
     sensitive = true
+    ignoreMissingKey = true
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
   [subject.enrolment_date]
@@ -519,11 +521,13 @@
 [visit]
   country_iso3 = { field = "country", ref = "countryMap" }
 
-  [visit.subject_id] # This is the same as the subject_id!
+  [visit.subject_id]
     field = "subjid"
+    ref = "relsub"
     sensitive = true
+    ignoreMissingKey = true
 
-  [visit.visit_id] # This is the same as the subject_id!
+  [visit.visit_id]
     field = "subjid"
     sensitive = true
 
@@ -835,7 +839,7 @@
 
 [[observation]]
   name = "avpu"
-  date = { ref = "admissionDateHierarchy" }
+  date = { ref = "dailyDateHierarchy" }
   phase = "study"
   text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
 
@@ -853,20 +857,14 @@
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
   value = { field = "daily_oxy_vsorres" }
 
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  value = { field = "daily_gcs_vsorres" }
-
-[[observation]]
-  name = "glasgow_coma_score"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
+  date = { ref = "dailyDateHierarchy" }
   value = { field = "daily_gcs_vsorres" }
   #description = "Glasgow Coma Score (GCS/15)"
 
@@ -1100,13 +1098,6 @@
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "inablewalk_ceoccur_v2", ref = "Y/N/NK" }
 
-  # [[observation]] # this isn't present in the data file
-  #   name = "clinical_frailty_score"
-  #   phase = "admission"
-  #   date = { ref = "admissionDateHierarchy" } # this is in the critical_care_module
-  #   value = { field = "ccm_b_cfs_rsorres" }
-  #   if = { ccm_b_cfs_rsyn = 1 }
-
 [[observation]]
   name = "temperature_celsius"
   phase = "admission"
@@ -1124,6 +1115,13 @@
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
   value = { field = "daily_pao2_lborres", apply = { function = "getFloat" }, unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" } }
+  if.all = [
+    { daily_pao2_lborres = { "!=" = "" } },
+    { daily_pao2_lborres = { "!=" = -95 } },
+    { daily_pao2_lborres = { "!=" = -96 } },
+    { daily_pao2_lborres = { "!=" = -97 } },
+    { daily_pao2_lborres = { "!=" = -99 } },
+  ]
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
