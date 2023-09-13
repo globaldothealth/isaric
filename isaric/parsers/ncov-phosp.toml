@@ -459,15 +459,28 @@
 
 [[observation]]
   name = "cough"
-  date = { ref = "admissionDateHierarchy" }
-  phase = "admission"
-  is_present = { field = "crf1a_cough", ref = "Y/N" }
-
-[[observation]]
-  name = "cough"
   date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "psq_cough", ref = "Y/N" }
+
+[[observation]]
+  name = "cough"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "crf1a_cough", ref = "Y/N" },
+      { field = "crf1a_cough_blood", ref = "Y/N" },
+      { field = "crf1a_cough_sputum", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "crf1a_cough", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
