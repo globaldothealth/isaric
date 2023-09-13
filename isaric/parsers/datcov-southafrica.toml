@@ -16,6 +16,7 @@
     kind = "oneToMany"
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "PatientId", sensitive = true } } # Using the ref doesn't work, but nec. for observations to receive an ID
 
   [adtl.defs."Y/N/NK".values]
     1 = true
@@ -58,7 +59,43 @@
     ref = "admissionDateHierarchy"
 
   [subject.age]
-    field = "Age"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Age" },
+      { field = "BirthDate", apply = { function = "yearsElapsed", params = [
+        "$Adm Date.AdmissionDate",
+        2022,
+        "%m/%d/%y",
+        "%m/%d/%y",
+      ] } },
+    ]
+
+  [subject.date_of_birth] # NOTE: many dates have 2-digit years - this often autoconverts to 20xx not 19xx for older people.
+    field = "BirthDate"
+    apply = { function = "correctOldDate", params = [2022, "%m/%d/%y"] }
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "BirthDate", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%m/%d/%y",
+      ] } },
+      { field = "Age", apply = { function = "startYear", params = [
+        "$Adm Date.AdmissionDate",
+        2022,
+        "%m/%d/%y",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["month", 2022, "%m/%d/%y"] }
+
+  [subject.dob_day]
+    field = "BirthDate"
+    apply = { function = "splitDate", params = ["day", 2022, "%m/%d/%y"] }
 
   [subject.sex_at_birth]
     field = "BirthSex"
@@ -384,7 +421,7 @@
   fields = [
     { field = "Medication during hospitalisation.Ribavirin", values = { 1 = "Ribavirin" } },
     { field = "Medication during hospitalisation.Remdesivir", values = { 1 = "Remdesivir" } },
-    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "Medication during hospitalisation.InterferonAlpha", values = { 1 = "Interferon alpha" } },
     { field = "Medication during hospitalisation.InterferonBeta", values = { 1 = "Interferon beta" } },
     { field = "Medication during hospitalisation.Neuraminidase", values = { 1 = "Neuraminidase inhibitor" } },
@@ -843,6 +880,10 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   value = { field = "Mid-Upper-Arm Circumference" }
+  if.all = [
+    { "Mid-Upper-Arm Circumference" = { "!=" = 0 } },
+    { "Mid-Upper-Arm Circumference" = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "sore_throat"
@@ -1014,6 +1055,50 @@
   is_present = { field = "flw2_bleeding_{n}", values = { 1 = true, 0 = false } }
   if.any = [{ "flw2_bleeding_{n}" = 1 }, { "flw2_bleeding_{n}" = 0 }]
   for.n.range = [1, 5]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_smell_ceoccur_2", values = { 1 = true, 0 = false } },
+      { field = "flw_taste_ceoccur_2", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "cu_smell", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_of_smell", values = { 1 = true, 0 = false } },
+      { field = "cu_taste", values = { 1 = true, 0 = false } },
+      { field = "flw_loss_of_taste", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  if.any = [
+    { "flw2_loss_of_smell_{n}" = 1 },
+    { "flw2_loss_of_smell_{n}" = 0 },
+    { "flw2_loss_of_taste_{n}" = 1 },
+    { "flw2_loss_of_taste_{n}" = 0 },
+  ]
+  for.n.range = [1, 5]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw2_loss_of_smell_{n}", values = { 1 = true, 0 = false } },
+      { field = "flw2_loss_of_taste_{n}", values = { 1 = true, 0 = false } },
+    ]
 
 [[observation]]
   name = "loss_of_smell"

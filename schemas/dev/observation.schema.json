@@ -39,6 +39,17 @@
       }
     },
     {
+      "$comment": "Oxygen flow volume is represented as a numerical value",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "oxygen_flow_volume_max"
+        }
+      }
+    },
+    {
       "required": [
         "value"
       ],
@@ -95,9 +106,30 @@
           "const": "glasgow_coma_score"
         },
         "value": {
-          "type": "integer",
+          "type": [
+            "integer",
+            "string"
+          ],
           "minimum": 3,
-          "maximum": 15
+          "maximum": 15,
+          "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "blantyre_coma_score"
+        },
+        "value": {
+          "type": [
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 5
         }
       }
     },
@@ -400,8 +432,12 @@
       "description": "Duration type, either present throughout the period (block), or something that occurred within the period (event)"
     },
     "value": {
-      "type": "number",
-      "description": "Value of the observation"
+      "type": [
+        "number",
+        "string"
+      ],
+      "description": "Value of the observation",
+      "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
     },
     "text": {
       "type": "string",

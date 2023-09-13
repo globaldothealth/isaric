@@ -41,10 +41,72 @@
     fields = [{ ref = "admissionDate" }]
 
   [subject.age]
-    field = "age_estimateyears"
-    description = "Age/Estimated age"
-    unit = "years"
-    source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years", 3 = "days" } }
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "age_estimateyears", description = "Age/Estimated age", unit = "years", source_unit = { field = "age_estimateyearsu", values = { 1 = "months", 2 = "years", 3 = "days" } } },
+      { field = "dob", apply = { function = "yearsElapsed", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "%d/%m/%Y",
+      ] } },
+    ]
+
+  [subject.date_of_birth]
+    field = "dob"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "months",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startYear", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
+  [subject.dob_month]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dob", apply = { function = "splitDate", params = [
+        "month",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startMonth", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 3 }, apply = { function = "startMonth", params = [
+        "$case_class_adm_date",
+        2022,
+        "%d/%m/%Y",
+        "days",
+      ] } },
+    ]
+
+
+  [subject.dob_day]
+    field = "dob"
+    apply = { function = "splitDate", params = ["day", 2022, "%d/%m/%Y"] }
 
   [subject.sex_at_birth]
     field = "sex"
@@ -279,7 +341,7 @@
     excludeWhen = "none"
     fields = [
       { field = "mx_antiviral_type___1", values = { 1 = "Ribavirin" } },
-      { field = "mx_antiviral_type___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "mx_antiviral_type___2", values = { 1 = "Lopinavir/Ritonavir" } },
       { field = "mx_antiviral_type___3", values = { 1 = "Interferon alpha" } },
       { field = "mx_antiviral_type___4", values = { 1 = "Interferon beta" } },
       { field = "mx_antiviral_type___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -287,7 +349,7 @@
       { field = "mx_antiviral_type___7", values = { 1 = "Favipravir" } },
       { field = "mx_antiviral_type___8", values = { 1 = "Atazanavir" } },
       { field = "type_antiviral_dc___1", values = { 1 = "Ribavirin" } },
-      { field = "type_antiviral_dc___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "type_antiviral_dc___2", values = { 1 = "Lopinavir/Ritonavir" } },
       { field = "type_antiviral_dc___3", values = { 1 = "Interferon alpha" } },
       { field = "type_antiviral_dc___4", values = { 1 = "Interferon beta" } },
       { field = "type_antiviral_dc___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -1163,7 +1225,7 @@
     { lab_hb = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
-  value = { field = "lab_hb", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
+  value = { field = "lab_hb", unit = "g/dL", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
 
 [[observation]]
   name = "oxygen_o2hb"
@@ -1173,4 +1235,4 @@
     { lab_hb = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
-  value = { field = "lab_hb", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
+  value = { field = "lab_hb", unit = "g/dL", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
