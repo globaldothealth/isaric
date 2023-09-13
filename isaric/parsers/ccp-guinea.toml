@@ -568,7 +568,7 @@
   excludeWhen = "none"
   fields = [
     { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -903,16 +903,13 @@
 
   [observation.start_date]
     combinedType = "min"
-    fields = [
-      { field = "anosmia_date" },
-      { field = "ageusia_date" }
-    ]
+    fields = [{ field = "anosmia_date" }, { field = "ageusia_date" }]
 
   [observation.is_present]
     combinedType = "any"
     fields = [
       { field = "anosmia", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
-      { field = "ageusia", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
+      { field = "ageusia", description = "Ageusia (loss of taste)", ref = "Y/N/NK" },
     ]
 
 [[observation]]
@@ -921,16 +918,13 @@
 
   [observation.date]
     combinedType = "min"
-    fields = [
-      { field = "anosmia_v2_date" },
-      { field = "ageusia_v2_date" }
-    ]
+    fields = [{ field = "anosmia_v2_date" }, { field = "ageusia_v2_date" }]
 
   [observation.is_present]
     combinedType = "any"
     fields = [
       { field = "anosmia_v2", description = "Anosmia (loss of smell)", ref = "Y/N/NK" },
-      { field = "ageusia_v2", description = "Ageusia (loss of taste)", ref = "Y/N/NK" }
+      { field = "ageusia_v2", description = "Ageusia (loss of taste)", ref = "Y/N/NK" },
     ]
 
 [[observation]]

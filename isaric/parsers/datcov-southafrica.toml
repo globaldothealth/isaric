@@ -421,7 +421,7 @@
   fields = [
     { field = "Medication during hospitalisation.Ribavirin", values = { 1 = "Ribavirin" } },
     { field = "Medication during hospitalisation.Remdesivir", values = { 1 = "Remdesivir" } },
-    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "Medication during hospitalisation.Lopinavir", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "Medication during hospitalisation.InterferonAlpha", values = { 1 = "Interferon alpha" } },
     { field = "Medication during hospitalisation.InterferonBeta", values = { 1 = "Interferon beta" } },
     { field = "Medication during hospitalisation.Neuraminidase", values = { 1 = "Neuraminidase inhibitor" } },

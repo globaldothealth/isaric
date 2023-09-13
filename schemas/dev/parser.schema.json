@@ -253,19 +253,44 @@
       "type": "object",
       "required": [
         "subject_id",
-        "age",
         "ethnicity",
         "pathogen"
       ],
       "anyOf": [
         {
           "required": [
-            "earliest_admission_date"
+            "earliest_admission_date",
+            "age"
           ]
         },
         {
           "required": [
-            "enrolment_date"
+            "earliest_admission_date",
+            "date_of_birth"
+          ]
+        },
+        {
+          "required": [
+            "earliest_admission_date",
+            "dob_year"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "age"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "date_of_birth"
+          ]
+        },
+        {
+          "required": [
+            "enrolment_date",
+            "dob_year"
           ]
         }
       ],
@@ -860,23 +885,30 @@
             "description": "Reference to link to this observation"
           },
           "phase": {
-            "description": "Phase of study",
-            "enum": [
-              "pre-admission",
-              "admission",
-              "study",
-              "followup"
-            ],
-            "x-taplo": {
-              "docs": {
-                "enumValues": [
-                  "Strictly before admission",
-                  "Taken at or before admission",
-                  "Observation during study period",
-                  "Recorded in followup survey"
-                ]
+            "anyOf": [
+              {
+                "description": "Phase of study",
+                "enum": [
+                  "pre-admission",
+                  "admission",
+                  "study",
+                  "followup"
+                ],
+                "x-taplo": {
+                  "docs": {
+                    "enumValues": [
+                      "Strictly before admission",
+                      "Taken at or before admission",
+                      "Observation during study period",
+                      "Recorded in followup survey"
+                    ]
+                  }
+                }
+              },
+              {
+                "$ref": "#/definitions/mapping"
               }
-            }
+            ]
           },
           "date": {
             "description": "Date of observation, or end date of observation period",

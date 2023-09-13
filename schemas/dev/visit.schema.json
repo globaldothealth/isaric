@@ -100,10 +100,16 @@
       "type": "array",
       "items": {
         "enum": [
-          "Methylprednisolone",
-          "Prednisolone",
+          "Budesonide",
+          "Cortisonal",
           "Dexamethasone",
+          "Fluticasone",
           "Hydrocortisone",
+          "Methylprednisolone",
+          "Mometasone",
+          "Prednisolone",
+          "Prednisone",
+          "Salmeterol",
           "Other"
         ]
       },
@@ -158,7 +164,7 @@
       "items": {
         "enum": [
           "Ribavirin",
-          "Lopinavir/Ritonvir",
+          "Lopinavir/Ritonavir",
           "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
