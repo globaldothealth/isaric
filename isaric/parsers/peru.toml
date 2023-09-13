@@ -30,8 +30,6 @@
     "Checked" = true
     "Unchecked" = false
 
-    # other adtl.defs here ..
-
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
@@ -84,25 +82,10 @@
   description = "Hematologic comorbility"
   ref = "Y/N/NK"
 
-  # [subject.has_tuberculosis]
-  #   field = "co_neumo"
-  #   description = "Tuberculosis?"
-  #   values = { 2 = true }
-
-  # [subject.has_hiv]
-  #   field = "hiv_v2"
-  #   description = "HIV based on serological test?"
-  #   ref = "Y/N/NK"
-
 [subject.has_malignant_neoplasm]
   field = "onco"
   description = "Oncological comorbility?"
   ref = "Y/N/NK"
-
-  # [subject.has_asthma]
-  #   field = "co_neumo"
-  #   description = "Asthma?"
-  #   values = { 3 = true }
 
 [subject.has_chronic_cardiac_disease]
   field = "cardio"
@@ -113,19 +96,6 @@
   field = "nefro"
   description = "Kidney disease?"
   ref = "Y/N/NK"
-
-  # [subject.has_diabetes]
-  #   field = "co_endocrino"
-  #   description = "Has diabetes?"
-  #   values = { 1 = true, 5 = true }
-
-  # [subject.diabetes_type]
-  #   field = "co_endocrino"
-  #   description = "Diabetes type?"
-
-  #   [subject.diabetes_type.values]
-  #     1 = "type-1"
-  #     5 = "type-2"
 
 [subject.has_liver_disease]
   field = "hepato"
@@ -170,50 +140,10 @@
     field = "fecha_de_ingreso_al_insnsb"
     description = "Admission date"
 
-    # [visit.pathogen_test_date]
-    #   field = "fecha_muestra1"
-    #   description = "Pathogen test date"
-
   [visit.icu_admission]
     field = "ingreso_uci"
     description = "ICU admission"
     values = { "Si" = true, "No" = false }
-
-    # [visit.icu_admission_dates]
-    #   field = "fecha_uci"
-    #   description = "Date of ICU admission"
-
-    # [visit.treatment_ecmo]
-    #   field = "toxigenot"
-    #   description = "ECMO?"
-    #   values = { 7 = true }
-
-    #   [visit.treatment_oxygen_therapy]
-    #     combinedType = "any"
-
-    #     [[visit.treatment_oxygen_therapy.fields]]
-    #       field = "toxigenot"
-    #       description = "Oxygen therapy?"
-    #       values = { 1 = true, 2 = true, 3 = true, 4 = true, 5 = true, 6 = true, 7 = true }
-
-    # [visit.treatment_invasive_ventilation]
-    #   field = "toxigenot"
-    #   description = "Invasive ventilation"
-    #   values = { 6 = true }
-
-    # [visit.treatment_noninvasive_ventilation]
-    #   field = "toxigenot"
-    #   description = "Noninvasive ventilation"
-    #   values = { 5 = true }
-
-    # [visit.treatment_high_flow_nasal_cannula]
-    #   field = "toxigenot"
-    #   description = "High flow nasal canula"
-    #   value = { 3 = true }
-
-    # [visit.treatment_cardiovascular_support]
-    #   field = "toxigenot"
-    #   values = { 7 = true, description = "ECMO?" }
 
   [visit.outcome]
     field = "est_final"
@@ -230,12 +160,6 @@
 
   # OBSERVATION
   # required fields - phase, date, name
-
-  # [[observation]]
-  #   name = "diastolic_blood_pressure_mmHg"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "presartd" }
 
 [[observation]]
   name = "abdominal_pain"
@@ -294,7 +218,7 @@
   name = "seizures"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "seizures___1", ref = "checkbox" }
+  is_present = { field = "seizures___1", ref = "checkbox" } # no instances
 
 [[observation]]
   name = "shortness_of_breath"
@@ -332,63 +256,8 @@
   phase = "admission"
   is_present = { field = "sibilantes", values = { "Si" = true, "No" = false } }
 
-
-  # [[observation]]
-  #   name = "heart_rate_bpm"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "frec_card" }
-
-  # [[observation]]
-  #   name = "mean_arterial_blood_pressure_mmHg"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "presarts" }
-
-  # [[observation]] # to be filled in with info from pages 3,4,5
-  #   name = "other_symptom"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   text = { field = "otra1" }
-
 [[observation]]
   name = "oxygen_o2hb"
   date = { field = "fecha_de_ingreso_al_insnsb" } # fecha_muestra not present
   phase = "admission"
   value = { field = "vld41" }
-
-  # [[observation]]
-  #   name = "oxygen_saturation_percent"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "sato2" }
-
-  # [[observation]]
-  #   name = "pco2_mmHg"
-  #   date = "fecha_muestra"
-  #   phase = "admission"
-  #   value = { field = "vld27" }
-
-  # [[observation]]
-  #   name = "pH"
-  #   date = "fecha_muestra"
-  #   phase = "admission"
-  #   value = { field = "vld25" }
-
-  # [[observation]]
-  #   name = "respiratory_rate"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "frec_resp" }
-
-  # [[observation]]
-  #   name = "systolic_blood_pressure_mmHg"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "presarts" }
-
-  # [[observation]]
-  #   name = "temperature_celsius"
-  #   date = { field = "fecha_de_ingreso_al_insnsb" }
-  #   phase = "admission"
-  #   value = { field = "temp" }
