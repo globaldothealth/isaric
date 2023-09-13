@@ -36,7 +36,6 @@
   ]
 
 [subject]
-  study_id = "ccp-spain"
   pathogen = "COVID-19"
 
   [subject.sex_at_birth]
