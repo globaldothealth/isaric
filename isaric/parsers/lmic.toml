@@ -612,7 +612,7 @@
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "oxy_vsorres_v2" }
   [observation.context]
@@ -658,7 +658,7 @@
 
 [[observation]]
   name = "severe_dehydration"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   is_present = { field = "dehydration_vsorres_v2", description = "Severe dehydration:", ref = "Y/N/NK" }
 
@@ -698,7 +698,7 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
 
   [observation.is_present]
@@ -726,7 +726,7 @@
 
 [[observation]]
   name = "oxygen_o2hb"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "hb_lborres_v2", unit = "g/dL", source_unit = "g/L" }
 
@@ -744,7 +744,7 @@
 
 [[observation]]
   name = "heart_rate_bpm"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "hr_vsorres_v2" }
 
@@ -756,7 +756,7 @@
 
 [[observation]]
   name = "respiratory_rate"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "rr_vsorres_v2" }
 
@@ -768,7 +768,7 @@
 
 [[observation]]
   name = "temperature_celsius"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "temp_vsorres_v2" }
 
@@ -780,7 +780,7 @@
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "admission_diabp_vsorres_v2" }
 
@@ -792,7 +792,7 @@
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = "study"
+  phase = "followup"
   date = { field = "fup_dat_vsorres_v2" }
   value = { field = "sysbp_vsorres_v2" }
 
