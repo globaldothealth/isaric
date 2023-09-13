@@ -781,6 +781,7 @@
               "name": {
                 "enum": [
                   "other_symptom",
+                  "acvpu",
                   "avpu",
                   "oxygen_flow_volume_max"
                 ]
