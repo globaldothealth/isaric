@@ -19,18 +19,18 @@
   [adtl.tables.observation]
     kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
-    common = { visit_id = { field = "phosp_id", sensitive = true } }
+    common = { visit_id = { field = "study_id", sensitive = true } }
 
   [adtl.defs."Y/N".values]
     Yes = true
     No = false
 
-[adtl.defs.admissionDateHierarchy] # @SK - is there an order to which these dates were filled/collected?
+[adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
-    { field = "crf1a_date_adm" },
-    { field = "crf1a_date_first_symptoms" },
-    { field = "crf1a_date" },
+    { field = "crf1a_date_adm", if = { crf1a_date_adm = { "!=" = "NA" } } },
+    { field = "crf1a_date_first_symptoms", if = { crf1a_date_first_symptoms = { "!=" = "NA" } } },
+    { field = "crf1a_date", if = { crf1a_date = { "!=" = "NA" } } },
   ]
 
 [adtl.defs.eq5dDates]
@@ -51,14 +51,13 @@
   pathogen = "COVID-19"
 
   [subject.subject_id]
-    field = "phosp_id"
+    field = "study_id"
     sensitive = true
 
   [subject.earliest_admission_date]
     combinedType = "min"
     fields = [
       { field = "crfev_date_visit", if = { crfev_date_visit = { "!=" = "NA" } } },
-      # { field = "crf4b_date_visit" },
       { field = "crf1a_date_adm", if = { crf1a_date_adm = { "!=" = "NA" } } },
       { field = "crf1a_xfer_in_adm_date", if = { crf1a_xfer_in_adm_date = { "!=" = "NA" } } },
     ]
@@ -72,6 +71,13 @@
     description = "Age at Admission (Years)"
     if = { age_admission = { "!=" = "NA" } }
 
+  [subject.dob_year]
+    field = "age_admission"
+    if.all = [
+      { age_admission = { "!=" = "NA" } },
+      { crf1a_date_adm = { "!=" = "NA" } },
+    ]
+    apply = { function = "startYear", params = ["$crf1a_date_adm", 2022] }
 
   [subject.sex_at_birth]
     field = "crf1a_sex"
@@ -238,6 +244,15 @@
     { field = "crf1a_com_mh_other", if = { crf1a_com_mh_other = { "!=" = "NA" } } },
   ]
 
+[subject.has_smoking]
+  field = "patient_sq_n"
+  values = { "Never" = "never" }
+
+[subject.icu_admitted]
+  field = "psq_itu_admit"
+  ref = "Y/N"
+  if = { redcap_event_name = "6 Weeks" }
+
 [subject.has_died] # type - boolean
   field = "crf2a_reason_not_done"
   values = { Language = false, Declined = false, Died = true, Other = false }
@@ -250,11 +265,11 @@
   outcome = "discharged"
 
   [visit.visit_id]
-    field = "phosp_id"
+    field = "study_id"
     sensitive = true
 
   [visit.subject_id]
-    field = "phosp_id"
+    field = "study_id"
     sensitive = true
 
   [visit.start_date]
@@ -292,6 +307,10 @@
       { field = "crf1a_o2_blniv", ref = "Y/N" },
       { field = "crf1a_o2_cpapv", ref = "Y/N" },
     ]
+
+  [visit.treatment_oxygen_mask_prongs]
+    field = "crf1a_o2_supp"
+    ref = "Y/N"
 
   [visit.treatment_invasive_ventilation]
     field = "crf1a_o2_imv"
@@ -345,7 +364,6 @@
     fields = [
       { field = "crf1a_date_dis", description = "Date of discharge from hospital", if = { crf1a_date_dis = { "!=" = "NA" } } },
       { field = "crf2a_date_discharged", description = "Date of discharge from hospital", if = { crf2a_date_discharged = { "!=" = "NA" } } },
-      # { field = "crfev_date_discharge", description = "Date of discharge" },
     ]
 
     # OBSERVATION
@@ -353,173 +371,173 @@
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "crf3a_visit_date" }
+  date = { field = "crf3a_visit_date", if = { crf3a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3a_rest_bp_dia" }
   if = { crf3a_rest_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "crf1a_bp_dia" }
   if = { crf1a_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "crf3b_date_visit" }
+  date = { field = "crf3b_date_visit", if = { crf3b_date_visit = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3b_rest_bp_dia" }
   if = { crf3b_rest_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
-  date = { field = "crf4a_visit_date" }
+  date = { field = "crf4a_visit_date", if = { crf4a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf4a_rest_bp_dia" }
   if = { crf4a_rest_bp_dia = { "!=" = "NA" } }
 
 [[observation]]
   name = "abdominal_pain"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_pain", ref = "Y/N" }
 
 [[observation]]
   name = "abdominal_pain"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "abdominal_pain", ref = "Y/N" }
 
 [[observation]]
   name = "abdominal_pain"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "stomach_pain", ref = "Y/N" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_bleeding", ref = "Y/N" }
 
 [[observation]]
   name = "bleeding"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "bleeding", ref = "Y/N" }
 
 [[observation]]
   name = "chest_pain"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_chest_pain", ref = "Y/N" }
 
 [[observation]]
   name = "chest_pain"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "chest_pain", ref = "Y/N" }
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_confusion", ref = "Y/N" }
 
 [[observation]]
-  name = "altered_consciousness_confusion"
-  date = { field = "patient_sq_date" }
+  name = "confusion"
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "confusion_fuzzy_head", ref = "Y/N" }
 
 [[observation]]
   name = "anorexia"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "loss_of_appetite", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_cough", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "psq_cough", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_cough_blood", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_sputum_production"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_cough_sputum", ref = "Y/N" }
 
 [[observation]]
   name = "diarrhoea"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_diarrhoea", ref = "Y/N" }
 
 [[observation]]
   name = "diarrhoea"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "diarrhoea", ref = "Y/N" }
 
 [[observation]]
   name = "ear_pain"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_ear_pain", ref = "Y/N" }
 
 [[observation]]
   name = "fatigue_malaise"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_fatigue", ref = "Y/N" }
 
 [[observation]]
   name = "fatigue_malaise"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "psq_fatigue", ref = "Y/N" }
 
 [[observation]]
   name = "headache"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_headache", ref = "Y/N" }
 
 [[observation]]
   name = "headache"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "headache", ref = "Y/N" }
 
 [[observation]]
   name = "history_of_fever"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_fever_history", ref = "Y/N" }
 
 [[observation]]
   name = "history_of_fever"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "psq_feverish", ref = "Y/N" }
 
 [[observation]]
   name = "inability_to_walk_scale"
-  date = { ref = "eq5dDates" }     # Q. Check if date is ok?'
+  date = { ref = "eq5dDates" }
   phase = "followup"
   value.field = "eq5d5l_q1"
   [observation.value.values]
@@ -530,50 +548,50 @@
     5 = 4 # I am unable to walk about
 
 [[observation]]
-  name = "inability_to_walk"
-  date = { field = "patient_sq_date" }
+  name = "inability_to_walk_scale"
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
-  is_present = { field = "patient_sq_l_t_walking", ref = "Y/N" }
+  value = { field = "patient_sq_l_t_walking", values = { "No - no difficulty" = 1, "Yes - some difficulty" = 2, "Yes - a lot difficulty" = 3, "Cannot do at all" = 4 } }
 
 [[observation]]
   name = "joint_pain"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_join_pain", ref = "Y/N" }
 
 [[observation]]
   name = "joint_pain"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "joint_pain_or_swelling", ref = "Y/N" }
 
 [[observation]]
   name = "conjunctivitis"
   phase = "admission"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   is_present = { field = "crf1a_conjunctivitis", ref = "Y/N" }
 
 [[observation]]
   name = "loss_of_smell"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_loss_smell", ref = "Y/N" }
 
 [[observation]]
   name = "loss_of_taste"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_loss_taste", ref = "Y/N" }
 
 [[observation]]
   name = "loss_of_taste"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "loss_of_taste", ref = "Y/N" }
 
 [[observation]]
   name = "loss_of_smell_or_taste"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
 
   [observation.is_present]
@@ -585,7 +603,7 @@
 
 [[observation]]
   name = "loss_of_smell_or_taste"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
 
   [observation.is_present]
@@ -597,220 +615,218 @@
 
 [[observation]]
   name = "lower_chest_wall_indrawing"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_chest_indrawing", ref = "Y/N" }
 
 [[observation]]
   name = "lymphadenopathy"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_lymphadenopathy", ref = "Y/N" }
 
 [[observation]]
   name = "muscle_aches"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_muscle_aches", ref = "Y/N" }
 
 [[observation]]
   name = "muscle_aches"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "aching_in_your_muscles_pai", ref = "Y/N" }
 
 [[observation]]
   name = "runny_nose"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_runny_nose", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_seizures", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "seizures", ref = "Y/N" }
 
 [[observation]]
   name = "severe_dehydration"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_sev_dehydr", ref = "Y/N" }
 
 [[observation]]
   name = "oxygen_o2hb"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  value = { field = "crf1a_haemoglobin" }
+  value = { field = "crf1a_haemoglobin", source_unit = "g/L", unit = "g/dL" }
   if = { crf1a_haemoglobin = { "!=" = "NA" } }
 
   [observation.context]
     combinedType = 'set'
     excludeWhen = "none"
-    fields = [
-      { field = "crf1a_haemo_less_great" },
-    ] # values in this column are ['< (Less than)', '> (Greater than)']
+    fields = [{ field = "crf1a_haemo_less_great" }]
 
 [[observation]]
   name = "shortness_of_breath"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_shortness_breath", ref = "Y/N" }
 
 [[observation]]
   name = "shortness_of_breath"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "psq_blness", ref = "Y/N" }
 
 [[observation]]
   name = "skin_rash"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_skin_rash", ref = "Y/N" }
 
 [[observation]]
   name = "skin_rash"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "skin_rash", ref = "Y/N" }
 
 [[observation]]
   name = "skin_ulcers"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_skin_ulcers", ref = "Y/N" }
 
 [[observation]]
   name = "sore_throat"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_sore_throat", ref = "Y/N" }
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_stcap_refill_2s", ref = "Y/N" }
 
 [[observation]]
   name = "vomiting_nausea"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_nausea", ref = "Y/N" }
 
 [[observation]]
   name = "vomiting_nausea"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   phase = "followup"
   is_present = { field = "nausea_vomiting", ref = "Y/N" }
 
 [[observation]]
   name = "wheezing"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "crf1a_wheezing", ref = "Y/N" }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "crf1a_hr" }
   if = { crf1a_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "crf3a_visit_date" }
+  date = { field = "crf3a_visit_date", if = { crf3a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3a_rest_hr" }
   if = { crf3a_rest_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "crf3b_date_visit" }
+  date = { field = "crf3b_date_visit", if = { crf3b_date_visit = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3b_rest_hr" }
   if = { crf3b_rest_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "heart_rate_bpm"
-  date = { field = "crf4a_visit_date" }
+  date = { field = "crf4a_visit_date", if = { crf4a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf4a_rest_hr" }
   if = { crf4a_rest_hr = { "!=" = "NA" } }
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "crf1a_o2_sat" }
   if = { crf1a_o2_sat = { "!=" = "NA" } }
 
 [[observation]]
   name = "respiratory_rate"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "crf1a_respiratory_rate" }
   if = { crf1a_respiratory_rate = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "crf3a_visit_date" }
+  date = { field = "crf3a_visit_date", if = { crf3a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3a_rest_bp_sys" }
   if = { crf3a_rest_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "crf1a_bp_sys" }
   if = { crf1a_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "crf3b_date_visit" }
+  date = { field = "crf3b_date_visit", if = { crf3b_date_visit = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3b_rest_bp_sys" }
   if = { crf3b_rest_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  date = { field = "crf4a_visit_date" }
+  date = { field = "crf4a_visit_date", if = { crf4a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf4a_rest_bp_sys" }
   if = { crf4a_rest_bp_sys = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "crf1a_date_adm" }
+  date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   value = { field = "crf1a_temperature" }
   if = { crf1a_temperature = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "crf3a_visit_date" }
+  date = { field = "crf3a_visit_date", if = { crf3a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3a_rest_temp" }
   if = { crf3a_rest_temp = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "crf3b_date_visit" }
+  date = { field = "crf3b_date_visit", if = { crf3b_date_visit = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf3b_rest_temp" }
   if = { crf3b_rest_temp = { "!=" = "NA" } }
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "crf4a_visit_date" }
+  date = { field = "crf4a_visit_date", if = { crf4a_visit_date = { "!=" = "NA" } } }
   phase = "followup"
   value = { field = "crf4a_rest_temp" }
   if = { crf4a_rest_temp = { "!=" = "NA" } }
@@ -818,5 +834,6 @@
 [[observation]]
   name = "other_symptom"
   phase = "followup"
-  date = { field = "patient_sq_date" }
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
   text = { field = "patient_sq_h_other_detail" }
+  if = { patient_sq_h_other_detail = { "!=" = "NA" } }
