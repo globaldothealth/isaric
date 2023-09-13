@@ -78,6 +78,21 @@
     unit = "years"
     description = "Calculated age in years"
 
+  [subject.date_of_birth]
+    field = "fecha_nac"
+
+  [subject.dob_year]
+    field = "fecha_nac"
+    apply = { function = "splitDate", params = ["year", 2022] }
+
+  [subject.dob_month]
+    field = "fecha_nac"
+    apply = { function = "splitDate", params = ["month", 2022] }
+
+  [subject.dob_day]
+    field = "fecha_nac"
+    apply = { function = "splitDate", params = ["day", 2022] }
+
   [subject.pregnancy]
     field = "embarazo"
     ref = "Y/N/NK"
@@ -365,6 +380,19 @@
   name = "cough"
   date = { field = "fchadminsion" }
   phase = "admission"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "ss_tos", ref = "Y/N/NK" },
+      { field = "ss_hemop", ref = "Y/N/NK" },
+      { field = "ss_exp", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "fchadminsion" }
+  phase = "admission"
   is_present = { field = "ss_tos", ref = "Y/N/NK" }
 
 [[observation]]
@@ -450,6 +478,8 @@
 [[observation]]
   name = "pneumonia"
   phase = "study"
+  start_date = { field = "fchadminsion" }
+  duration_type = "event"
   date = { ref = "outcomeDate" }
   is_present = { field = "c_nb", ref = "Y/N/NK" }
   context = ["bacterial"]
@@ -482,7 +512,7 @@
   name = "oxygen_o2hb"
   date = { field = "fch_hemat" }
   phase = "admission"
-  value = { field = "hb" }
+  value = { field = "hb", source_unit = "g/dL", unit = "g/dL" }
 
 [[observation]]
   name = "respiratory_rate"
