@@ -145,8 +145,8 @@ def matches_redcap(
                 if ("date_" in str(row.get("valid_type", "")) or T == "date")
                 else scores["date-mismatch"]
             )
-        if (
-            "follow" in row.get("category", "")
+        if "follow" in row.get(
+            "category", ""
         ):  # de-emphasise followup, usually only required in observation
             score += scores["is-followup"]
         words = row["schema_field"].split("_")
@@ -163,9 +163,15 @@ def matches_redcap(
 def deep_get(d: Dict[str, Any], keys: str) -> Any:
     dc = copy.deepcopy(d)
     ks = keys.split(".")
-    for k in ks:
-        dc = dc[k]
-    return dc
+    names = []
+    for subschema in dc["oneOf"]:
+        for k in ks:
+            subschema = subschema[k]
+        if "const" in subschema:
+            names.append(subschema["const"])
+        elif "enum" in subschema:
+            names.extend(subschema["enum"])
+    return names
 
 
 def read_json(file: str) -> Dict:
@@ -185,7 +191,7 @@ def get_fields(config: Dict[str, Any], table: str) -> List[str]:
                 k: {"category": "observation"}
                 for k in deep_get(
                     read_json(config["schema-path"] / schemas[table]),
-                    "properties.name.enum",
+                    "properties.name",
                 )
             }
         }
