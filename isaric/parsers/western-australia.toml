@@ -486,7 +486,7 @@
 [visit.treatment_oxygen_mask_prongs]
   combinedType = "any"
   fields = [
-    { fieldpattern = ".*oxygen_therapy", values = { 1 = true, 2 = false, 3 = true, 4 = true, 5 = false } },
+    { fieldPattern = ".*oxygen_therapy", values = { 1 = true, 2 = false, 3 = true, 4 = true, 5 = false } },
     { field = "overall_oxygen_cmtype___1", values = { 0 = false, 1 = true } },
     { field = "overall_oxygen_cmtype___3", values = { 0 = false, 1 = true } },
     { field = "overall_oxygen_cmtype___4", values = { 0 = false, 1 = true } },
