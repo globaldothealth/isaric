@@ -704,6 +704,7 @@
     { field = "daily_prone_cmtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
   ]
 
+
 [visit.treatment_ecmo]
   description = "Extracorporeal (ECMO) support"
   combinedType = "any"
