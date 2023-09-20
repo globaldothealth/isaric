@@ -733,6 +733,9 @@ Other fields
 **avpu**: Text. Where is the subject on the AVPU consciousness scale, one of
 *Alert, Voice, Pain, Unresponsive*.
 
+**acvpu**: Text. Where is the subject on the ACVPU consciousness scale, one of
+*Alert, Confusion, Voice, Pain, Unresponsive*.
+
 **abdominal_pain**: Bool.
 
 **altered_consciousness_confusion**: Bool. If field only records
