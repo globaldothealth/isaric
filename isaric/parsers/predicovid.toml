@@ -104,7 +104,7 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "tabac", description = "Just before your diagnosis, did you smoke", values = { 1 = "yes", 2 = "yes" } },#, 3 = "never"
+      { field = "tabac", description = "Just before your diagnosis, did you smoke", values = { 1 = "yes", 2 = "yes" } },      #, 3 = "never"
       { field = "tabac_two", description = "In the past, have you smoked?", values = { 1 = "yes", 2 = "yes", 3 = "never" } },
     ]
 
@@ -151,18 +151,23 @@
     field = "subjid"
     sensitive = true
 
-  # Note that start dates were only provided as month and year, so all are assumed to start on the 1st.
   [visit.start_date]
     field = "symptom_start_date"
 
-  # If a monthly or month 12 follow-up survey is found, the subject can be assumed to have recovered.
   [visit.outcome]
-    field = "QM1"
-    apply = { function = "textIfNotNull", params = ['recovered'] }
-    if.any = [{ questionaire = "monthly" }, { questionaire = "month_12" }]
+    combinedType = "firstNonNull"
 
-    # OBSERVATION
-    # required fields - phase, date, name
+    [[visit.outcome.fields]]
+      field = "QM1"
+      apply = { function = "textIfNotNull", params = ['discharged'] }
+      if.any = [{ questionaire = "monthly" }, { questionaire = "month_12" }]
+
+    [[visit.outcome.fields]]
+      field = "QM1"                                                # for all other subjects who filled in a daily questionaire, put unknown.
+      apply = { function = "textIfNotNull", params = ['unknown'] }
+
+      # OBSERVATION
+      # required fields - phase, date, name
 
 [[observation]]
   name = "abdominal_pain"
@@ -186,7 +191,7 @@
     "%d/%m/%Y",
   ] } }
   phase = "followup"
-  is_present = {field = "perte_appetit", values = {1=true, 2=false, 0=false}}
+  is_present = { field = "perte_appetit", values = { 1 = true, 2 = false, 0 = false } }
 
 [[observation]]
   name = "chest_pain"
@@ -210,7 +215,7 @@
   name = "conjunctivitis"
   date = { field = "symptom_start_date" }
   phase = "admission"
-  if.all = [{JOUR = 0}, {QM21 = {"!=" = ""}}]
+  if.all = [{ JOUR = 0 }, { QM21 = { "!=" = "" } }]
   is_present = { field = "QM21", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -220,7 +225,11 @@
     "%d/%m/%Y",
   ] } }
   phase = "study"
-  if.all = [{JOUR = {"!=" = 0}}, {QM1 = 2}, {QM21 = {"!=" = ""}}] # in hospital, not day 1
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM21 = { "!=" = "" } },
+  ] # in hospital, not day 1
   is_present = { field = "QM21", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -230,7 +239,11 @@
     "%d/%m/%Y",
   ] } }
   phase = "followup"
-  if.all = [{JOUR = {"!=" = 0}}, {QM1 = {"!=" = 2}}, {QM21 = {"!=" = ""}}] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM21 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM21", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -244,11 +257,37 @@
 
 [[observation]]
   name = "cough_dry"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM4 = { "!=" = "" } }]
+  is_present = { field = "QM4", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
     "$JOUR",
     "%d/%m/%Y",
   ] } }
-  phase = "admission"
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM4 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM4", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM21 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM4", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -298,21 +337,38 @@
 
 [[observation]]
   name = "diarrhoea"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM8 = { "!=" = "" } }]
+  is_present = { field = "QM8", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
     "$JOUR",
     "%d/%m/%Y",
   ] } }
   phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM8 = { "!=" = "" } },
+  ] # in hospital, not day 1
   is_present = { field = "QM8", values = { 1 = true, 0 = false } }
 
-# [[observation]]
-#   name = "fatigue_malaise"
-#   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
-#     365,
-#     "%d/%m/%Y",
-#   ] } }
-#   phase = "followup"
-#   is_present = { field = "sensation_malaise", values = { 1 = true, 2 = false, 0 = false } }
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM8 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM8", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "ear_pain"
@@ -321,7 +377,7 @@
     "%d/%m/%Y",
   ] } }
   phase = "followup"
-  is_present = {field = "douleurs_oreilles", values = {1=true, 2=false, 0=false}}
+  is_present = { field = "douleurs_oreilles", values = { 1 = true, 2 = false, 0 = false } }
 
 [[observation]]
   name = "fatigue_malaise"
@@ -341,15 +397,12 @@
   phase = "followup"
   is_present = { field = "maux_de_tete", values = { 1 = true, 2 = false, 0 = false } }
 
-# [[observation]]
-#   name = "headache"
-#   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
-#     365,
-#     "%d/%m/%Y",
-#   ] } }
-#   phase = "followup"
-#   is_present = { field = "migraines", values = { 1 = true, 2 = false, 0 = false } }
-#   context = ['migraines']
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM12 = { "!=" = "" } }]
+  is_present = { field = "QM12", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "history_of_fever"
@@ -358,6 +411,25 @@
     "%d/%m/%Y",
   ] } }
   phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM12 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM12", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM12 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM12", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -380,11 +452,37 @@
 
 [[observation]]
   name = "loss_of_smell_or_taste"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM7 = { "!=" = "" } }]
+  is_present = { field = "QM7", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
     "$JOUR",
     "%d/%m/%Y",
   ] } }
   phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM7 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM7", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM7 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM7", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -417,11 +515,37 @@
 
 [[observation]]
   name = "muscle_aches"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM9 = { "!=" = "" } }]
+  is_present = { field = "QM9", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
     "$JOUR",
     "%d/%m/%Y",
   ] } }
   phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM9 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM9", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM9 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM9", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -455,7 +579,14 @@
     "%d/%m/%Y",
   ] } }
   phase = "followup"
-  is_present = {field = "crises_epilepsie", values = {1=true, 2=false, 0=false}}
+  is_present = { field = "crises_epilepsie", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM15 = { "!=" = "" } }]
+  is_present = { field = "QM15", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "shortness_of_breath"
@@ -464,6 +595,25 @@
     "%d/%m/%Y",
   ] } }
   phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM15 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM15", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM15 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM15", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -477,9 +627,9 @@
 
 [[observation]]
   name = "skin_rash"
-  date = { field = "symptom_start_date"}
+  date = { field = "symptom_start_date" }
   phase = "admission"
-  if.all = [{JOUR = 0}, {QM20 = {"!=" = ""}}]
+  if.all = [{ JOUR = 0 }, { QM20 = { "!=" = "" } }]
   is_present = { field = "QM20", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -489,7 +639,11 @@
     "%d/%m/%Y",
   ] } }
   phase = "study"
-  if.all = [{JOUR = {"!=" = 0}}, {QM1 = 2}, {QM20 = {"!=" = ""}}] # in hospital, not day 0
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM20 = { "!=" = "" } },
+  ] # in hospital, not day 0
   is_present = { field = "QM20", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -499,7 +653,11 @@
     "%d/%m/%Y",
   ] } }
   phase = "followup"
-  if.all = [{JOUR = {"!=" = 0}}, {QM1 = {"!=" = 2}}, {QM20 = {"!=" = ""}}] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM20 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM20", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -513,11 +671,37 @@
 
 [[observation]]
   name = "sore_throat"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM6 = { "!=" = "" } }]
+  is_present = { field = "QM6", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
   date = { field = "symptom_start_date", apply = { function = "endDate", params = [
     "$JOUR",
     "%d/%m/%Y",
   ] } }
   phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM6 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM6", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM6 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
   is_present = { field = "QM6", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -531,10 +715,10 @@
 
 [[observation]]
   name = "temperature_celsius"
-  date = { field = "symptom_start_date"}
+  date = { field = "symptom_start_date" }
   phase = "admission"
-  if.all = [{JOUR = 0}, {QM13A = {"!=" = ""}}]
-  value = { field = "QM13A", apply = {function = "getFloat", params=[","]} }
+  if.all = [{ JOUR = 0 }, { QM13A = { "!=" = "" } }]
+  value = { field = "QM13A", apply = { function = "getFloat", params = [","] } }
 
 [[observation]]
   name = "temperature_celsius"
@@ -543,8 +727,12 @@
     "%d/%m/%Y",
   ] } }
   phase = "study"
-  if.all = [{JOUR = {"!=" = 0}}, {QM1 = 2}, {QM13A = {"!=" = ""}}] # in hospital, not day 0
-  value = { field = "QM13A", apply = {function = "getFloat", params=[","]} }
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM13A = { "!=" = "" } },
+  ] # in hospital, not day 0
+  value = { field = "QM13A", apply = { function = "getFloat", params = [","] } }
 
 [[observation]]
   name = "temperature_celsius"
@@ -553,8 +741,13 @@
     "%d/%m/%Y",
   ] } }
   phase = "followup"
-  if.all = [{JOUR = {"!=" = 0}}, {QM1 = {"!=" = 2}}, {QM13A = {"!=" = ""}}, {QM13A = {"!=" = "N"}}]
-  value = { field = "QM13A", apply = {function = "getFloat", params=[","]} }
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM13A = { "!=" = "" } },
+    { QM13A = { "!=" = "N" } },
+  ]
+  value = { field = "QM13A", apply = { function = "getFloat", params = [","] } }
 
 [[observation]]
   name = "vomiting_nausea"

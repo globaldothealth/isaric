@@ -371,7 +371,8 @@
         "transferred",
         "recovered",
         "discharged",
-        "palliative discharge"
+        "palliative discharge",
+        "unknown"
       ],
       "description": "Outcome",
       "category": "outcome"
