@@ -712,9 +712,6 @@
   #     { field = "k_bdrugs", values = { 1 = true } },
   #   ]
 
-  # [visit.treatment_indication_anticoagulation]
-  #   field = "ef_anticoag"
-
 [visit.treatment_ecmo]
   description = "Extracorporeal (ECMO) support"
   combinedType = "any"
