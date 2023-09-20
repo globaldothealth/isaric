@@ -171,7 +171,13 @@
   name = "cough"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "tos___1", ref = "checkbox" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "tos___1", ref = "checkbox" },
+      { field = "exudado_faringeo", ref = "Y/N/NK" },
+    ]
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -261,3 +267,22 @@
   date = { field = "fecha_de_ingreso_al_insnsb" } # fecha_muestra not present
   phase = "admission"
   value = { field = "vld41" }
+
+[[observation]]
+  name = "runny_nose"
+  date = { field = "fecha_de_ingreso_al_insnsb" }
+  phase = "admission"
+  is_present = { field = "rinorrea___1", ref = "checkbox" }
+
+[[observation]]
+  name = "headache"
+  date = { field = "fecha_de_ingreso_al_insnsb" }
+  phase = "admission"
+  is_present = { field = "cefalea___1", ref = "checkbox" }
+
+# TODO: check that conjunctival injection and conjunctivitis are same
+[[observation]]
+  name = "conjunctivitis"
+  date = { field = "fecha_de_ingreso_al_insnsb" }
+  phase = "admission"
+  is_present = { field = "inyeccion_conjuntival", values = { Si = true, No = false } }
