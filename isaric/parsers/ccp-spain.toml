@@ -298,9 +298,13 @@
     values = { 0 = false, 1 = true }
 
   [visit.treatment_oxygen_therapy]
-    description = "Oxygen therapy"
-    field = "t_o2"
-    values = { 0 = false, 1 = true }
+    combinedType = "any"
+    fields = [
+      { description = "Oxygen therapy", field = "t_o2", values = { 0 = false, 1 = true } },
+      { description = "Non-invasive ventilation", field = "t_vmni", values = { 0 = false, 1 = true } },
+      { description = "Invasive ventilation?", field = "t_iot", values = { 0 = false, 1 = true } },
+      { description = "Extracorporeal (ECMO) support", field = "t_ecmo", values = { 0 = false, 1 = true } },
+    ]
 
   [visit.treatment_noninvasive_ventilation]
     description = "Non-invasive ventilation"

@@ -587,6 +587,14 @@
   description = "Oxygen interface type - HF nasal cannula"
   values = { 2 = true }
 
+[visit.treatment_oxygen_mask_prongs]
+  combinedType = "any"
+  fields = [
+    { field = "overall_oxygen_cmtype___1", description = "Nasal prongs", values = { 2 = true } },
+    { field = "overall_oxygen_cmtype___3", description = "Mask", values = { 2 = true } },
+    { field = "overall_oxygen_cmtype___4", description = "Mask with reservoir", values = { 2 = true } },
+  ]
+
 [visit.treatment_dialysis]
   combinedType = "any"
 
@@ -667,9 +675,11 @@
   ref = "Y/N/NK"
 
 [visit.treatment_noninvasive_ventilation]
-  field = "overall_noninvasive_proccur"
-  description = "Non-invasive ventilation (eg BiPAP, CPAP)?"
-  ref = "Y/N/NK"
+  combinedType = "any"
+  fields = [
+    { field = "overall_noninvasive_proccur", description = "Non-invasive ventilation (eg BiPAP, CPAP)?", ref = "Y/N/NK" },
+    { field = "overall_oxygen_cmtype___5", description = "CPAP/NIV mask", values = { 2 = true } },
+  ]
 
 [visit.treatment_other]
   combinedType = "set"
@@ -680,9 +690,14 @@
   ]
 
 [visit.treatment_oxygen_therapy]
-  field = "overall_oxygen_cmoccur"
-  description = "Oxygen therapy?"
-  ref = "Y/N/NK"
+  combinedType = "any"
+  fields = [
+    { field = "overall_oxygen_cmoccur", description = "Oxygen therapy?", ref = "Y/N/NK" },
+    { fieldPattern = "overall_oxygen_cmtype___.*", description = "Oxygen interface type", values = { 2 = true } },
+    { field = "overall_invasive_proccur", description = "Invasive ventilation?", ref = "Y/N/NK" },
+    { field = "overall_noninvasive_proccur", description = "Non-invasive ventilation?", ref = "Y/N/NK" },
+    { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support", ref = "Y/N/NK" },
+  ]
 
 [visit.treatment_prone_position]
   field = "overall_prone_prtrt"

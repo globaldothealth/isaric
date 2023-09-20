@@ -824,6 +824,11 @@
     description = "High-flow nasal canula oxygen therapy"
     ref = "Y/N/NK"
 
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_extracorp_prtrt"
+    description = "Extracorporeal (ECMO) support?"
+    values = { 1 = true, 2 = false }
+
 [visit.treatment_prone_position]
   combinedType = "any"
   excludeWhen = "none"
