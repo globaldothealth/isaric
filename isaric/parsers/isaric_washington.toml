@@ -392,12 +392,6 @@
   is_present = { field = "signs_and_symptoms_at_hosp___6", values = { 1 = true } }
 
 [[observation]]
-  name = "confusion"
-  date = { field = "ADMIT DATE" }
-  phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___8", values = { 1 = true } }
-
-[[observation]]
   name = "conjunctivitis"
   date = { field = "ADMIT DATE" }
   phase = "admission"
