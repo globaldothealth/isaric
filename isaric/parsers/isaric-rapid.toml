@@ -259,7 +259,9 @@
 
   [subject.subject_id]
     field = "subjid"
+    ref = "relsub"
     sensitive = true
+    ignoreMissingKey = true
     description = "Participant Identification Number (PIN)"
 
   [subject.enrolment_date]
@@ -477,7 +479,7 @@
 [visit]
   country_iso3 = { field = "country", ref = "countryMap" }
 
-  [visit.visit_id] # This is the same as the subject_id!
+  [visit.visit_id]
     field = "subjid"
     sensitive = true
 
@@ -493,7 +495,9 @@
 
   [visit.subject_id]
     field = "subjid"
+    ref = "relsub"
     sensitive = true
+    ignoreMissingKey = true
 
   [visit.icu_admission]
     description = "ICU or High Dependency admission"
