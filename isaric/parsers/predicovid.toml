@@ -154,17 +154,13 @@
   [visit.start_date]
     field = "symptom_start_date"
 
-  [visit.outcome]
+  [visit.outcome] # My concern is that the 'discharged' option will be overwritten by later empty rows given as "unknown"
     combinedType = "firstNonNull"
 
     [[visit.outcome.fields]]
       field = "QM1"
       apply = { function = "textIfNotNull", params = ['discharged'] }
       if.any = [{ questionaire = "monthly" }, { questionaire = "month_12" }]
-
-    [[visit.outcome.fields]]
-      field = "QM1"                                                # for all other subjects who filled in a daily questionaire, put unknown.
-      apply = { function = "textIfNotNull", params = ['unknown'] }
 
       # OBSERVATION
       # required fields - phase, date, name
