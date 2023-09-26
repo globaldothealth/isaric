@@ -80,6 +80,11 @@
       { field = "ethnic___10", values = { 1 = "Unknown" } },
     ]
 
+  [subject.works_lab]
+    field = "labwork_erterm"
+    ref = "Y/N/NK"
+    description = "Employed in a microbiology laboratory?"
+
   [subject.works_microbiology_lab]
     field = "labwork_erterm"
     ref = "Y/N/NK"
@@ -1019,6 +1024,18 @@
   value = { field = "daily_temp_vsorres", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "daily_dsstdat", description = "Date of assessment" }
+  value = { field = "daily_fio2b_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "daily_dsstdat", description = "Date of assessment" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

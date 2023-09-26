@@ -283,10 +283,10 @@
       { field = "flw2_ethnicity_oth", description = "Other ethnicity" },
     ]
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "labwork_erterm"
     ref = "Y/N/NK"
-    description = "Employed in a microbiology laboratory?"
+    description = "laboratory worker"
 
   [subject.works_healthcare]
     field = "healthwork_erterm"
@@ -1537,6 +1537,18 @@
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_temp_vsorres" } # there is no source unit field
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "ccm_a_dat" }
+  value = { field = "ccm_a_fio2b_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "ccm_a_dat" }
+  value = { field = "ccm_a_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

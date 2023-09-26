@@ -332,6 +332,10 @@
     field = "dob"
     apply = { function = "splitDate", params = ["day", 2022, "%d/%m/%Y"] }
 
+  [subject.works_lab]
+    field = "microb"
+    ref = "Y/N/NK"
+
   [subject.works_microbiology_lab]
     field = "microb"
     ref = "Y/N/NK"
@@ -1331,6 +1335,12 @@
   phase = "study"
   date = { field = "icu_date" }
   value = { field = "ph", description = "pH" }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "vitals_date" }
+  value = { field = "fi02", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

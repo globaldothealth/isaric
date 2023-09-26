@@ -466,6 +466,27 @@
   value = { field = "ph_dose", description = "pH" }
 
 [[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "a_of_fio2", apply = { function = "Percentage" } }
+  context = ['nasal oxygen']
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "a_vni_fio2", apply = { function = "Percentage" } }
+  context = ['non-invasive ventilation']
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "a_vm_fio2", apply = { function = "Percentage" } }
+  context = ['mechanical ventilation']
+
+[[observation]]
   name = "pao2_mmHg"
   phase = "admission"
   date = { ref = "admissionDate" }

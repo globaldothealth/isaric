@@ -509,6 +509,13 @@ in the data as having an immunosuppression co-morbidity.
 
 **has_comorbidity_other**: Set. Any other comorbidity - free text field.
 
+**works_lab**: Bool. Does the subject work in a laboratory setting? Supertype,
+includes *works_microbiology_lab* as subtype.
+
+**works_microbiology_lab**: Bool.
+
+**works_healthcare**: Bool.
+
 **has_died**: Bool. Has the subject died since being enrolled in the
 study? Can take data from both hospitalisation and follow-up surveys,
 and includes non-COVID related deaths where specified (as in many
@@ -840,6 +847,9 @@ record the maximum flow volume.
 
 **oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
+
+**fio2_percent**: Value (20-100): Fraction of inspired oxygen (concentration
+of oxygen in supplied gas mixture).
 
 **pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the

@@ -274,6 +274,11 @@
       { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
     ]
 
+  [subject.works_lab]
+    field = "labwork_erterm"
+    ref = "Y/N/NK"
+    description = "Employed in a microbiology laboratory?"
+
   [subject.works_microbiology_lab]
     field = "labwork_erterm"
     ref = "Y/N/NK"
@@ -1115,6 +1120,18 @@
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
   value = { field = "daily_temp_vsorres", unit = "°C", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
+  value = { field = "daily_fio2b_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

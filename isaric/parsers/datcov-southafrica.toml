@@ -122,10 +122,10 @@
     ]
     description = "Is the patient a healthcare worker?"
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "healthwork_type"
     values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 6 = false, 7 = false, 8 = false, 9 = false, 10 = false }
-    description = "Is the patient a healthcare worker?"
+    description = "laboratory worker"
 
   [subject.pregnancy] # pregnancy fields not in the data?
     field = "PregnancyStatus"

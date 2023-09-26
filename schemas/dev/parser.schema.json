@@ -354,6 +354,10 @@
           "description": "Ethnicity",
           "$ref": "#/definitions/mapping"
         },
+        "works_lab": {
+          "description": "Works in laboratory",
+          "$ref": "#/definitions/mapping"
+        },
         "works_microbiology_lab": {
           "description": "Works in microbiology lab",
           "$ref": "#/definitions/mapping"
@@ -808,6 +812,7 @@
                   "oxygen_o2hb",
                   "oxygen_saturation_percent",
                   "oxygen_flow_volume_max",
+                  "fio2_percent",
                   "pao2_mmHg",
                   "pco2_mmHg",
                   "pH",

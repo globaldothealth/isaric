@@ -126,6 +126,11 @@
   description = "Employed as a Healthcare Worker?"
   ref = "Y/N"
 
+[subject.works_lab]
+  field = "lab_worker"
+  description = "Employed in a microbiology laboratory?"
+  ref = "Y/N"
+
 [subject.works_microbiology_lab]
   field = "lab_worker"
   description = "Employed in a microbiology laboratory?"
@@ -880,6 +885,28 @@
   [observation.value]
     field = "daily_ph_data"
     description = "pH"
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  if.all = [
+    { redcap_event_name = "on_admission_arm_1" },
+    { daily_fio2_data = { "!=" = "" } },
+    { daily_fio2_data = { "!=" = "9999" } },
+  ]
+  date = { field = "daily_assess_date" }
+  value = { field = "daily_fio2_data", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  if.all = [
+    { redcap_event_name = "daily_progress_arm_1" },
+    { daily_fio2_data = { "!=" = "" } },
+    { daily_fio2_data = { "!=" = "9999" } },
+  ]
+  date = { field = "daily_assess_date" }
+  value = { field = "daily_fio2_data", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

@@ -96,6 +96,9 @@
     { field = "ethnic_group#Unknown", values = { "1.0" = "Unknown" } },
   ]
 
+[subject.works_lab]
+  field = "microbiology_worker"
+  ref = "Y/N"
 
 [subject.works_microbiology_lab]
   field = "microbiology_worker"
@@ -692,6 +695,16 @@
     fields = [
       { field = "oxygen_saturation_on", values = { 1 = "room air", 2 = "on oxygen" } },
     ]
+
+[[observation]]
+  name = "fio2_percent"
+  date = { field = "assessment_dt" }
+  phase = "study"
+  value = { field = "fio2_1" }
+  if.all = [
+    { report_name_custom = { "=~" = "Daily case record form" } },
+    { fio2_1 = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "pao2_mmHg"

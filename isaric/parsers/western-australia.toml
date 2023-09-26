@@ -96,7 +96,7 @@
     description = "Healthcare Worker?"
     ref = "Y/N/NK"
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "labwork_erterm"
     description = "Laboratory worker?"
     ref = "Y/N/NK"

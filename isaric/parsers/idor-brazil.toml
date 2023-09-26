@@ -267,6 +267,10 @@
   field = "healthwork_erterm"
   ref = "Y/N/NK"
 
+[subject.works_lab]
+  field = "labwork_erterm"
+  ref = "Y/N/NK"
+
 [subject.works_microbiology_lab]
   field = "labwork_erterm"
   ref = "Y/N/NK"
@@ -901,6 +905,12 @@
   phase = "admission"
   date = { ref = "admissionDate" }
   is_present = { field = "skinulcers_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "fio2_percent"
+  phase.ref = "phaseFromRedcapEvent"
+  date = { ref = "dailyDate" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

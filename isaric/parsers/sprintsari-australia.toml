@@ -109,6 +109,11 @@
     # 8 = "aged care worker"
     # 9 = "disability worker"
 
+  [subject.works_lab]
+    field = "healthwork_erterm"
+    description = "Employed a a healthcare worker or any of following professions?"
+    values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false }
+
   [subject.works_microbiology_lab]
     field = "healthwork_erterm"
     description = "Employed a a healthcare worker or any of following professions?"
@@ -678,6 +683,12 @@
   [observation.value]
     field = "daily_ph_lborres"
     description = "pH Document from same ABG with the worst P:F ratio"
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"
