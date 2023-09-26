@@ -1,0 +1,770 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "predicovid"
+  description = ""
+  defaultDateFormat = "%d/%m/%Y"
+
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = ['ethnicity']
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ['date_outcome']
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "subjid", sensitive = true } }
+
+  [adtl.defs."Y/N/NK".values]
+    1 = true
+    2 = false
+
+    # SUBJECT
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [subject.earliest_admission_date] # NOTE: in the merged data, the date defaulted to the 1st of the month. Can be changed if necessary.
+    combinedType = "min"
+    fields = [
+      { field = "symptom_start_date", description = "first symptom date" },
+    ]
+
+  [subject.age]
+    field = "age_estimateyears"
+
+  [subject.dob_year]
+    field = "age_estimateyears"
+    apply = { function = "startYear", params = [
+      "$symptom_start_date",
+      2022,
+      "%d/%m/%Y",
+    ] }
+
+  [subject.sex_at_birth]
+    field = "sex"
+    description = "sex at birth"
+    values = { 1 = "male", 2 = "female" }
+
+  [subject.ethnicity]
+    description = "Ethnic groups"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ethnic___1", values = { 1 = "Arab" } },
+      { field = "ethnic___2", values = { 1 = "Black" } },
+      { field = "ethnic___3", values = { 1 = "East_Asian" } },
+      { field = "ethnic___4", values = { 1 = "South_Asian" } },
+      { field = "ethnic___5", values = { 1 = "West_Asian" } },
+      { field = "ethnic___6", values = { 1 = "Latin_American" } },
+      { field = "ethnic___7", values = { 1 = "White" } },
+      { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
+      { field = "ethnic___9", values = { 1 = "Other" } },
+      { field = "other_ethnic" },
+    ]
+
+  [subject.works_microbiology_lab]
+    field = "labwork_erterm"
+    ref = "Y/N/NK"
+
+  [subject.works_healthcare]
+    field = "healthwork_erterm"
+    ref = "Y/N/NK"
+
+  [subject.pregnancy]
+    field = "pregyn_rptestcd"
+    values = { 1 = true, 0 = false }
+
+  [subject.pregnancy_outcome]
+    field = "pregout_rptestcd"
+    values = { 1 = "live birth", 2 = "still birth" }
+
+  [subject.pregnancy_post_partum]
+    field = "postpart_rptestcd"
+    values = { 1 = true, 0 = false }
+
+  [subject.pregnancy_gestational_age_weeks]
+    field = "egestage_rptestcd"
+    description = "Gestational age (weeks amenorrhea)"
+
+  [subject.has_smoking]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "tabac", description = "Just before your diagnosis, did you smoke", values = { 1 = "yes", 2 = "yes" } },      #, 3 = "never"
+      { field = "tabac_two", description = "In the past, have you smoked?", values = { 1 = "yes", 2 = "yes", 3 = "never" } },
+    ]
+
+
+  [subject.has_asthma]
+    combinedType = "any"
+    fields = [
+      { field = "asthme", description = "Have you ever had asthma?", values = { 1 = true, 0 = false } },
+    ]
+
+  [subject.has_diabetes]
+    combinedType = "any"
+    fields = [
+      { field = "antec_one", values = { 1 = true, 0 = false }, description = "Diabetes (type 1 or 2)" },
+    ]
+
+  [subject.has_liver_disease]
+    combinedType = "any"
+    fields = [
+      { field = "antec_six", values = { 1 = true, 0 = false }, description = "chronic liver disease" },
+    ]
+
+  [subject.has_immunosuppression]
+    field = "antec_seven"
+    description = "a disease known to reeduce your immune defense"
+    values = { 1 = true, 0 = false }
+
+
+  # If subject is filling in a follow-up form at month 12, we assume they're not dead!
+  [subject.has_died]
+    field = "questionaire"        # added into merged data to distinguish between questionaires
+    values = { month_12 = false }
+
+    # VISIT
+
+[visit]
+  country_iso3 = "LUX" # Is this correct?
+
+  [visit.visit_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.start_date]
+    field = "symptom_start_date"
+
+  [visit.outcome] # My concern is that the 'discharged' option will be overwritten by later empty rows given as "unknown"
+    combinedType = "firstNonNull"
+
+    [[visit.outcome.fields]]
+      field = "QM1"
+      apply = { function = "textIfNotNull", params = ['discharged'] }
+      if.any = [{ questionaire = "monthly" }, { questionaire = "month_12" }]
+
+      # OBSERVATION
+      # required fields - phase, date, name
+
+[[observation]]
+  name = "abdominal_pain"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "brulures_estomac", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "doul_abdo", values = { 1 = true, 2 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "anorexia"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "perte_appetit", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "chest_pain"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "doul_thorac", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "confusion"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "confusion_ment", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM21 = { "!=" = "" } }]
+  is_present = { field = "QM21", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM21 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM21", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM21 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM21", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "conjunctivitis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "inflammation_conjonct", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM4 = { "!=" = "" } }]
+  is_present = { field = "QM4", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM4 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM4", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM21 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM4", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "toux_seche", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cough_with_haemoptysis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "crachats_sang", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "toux_grasse", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "cyanosis"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "doigts_bleus", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "diarrhee", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM8 = { "!=" = "" } }]
+  is_present = { field = "QM8", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM8 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM8", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM8 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM8", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "ear_pain"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "douleurs_oreilles", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "fatigue", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "headache"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "maux_de_tete", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM12 = { "!=" = "" } }]
+  is_present = { field = "QM12", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM12 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM12", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM12 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM12", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "fievre", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "inability_to_walk"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "difficultes_a_marcher", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM7 = { "!=" = "" } }]
+  is_present = { field = "QM7", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM7 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM7", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM7 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM7", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "perte_odorat", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "perte_de_gout", values = { 1 = true, 2 = false, 0 = false } }
+
+
+[[observation]]
+  name = "lymphadenopathy"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "adenopathies", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM9 = { "!=" = "" } }]
+  is_present = { field = "QM9", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM9 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM9", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM9 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM9", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "doul_musc_sup", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "doul_musc_inf", values = { 1 = true, 2 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "runny_nose"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "ecoulement_nasal", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "seizures"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "crises_epilepsie", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM15 = { "!=" = "" } }]
+  is_present = { field = "QM15", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM15 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM15", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM15 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM15", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "souffle_court", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM20 = { "!=" = "" } }]
+  is_present = { field = "QM20", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM20 = { "!=" = "" } },
+  ] # in hospital, not day 0
+  is_present = { field = "QM20", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM20 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM20", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "eruptions", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM6 = { "!=" = "" } }]
+  is_present = { field = "QM6", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM6 = { "!=" = "" } },
+  ] # in hospital, not day 1
+  is_present = { field = "QM6", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM6 = { "!=" = "" } },
+  ] # not in hospital, not day 1 (this will assume that where QM1 is blank, the subject is not in hospital)
+  is_present = { field = "QM6", values = { 1 = true, 0 = false } }
+
+[[observation]]
+  name = "sore_throat"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "maux_gorge", values = { 1 = true, 2 = false, 0 = false } }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = { field = "symptom_start_date" }
+  phase = "admission"
+  if.all = [{ JOUR = 0 }, { QM13A = { "!=" = "" } }]
+  value = { field = "QM13A", apply = { function = "getFloat", params = [","] } }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "study"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = 2 },
+    { QM13A = { "!=" = "" } },
+  ] # in hospital, not day 0
+  value = { field = "QM13A", apply = { function = "getFloat", params = [","] } }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    "$JOUR",
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  if.all = [
+    { JOUR = { "!=" = 0 } },
+    { QM1 = { "!=" = 2 } },
+    { QM13A = { "!=" = "" } },
+    { QM13A = { "!=" = "N" } },
+  ]
+  value = { field = "QM13A", apply = { function = "getFloat", params = [","] } }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "nausees", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "vomissements", values = { 1 = true, 2 = false, 0 = false } },
+    ]
+
+[[observation]]
+  name = "wheezing"
+  date = { field = "symptom_start_date", apply = { function = "endDate", params = [
+    365,
+    "%d/%m/%Y",
+  ] } }
+  phase = "followup"
+  is_present = { field = "respi_sifflante", values = { 1 = true, 2 = false, 0 = false } }
