@@ -593,11 +593,18 @@
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" } },
-    { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
     { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
     { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" } },
     { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
   ]
+
+[visit.treatment_antimalarial]
+  field = "antiviral_cmtrt___8"
+  values = { 1 = true }
+
+[visit.treatment_antimalarial_type]
+  field = "antiviral_cmtrt___8"
+  values = { 1 = "Chloroquine/Hydroxychloroquine" }
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "daily_neuro_cmtrt"

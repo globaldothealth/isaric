@@ -334,12 +334,20 @@
 
 [visit.treatment_antimalarial]
   combinedType = "any"
+  excludeWhen = "none"
 
   [[visit.treatment_antimalarial.fields]]
     fieldPattern = "tmt_pdthosp_nom.*"
 
     [visit.treatment_antimalarial.fields.values]
       HYDROXYCHLOROQUINE = true
+
+[visit.treatment_antimalarial_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { fieldPattern = "tmt_pdthosp_nom.*", values = { HYDROXYCHLOROQUINE = "Hydroxychloroquine" } },
+  ]
 
 [visit.treatment_antibiotics]
   combinedType = "any"
@@ -382,13 +390,6 @@
       NOVOCLIN = "Novoclin"
       TINIDAZOLE = "Tinidazole"
       "TOBREX COLLYRE" = "Tobramycin"
-
-[visit.treatment_experimental_agent_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { fieldPattern = "tmt_pdthosp_nom.*", values = { HYDROXYCHLOROQUINE = "Hydroxychloroquine" } },
-  ]
 
 [visit.treatment_antifungal_agent]
   combinedType = "any"

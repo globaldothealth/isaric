@@ -202,6 +202,22 @@
       { field = "ttt_ac", description = "Anticoagulation", values = { 1 = true, 0 = false } },
     ]
 
+  [visit.treatment_antimalarial]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "ttt_ass_type___1", values = { 1 = true } },
+      { field = "ttt_ass_type___2", values = { 1 = true } },
+    ]
+
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ttt_ass_type___1", values = { 1 = "Chloroquine" } },
+      { field = "ttt_ass_type___2", values = { 1 = "Hydroxychloroquine" } },
+    ]
+
   [visit.treatment_antivirals]
     field = "atv_ouinon"
     values = { 1 = true, 0 = false }
@@ -256,8 +272,6 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "ttt_ass_type___1", values = { 1 = "Chloroquine" } },
-      { field = "ttt_ass_type___2", values = { 1 = "Hydroxychloroquine" } },
       # { field = "ttt_ass_type___3", values = {1 = "Corticosteroids"} },
       { field = "ttt_ass_type___4", values = { 1 = "Tocilizumab" } },
       { field = "ttt_ass5_nom" },

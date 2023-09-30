@@ -603,9 +603,21 @@
   ref = "Y/N/NK"
 
 [visit.treatment_antimalarial]
-  field = "daily_antimal_cmyn"
-  description = "Antimalarial agent?"
-  ref = "Y/N/NK"
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_antimal_cmyn", description = "Antimalarial agent?", ref = "Y/N/NK" },
+    { field = "daily_exper_cmtype___1", values = { 1 = true } },
+    { field = "daily_exper_cmtype___2", values = { 1 = true } },
+  ]
+
+[visit.treatment_antimalarial_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+  ]
 
 [visit.treatment_antivirals]
   combinedType = "any"
@@ -691,8 +703,6 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
-    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
     { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
     { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
     { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },

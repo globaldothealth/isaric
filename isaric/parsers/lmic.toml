@@ -52,6 +52,34 @@
     #   [subject.date_of_birth]
     #     field = "dateofbirth"
 
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dateofbirth", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%Y-%m-%d",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+        [
+          "$hostdat",
+          "$cestdat",
+          "$dsstdat",
+        ],
+        2022,
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+        [
+          "$hostdat",
+          "$cestdat",
+          "$dsstdat",
+        ],
+        2022,
+        "%Y-%m-%d",
+        "months",
+      ] } },
+    ]
+
   [subject.earliest_admission_date]
     ref = "admissionDateHierarchy"
 
