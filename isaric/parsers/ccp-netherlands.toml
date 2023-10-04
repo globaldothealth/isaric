@@ -98,7 +98,7 @@
 
 [subject.works_lab]
   field = "microbiology_worker"
-  ref = "Y/N"
+  values = { 1 = true }
 
 [subject.works_microbiology_lab]
   field = "microbiology_worker"

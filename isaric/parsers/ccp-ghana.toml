@@ -334,7 +334,7 @@
 
   [subject.works_lab]
     field = "microb"
-    ref = "Y/N/NK"
+    values = { 1 = true }
 
   [subject.works_microbiology_lab]
     field = "microb"

@@ -270,7 +270,7 @@
 [subject.works_lab]
   field = "labwork_erterm"
   description = "employed in a microbiology lab?"
-  ref = "Y/N/NK"
+  values = { 1 = true }
 
 [subject.works_microbiology_lab]
   field = "labwork_erterm"
