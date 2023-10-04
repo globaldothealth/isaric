@@ -1038,6 +1038,22 @@
   value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
+  name = "fio2_Lmin"
+  phase = "study"
+  date = { field = "daily_dsstdat", description = "Date of assessment" }
+  value = { field = "daily_fio2c_lborres" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_nasaloxy_cmtrt", values = { 1 = "HFNC" } },
+      { field = "daily_noninvasive_prtrt", values = { 1 = "non-invasive" } },
+      { field = "daily_invasive_prtrt", values = { 1 = "invasive" } },
+      { field = "daily_ecmo_prtrt", values = { 1 = "ECMO" } },
+    ]
+
+[[observation]]
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }

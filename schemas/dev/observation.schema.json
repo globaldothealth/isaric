@@ -218,6 +218,21 @@
       ],
       "properties": {
         "name": {
+          "const": "fio2_Lmin"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
           "const": "pao2_mmHg"
         },
         "value": {

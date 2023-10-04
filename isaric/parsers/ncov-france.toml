@@ -486,6 +486,8 @@
   value = { field = "a_vm_fio2", apply = { function = "Percentage" } }
   context = ['mechanical ventilation']
 
+  # Possibly other ones to add from 'o2_flow'? kinda looks relevant for HFNC etc. Asked Sadie.
+
 [[observation]]
   name = "pao2_mmHg"
   phase = "admission"

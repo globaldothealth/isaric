@@ -851,6 +851,9 @@ observation was made on room air, on while on oxygen.
 **fio2_percent**: Value (20-100): Fraction of inspired oxygen (concentration
 of oxygen in supplied gas mixture).
 
+**fio2_Lmin**: Value (0-100): Fraction of inspired oxygen, in L/min.
+Should be recorded with the method of oxygen therapy as context.
+
 **pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the
 default unit.

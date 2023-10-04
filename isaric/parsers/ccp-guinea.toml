@@ -607,7 +607,6 @@
 [visit.treatment_cardiovascular_support]
   combinedType = "any"
   fields = [
-    { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support", ref = "Y/N" },
     { field = "vaso_or_inot", description = "Any administration of vasopressor/inotrope?", ref = "Y/N" },
   ]
 
@@ -643,9 +642,8 @@
   ref = "Y/N"
 
 [visit.treatment_noninvasive_ventilation]
-  field = "non_inv_vent"
-  description = "Non-invasive ventilation (eg BiPAP, CPAP)?"
-  ref = "Y/N"
+  combinedType = "any"
+  fields = [{ field = "non_inv_vent", ref = "Y/N" }]
 
 [visit.treatment_other]
   combinedType = "set"
@@ -657,9 +655,14 @@
   ]
 
 [visit.treatment_oxygen_therapy]
-  field = "overall_oxygen_cmoccur"
-  description = "Oxygen therapy?"
-  ref = "Y/N"
+  combinedType = "any"
+  fields = [
+    { field = "can_oxy_ther", ref = "Y/N" },
+    { field = "non_inv_vent", ref = "Y/N" },
+    { field = "inv_vent", ref = "Y/N" },
+    { field = "ecls", ref = "Y/N" },
+  ]
+
 
 [visit.treatment_prone_position]
   field = "prone"
@@ -1349,6 +1352,30 @@
   phase = "study"
   date = { field = "vitals_date" }
   value = { field = "temperature", description = "Value Temperature" }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
+  value = { field = "any_supplemental_oxygen_value", apply = { function = "Percentage" }, if.any = [
+    { fio2_0_21_1_0_unit = 1 },
+    { any_supplemental_oxygen_value = { "!=" = "" } },
+  ] }
+
+[[observation]]
+  name = "fio2_Lmin"
+  phase = "admission"
+  date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
+  value = { field = "any_supplemental_oxygen_value", if.any = [
+    { fio2_0_21_1_0_unit = 2 },
+    { any_supplemental_oxygen_value = { "!=" = "" } },
+  ] }
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_oxygen_cmtype_1", values = { 1 = "nasal cannula", 2 = "HFNC", 3 = "mask", 4 = "mask with reservoir", 5 = "CPAP/NIV mask", 6 = "Unknown" } },
+    ]
 
 [[observation]]
   name = "fio2_percent"

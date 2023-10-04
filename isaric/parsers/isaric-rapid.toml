@@ -1555,6 +1555,28 @@
   value = { field = "ccm_a_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
+  name = "fio2_Lmin"
+  phase = "study"
+  date = { field = "ccm_a_dat" }
+  value = { field = "ccm_a_fio2c_lborres" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ccm_b_hhfnc_prtrt", values = { 1 = "HFNC" } },
+      { field = "ccm_b_noninvasive_prtrt", values = { 1 = "non-invasive" }, if = { "all" = [
+        { ccm_b_noninvasive_prtype___1 = { "!=" = 1 } },
+        { ccm_b_noninvasive_prtype___2 = { "!=" = 1 } },
+        { ccm_b_noninvasive_prtype___3 = { "!=" = 1 } },
+      ] } },
+      { field = "ccm_b_noninvasive_prtype___1", values = { 1 = "BiPAP" } },
+      { field = "ccm_b_noninvasive_prtype___2", values = { 1 = "CPAP" } },
+      { field = "ccm_b_noninvasive_prtype___3", values = { 1 = "Other non-invasive" } },
+      { field = "ccm_b_invasive_prtrt", values = { 1 = "invasive mechanical" } },
+    ]
+
+[[observation]]
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "ccm_a_dat" }
