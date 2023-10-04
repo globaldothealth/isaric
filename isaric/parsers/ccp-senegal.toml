@@ -372,6 +372,7 @@
 
 [visit.treatment_antibiotics_type]
   combinedType = "set"
+  excludeWhen = "none"
 
   [[visit.treatment_antibiotics_type.fields]]
     fieldPattern = "tmt_pdthosp_nom.*"

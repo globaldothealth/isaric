@@ -193,6 +193,7 @@
 
   [visit.treatment_antibiotics_type]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "daily_antibiotic_type___1", values = { 1 = "Ceftriaxone" } },
       { field = "daily_antibiotic_type___2", values = { 1 = "Metronidazole" } },

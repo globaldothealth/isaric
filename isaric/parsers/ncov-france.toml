@@ -188,6 +188,7 @@
 
   [visit.treatment_antibiotics_type]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "atb1_nom" },
       { field = "atb2_nom" },

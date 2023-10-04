@@ -169,7 +169,6 @@
           "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
-          "Chloroquine/Hydroxychloroquine",
           "Oseltamivir (Tamiflu)",
           "Zanamivir",
           "Casirivimab/Imdevimab",
@@ -221,8 +220,6 @@
       "type": "array",
       "items": {
         "enum": [
-          "Chloroquine",
-          "Hydroxychloroquine",
           "Remdesivir",
           "IL1 inhibitor",
           "IL6 inhibitor",

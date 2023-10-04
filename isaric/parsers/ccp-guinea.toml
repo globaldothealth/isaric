@@ -535,6 +535,7 @@
 
 [visit.treatment_antibiotics_type]
   combinedType = "set"
+  excludeWhen = "none"
   description = "Antibiotic given - free text field"
   fields = [{ field = "daily_antibiot_cmyn_name" }]
 
@@ -663,6 +664,7 @@
 
 [visit.treatment_experimental_agent_type_other]
   combinedType = "set"
+  excludeWhen = "none"
   description = "Experimental agent = other - free text field"
   fields = [{ field = "daily_exper_cmoth" }]
 

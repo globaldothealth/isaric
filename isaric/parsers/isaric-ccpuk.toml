@@ -369,6 +369,7 @@
 
   [visit.visit_id]
     field = "subjid"
+    sensitive = true
 
   [visit.start_date]
     combinedType = "firstNonNull"
@@ -441,8 +442,11 @@
     values = { 1 = true }
 
   [visit.treatment_antimalarial_type]
-    field = "antiviral_cmtrt___7"
-    values = { 1 = "Chloroquine/Hydroxychloroquine" }
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "antiviral_cmtrt___7", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
+    ]
 
   [visit.treatment_antivirals]
     description = "Antiviral agent?"

@@ -1,7 +1,7 @@
 #:schema ../../schemas/dev/parser.schema.json
 
 [adtl]
-  name = "isaric-LMIC"
+  name = "LMIC"
   description = "LMIC"
 
   [adtl.tables.subject]
@@ -49,8 +49,9 @@
       ] } },
     ]
 
-    #   [subject.date_of_birth]
-    #     field = "dateofbirth"
+  [subject.date_of_birth]
+    field = "dateofbirth"
+    source_date = "%Y-%m-%d"
 
   [subject.dob_year]
     combinedType = "firstNonNull"
@@ -112,7 +113,7 @@
 
   [subject.has_comorbidity_other]
     combinedType = "set"
-    excludeWhen = "none"
+    excludeWhen = "false-like"
     fields = [{ field = "otherrisktext" }]
 
   [subject.has_diabetes]

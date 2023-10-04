@@ -603,8 +603,11 @@
   values = { 1 = true }
 
 [visit.treatment_antimalarial_type]
-  field = "antiviral_cmtrt___8"
-  values = { 1 = "Chloroquine/Hydroxychloroquine" }
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
+  ]
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "daily_neuro_cmtrt"
