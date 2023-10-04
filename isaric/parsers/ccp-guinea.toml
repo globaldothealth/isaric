@@ -679,6 +679,7 @@
   fields = [
     { field = "overall_noninvasive_proccur", description = "Non-invasive ventilation (eg BiPAP, CPAP)?", ref = "Y/N/NK" },
     { field = "overall_oxygen_cmtype___5", description = "CPAP/NIV mask", values = { 2 = true } },
+    { field = "non_inv_vent", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_other]
@@ -697,6 +698,10 @@
     { field = "overall_invasive_proccur", description = "Invasive ventilation?", ref = "Y/N/NK" },
     { field = "overall_noninvasive_proccur", description = "Non-invasive ventilation?", ref = "Y/N/NK" },
     { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support", ref = "Y/N/NK" },
+    { field = "can_oxy_ther", ref = "Y/N/NK" },
+    { field = "non_inv_vent", ref = "Y/N/NK" },
+    { field = "inv_vent", ref = "Y/N/NK" },
+    { field = "ecls", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_prone_position]

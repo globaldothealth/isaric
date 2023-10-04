@@ -749,8 +749,8 @@
     { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
     { field = "extracorp_prtrt", ref = "Y/N/NK" },
     { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
-    { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
-    { field = "daily_prone_cmtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+    # { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+    { field = "daily_prone_cmtype", description = "Prone while on invasive ventilation", values = { 1 = true } },
   ]
 
 [visit.treatment_inhaled_nitric_oxide]

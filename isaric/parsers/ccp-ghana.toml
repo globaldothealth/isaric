@@ -669,6 +669,7 @@
     { field = "overall_inotrop_cmtrt", description = "Inotropes/vasopressors?", values = { 1 = true, 2 = false } },
     { field = "vaso_or_inot", description = "Any vasopressor/inotropic support?", ref = "Y/N/NK" },
     { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support?", values = { 1 = true, 2 = false } },
+    { field = "ecls", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_dialysis]
@@ -677,9 +678,12 @@
   values = { 1 = true, 2 = false }
 
 [visit.treatment_ecmo]
-  field = "overall_extracorp_prtrt"
-  description = "Extracorporeal (ECMO) support?"
-  values = { 1 = true, 2 = false }
+  combinedType = "any"
+  fields = [
+    { field = "overall_extracorp_prtrt", values = { 1 = true, 2 = false } },
+    { field = "ecls", ref = "Y/N/NK" },
+  ]
+
 
 [visit.treatment_experimental_agent]
   field = "daily_exper_cmyn"
@@ -828,6 +832,11 @@
     field = "overall_extracorp_prtrt"
     description = "Extracorporeal (ECMO) support?"
     values = { 1 = true, 2 = false }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "ecls"
+    description = "Extracorporeal (ECMO) support?"
+    ref = "Y/N/NK"
 
 [visit.treatment_prone_position]
   combinedType = "any"

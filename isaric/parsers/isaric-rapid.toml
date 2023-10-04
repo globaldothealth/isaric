@@ -868,7 +868,7 @@
     { fieldPattern = "*.oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "ccm_a_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
-    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true, 0 = false }, description = "Oxygen therapy? (interface)" },
+    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
     { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
     { fieldPattern = ".*invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
     { field = "ccm_b_invasive_prtrt", ref = "Y/N/NK", description = "Invasive ventilation?" },
