@@ -384,6 +384,7 @@
     { field = "Ever on oxygen", values = { 0 = false, 1 = true } },
     { field = "Admission Intervention.OnOxygen", values = { FALSE = false, TRUE = true } },
     { field = "Intervention during hospitalisation.SupplementalOxygen", ref = "Y/N/NK" },   # values = ['0', 'Unknown', '1']
+    { field = "Ever ECMO", values = { 0 = false, 1 = true } },
   ]
 
 [visit.treatment_prone_position]
