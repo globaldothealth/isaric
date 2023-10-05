@@ -898,7 +898,7 @@
   excludeWhen = "none"
   fields = [
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
-    { field = "overall_oxygen_cmtype___2", values = { 1 = true, 0 = false }, description = "Oxygen therapy? (interface)" },
+    { field = "overall_oxygen_cmtype___2", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
     { field = "daily_oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
     { field = "oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
   ]
@@ -906,9 +906,9 @@
 [visit.treatment_oxygen_mask_prongs]
   combinedType = "any"
   fields = [
-    { field = "overall_oxygen_cmtype___1", values = { 1 = true, 0 = false }, description = "Nasal prongs" },
-    { field = "overall_oxygen_cmtype___3", values = { 1 = true, 0 = false }, description = "Mask" },
-    { field = "overall_oxygen_cmtype___4", values = { 1 = true, 0 = false }, description = "Mask with reservoir" },
+    { field = "overall_oxygen_cmtype___1", values = { 1 = true }, description = "Nasal prongs" },
+    { field = "overall_oxygen_cmtype___3", values = { 1 = true }, description = "Mask" },
+    { field = "overall_oxygen_cmtype___4", values = { 1 = true }, description = "Mask with reservoir" },
     { field = "oxygen_cmtype", values = { 1 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
     { field = "daily_oxygen_cmtype", values = { 1 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
   ]
