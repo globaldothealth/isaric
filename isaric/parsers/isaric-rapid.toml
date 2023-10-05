@@ -869,10 +869,16 @@
   description = "Oxygen therepy"
   combinedType = "any"
   fields = [
-    { field = "overall_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
-    { field = "daily_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
-    { field = "oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy on first day of admission?" },
+    { fieldPattern = "*.oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "ccm_a_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
+    { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
+    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
+    { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
+    { fieldPattern = ".*invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
+    { field = "ccm_b_invasive_prtrt", ref = "Y/N/NK", description = "Invasive ventilation?" },
+    { fieldPattern = ".*noninvasive_proccur", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
+    { field = "ccm_b_noninvasive_prtrt", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_prone_position]
@@ -896,11 +902,20 @@
   excludeWhen = "none"
   fields = [
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
-    { field = "overall_oxygen_cmtype___2", values = { 1 = true, 0 = false }, description = "Oxygen therapy? (interface)" },
+    { field = "overall_oxygen_cmtype___2", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
     { field = "daily_oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
     { field = "oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
   ]
 
+[visit.treatment_oxygen_mask_prongs]
+  combinedType = "any"
+  fields = [
+    { field = "overall_oxygen_cmtype___1", values = { 1 = true }, description = "Nasal prongs" },
+    { field = "overall_oxygen_cmtype___3", values = { 1 = true }, description = "Mask" },
+    { field = "overall_oxygen_cmtype___4", values = { 1 = true }, description = "Mask with reservoir" },
+    { field = "oxygen_cmtype", values = { 1 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
+    { field = "daily_oxygen_cmtype", values = { 1 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
+  ]
 
 [visit.icu_admission_dates]
   description = "ICU admission date"

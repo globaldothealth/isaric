@@ -587,9 +587,20 @@
     # other free text?
 
   [visit.treatment_oxygen_therapy]
-    description = "Oxygen therapy"
-    field = "oxygen_cmoccur"
-    ref = "Y/N/NK"
+    combinedType = "any"
+    fields = [
+      { description = "Oxygen therapy", field = "oxygen_cmoccur", ref = "Y/N/NK" },
+      { field = "pronevent_prtrt", ref = "Y/N/NK", description = "Prone ventilation" },
+      { field = "oxygenhf_cmoccur", ref = "Y/N/NK" },
+      { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+      { field = "invasive_proccur", ref = "Y/N/NK" },
+      { field = "daily_invasive_prtrt", ref = "Y/N/NK" },
+      { field = "noninvasive_proccur", ref = "Y/N/NK" },
+      { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
+      { field = "extracorp_prtrt", ref = "Y/N/NK" },
+      { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    ]
+
 
   [visit.treatment_prone_position]
     description = "Prone Positioning"

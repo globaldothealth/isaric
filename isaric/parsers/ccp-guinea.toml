@@ -558,10 +558,8 @@
   ]
 
 [visit.treatment_antivirals]
-  combinedType = "any"
-  fields = [
-    { field = "daily_antiviral_cmyn", values = { 1 = true, 0 = false } },
-  ]
+  field = "daily_antiviral_cmyn"
+  values = { 1 = true, 0 = false }
 
 [visit.treatment_high_flow_nasal_cannula]
   combinedType = "any"
@@ -642,8 +640,8 @@
   ref = "Y/N"
 
 [visit.treatment_noninvasive_ventilation]
-  combinedType = "any"
-  fields = [{ field = "non_inv_vent", ref = "Y/N" }]
+  field = "non_inv_vent"
+  ref = "Y/N"
 
 [visit.treatment_other]
   combinedType = "set"
@@ -662,7 +660,6 @@
     { field = "inv_vent", ref = "Y/N" },
     { field = "ecls", ref = "Y/N" },
   ]
-
 
 [visit.treatment_prone_position]
   field = "prone"

@@ -364,7 +364,8 @@ the same as the visit ID, prior to implementation of RELSUB matching).
 
 **earliest_admission_date**: Date. Date of admission for the first study
 visit. Use ``combinedType = "min"`` To allow the earliest date to be
-chosen from across multiple visits.
+chosen from across multiple visits. If the subject was never admitted,
+this date refers to the earliest assessment date at a study centre.
 
 **age**: Value. Age of the subject in years. Provided age should be used where
 possible, if not present age can be estimated from the date of birth and admission
