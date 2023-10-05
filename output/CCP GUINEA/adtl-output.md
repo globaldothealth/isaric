@@ -2,14 +2,14 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |2724   |2741   |99.379788% |
+|subject        |2726   |2741   |99.452754% |
 |visit          |2665   |2741   |97.227289% |
-|observation    |203299 |219579 |92.585812% |
+|observation    |218286 |218402 |99.946887% |
 
 ## subject
 
-* 15: data must contain ['age', 'pathogen', 'sex_at_birth', 'subject_id'] properties
-* 2: data.pregnancy_gestational_age_weeks must be number
+* 14: data cannot be validated by any definition
+* 1: data must be valid exactly by one definition (0 matches found)
 
 ## visit
 
@@ -17,4 +17,5 @@
 
 ## observation
 
-* 16280: data must contain ['phase', 'date', 'name'] properties
+* 101: data must be valid exactly by one definition (0 matches found)
+* 15: data must contain ['phase', 'date', 'name'] properties
