@@ -600,6 +600,12 @@
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
     { fieldPattern = ".*exper_cmtype___1", values = { 1 = true } },
     { fieldPattern = ".*exper_cmtype___2", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___1", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___2", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___3", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___4", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___5", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___6", values = { 1 = true } },
   ]
 
 [visit.treatment_antimalarial_type]
@@ -608,6 +614,13 @@
   fields = [
     { fieldPattern = ".*exper_cmtype___1", values = { 1 = "Chloroquine" } },
     { fieldPattern = ".*exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { fieldPattern = ".*antimal_cmtype___1", values = { 1 = "Chloroquine" } },
+    { fieldPattern = ".*antimal_cmtype___2", values = { 1 = "Primaquine" } },
+    { fieldPattern = ".*antimal_cmtype___3", values = { 1 = "Quinine/Mefloquine" } },
+    { fieldPattern = ".*antimal_cmtype___4", values = { 1 = "Artemisinin-based Combination Therapy" } },
+    { fieldPattern = ".*antimal_cmtype___5", values = { 1 = "Atovaquone with Proguanil" } },
+    { fieldPattern = ".*antimal_cmtype___6", values = { 1 = "Other" } },
+    { fieldPattern = ".*antimal_cmoth" },
   ]
 
 [visit.treatment_antivirals]
@@ -617,6 +630,7 @@
     { field = "overall_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "daily_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
+    { fieldPattern = ".*exper_cmtype___3", values = { 1 = true } },
   ]
 
 [visit.treatment_antiviral_type]
@@ -630,6 +644,7 @@
     { fieldPattern = ".*antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { fieldPattern = ".*antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { fieldPattern = ".*antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { fieldPattern = ".*exper_cmtype___3", values = { 1 = "Remdesivir" } },
   ]
 
 [visit.treatment_antiviral_type_other]
@@ -641,7 +656,6 @@
     { field = "overall_antiviral_cmoth" },
     { field = "daily_antiviral_cmoth" },
   ]
-
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "ccm_a_neuro_cmtrt"
@@ -810,8 +824,8 @@
     { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
     { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
     { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
+    { field = "exper_cmoth" },
     # overall_*, daily_*, *
-    { fieldPattern = ".*exper_cmtype___3", values = { 1 = "Remdesivir" } },
     { fieldPattern = ".*exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
     { fieldPattern = ".*exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
     { fieldPattern = ".*exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
