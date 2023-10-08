@@ -423,7 +423,7 @@
     description = "Extracorporeal (ECMO) support?"
     ref = "Y/N/NK"
 
-[visit.treatment_experimental_agent]
+[visit.treatment_other]
   combinedType = "any"
   fields = [
     { field = "exprmntl_cmyn_v2", description = "Experimental agent?", ref = "Y/N/NK" },

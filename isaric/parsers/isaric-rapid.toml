@@ -729,34 +729,6 @@
     ref = "Y/N/NK"
     description = "Extracorporeal (ECMO) support on the first day of admission?"
 
-[visit.treatment_experimental_agent]
-  description = "Experimental treatments"
-  combinedType = "any"
-  fields = [
-    { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
-  ]
-
-[visit.treatment_experimental_agent_type]
-  description = "Experimental treatments used"
-  combinedType = "set"
-  excludeWhen = "none"
-  # overall_*, daily_*, *
-  fields = [
-    { fieldPattern = ".*exper_cmtype___3", values = { 1 = "Remdesivir" } },
-    { fieldPattern = ".*exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
-    { fieldPattern = ".*exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
-    { fieldPattern = ".*exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { fieldPattern = ".*exper_cmtype___7", values = { 1 = "Other" } },
-  ]
-
-[visit.treatment_experimental_agent_type_other]
-  combinedType = "set"
-  excludeWhen = "none"
-  description = "Experimental agent = other - free text field"
-  fields = [{ fieldPattern = ".*exper_cmoth" }]
-
 [visit.treatment_inotropes_vasopressors]
   description = "Inotropes/vasopressors"
   combinedType = "any"
@@ -832,8 +804,20 @@
 [visit.treatment_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } }]
   description = "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
+  fields = [
+    { field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } },
+    { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
+    { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
+    { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
+    # overall_*, daily_*, *
+    { fieldPattern = ".*exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { fieldPattern = ".*exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { fieldPattern = ".*exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { fieldPattern = ".*exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { fieldPattern = ".*exper_cmtype___7", values = { 1 = "Other" } },
+    { fieldPattern = ".*exper_cmoth" },
+  ]
   # include others? most are in 'other please specify' for specific categories e.g. corticosteroid.
 
 [visit.treatment_oxygen_therapy]

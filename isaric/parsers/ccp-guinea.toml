@@ -616,27 +616,6 @@
     { field = "vaso_or_inot", description = "Any administration of vasopressor/inotrope?", ref = "Y/N" },
   ]
 
-[visit.treatment_experimental_agent]
-  field = "daily_exper_cmyn"
-  values = { 1 = true, 0 = false }
-
-[visit.treatment_experimental_agent_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
-    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
-    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
-    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
-  ]
-
-[visit.treatment_experimental_agent_type_other]
-  combinedType = "set"
-  excludeWhen = "none"
-  description = "Experimental agent = other - free text field"
-  fields = [{ field = "daily_exper_cmoth" }]
-
 [visit.treatment_inotropes_vasopressors]
   field = "vaso_or_inot"
   description = "Any administration of vasopressor/inotrope?"
@@ -657,6 +636,13 @@
     { field = "other_meds_1", description = "Other treatment" },
     { field = "other_meds_2", description = "Other treatment" },
     { field = "other_intervs_specify" },
+    { field = "daily_exper_cmyn", values = { 1 = true, 0 = false } },
+    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
+    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
+    { field = "daily_exper_cmoth" },
   ]
 
 [visit.treatment_oxygen_therapy]
