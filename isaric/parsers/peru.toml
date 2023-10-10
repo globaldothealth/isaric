@@ -22,13 +22,13 @@
     schema = "../../schemas/dev/observation.schema.json"
     common = { visit_id = { field = "study_id", sensitive = true } }
 
-  [adtl.defs."Y/N/NK".values] # THIS CAN CHANGE BETWEEN DATASETS
-    1 = true
-    2 = false
+  [adtl.defs."Y/N".values]
+    "Yes" = true
+    "Si" = true
+    "No" = false
 
   [adtl.defs."checkbox".values]
     "Checked" = true
-    "Unchecked" = false
 
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
@@ -69,58 +69,57 @@
     apply = { function = "splitDate", params = ["year", 2022] }
 
 
-  [subject.sex_at_birth]
+  [subject.sex]
     field = "sexo"
     description = "Sex"
 
-    [subject.sex_at_birth.values] # THIS CAN CHANGE BETWEEN DATASETS
+    [subject.sex.values]
       "Male" = "male"
       "Female" = "female"
 
 [subject.has_chronic_hematologic_disease]
   field = "hemato"
-  description = "Hematologic comorbility"
-  ref = "Y/N/NK"
+  description = "Hematologic comorbidity"
+  ref = "Y/N"
 
 [subject.has_malignant_neoplasm]
   field = "onco"
-  description = "Oncological comorbility?"
-  ref = "Y/N/NK"
+  description = "Oncological comorbidity?"
+  ref = "Y/N"
 
 [subject.has_chronic_cardiac_disease]
   field = "cardio"
-  description = "Cardiac comorbility?"
-  ref = "Y/N/NK"
+  description = "Cardiac comorbidity?"
+  ref = "Y/N"
 
 [subject.has_chronic_kidney_disease]
   field = "nefro"
   description = "Kidney disease?"
-  ref = "Y/N/NK"
+  ref = "Y/N"
 
 [subject.has_liver_disease]
   field = "hepato"
-  description = "Hepatic comorbility?"
-  ref = "Y/N/NK"
+  description = "Hepatic comorbidity?"
+  ref = "Y/N"
 
 [subject.has_immunosuppression]
   field = "inmuno"
   description = "Has inmumosuppressive comorbidity?"
-  ref = "Y/N/NK"
-
-  # [subject.has_comorbidity_other] # type - array
-  #   combinedType = "set"
-  #   excludeWhen = "false-like"
-  #   fields = [{ field = "otra2", description = "Any other comorbidity" }]
+  ref = "Y/N"
 
 [subject.has_died] # type - boolean
   field = "est_final"
   description = "Has died"
   values = { "Fallecido" = true, "Alta" = false, "Hospitalizado aun" = false }
 
+[subject.date_death]
+  field = "fecha_alta"
+  if = { est_final = "Fallecido" }
+
 [subject.icu_admitted]
   field = "ingreso_uci"
   description = "Admitted to ICU?"
-  ref = "Y/N/NK"
+  ref = "Y/N"
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
@@ -143,13 +142,13 @@
   [visit.icu_admission]
     field = "ingreso_uci"
     description = "ICU admission"
-    values = { "Si" = true, "No" = false }
+    ref = "Y/N"
 
   [visit.outcome]
     field = "est_final"
     description = "Final outcome"
 
-    [visit.outcome.values] # check correspondence of these values
+    [visit.outcome.values]
       "Alta" = "discharged"
       "Hospitalizado aun" = "hospitalised"
       "Fallecido" = "death"
@@ -171,19 +170,7 @@
   name = "cough"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-
-  [observation.is_present]
-    combinedType = "any"
-    fields = [
-      { field = "tos___1", ref = "checkbox" },
-      { field = "exudado_faringeo", ref = "Y/N/NK" },
-    ]
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  date = { field = "fecha_de_ingreso_al_insnsb" }
-  phase = "admission"
-  is_present = { field = "exudado_faringeo", ref = "Y/N/NK" }
+  is_present = { field = "tos___1", ref = "checkbox" }
 
 [[observation]]
   name = "diarrhoea"
@@ -201,7 +188,7 @@
   name = "history_of_fever"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "fiebre_reg", values = { "Si" = true, "No" = false } }
+  is_present = { field = "fiebre_reg", ref = "Y/N" }
 
 [[observation]]
   name = "lung_sounds"
@@ -210,33 +197,45 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "crepitantes", ref = "Y/N/NK", description = "Respiratory Crackling" },
-      { field = "subcrepitantes", ref = "Y/N/NK", description = "Respiratory Crackling" },
+      { field = "crepitantes", ref = "Y/N", description = "Respiratory Crackling" },
+      { field = "subcrepitantes", ref = "Y/N", description = "Respiratory Crackling" },
     ]
 
 [[observation]] # potentially missing part of this
   name = "lymphadenopathy"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "adenopatias", ref = "Y/N/NK" }
+  is_present = { field = "adenopatias", ref = "Y/N" }
 
 [[observation]]
   name = "seizures"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "seizures___1", ref = "checkbox" } # no instances
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "seizures___1", ref = "checkbox" },
+      { field = "convulsiones", ref = "Y/N" },
+    ]
 
 [[observation]]
   name = "shortness_of_breath"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "disnea", values = { "Si" = true, "No" = false } }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "disnea", ref = "Y/N" },
+      { field = "dificultad_respiratoria___1", ref = "checkbox" },
+    ]
 
 [[observation]]
   name = "skin_rash"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "rash", values = { "Si" = true, "No" = false } }
+  is_present = { field = "rash", ref = "Y/N" }
 
 [[observation]]
   name = "sore_throat"
@@ -260,7 +259,7 @@
   name = "wheezing"
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
-  is_present = { field = "sibilantes", values = { "Si" = true, "No" = false } }
+  is_present = { field = "sibilantes", ref = "Y/N" }
 
 [[observation]]
   name = "oxygen_o2hb"
@@ -280,7 +279,6 @@
   phase = "admission"
   is_present = { field = "cefalea___1", ref = "checkbox" }
 
-# TODO: check that conjunctival injection and conjunctivitis are same
 [[observation]]
   name = "conjunctivitis"
   date = { field = "fecha_de_ingreso_al_insnsb" }
