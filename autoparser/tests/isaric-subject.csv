@@ -1,8 +1,8 @@
 schema_field,field,tf_rank,table,category,section_header,type,description,choices,note,valid_type,valid_min,valid_max,is_identifier,condition,is_required,score
-admission_date,ccm_b_icu_hodat,6,subject,critical_care_module,ICU/HDU ADMISSION FORM,text,ICU ADMISSION DATE,,,date_dmy,,,,[ccm_b_icu_yn] = '1',,42
-admission_date,hostdat_transfer,5,subject,onset_and_admission,,text,2.5.2 If YES: Admission date at transfer facility,,,date_dmy,,,,,,40
-admission_date,date,2,subject,data_platform_terms_of_submission,,text,Date,,,date_dmy,,,,[nov_fayn] = '1',y,16
-admission_date,icu_hostdat,1,subject,treatment,,text,Date of ICU admission:,,,date_dmy,,,,[icu_hostdatyn] = '1' OR [icu_hostdat] <> '',y,8
+earliest_admission_date,ccm_b_icu_hodat,6,subject,critical_care_module,ICU/HDU ADMISSION FORM,text,ICU ADMISSION DATE,,,date_dmy,,,,[ccm_b_icu_yn] = '1',,42
+earliest_admission_date,hostdat_transfer,5,subject,onset_and_admission,,text,2.5.2 If YES: Admission date at transfer facility,,,date_dmy,,,,,,40
+earliest_admission_date,date,2,subject,data_platform_terms_of_submission,,text,Date,,,date_dmy,,,,[nov_fayn] = '1',y,16
+earliest_admission_date,icu_hostdat,1,subject,treatment,,text,Date of ICU admission:,,,date_dmy,,,,[icu_hostdatyn] = '1' OR [icu_hostdat] <> '',y,8
 age,age_estimateyears,6,subject,demographics,,text,Age,,"If patient is a child less than one year age, include age in months, if less than one month record in days (0 - 117)",number,0,117.0,y,,y,12
 date_death,f_datedeath,6,subject,eot_final,,text,5.5 Date Of Death,,(1/1/2020 ...),date_dmy,2020-01-01,,,[f_datedeath_yn] = '1',,54
 enrolment_date,dsstdat,6,subject,inclusion_criteria,,text,"<acronym title=""Date of enrolment into the study or for in-patients is the date that COVID-19 was first assessed as suspected or confirmed by a clinician."">Enrolment date / first COVID-19 assessment date:</acronym>",,,date_dmy,,,,,y,54

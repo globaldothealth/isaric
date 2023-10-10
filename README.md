@@ -5,7 +5,7 @@
 ISARIC Clinical Data Model development. This repository has the
 [schemas](schemas/dev) and [parser](isaric/parsers) specifications. For the
 parsing library that does the data transformation, see
-[adtl](https://github.com/globaldothealth/adtl).
+[adtl](https://adtl.readthedocs.io).
 
 ## Schemas
 
@@ -24,15 +24,14 @@ a new version to be assigned.
 
 Parser specification files, such as
 [isaric-ccpuk](isaric/parsers/isaric-ccpuk.toml) under `parsers` describe the
-field mappings that are parsed by
-[adtl](https://github.com/globaldothealth/adtl). The parser TOML (or JSON) file
+field mappings that are parsed by adtl. The parser TOML (or JSON) file
 follows the adtl
-[specification](https://github.com/globaldothealth/adtl/blob/main/docs/specification.md).
+[specification](https://adtl.readthedocs.io/en/latest/specification.html).
 
 ## How to use these
 
 To transform the input files (usually database snapshots from REDCap), install
-[adtl](https://github.com/globaldothealth/adtl). Use `adtl --help` to look at
+[adtl](https://adtl.readthedocs.io/en/latest/getting_started/installation.html). Use `adtl --help` to look at
 the options. As an example, to transform the REDCap data to the ISARIC schema
 for the CCPUK study:
 

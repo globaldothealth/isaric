@@ -364,7 +364,8 @@ the same as the visit ID, prior to implementation of RELSUB matching).
 
 **earliest_admission_date**: Date. Date of admission for the first study
 visit. Use ``combinedType = "min"`` To allow the earliest date to be
-chosen from across multiple visits.
+chosen from across multiple visits. If the subject was never admitted,
+this date refers to the earliest assessment date at a study centre.
 
 **age**: Value. Age of the subject in years. Provided age should be used where
 possible, if not present age can be estimated from the date of birth and admission
@@ -424,6 +425,8 @@ breastfeeding/ did they breastfeed during the study period?
 
 **pregnancy_post_partum**: Bool. Is the subject post-partum (up to 6
 weeks post-delivery) at the point of enrolment?
+
+**preterm_infant**: Bool. For pediatric subjects: was the child born pre-term (<37 weeks)?
 
 **has_asplenia**: Bool. Does the subject have asplenia?
 
@@ -531,7 +534,7 @@ Superset, general level indicators:
 therapy and/or respiratory support has been administered. Subsets (all
 boolean indicators) are:
 
-+ *treatment_oxygen_mask_unspecified* - NOTE TO DEVS: needs to be added. Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
++ *treatment_oxygen_mask_prongs* - Captures O2 therapy delivered by any method other than a HFNC - e.g., standard mask or cannula.
 
 + *treatment_high_flow_nasal_cannula*
 
@@ -551,6 +554,8 @@ support has been administered. Subsets (all boolean indicators) are:
 + *treatment_pacing*
 
 + *treatment_ecmo*
+
++ *treatment_cpr*
 
 Overarching fields denoting 'cardiovascular support' can also include CPR,
 or other forms of mechanical cardiovascular support.
@@ -605,7 +610,7 @@ agent(s)?
 
 **treatment_anticoagulation**: Bool. Treated with anticoagulants during
 the visit? (Note - this is often combines a general anticoagulation
-field with those specific to Heparin.)
+field with those specific to Heparin).
 
 **treatment_inhaled_nitric_oxide**: Bool. Treated with nitric oxide
 inhalation?
@@ -737,6 +742,9 @@ Other fields
 **avpu**: Text. Where is the subject on the AVPU consciousness scale, one of
 *Alert, Voice, Pain, Unresponsive*.
 
+**acvpu**: Text. Where is the subject on the ACVPU consciousness scale, one of
+*Alert, Confusion, Voice, Pain, Unresponsive*.
+
 **abdominal_pain**: Bool.
 
 **altered_consciousness_confusion**: Bool. If field only records
@@ -746,6 +754,8 @@ confusion, not altered consciousness, use confusion_
 
 **base_excess**: Value. Difference between observed and normal buffer
 base concentration for oxygenated blood.
+
+**blantyre_coma_score**: Value (0-5). Coma scale modified from the pediatric glasgow coma scale.
 
 **bleeding**: Bool. For bleeding (other) observations. If field is
 described as bleeding (haemorrhage) or similar, use
@@ -781,7 +791,7 @@ scale <https://www.bgs.org.uk/sites/default/files/content/attachment/2018-07-05/
 
 **fatigue_malaise**: Bool.
 
-**feeding_intolerance_pediatrics** Bool. Unused.
+**feeding_intolerance_pediatrics** Bool.
 
 **glasgow_coma_score**: Value (3-15). `Coma
 scale <https://www.glasgowcomascale.org>`__
@@ -792,7 +802,7 @@ scale <https://www.glasgowcomascale.org>`__
 
 **heart_sounds**: Bool.
 
-**hepatomegaly** Bool. Enlarged liver? (Unused)
+**hepatomegaly** Bool. Enlarged liver
 
 **history_of_fever** Bool. Recently feverish? For admission/followup
 where the subject self-reports.
@@ -832,7 +842,7 @@ instead contains a boolean Y/N response, use inability_to_walk_ instead.
 **other_symptom**: Set (Text). List any other symptoms, or free text
 fields describing symptoms, here.
 
-**oxygen_o2hb**: Value. Heamoglobin level, lab test.
+**oxygen_o2hb**: Value (g/dL). Heamoglobin level, lab test.
 
 **oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
 record the maximum flow volume.
@@ -855,7 +865,7 @@ if the patient requires oxygen as a result (if specified in that field,
 don’t assume that if the patient is recorded as being on oxygen
 elsewhere, it is related to this record of pneumonia).
 
-**respiratory_rate**: Value (1-50).
+**respiratory_rate**: Value (1-90).
 
 **richmond_agitation-sedation_scale**: Value (-5 to 4, including 0).
 

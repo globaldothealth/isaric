@@ -28,6 +28,25 @@
       }
     },
     {
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "name": {
+          "const": "acvpu"
+        },
+        "text": {
+          "enum": [
+            "Alert",
+            "Confused",
+            "Verbal",
+            "Pain",
+            "Unresponsive"
+          ]
+        }
+      }
+    },
+    {
       "$comment": "Oxygen flow volume is represented as a range which is not a native JSON Schema type",
       "required": [
         "text"
@@ -113,6 +132,23 @@
           "minimum": 3,
           "maximum": 15,
           "pattern": "[<]\\d|[>]\\d|\\d+[-]\\d+"
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "const": "blantyre_coma_score"
+        },
+        "value": {
+          "type": [
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 5
         }
       }
     },
@@ -333,6 +369,7 @@
             "lung_sounds",
             "lymphadenopathy",
             "muscle_aches",
+            "musculoskeletal_pain",
             "runny_nose",
             "seizures",
             "severe_dehydration",

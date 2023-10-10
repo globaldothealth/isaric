@@ -341,7 +341,7 @@
     excludeWhen = "none"
     fields = [
       { field = "mx_antiviral_type___1", values = { 1 = "Ribavirin" } },
-      { field = "mx_antiviral_type___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "mx_antiviral_type___2", values = { 1 = "Lopinavir/Ritonavir" } },
       { field = "mx_antiviral_type___3", values = { 1 = "Interferon alpha" } },
       { field = "mx_antiviral_type___4", values = { 1 = "Interferon beta" } },
       { field = "mx_antiviral_type___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -349,7 +349,7 @@
       { field = "mx_antiviral_type___7", values = { 1 = "Favipravir" } },
       { field = "mx_antiviral_type___8", values = { 1 = "Atazanavir" } },
       { field = "type_antiviral_dc___1", values = { 1 = "Ribavirin" } },
-      { field = "type_antiviral_dc___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "type_antiviral_dc___2", values = { 1 = "Lopinavir/Ritonavir" } },
       { field = "type_antiviral_dc___3", values = { 1 = "Interferon alpha" } },
       { field = "type_antiviral_dc___4", values = { 1 = "Interferon beta" } },
       { field = "type_antiviral_dc___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -1225,7 +1225,7 @@
     { lab_hb = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
-  value = { field = "lab_hb", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
+  value = { field = "lab_hb", unit = "g/dL", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
 
 [[observation]]
   name = "oxygen_o2hb"
@@ -1235,4 +1235,4 @@
     { lab_hb = { "!=" = "" } },
   ]
   date = { field = "daily_assess_date" }
-  value = { field = "lab_hb", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
+  value = { field = "lab_hb", unit = "g/dL", source_unit = { field = "lab_hb_unit", values = { 1 = "g/L", 2 = "g/dL" } } }
