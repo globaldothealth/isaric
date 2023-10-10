@@ -4,13 +4,13 @@
 |---------------|-------|-------|----------------|
 |subject        |359    |631    |56.893819% |
 |visit          |352    |631    |55.784469% |
-|observation    |34671  |35348  |98.084757% |
+|observation    |36750  |37829  |97.147691% |
 
 ## subject
 
-* 239: data must contain ['subject_id', 'age', 'ethnicity', 'pathogen'] properties
-* 19: data must be valid exactly by one definition (0 matches found)
-* 14: data cannot be validated by any definition
+* 203: data cannot be validated by any definition
+* 68: data must contain ['subject_id', 'ethnicity', 'pathogen'] properties
+* 1: data must be valid exactly by one definition (0 matches found)
 
 ## visit
 
@@ -18,5 +18,5 @@
 
 ## observation
 
-* 656: data must contain ['phase', 'date', 'name'] properties
+* 1058: data must contain ['phase', 'date', 'name'] properties
 * 21: data must be valid exactly by one definition (0 matches found)

@@ -2,15 +2,17 @@
 
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
-|subject        |42770  |52934  |80.798730% |
+|subject        |42760  |52934  |80.779839% |
 |visit          |45422  |52934  |85.808743% |
-|observation    |4001696        |4063440        |98.480499% |
+|observation    |4226615        |4291270        |98.493336% |
 
 ## subject
 
-* 8608: data must contain ['subject_id', 'age', 'ethnicity', 'pathogen'] properties
-* 1077: data cannot be validated by any definition
-* 478: data must be valid exactly by one definition (0 matches found)
+* 8221: data must contain ['subject_id', 'ethnicity', 'pathogen'] properties
+* 1835: data cannot be validated by any definition
+* 107: data must be valid exactly by one definition (0 matches found)
+* 7: data.dob_year must be bigger than or equal to 1900
+* 3: data.date_of_birth must be date
 * 1: data.has_comorbidity_other[0] must be string
 
 ## visit
@@ -20,5 +22,6 @@
 
 ## observation
 
-* 46427: data must contain ['phase', 'date', 'name'] properties
-* 15317: data must be valid exactly by one definition (0 matches found)
+* 48052: data must contain ['phase', 'date', 'name'] properties
+* 16377: data must be valid exactly by one definition (0 matches found)
+* 226: data.date must be string

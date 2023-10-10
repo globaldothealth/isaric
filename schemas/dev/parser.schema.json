@@ -812,6 +812,7 @@
                   "oxygen_o2hb",
                   "oxygen_saturation_percent",
                   "oxygen_flow_volume_max",
+                  "fio2_percent",
                   "pao2_mmHg",
                   "pco2_mmHg",
                   "pH",
