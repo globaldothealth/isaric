@@ -1429,64 +1429,40 @@
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
   date = { field = "flw_survey_date" }
-  duration_type = "event"
   value = { field = "flw_walking_today", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
   context = ["Ability to walk or climb steps today"]
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "admission"
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
-  date = { field = "flw_survey_date" }
-  duration_type = "event"
+  date = { field = "admissionDateHierarchy" }
   value = { field = "flw_walking_pre_c19", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
   context = ["Ability to walk or climb steps prior to COVID-19 illness"]
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "admission"
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
-  date = { field = "flw_survey_date" }
-  duration_type = "event"
+  date = { field = "admissionDateHierarchy" }
   value = { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
   context = ["Ability to walk prior to COVID-19 illness"]
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
   date = { field = "flw_survey_date" }
-  duration_type = "event"
   value = { field = "flw_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
   date = { field = "flw2_survey_date" }
-  duration_type = "event"
   value = { field = "flw2_eq5d_mb_5l_uk_eng_2", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
   date = { field = "flw2_survey_date" }
-  duration_type = "event"
   value = { field = "flw2_walking_today", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
   context = ["Ability to walk or climb steps today"]
 
