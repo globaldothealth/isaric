@@ -1,7 +1,7 @@
 #:schema ../../schemas/dev/parser.schema.json
 
 [adtl]
-  name = "isairc-tier1"
+  name = "isaric-tier1"
   description = "Freestanding tier 1 surevy (no hospital admission)"
 
   [adtl.tables.subject]
@@ -33,6 +33,9 @@
     1 = true
     0 = false
 
+  [adtl.defs."checkbox".values]
+    1 = true
+
     # SUBJECT
     # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
 
@@ -49,7 +52,11 @@
     fields = [
       { field = "flw_first_admit", description = "Approximately when were you first admitted to hospital?", can_skip = true },
       { field = "flw_first_sym", description = "First symptom date", can_skip = true },
+      { field = "flw_survey_date" },
     ]
+
+  [subject.enrolment_date]
+    field = "flw_survey_date"
 
   [subject.dob_year]
     combinedType = "firstNonNull"
@@ -98,68 +105,73 @@
 
   [subject.has_chronic_hematologic_disease]
     field = "flw_spc_ongoing___12"
-    ref = "Y/N"
+    ref = "checkbox"
+    can_skip = true
+
+  [subject.has_chronic_respiratory_disease] # PL: mapped to cardiac in brazil-followup by mistake, needs fixing
+    field = "flw_spc_ongoing___4"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_asplenia]
     field = "flw_spc_ongoing___10"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_tuberculosis]
     field = "flw_spc_ongoing___17"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_dementia]
     field = "flw_spc_ongoing___15"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_rheumatologic_disorder]
     field = "flw_spc_ongoing___13"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_hiv]
     field = "flw_spc_ongoing___16"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_malignant_neoplasm]
     field = "flw_spc_ongoing___11"
-    ref = "Y/N"
+    ref = "checkbox"
     description = "Cancer"
     can_skip = true
 
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { fieldPattern = 'flw\d*_smoking', values = { 1 = "yes", 2 = "yes", 3 = "yes" } },
+      { fieldPattern = 'flw\d*_smoking', values = { 1 = "current", 3 = "current", 4 = "no" } },
     ]
     # 1/2/3 = more/less/no diference since covid, 4=I didn't smoke before C-19
 
   [subject.has_asthma]
     field = "flw_spc_ongoing___3"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_chronic_cardiac_disease]
     field = "flw_spc_ongoing___1"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_chronic_kidney_disease]
     field = "flw_spc_ongoing___8"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_diabetes]
     combinedType = "any"
     fields = [
-      { field = "flw_spc_ongoing___5", ref = "Y/N", can_skip = true },
-      { field = "flw_spc_ongoing___6", ref = "Y/N", can_skip = true },
-      { field = "flw_spc_ongoing___7", ref = "Y/N", can_skip = true },
+      { field = "flw_spc_ongoing___5", ref = "checkbox", can_skip = true },
+      { field = "flw_spc_ongoing___6", ref = "checkbox", can_skip = true },
+      { field = "flw_spc_ongoing___7", ref = "checkbox", can_skip = true },
     ]
 
   [subject.diabetes_type]
@@ -172,7 +184,7 @@
 
   [subject.has_liver_disease]
     field = "flw_spc_ongoing___9"
-    ref = "Y/N"
+    ref = "checkbox"
     can_skip = true
 
   [subject.has_comorbidity_other]
@@ -188,10 +200,10 @@
     # VISIT
     # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
-[visit]
-  outcome = "recovered"
+[visit] # PL: Check whether treatment fields (not oxygen therapy or mechanical vent) are relevent for parsers other than tier1.
+  phase = "followup"
 
-  [visit.country_iso3] # Not sure that this isn't the person, not the 'site'
+  [visit.country_iso3]
     combinedType = "firstNonNull"
     fields = [
       { fieldPattern = 'flw\d*_country', values = { 1 = "AFG", 60 = "FRA", 76 = "IND", 81 = "ISR", 82 = "ITA", 131 = "NOR" } },
@@ -219,7 +231,7 @@
     combinedType = "any"
     fields = [
       { field = "flw_hosp_icu", ref = "Y/N" },
-      { fieldPattern = 'flw\d*_icu', ref = "Y/N" },
+      { fieldPattern = 'flw\d*_icu', ref = "Y/N" }, # PL: check this pattern
     ]
 
   [visit.treatment_corticosteroid]
@@ -283,6 +295,10 @@
     excludeWhen = "none"
     fields = [{ field = "flw_med_other_name" }]
 
+  [visit.outcome] # If never admitted, no outcome/outcome is unknown - i.e. empty.
+    field = "flw_first_disch"
+    apply = { function = "textIfNotNull", params = ["discharged"] }
+
   [visit.date_outcome]
     field = "flw_first_disch"
 
@@ -292,6 +308,15 @@
 [[observation]]
   name = "bleeding"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -311,7 +336,27 @@
 
 [[observation]]
   name = "chest_pain"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___6", ref = "checkbox" }
+
+
+[[observation]]
+  name = "chest_pain"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -326,7 +371,26 @@
 
 [[observation]]
   name = "confusion"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___15", ref = "checkbox" }
+
+[[observation]]
+  name = "confusion"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -341,7 +405,26 @@
 
 [[observation]]
   name = "cough"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___2", ref = "checkbox" }
+
+[[observation]]
+  name = "cough"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -350,6 +433,7 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
+      { field = "flw_pers_cough", ref = "Y/N" },
       { field = "flw_pers_cough_dry", ref = "Y/N", can_skip = true },
       { field = "flw2_pers_cough_dry", ref = "Y/N", can_skip = true },
       { field = "flw_pers_cough_ph", ref = "Y/N", can_skip = true },
@@ -359,6 +443,15 @@
 [[observation]]
   name = "cough_dry"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -374,6 +467,15 @@
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -388,7 +490,26 @@
 
 [[observation]]
   name = "diarrhoea"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___14", ref = "checkbox" }
+
+[[observation]]
+  name = "diarrhoea"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -403,7 +524,26 @@
 
 [[observation]]
   name = "fatigue_malaise"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___4", ref = "checkbox" }
+
+[[observation]]
+  name = "fatigue_malaise"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -418,7 +558,26 @@
 
 [[observation]]
   name = "headache"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___10", ref = "checkbox" }
+
+[[observation]]
+  name = "headache"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -431,31 +590,89 @@
       { field = "flw2_headache", ref = "Y/N", can_skip = true },
     ]
 
+[[observation]] # PL: these will need flw2_fever adding in all cases
+  name = "history_of_fever"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___1", ref = "checkbox" }
+
 [[observation]]
   name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  date = { field = "flw_survey_date" }
+  duration_type = "event"
   phase = "followup"
+  if = { flw_last_fever = 1 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
 
-  [observation.date]
-    combinedType = "firstNonNull"
-    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 2 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
 
-  [observation.is_present]
-    combinedType = "any"
-    fields = [
-      { field = "flw_fever", ref = "Y/N", can_skip = true },
-      { field = "flw2_fever", ref = "Y/N", can_skip = true },
-    ]
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    28,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 3 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    30,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 4 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    90,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 5 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   context = ["Before COVID-19 illness"]
-  phase = "followup"
-  date = { field = "flw_survey_date", can_skip = true }
+  phase = "initial_illness"
+  date = { field = "flw_survey_date", can_skip = true }                                                        # PL: symptom date?
   value = { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 }, can_skip = true }
 
 [[observation]]
   name = "inability_to_walk_scale"
-  phase = "followup"
+  phase = "followup"                                         #
   date = { field = "flw_survey_date", can_skip = true }
   value = { field = "flw_walking_today_2", can_skip = true }
   context = ["Before COVID-19 illness"]
@@ -464,6 +681,15 @@
   name = "inability_to_walk_scale"
   context = ["After COVID-19 illness"]
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -480,6 +706,15 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   context = ["After COVID-19 illness"]
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -495,6 +730,15 @@
 [[observation]]
   name = "joint_pain"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -507,9 +751,20 @@
       { field = "flw2_joint_pain", ref = "Y/N", can_skip = true },
     ]
 
+    # PL: loss_of_smell_or_taste for initial_illness
+
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -526,7 +781,26 @@
 
 [[observation]]
   name = "loss_of_smell"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___7", ref = "checkbox" }
+
+[[observation]]
+  name = "loss_of_smell"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -541,7 +815,26 @@
 
 [[observation]]
   name = "loss_of_taste"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___8", ref = "checkbox" }
+
+[[observation]]
+  name = "loss_of_taste"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -554,9 +847,30 @@
       { field = "flw2_loss_of_taste", ref = "Y/N", can_skip = true },
     ]
 
+    #PL: musculoskeletal_pain
+
+[[observation]]
+  name = "muscle_aches"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___11", ref = "checkbox" }
+
 [[observation]]
   name = "muscle_aches"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -572,6 +886,15 @@
 [[observation]]
   name = "seizures"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -586,7 +909,26 @@
 
 [[observation]]
   name = "shortness_of_breath"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___3", ref = "checkbox" }
+
+[[observation]]
+  name = "shortness_of_breath"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -602,6 +944,15 @@
 [[observation]]
   name = "skin_rash"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -629,7 +980,26 @@
 
 [[observation]]
   name = "vomiting_nausea"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___13", ref = "checkbox" }
+
+[[observation]]
+  name = "vomiting_nausea"
   phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
 
   [observation.date]
     combinedType = "firstNonNull"
@@ -641,3 +1011,71 @@
       { field = "flw_feeling_sick", ref = "Y/N", can_skip = true },
       { field = "flw2_feeling_sick", ref = "Y/N", can_skip = true },
     ]
+
+[[observation]]
+  name = "abdominal_pain"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___12", ref = "checkbox" }
+
+[[observation]]
+  name = "abdominal_pain"
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_stomach_pain", ref = "Y/N" },  #, can_skip = true
+      { field = "flw2_stomach_pain", ref = "Y/N" }, #, can_skip = true
+    ]
+
+[[observation]]
+  name = "other_symptom"
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  [observation.text]
+    combinedType = "any"
+    fields = [
+      { field = "flw_new_symptoms", ref = "Y/N" },  #, can_skip = true
+      { field = "flw2_new_symptoms", ref = "Y/N" }, #, can_skip = true
+    ]
+
+[[observation]]
+  name = "runny_nose"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___9", ref = "checkbox" }
