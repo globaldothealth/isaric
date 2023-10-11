@@ -252,7 +252,7 @@
 
 [subject.has_smoking]
   field = "smoke"
-  values = { 0 = "never", 1 = "yes", 2 = "former" }
+  values = { 0 = "never", 1 = "current", 2 = "former" }
 
 [subject.has_hypertension]
   field = "htn"

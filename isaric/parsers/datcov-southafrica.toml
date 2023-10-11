@@ -188,8 +188,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "yes", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
-      { field = "flw_smok_before", values = { 1 = "former", 2 = "yes", 3 = "never" } },
+      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "current", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
+      { field = "flw_smok_before", values = { 1 = "former", 2 = "current", 3 = "never" } },
     ]
 
   [subject.has_asthma]

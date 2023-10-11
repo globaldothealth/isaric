@@ -164,10 +164,10 @@
   field = "flw_smoking"
 
   [subject.has_smoking.values]
-    1 = "yes" # "I do this more often"
+    1 = "current" # "I do this more often"
     # 2 = "yes" # "I do it less often"
-    3 = "yes"   # "no difference"
-    4 = "never" # "I Didn't Do This Before COVID-19"
+    3 = "current" # "no difference"
+    4 = "no"      # "I Didn't Do This Before COVID-19"
 
 [subject.has_asthma]
   field = "flw_spc_ongoing___3"

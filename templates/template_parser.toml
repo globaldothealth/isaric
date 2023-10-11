@@ -165,9 +165,10 @@
   description = ""
 
   [subject.has_smoking.values]
-    1 = "yes"
+    1 = "current"
     2 = "former"
     3 = "never"
+    4 = "no"
 
 [subject.has_asthma]
   field = ""

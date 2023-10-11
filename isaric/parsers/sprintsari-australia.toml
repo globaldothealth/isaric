@@ -237,7 +237,7 @@
 [subject.has_smoking]
   combinedType = "firstNonNull"
   fields = [
-    { field = "smok_curr", description = "Currently smoking?", values = { 1 = "yes", 0 = "never" }, if = { smok_comm_2 = "" } },
+    { field = "smok_curr", description = "Currently smoking?", values = { 1 = "current", 0 = "never" }, if = { smok_comm_2 = "" } },
     { field = "smok_comm_2", description = "Most common method of smoking used when the patient was smoking?", values = { 1 = "former", 2 = "former", 3 = "former", 4 = "former" }, if = { "smok_curr" = 0 } },
   ]
 

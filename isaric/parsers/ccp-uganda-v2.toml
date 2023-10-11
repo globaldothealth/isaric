@@ -181,8 +181,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "smok", values = { 0 = "never", 1 = "yes", 2 = "former" } },
-      { field = "smoke", values = { 0 = "never", 1 = "yes", 2 = "former" } },
+      { field = "smok", values = { 0 = "never", 1 = "current", 2 = "former" } },
+      { field = "smoke", values = { 0 = "never", 1 = "current", 2 = "former" } },
     ]
 
   [subject.has_asthma]

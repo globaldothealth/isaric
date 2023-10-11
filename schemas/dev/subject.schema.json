@@ -263,9 +263,10 @@
     },
     "has_smoking": {
       "enum": [
-        "yes",
+        "current",
         "former",
-        "never"
+        "never",
+        "no"
       ],
       "description": "History of smoking",
       "category": "comorbidities"
