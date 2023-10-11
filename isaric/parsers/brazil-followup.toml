@@ -230,26 +230,23 @@
 
   [visit.pathogen_test_date] # is this correct?
     combinedType = "firstNonNull"
-    fields = [
-      { field = "flw_date_test", if = { flw_c19_testresult = 1 } },
-      { field = "flw_date2_test" },
-    ]
+    fields = [{ field = "flw_date_test" }, { field = "flw_date2_test" }]
 
   [visit.icu_admission]
     field = "flw_hosp_icu_new"
     description = "Admission to an Intensive Care Unit (ICU / CTI)"
     ref = "Y/N"
 
-  [visit.treatment_corticosteroid]
-    field = "flw_ster1"
-    ref = "Y/N"
-    if = { flw_treat_acute = '1' }
+    # [visit.treatment_corticosteroid]
+    #   field = "flw_ster1"
+    #   ref = "Y/N"
+    #   if = { flw_treat_acute = '1' }
 
-  [visit.treatment_corticosteroid_type_other]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [{ field = "flw_oth_ster" }]
-    if = { flw_treat_acute = '1' }
+    # [visit.treatment_corticosteroid_type_other]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [{ field = "flw_oth_ster" }]
+    #   if = { flw_treat_acute = '1' }
 
   [visit.treatment_oxygen_therapy]
     combinedType = "any"
@@ -590,21 +587,13 @@
 [[observation]]
   name = "inability_to_walk_scale"
   date = { field = "flw_survey_date" }
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
   phase = "followup"
-  duration_type = "event"
   value = { field = "flw_walking_today", ref = "inabilityWalkToday" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   date = { field = "flw_survey_date" }
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
   phase = "followup"
-  duration_type = "event"
   value = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
 
 [[observation]]
@@ -797,6 +786,16 @@
   phase = "followup"
   duration_type = "event"
   is_present = { field = "flw1_feeling_sick", ref = "Y/N" }
+
+[[observation]]
+  name = "other_symptom"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  text = { field = "flw_other_sym" }
 
 [[observation]]
   name = "other_symptom"
