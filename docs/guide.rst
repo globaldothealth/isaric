@@ -146,6 +146,11 @@ symptoms/observations recorded at admission may refer to the day of
 admission, or a time-period leading up to the day of hospital admission
 - use the ``start_date`` variable in this case.
 
+**initial_illness**: Specifically for subjects who were not admitted to
+hospital. Records symptoms from the first 14 days of the initial illness
+episode, which would normally be assigned to `admission` for subjects
+admitted to a study site.
+
 **study**: Data collected during a single hospital visit. Can refer to a
 single event within the visit period, or something present throughout
 the time spent in hospital.
