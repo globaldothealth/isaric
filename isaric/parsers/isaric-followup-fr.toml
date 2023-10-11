@@ -19,6 +19,13 @@
       "enrolment_date",
     ]
 
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ["country_iso3", "start_date", "outcome", "date_outcome"]
+
   [adtl.tables.observation]
     kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
@@ -56,6 +63,24 @@
 
     # No visit table as data is followup only
 
+[visit]
+  [visit.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.visit_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.outcome]
+    field = "ca_hospit"
+    values = { 1 = "hospitalised" }
+    if = { ca_same_hospit = 1 }
+
+  [visit.date_outcome]
+    field = "ca_date"
+    if.all = [{ ca_hospit = 1 }, { ca_same_hospit = 1 }]
+
     # OBSERVATION
 
 
@@ -77,12 +102,6 @@
       { field = "ca_cough", ref = "Y/N" },
       { field = "ca_coughsputum", ref = "Y/N" },
     ]
-
-[[observation]]
-  name = "cough_dry"
-  phase = "followup"
-  date = { field = "ca_date" }
-  is_present = { field = "ca_cough", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -250,3 +269,9 @@
   date = { field = "abg_date" }
   value = { field = "abg_ph" }
   context = ['arterial']
+
+[[observation]]
+  name = "runny_nose"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_runnynose", ref = "Y/N" }
