@@ -657,7 +657,21 @@
   duration_type = "event"
   is_present = { field = "flw_loss_taste", ref = "Y/N" }
 
-  #PL: for initial_illness too
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_first_14d___7", ref = "checkbox" },
+      { field = "flw_first_14d___8", ref = "checkbox" },
+    ]
 
 [[observation]]
   name = "loss_of_smell_or_taste"
@@ -675,7 +689,34 @@
       { field = "flw_loss_smell", ref = "Y/N" },
     ]
 
-    # PL: add muscle + joint pain
+[[observation]]
+  name = "musculoskeletal_pain"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw1_muscle_pain", ref = "Y/N" },
+      { field = "flw1_joint_pain", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [{ field = "flw_first_14d___11", ref = "checkbox" }]
 
 [[observation]]
   name = "muscle_aches"
