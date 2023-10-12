@@ -320,9 +320,12 @@
   description = "Oxygen therepy"
   combinedType = "any"
   fields = [
-    { field = "overall_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
-    { field = "daily_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
-    { field = "oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy on first day of admission?" },
+    { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
+    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true } },
+    { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = true, 3 = true, 4 = true, 5 = true } },
+    { fieldPattern = ".*invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
+    { fieldPattern = ".*noninvasive_proccur", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_prone_position]
@@ -368,19 +371,19 @@
   excludeWhen = "none"
   fields = [
     { field = "overall_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "overall_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "overall_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "overall_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "overall_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
     { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
     { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -480,13 +483,22 @@
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
   ]
 
+[visit.treatment_oxygen_mask_prongs]
+  combinedType = "any"
+  fields = [
+    { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = false, 3 = true, 4 = true, 5 = false } },
+    { field = "overall_oxygen_cmtype___1", values = { 1 = true } },
+    { field = "overall_oxygen_cmtype___3", values = { 1 = true } },
+    { field = "overall_oxygen_cmtype___4", values = { 1 = true } },
+  ]
+
 [visit.treatment_high_flow_nasal_cannula]
   description = "High flow nasal cannula"
   combinedType = "any"
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "overall_oxygen_cmtype___2"
-    values = { 0 = false, 1 = true }
+    values = { 1 = true }
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "daily_oxygen_cmtype"

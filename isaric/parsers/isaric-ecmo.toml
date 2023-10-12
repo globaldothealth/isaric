@@ -587,7 +587,7 @@
   excludeWhen = 'none'
   fields = [
     { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonvir" } },
+    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
     { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
     { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
     { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
@@ -694,7 +694,6 @@
   fields = [
     { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
     { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK" },
-    # { field = "ef_anticoag", description = "Anticoagulation while on mechanical ventilation", values = { "yes" = true } },
   ]
 
 [visit.treatment_prone_position]
@@ -705,15 +704,6 @@
     { field = "daily_prone_cmtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
   ]
 
-  # [visit.treatment_nsaid]
-  #   combinedType = "any"
-  #   fields = [
-  #     { field = "k_adrugs", values = { 1 = true } },
-  #     { field = "k_bdrugs", values = { 1 = true } },
-  #   ]
-
-  # [visit.treatment_indication_anticoagulation]
-  #   field = "ef_anticoag"
 
 [visit.treatment_ecmo]
   description = "Extracorporeal (ECMO) support"
@@ -728,14 +718,7 @@
   fields = [
     { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
     { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
-    # { field = "ccm_b_noninvasive_prtrt", ref = "Y/N/NK", description = "Noninvasive ventilation in critical care?" },
-    # { field = "mv_ventprior", values = { 2 = true, 3 = true, 4 = true }, description = "Noninvasive Ventilatory Support Before Intubation?" },
   ]
-  description = "Noninvasive ventilation"
-
-  # [visit.treatment_ace_inhibitors] # field note present
-  #   field = "ia_hyprthrpyc"
-
 
 [visit.treatment_high_flow_nasal_cannula]
   combinedType = "any"
@@ -743,7 +726,6 @@
     { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
     { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
   ]
-  description = "High flow nasal oxygen therapy?"
 
 [visit.treatment_invasive_ventilation]
   combinedType = "any"
@@ -751,7 +733,6 @@
   fields = [
     { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
     { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
-    # { field = "ccm_b_invasive_prtrt", ref = "Y/N/NK", description = "Invasive ventilation in critical care?" },
   ]
 
 [visit.treatment_oxygen_therapy]
@@ -760,12 +741,17 @@
   fields = [
     { field = "oxygen_cmoccur", values = { 1 = true, 2 = false }, description = "Any oxygen therapy?" },
     { field = "daily_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
+    { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+    { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+    { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
+    { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+    { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+    { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+    { field = "extracorp_prtrt", ref = "Y/N/NK" },
+    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    # { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+    { field = "daily_prone_cmtype", description = "Prone while on invasive ventilation", values = { 1 = true } },
   ]
-
-  # [visit.treatment_pacing]
-  #   description = "Pacing"
-  #   field = "c_pimplant"
-  #   values = { 1 = true, 0 = false }
 
 [visit.treatment_inhaled_nitric_oxide]
   combinedType = "any"
@@ -1079,7 +1065,7 @@
     combinedType = "any"
     fields = [
       { field = "anosmia_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" }
+      { field = "ageusia_ceoccur_v2", ref = "Y/N/NK" },
     ]
 
 [[observation]]

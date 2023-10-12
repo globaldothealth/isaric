@@ -32,25 +32,6 @@
   4 = "death"
   5 = "palliative discharge"
   
-  [subject.admission_date]
-  combinedType = "firstNonNull"
-  
-  [[subject.admission_date.fields]]
-  field = "ccm_b_icu_hodat"
-  description = "ICU ADMISSION DATE"
-  
-  [[subject.admission_date.fields]]
-  field = "hostdat_transfer"
-  description = "2.5.2 If YES: Admission date at transfer facility"
-  
-  [[subject.admission_date.fields]]
-  field = "date"
-  description = "Date"
-  
-  [[subject.admission_date.fields]]
-  field = "icu_hostdat"
-  description = "Date of ICU admission:"
-  
   [subject.age]
   field = "age_estimateyears"
   description = "Age"
@@ -58,6 +39,25 @@
   [subject.date_death]
   field = "f_datedeath"
   description = "5.5 Date Of Death"
+  
+  [subject.earliest_admission_date]
+  combinedType = "firstNonNull"
+  
+  [[subject.earliest_admission_date.fields]]
+  field = "ccm_b_icu_hodat"
+  description = "ICU ADMISSION DATE"
+  
+  [[subject.earliest_admission_date.fields]]
+  field = "hostdat_transfer"
+  description = "2.5.2 If YES: Admission date at transfer facility"
+  
+  [[subject.earliest_admission_date.fields]]
+  field = "date"
+  description = "Date"
+  
+  [[subject.earliest_admission_date.fields]]
+  field = "icu_hostdat"
+  description = "Date of ICU admission:"
   
   [subject.enrolment_date]
   field = "dsstdat"

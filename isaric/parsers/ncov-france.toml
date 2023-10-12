@@ -212,7 +212,7 @@
     excludeWhen = "none"
     fields = [
       { field = "atv_type___1", values = { 1 = "Remdesivir" } },
-      { field = "atv_type___2", values = { 1 = "Lopinavir/Ritonvir" } },
+      { field = "atv_type___2", values = { 1 = "Lopinavir/Ritonavir" } },
     ]
 
   [visit.treatment_antiviral_type_other]
@@ -298,6 +298,14 @@
     field = "dv_ouinon"
     values = { 1 = true, 0 = false }
     description = "Prone position"
+
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      { field = "ecmo_ouinon", values = { 1 = true, 0 = false }, description = "ECMO" },
+      { field = "av_ouinon", description = "vasopressor amines", values = { 1 = true, 0 = false } },
+      { field = "ino_ouinon", description = "inotropic agents", values = { 1 = true, 0 = false } },
+    ]
 
   [visit.outcome]
     combinedType = "firstNonNull"

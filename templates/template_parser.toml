@@ -15,10 +15,9 @@
     schema = "../../schemas/dev/visit.schema.json"
 
   [adtl.tables.observation]
-    kind = "groupBy"
-    groupBy = ""
-    aggregation = "lastNotNull"
+    kind = "oneToMany"
     schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "subjid", sensitive = true } }
 
   [adtl.defs."Y/N/NK".values] # THIS CAN CHANGE BETWEEN DATASETS
     1 = true
@@ -459,11 +458,6 @@
     ref = "Y/N/NK"
 
   [visit.treatment_respiratory_support]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
-  [visit.treatment_indication_anticoagulation]
     field = ""
     description = ""
     ref = "Y/N/NK"
