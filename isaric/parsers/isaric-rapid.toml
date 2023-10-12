@@ -886,7 +886,7 @@
   description = "Oxygen therepy"
   combinedType = "any"
   fields = [
-    { fieldPattern = "*.oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
+    { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "ccm_a_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
     { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
@@ -975,6 +975,7 @@
   is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false }, description = "Bleeding" }
   [observation.context]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [{ field = "flw_bleeding_site" }]
 
 [[observation]]
@@ -1035,20 +1036,16 @@
 [[observation]]
   name = "cough_dry"
   phase = "followup"
-  start_date = { ref = "followupStartDateHierarchy" }
-  duration_type = "event"
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
-  date = { field = "flw_survey_date" }
   duration_type = "event"
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_pers_cough", ref = "Y/N/NK", if = { flw_pers_cough_y = 1 } }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
-  start_date = { ref = "followupStartDateHierarchy" }
-  duration_type = "event"
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
@@ -1372,8 +1369,8 @@
 
 [[observation]]
   name = "diarrhoea"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_date" }
   is_present = { field = "daily_diarrhoea_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
@@ -1448,19 +1445,131 @@
 
 [[observation]]
   name = "history_of_fever"
-  phase = "followup"
-  start_date = { field = "flw_last_fever" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  date = { field = "flw_survey_date" }
   duration_type = "event"
-  date = { ref = "followupDateHierarchy" }
-  is_present = { field = "flw_fever", values = { 1 = true, 0 = false } }
+  phase = "followup"
+  if = { flw_last_fever = 1 }
+  is_present = { field = "flw_fever", ref = "Y/N/NK" }
 
 [[observation]]
   name = "history_of_fever"
-  phase = "followup"
-  start_date = { field = "flw2_last_fever" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
   duration_type = "event"
-  date = { ref = "followupDateHierarchy" }
-  is_present = { field = "flw2_fever", values = { 1 = true, 0 = false } }
+  phase = "followup"
+  if = { flw_last_fever = 2 }
+  is_present = { field = "flw_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    28,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 3 }
+  is_present = { field = "flw_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    30,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 4 }
+  is_present = { field = "flw_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    90,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 5 }
+  is_present = { field = "flw_fever", ref = "Y/N/NK" }
+
+  # PL: and repeat
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  date = { field = "flw2_survey_date" }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw2_last_fever = 1 }
+  is_present = { field = "flw2_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw2_last_fever = 2 }
+  is_present = { field = "flw2_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    28,
+  ] } }
+  date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw2_last_fever = 3 }
+  is_present = { field = "flw2_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    30,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw2_last_fever = 4 }
+  is_present = { field = "flw2_fever", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    90,
+  ] } }
+  date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw2_last_fever = 5 }
+  is_present = { field = "flw2_fever", ref = "Y/N/NK" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
