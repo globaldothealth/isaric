@@ -784,6 +784,30 @@
   is_present = { field = "chestpain_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { ref = "followupDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_joint_pain", values = { 1 = true, 0 = false } },
+      { field = "flw_muscle_pain", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -1035,7 +1059,7 @@
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
+  value = { field = "daily_pao2_lborres", apply = { function = "getFloat" }, source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
@@ -1072,7 +1096,6 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "stercap_vsorres", values = { 1 = true, 2 = false } }
-
 
 [[observation]]
   name = "other_symptom"
