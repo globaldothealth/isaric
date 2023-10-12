@@ -240,6 +240,23 @@
     { field = "dsstdtc", description = "Outcome date" },
   ]
 
+[adtl.defs.followupStartDateHierarchy]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "flw_survey_date", apply = { function = "startDate", params = [
+      7,
+    ] } },
+    { field = "flw2_survey_date", apply = { function = "startDate", params = [
+      7,
+    ] } },
+    { field = "daily_date", apply = { function = "startDate", params = [
+      7,
+    ] } },
+    { field = "dsstdtc", apply = { function = "startDate", params = [
+      7,
+    ] } },
+  ]
+
 [adtl.tables]
   subject = { kind = "groupBy", groupBy = "subject_id", aggregation = "lastNotNull", schema = "../../schemas/dev/subject.schema.json", optional-fields = [
     "ethnicity",
@@ -953,6 +970,8 @@
   name = "bleeding"
   date = { ref = "followupDateHierarchy" }
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   is_present = { field = "flw_bleeding", values = { 1 = true, 0 = false }, description = "Bleeding" }
   [observation.context]
     combinedType = "set"
@@ -1016,6 +1035,8 @@
 [[observation]]
   name = "cough_dry"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
@@ -1026,6 +1047,8 @@
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
     7,
   ] } }
@@ -1120,12 +1143,16 @@
 [[observation]]
   name = "seizures"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_seizures", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "seizures"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_seizures", values = { 1 = true, 0 = false } }
 
@@ -1156,12 +1183,16 @@
 [[observation]]
   name = "vomiting_nausea"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_nausea", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "vomiting_nausea"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_feeling_sick", values = { 1 = true, 0 = false } }
 
@@ -1192,12 +1223,16 @@
 [[observation]]
   name = "confusion"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { field = "flw_survey_date" }
   is_present = { field = "flw_confusion", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "confusion"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { field = "flw2_survey_date" }
   is_present = { field = "flw2_confusion", values = { 1 = true, 0 = false } }
 
@@ -1216,12 +1251,16 @@
 [[observation]]
   name = "chest_pain"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_chest_pains", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "chest_pain"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_chest_pains", values = { 1 = true, 0 = false } }
 
@@ -1234,12 +1273,16 @@
 [[observation]]
   name = "joint_pain"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_joint_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "joint_pain"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_joint_pain", values = { 1 = true, 0 = false } }
 
@@ -1252,12 +1295,16 @@
 [[observation]]
   name = "muscle_aches"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_muscle_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "muscle_aches"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_muscle_pain", values = { 1 = true, 0 = false } }
 
@@ -1282,12 +1329,16 @@
 [[observation]]
   name = "shortness_of_breath"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_short_breath", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "shortness_of_breath"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_short_breath", values = { 1 = true, 0 = false } }
 
@@ -1300,12 +1351,16 @@
 [[observation]]
   name = "abdominal_pain"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_stomach_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "abdominal_pain"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_stomach", values = { 1 = true, 0 = false } }
 
@@ -1324,12 +1379,16 @@
 [[observation]]
   name = "diarrhoea"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "diarrhoea"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_diarrhoea", values = { 1 = true, 0 = false } }
 
@@ -1348,12 +1407,16 @@
 [[observation]]
   name = "headache"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_headache", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "headache"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_headache", values = { 1 = true, 0 = false } }
 
@@ -1366,6 +1429,8 @@
 [[observation]]
   name = "skin_rash"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_skin_rash", values = { 1 = true, 0 = false } }
 
@@ -1384,12 +1449,16 @@
 [[observation]]
   name = "history_of_fever"
   phase = "followup"
+  start_date = { field = "flw_last_fever" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_fever", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "history_of_fever"
   phase = "followup"
+  start_date = { field = "flw2_last_fever" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_fever", values = { 1 = true, 0 = false } }
 
@@ -1480,6 +1549,8 @@
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
 
   [observation.is_present]
@@ -1493,15 +1564,21 @@
 [[observation]]
   name = "loss_of_smell"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_loss_smell", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "loss_of_taste"
   phase = "followup"
+  start_date = { ref = "followupStartDateHierarchy" }
+  duration_type = "event"
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
 
+
+# check dates on all these
 [[observation]]
   name = "inability_to_walk"
   phase = "admission"
@@ -1512,24 +1589,21 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  value = { field = "flw_eq5d_mb_5l_uk_eng", ref = "inabilityWalk" }
-
-[[observation]]
-  name = "inability_to_walk_scale"
-  phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  # your health today
   value = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  value = { field = "flw_walking_today" }  #, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
+  # issues walking today
+  value = { field = "flw_walking_today" } #, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
+  # your health today
   value = { field = "flw2_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
 
 [[observation]]
