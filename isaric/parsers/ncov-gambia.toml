@@ -1061,15 +1061,18 @@
   date = { field = "q_3" }
   phase = "study"
   value = { field = "q_53a" }
+  context = ["Measurement 1"]
 
 [[observation]]
   name = "temperature_celsius"
   date = { field = "q_3" }
   phase = "study"
   value = { field = "q_53b" }
+  context = ["Measurement 2"]
 
 [[observation]]
   name = "temperature_celsius"
   date = { field = "q_3" }
   phase = "study"
   value = { field = "q_53c" }
+  context = ["Measurement 3"]
