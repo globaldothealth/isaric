@@ -395,16 +395,6 @@
   is_present = { field = "flw1_chest_pains", ref = "Y/N" }
 
 [[observation]]
-  name = "confusion"
-  date = { field = "flw_survey_date" }
-  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
-    7,
-  ] } }
-  phase = "followup"
-  duration_type = "event"
-  is_present = { field = "flw1_confusion", ref = "Y/N" }
-
-[[observation]]
   name = "cough"
   start_date = { field = "flw_first_sym" }
   date = { field = "flw_first_sym", apply = { function = "endDate", params = [
