@@ -1134,10 +1134,10 @@
 [[observation]]
   name = "seizures"
   phase = "study"
-  start_date = { ref = "admissiontDateHierarchy" }
+  start_date = { ref = "admissionDateHierarchy" }
   duration_type = "event"
   date = { field = "dsstdtc" }
-  is_present = { field = "seizure_ceterm" }
+  is_present = { field = "seizure_ceterm", ref = "Y/N/NK" }
 
 [[observation]]
   name = "seizures"
@@ -1263,7 +1263,24 @@
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_chest_pains", values = { 1 = true, 0 = false } }
 
-  # Add musculoskeletal pain here
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "daily_date" }
+  [observation.is_present]
+    combinedType = "any"
+    fields = [{ field = "daily_myalgia_ceoccur_v2", ref = "Y/N/NK" }]
 
 [[observation]]
   name = "joint_pain"
@@ -1297,7 +1314,7 @@
   name = "muscle_aches"
   phase = "study"
   date = { field = "daily_date" }
-  is_present = { field = "daily_myalgia_ceoccur_v2" }
+  is_present = { field = "daily_myalgia_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "muscle_aches"
@@ -1823,17 +1840,15 @@
   startdate = { ref = "admissionDateHierarchy" }
   date = { field = "dsstdtc" }
   duration_type = "event"
-  text = { field = "overall_oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
-  if.all = [
-    { overall_oxygen_cmoccur = 1 },
-    { overall_oxygen_cmdose = { "!=" = 5 } },
-  ]
+  # text = { field = "overall_oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
 
-  [observation.context]
-    combinedType = "set"
-    excludeWhen = "none"
+  [observation.text]
+    combinedType = "firstNonNull"
     fields = [
-      { field = "overall_oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
+      { field = "overall_oxygen_cmdose___4", values = { 1 = ">15 L/min" } },
+      { field = "overall_oxygen_cmdose___3", values = { 1 = "11-15 L/min" } },
+      { field = "overall_oxygen_cmdose___2", values = { 1 = "6-10 L/min" } },
+      { field = "overall_oxygen_cmdose___1", values = { 1 = "1-5 L/min" } },
     ]
 
 [[observation]]
@@ -1871,5 +1886,5 @@
 [[observation]]
   name = "oxygen_o2hb"
   phase = "study"
-  date = { field = "daily_dsstdtc" }
-  value = { field = "daily_hg_lborres", unit = "g/dL", source_unit = { field = "daily_hb_lborresu", values = { 1 = "g/dL" } } }
+  date = { field = "daily_date" }
+  value = { field = "daily_hb_lborres", unit = "g/dL", source_unit = { field = "daily_hb_lborresu", values = { 1 = "g/dL" } } }
