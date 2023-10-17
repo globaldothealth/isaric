@@ -28,6 +28,25 @@
       }
     },
     {
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "name": {
+          "const": "acvpu"
+        },
+        "text": {
+          "enum": [
+            "Alert",
+            "Confused",
+            "Verbal",
+            "Pain",
+            "Unresponsive"
+          ]
+        }
+      }
+    },
+    {
       "$comment": "Oxygen flow volume is represented as a range which is not a native JSON Schema type",
       "required": [
         "text"
@@ -350,6 +369,7 @@
             "lung_sounds",
             "lymphadenopathy",
             "muscle_aches",
+            "musculoskeletal_pain",
             "runny_nose",
             "seizures",
             "severe_dehydration",
