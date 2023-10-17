@@ -823,7 +823,7 @@ instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
 **lower_chest_wall_indrawing**: Bool.
 
-**lung_sounds**: Bool. Unused.
+**lung_sounds**: Bool.
 
 **lymphadenopathy**: Bool. Combines adenopathy and lymphadenopathy.
 

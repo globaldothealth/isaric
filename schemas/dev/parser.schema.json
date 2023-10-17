@@ -354,6 +354,10 @@
           "description": "Ethnicity",
           "$ref": "#/definitions/mapping"
         },
+        "works_lab": {
+          "description": "Works in laboratory",
+          "$ref": "#/definitions/mapping"
+        },
         "works_microbiology_lab": {
           "description": "Works in microbiology lab",
           "$ref": "#/definitions/mapping"
