@@ -286,10 +286,7 @@
     description = "Date of Enrolment"
 
   [subject.earliest_admission_date]
-    combinedType = "min"
-    fields = [
-      { field = "hostdat", description = "Admission date at this facility" },
-    ]
+    field = "hostdat"
 
   [subject.ethnicity]
     description = "Ethnicity"
@@ -445,6 +442,10 @@
   ref = "Y/N/NK"
   description = "Chronic kidney disease"
 
+[subject.has_chronic_respiratory_disease]
+  field = "chronicpul_mhyn"
+  ref = "Y/N/NK"
+
 [subject.has_diabetes]
   field = "diabetes_mhyn"
   ref = "Y/N/NK"
@@ -464,6 +465,11 @@
   field = "liver_mhyn"
   ref = "Y/N/NK"
   description = "Liver disease"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "otherrisktext" }]
 
 [subject.has_died]
   combinedType = "any"
@@ -992,12 +998,6 @@
     ]
 
 [[observation]]
-  name = "cough_dry"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
   name = "cough_with_sputum_production"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -1019,12 +1019,6 @@
       { field = "daily_cough_ceoccur_v2", ref = "Y/N/NK" },
       { field = "daily_coughsput_ceoccur_v2", ref = "Y/N/NK" },
     ]
-
-[[observation]]
-  name = "cough_dry"
-  date = { field = "daily_date" }
-  phase = "study"
-  is_present = { field = "daily_cough_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -1136,6 +1130,14 @@
   phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_seizures_cecoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  start_date = { ref = "admissiontDateHierarchy" }
+  duration_type = "event"
+  date = { field = "dsstdtc" }
+  is_present = { field = "seizure_ceterm" }
 
 [[observation]]
   name = "seizures"
@@ -1261,6 +1263,8 @@
   date = { ref = "followupDateHierarchy" }
   is_present = { field = "flw2_chest_pains", values = { 1 = true, 0 = false } }
 
+  # Add musculoskeletal pain here
+
 [[observation]]
   name = "joint_pain"
   phase = "admission"
@@ -1288,6 +1292,12 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_myalgia_ceoccur_v2" }
 
 [[observation]]
   name = "muscle_aches"
@@ -1615,7 +1625,7 @@
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   value = { field = "systolic_vsorres" }
 
@@ -1651,7 +1661,7 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  phase = "admission"
+  phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
 
@@ -1687,7 +1697,6 @@
   is_present = { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
 
 
-# check dates on all these
 [[observation]]
   name = "inability_to_walk"
   phase = "admission"
@@ -1719,19 +1728,18 @@
   name = "inability_to_walk_scale"
   phase = "followup"
   date = { ref = "followupDateHierarchy" }
-  value = { field = "flw2_walking_today" } #, values = { 1 = "No difficulty", 2 = "Some difficulty", 3 = "Lots of difficulty", 4 = "Unable to walk" } }
+  value = { field = "flw2_walking_today" }
 
 [[observation]]
   name = "clinical_frailty_score"
   phase = "admission"
-  date = { ref = "admissionDateHierarchy" } # not sure about this for this mapping ..
+  date = { field = "ccm_a_dat" }
   value = { field = "ccm_b_cfs_rsorres" }
 
 [[observation]]
   name = "temperature_celsius"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  context = ["highest"]
   value = { field = "temp_vsorres" }        # there is no source unit field, but a mix of celsius and farenheit in the data.
 
 [[observation]]
@@ -1739,6 +1747,7 @@
   phase = "study"
   date = { field = "daily_date" }
   value = { field = "daily_temp_vsorres" } # there is no source unit field
+  context = ['Most abnormal reading']
 
 [[observation]]
   name = "pao2_mmHg"
@@ -1750,6 +1759,7 @@
     excludeWhen = "none"
     fields = [
       { field = "ccm_a_pao2_lbspec", values = { 1 = "Arterial", 3 = "Capillary", 4 = "Unknown" } },
+      "Worst reading over 24hr period",
     ]
 
 [[observation]]
@@ -1808,6 +1818,25 @@
     ]
 
 [[observation]]
+  name = "oxygen_flow_volume_max"
+  phase = "study"
+  startdate = { ref = "admissionDateHierarchy" }
+  date = { field = "dsstdtc" }
+  duration_type = "event"
+  text = { field = "overall_oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
+  if.all = [
+    { overall_oxygen_cmoccur = 1 },
+    { overall_oxygen_cmdose = { "!=" = 5 } },
+  ]
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "overall_oxygen_cmtype", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
+    ]
+
+[[observation]]
   name = "mid_upper_arm_circumference_cm"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -1832,3 +1861,15 @@
   start_date = { ref = "admissionDateHierarchy" }
   date = { field = "dsstdtc" }
   duration_type = "event"
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  value = { field = "hb_lborres", unit = "g/dL", source_unit = { field = "hb_lborresu", values = { 1 = "g/L" } } }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  date = { field = "daily_dsstdtc" }
+  value = { field = "daily_hg_lborres", unit = "g/dL", source_unit = { field = "daily_hb_lborresu", values = { 1 = "g/dL" } } }
