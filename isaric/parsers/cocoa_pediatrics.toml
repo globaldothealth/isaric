@@ -332,14 +332,14 @@
     ref = "Y/N/NK"
 
 [[observation]]
-  name = "avpu"
+  name = "acvpu"
   phase = "admission"
   date = { field = "hostdat" }
 
   [observation.text]
     field = "avpu_vsorres"
     description = "AVPU"
-    values = { 1 = "Alert", 2 = "Verbal", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
+    values = { 1 = "Alert", 2 = "Confused", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
 
 [[observation]]
   name = "bleeding_haemorrhage"

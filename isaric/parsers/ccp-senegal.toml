@@ -452,7 +452,7 @@
 
 [[observation]]
   name = "cough"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDate" }
   duration_type = "event"
 
@@ -474,7 +474,7 @@
 
 [[observation]]
   name = "cough_dry"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "cough_cestdat_v2" }
   date = { ref = "admissionDate" }
   duration_type = "event"
@@ -482,7 +482,7 @@
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "coughsput_cestdat_v2" }
   date = { ref = "admissionDate" }
   duration_type = "event"
@@ -490,7 +490,7 @@
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "coughhb_cestdat_v2" }
   date = { ref = "admissionDate" }
   duration_type = "event"

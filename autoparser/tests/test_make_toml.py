@@ -98,7 +98,7 @@ def test_get_type_enum(source, expected):
             dict(
                 field="sex",
                 description="Sex at birth",
-                values={"1": "male", "2": "female", "3": "non_binary"},
+                values={"1": "male", "2": "female"},
             ),
         ),
         (

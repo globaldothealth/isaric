@@ -364,7 +364,8 @@ the same as the visit ID, prior to implementation of RELSUB matching).
 
 **earliest_admission_date**: Date. Date of admission for the first study
 visit. Use ``combinedType = "min"`` To allow the earliest date to be
-chosen from across multiple visits.
+chosen from across multiple visits. If the subject was never admitted,
+this date refers to the earliest assessment date at a study centre.
 
 **age**: Value. Age of the subject in years. Provided age should be used where
 possible, if not present age can be estimated from the date of birth and admission
@@ -609,8 +610,7 @@ agent(s)?
 
 **treatment_anticoagulation**: Bool. Treated with anticoagulants during
 the visit? (Note - this is often combines a general anticoagulation
-field with those specific to Heparin. NOTE TO DEVS: merge (if not
-already) with treatment_indication_anticoagulation)
+field with those specific to Heparin).
 
 **treatment_inhaled_nitric_oxide**: Bool. Treated with nitric oxide
 inhalation?
@@ -734,6 +734,9 @@ Other fields
 **avpu**: Text. Where is the subject on the AVPU consciousness scale, one of
 *Alert, Voice, Pain, Unresponsive*.
 
+**acvpu**: Text. Where is the subject on the ACVPU consciousness scale, one of
+*Alert, Confusion, Voice, Pain, Unresponsive*.
+
 **abdominal_pain**: Bool.
 
 **altered_consciousness_confusion**: Bool. If field only records
@@ -820,7 +823,7 @@ instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
 **lower_chest_wall_indrawing**: Bool.
 
-**lung_sounds**: Bool. Unused.
+**lung_sounds**: Bool.
 
 **lymphadenopathy**: Bool. Combines adenopathy and lymphadenopathy.
 

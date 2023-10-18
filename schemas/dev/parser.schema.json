@@ -358,6 +358,10 @@
           "description": "Ethnicity",
           "$ref": "#/definitions/mapping"
         },
+        "works_lab": {
+          "description": "Works in laboratory",
+          "$ref": "#/definitions/mapping"
+        },
         "works_microbiology_lab": {
           "description": "Works in microbiology lab",
           "$ref": "#/definitions/mapping"
@@ -724,10 +728,6 @@
           "description": "Respiratory support",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_indication_anticoagulation": {
-          "description": "Indication anticoagulation",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_cardiovascular_support": {
           "description": "Cardiovascular",
           "$ref": "#/definitions/mapping"
@@ -789,6 +789,7 @@
               "name": {
                 "enum": [
                   "other_symptom",
+                  "acvpu",
                   "avpu",
                   "oxygen_flow_volume_max"
                 ]
@@ -867,6 +868,7 @@
                   "lung_sounds",
                   "lymphadenopathy",
                   "muscle_aches",
+                  "musculoskeletal_pain",
                   "runny_nose",
                   "seizures",
                   "severe_dehydration",

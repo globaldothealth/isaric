@@ -316,6 +316,7 @@
       { field = "overall_noninvasive_proccur", values = { 1 = true, 0 = false } },
       { field = "non_inv_vent", values = { 1 = true, 0 = false } },
       { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
+      { field = "ecls", ref = "Y/N" },
     ]
 
   [visit.treatment_prone_position]
@@ -435,6 +436,7 @@
     { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
     { field = "overall_inotrop_cmtrt", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
     { field = "vaso_or_inot", description = "Any vasopressor/inotropic support/?", values = { 1 = true, 0 = false } },
+    { field = "ecls", ref = "Y/N" },
   ]
 
 [visit.outcome]
