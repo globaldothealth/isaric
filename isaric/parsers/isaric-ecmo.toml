@@ -541,7 +541,7 @@
 [subject.date_death]
   combinedType = "firstNonNull"
   fields = [
-    { field = "f_datedeath", description = "Date of death", if = { dsterm = 4 } },
+    { field = "f_datedeath", description = "Date of death" },
     { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
   ]
 
