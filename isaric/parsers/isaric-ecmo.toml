@@ -945,6 +945,18 @@
   is_present = { field = "chestpain_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
