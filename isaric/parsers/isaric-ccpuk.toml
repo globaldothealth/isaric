@@ -19,15 +19,6 @@
     { field = "hostdat", description = "Admission date at this facility" },
     { field = "cestdat", description = "Onset date of first/earliest symptom" },
     { field = "dsstdat", description = "Date of enrolment" },
-    { field = "daily_dsstdat", description = "Date of assessment" },
-  ]
-
-[adtl.defs.followupDateHierarchy]
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "flw_survey_date", description = "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)" },
-    { field = "dsstdtc_v2", description = "Outcome date", if = { dsterm_v2 = 4 } },
-    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
   ]
 
 [adtl.defs.inabilityWalk.values]
@@ -654,7 +645,7 @@
 
 [[observation]]
   name = "cough"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   phase = "followup"
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false } }
   [observation.context]
@@ -667,14 +658,14 @@
 [[observation]]
   name = "cough_dry"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false }, if = { flw_cough_type = 1 } }
   if = { flw_cough_type = 1 }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false }, if = { flw_cough_type = 2 } }
   if = { flw_cough_type = 2 }
 
@@ -763,7 +754,7 @@
 [[observation]]
   name = "vomiting_nausea"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_nausea", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -799,7 +790,7 @@
 [[observation]]
   name = "musculoskeletal_pain"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
 
   [observation.is_present]
     combinedType = "any"
@@ -817,7 +808,7 @@
 [[observation]]
   name = "joint_pain"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_joint_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -829,7 +820,7 @@
 [[observation]]
   name = "muscle_aches"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_muscle_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -847,7 +838,7 @@
 [[observation]]
   name = "shortness_of_breath"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_breathless", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -865,7 +856,7 @@
 [[observation]]
   name = "diarrhoea"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -883,7 +874,7 @@
 [[observation]]
   name = "headache"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_headache", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -895,7 +886,7 @@
 [[observation]]
   name = "skin_rash"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_skin_rash", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -907,7 +898,7 @@
 [[observation]]
   name = "history_of_fever"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_fever", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -985,7 +976,7 @@
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
 
   [observation.is_present]
     combinedType = "any"
@@ -1003,7 +994,7 @@
 [[observation]]
   name = "loss_of_smell"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_loss_smell", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -1015,13 +1006,13 @@
 [[observation]]
   name = "loss_of_taste"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
 
   [observation.value]
     combinedType = "firstNonNull"
