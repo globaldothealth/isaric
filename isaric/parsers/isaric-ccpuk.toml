@@ -19,15 +19,6 @@
     { field = "hostdat", description = "Admission date at this facility" },
     { field = "cestdat", description = "Onset date of first/earliest symptom" },
     { field = "dsstdat", description = "Date of enrolment" },
-    { field = "daily_dsstdat", description = "Date of assessment" },
-  ]
-
-[adtl.defs.followupDateHierarchy]
-  combinedType = "firstNonNull"
-  fields = [
-    { field = "flw_survey_date", description = "About you and your COVID-19 illness (if you're completing this survey on behalf of a child or adult that you care for, all the questions relate to their health and wellbeing)" },
-    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
-    { field = "dsstdtc_v2", description = "Outcome date", if = { dsterm_v2 = 4 } },
   ]
 
 [adtl.defs.inabilityWalk.values]
@@ -58,12 +49,10 @@
     description = "Date of Enrolment"
 
   [subject.earliest_admission_date]
-    combinedType = "min"
-    fields = [
-      { field = "hostdat", description = "Admission date at this facility" },
-    ]
+    field = "hostdat"
+    description = "Admission date at this facility"
 
-  [subject.ethnicity] # TODO: need to add ethnic other field
+  [subject.ethnicity]
     description = "Ethnic groups"
     combinedType = "set"
     excludeWhen = "none"
@@ -287,6 +276,10 @@
   ref = "Y/N/NK"
   description = "Chronic kidney disease"
 
+[subject.has_chronic_respiratory_disease]
+  field = "chronicpul_mhyn"
+  ref = "Y/N/NK"
+
 [subject.has_diabetes]
   field = "diabetes_mhyn"
   ref = "Y/N/NK"
@@ -332,16 +325,16 @@
 [subject.has_died]
   combinedType = "firstNonNull"
   fields = [
-    { field = "dsterm", values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false }, description = "Outcome" },
     { field = "dsterm_v2", values = { 1 = false, 3 = false, 4 = true, 5 = false }, description = "Final Outcome" },
+    { field = "dsterm", values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false }, description = "Outcome" },
     { field = "flw_desceased_lost", values = { 1 = true }, description = "Patient dead on followup?" },
   ]
 
 [subject.date_death]
   combinedType = "firstNonNull"
   fields = [
-    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
     { field = "dsstdtc_v2", description = "Outcome date", if = { dsterm_v2 = 4 } },
+    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
     { field = "flw_date_death", description = "Date of death", if = { flw_desceased_lost = 1 } },
   ]
 
@@ -365,7 +358,7 @@
   [visit.date_outcome]
     combinedType = "firstNonNull"
     description = "Outcome date"
-    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
+    fields = [{ field = "dsstdtc_v2" }, { field = "dsstdtc" }]
 
   [visit.visit_id]
     field = "subjid"
@@ -613,20 +606,20 @@
     combinedType = "firstNonNull"
 
     [[visit.outcome.fields]]
-      field = "dsterm"
+      field = "dsterm_v2"
 
       [visit.outcome.fields.values]
         1 = "discharged"
-        2 = "hospitalised"
         3 = "transferred"
         4 = "death"
         5 = "palliative discharge"
 
     [[visit.outcome.fields]]
-      field = "dsterm_v2"
+      field = "dsterm"
 
       [visit.outcome.fields.values]
         1 = "discharged"
+        2 = "hospitalised"
         3 = "transferred"
         4 = "death"
         5 = "palliative discharge"
@@ -645,9 +638,14 @@
   phase = "admission"
   is_present = { field = "bleed_ceterm_v2", ref = "Y/N/NK", description = "Bleeding (other)" }
 
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "bleed_cetermy_v2" }]
+
 [[observation]]
   name = "cough"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   phase = "followup"
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false } }
   [observation.context]
@@ -660,14 +658,14 @@
 [[observation]]
   name = "cough_dry"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false }, if = { flw_cough_type = 1 } }
   if = { flw_cough_type = 1 }
 
 [[observation]]
   name = "cough_with_sputum_production"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_cough", values = { 1 = true, 0 = false }, if = { flw_cough_type = 2 } }
   if = { flw_cough_type = 2 }
 
@@ -683,12 +681,6 @@
       { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" },
       { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" },
     ]
-
-[[observation]]
-  name = "cough_dry"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -762,7 +754,7 @@
 [[observation]]
   name = "vomiting_nausea"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_nausea", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -784,6 +776,30 @@
   is_present = { field = "chestpain_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_joint_pain", values = { 1 = true, 0 = false } },
+      { field = "flw_muscle_pain", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -792,7 +808,7 @@
 [[observation]]
   name = "joint_pain"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_joint_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -804,7 +820,7 @@
 [[observation]]
   name = "muscle_aches"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_muscle_pain", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -822,7 +838,7 @@
 [[observation]]
   name = "shortness_of_breath"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_breathless", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -840,7 +856,7 @@
 [[observation]]
   name = "diarrhoea"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_diarrhoea", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -858,7 +874,7 @@
 [[observation]]
   name = "headache"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_headache", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -870,7 +886,7 @@
 [[observation]]
   name = "skin_rash"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_skin_rash", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -882,7 +898,7 @@
 [[observation]]
   name = "history_of_fever"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_fever", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -910,6 +926,12 @@
   value = { field = "rr_vsorres" }
 
 [[observation]]
+  name = "respiratory_rate"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_rr" }
+
+[[observation]]
   name = "systolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -917,8 +939,8 @@
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_dsstdat" }
   value = { field = "systolic_vsorres" }
 
 [[observation]]
@@ -954,7 +976,7 @@
 [[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
 
   [observation.is_present]
     combinedType = "any"
@@ -972,7 +994,7 @@
 [[observation]]
   name = "loss_of_smell"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_loss_smell", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -984,13 +1006,13 @@
 [[observation]]
   name = "loss_of_taste"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
   is_present = { field = "flw_loss_taste", values = { 1 = true, 0 = false } }
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "followup"
-  date = { ref = "followupDateHierarchy" }
+  date = { field = "flw_survey_date" }
 
   [observation.value]
     combinedType = "firstNonNull"
@@ -1023,19 +1045,19 @@
   value = { field = "temp_vsorres", source_unit = { field = "temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  context = ["maximum"]
 
 [[observation]]
   name = "temperature_celsius"
   value = { field = "daily_temp_vsorres", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
+  context = ['Highest']
 
 [[observation]]
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_pao2_lborres", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
+  value = { field = "daily_pao2_lborres", apply = { function = "getFloat" }, source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } }, unit = "mmHg" }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
@@ -1065,14 +1087,13 @@
   name = "base_excess"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
-  value = { field = "daily_baseex_lborres" }
+  value = { field = "daily_baseex_lborres", source_unit = "mmol/L" }
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "stercap_vsorres", values = { 1 = true, 2 = false } }
-
 
 [[observation]]
   name = "other_symptom"
@@ -1098,7 +1119,7 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
+    fields = [{ field = "dsstdtc_v2" }, { field = "dsstdtc" }]
 
 [[observation]]
   name = "pneumonia"
@@ -1122,4 +1143,16 @@
 
   [observation.date]
     combinedType = "firstNonNull"
-    fields = [{ field = "dsstdtc" }, { field = "dsstdtc_v2" }]
+    fields = [{ field = "dsstdtc_v2" }, { field = "dsstdtc" }]
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_sao2_lborres" }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_hb_lborres", unit = "g/dL", source_unit = { field = "daily_hb_lborresu", values = { 1 = "g/L", 2 = "g/dL" } } }
