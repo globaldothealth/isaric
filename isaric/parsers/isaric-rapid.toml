@@ -409,7 +409,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = "yes", 2 = "never" } # TODO: How to get has_smoking=former?
+  values = { 1 = "yes", 2 = "never" }
   description = "Current smoking"
 
 [subject.has_asthma]
