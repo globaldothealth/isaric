@@ -3,7 +3,8 @@
 |table          |valid  |total  |percentage_valid|
 |---------------|-------|-------|----------------|
 |subject        |196    |332    |59.036145% |
-|observation    |5769   |10851  |53.165607% |
+|visit          |332    |332    |100.000000% |
+|observation    |5501   |10349  |53.154894% |
 
 ## subject
 
@@ -11,4 +12,4 @@
 
 ## observation
 
-* 5082: data must contain ['phase', 'date', 'name'] properties
+* 4848: data must contain ['phase', 'date', 'name'] properties

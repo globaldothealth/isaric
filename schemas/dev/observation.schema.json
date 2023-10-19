@@ -412,6 +412,7 @@
     },
     "phase": {
       "enum": [
+        "initial_illness",
         "pre-admission",
         "admission",
         "study",
