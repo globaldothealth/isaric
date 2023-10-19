@@ -692,7 +692,7 @@
     { flw_fever = { "!=" = "" } },
     { flw_fever = { "!=" = 2 } },
   ]
-  is_present = { field = "flw_fever", ref = "Y/N", can_slip = true }
+  is_present = { field = "flw_fever", ref = "Y/N", can_skip = true }
 
   [observation.start_date]
     combinedType = "firstNonNull"
@@ -1074,16 +1074,16 @@
   name = "musculoskeletal_pain"
   phase = "initial_illness"
   start_date = { field = "flw_first_sym" }
-    date = { field = "flw_first_sym", apply = { function = "endDate", params = [
-      14,
-    ] } }
-    duration_type = "event"
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
 
-    [observation.is_present]
-      combinedType = "any"
-      fields = [
-        { field = "flw_first_14d___11", ref = "checkbox", can_skip = true },
-      ]
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_first_14d___11", ref = "checkbox", can_skip = true },
+    ]
 
 [[observation]]
   name = "muscle_aches"
