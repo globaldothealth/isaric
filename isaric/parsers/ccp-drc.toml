@@ -992,34 +992,31 @@
   name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+
   [observation.start_date]
     combinedType = "min"
-    fields = [
-      { field = "myalagia_date" },
-      { field = "jt_pain_date" },
-    ]
+    fields = [{ field = "myalagia_date" }, { field = "jt_pain_date" }]
 
-  duration_type = "event"
-  
   [observation.is_present]
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "myalagia", ref = "Y/N/NK" },
-      { field = "jt_pain", ref = "Y/N/NK" },
+      { field = "myalagia", values = { 1 = true } },
+      { field = "jt_pain", values = { 1 = true } },
     ]
 
 [[observation]]
   name = "musculoskeletal_pain"
   phase = "study"
   date = { ref = "ss_datetime" }
-  
+
   [observation.is_present]
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "myalagia_v2", ref = "Y/N/NK" },
-      { field = "jt_pain_v2", ref = "Y/N/NK" },
+      { field = "myalagia_v2", values = { 1 = true } },
+      { field = "jt_pain_v2", values = { 1 = true } },
     ]
 
 [[observation]]

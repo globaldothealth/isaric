@@ -468,16 +468,11 @@
   phase = "admission"
   is_present = { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }
 
-# Q. is this correct? should we have both attributes joint_pain and musculoskeletal_pain if only one of the subtypes is mapped?
 [[observation]]
   name = "musculoskeletal_pain"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-
-  [observation.is_present]
-    combinedType = "any"
-    excludeWhen = "none"
-    fields = [ { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }, ]
+  is_present = { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }
 
 [[observation]]
   name = "loss_of_smell"

@@ -587,8 +587,8 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "crf1a_muscle_aches", ref = "Y/N" },
-      { field = "crf1a_join_pain", ref = "Y/N" },
+      { field = "crf1a_muscle_aches", values = { Yes = true } },
+      { field = "crf1a_join_pain", values = { Yes = true } },
     ]
 
 [[observation]]
@@ -600,8 +600,8 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "aching_in_your_muscles_pai", ref = "Y/N" },
-      { field = "joint_pain_or_swelling", ref = "Y/N" },
+      { field = "aching_in_your_muscles_pai", values = { Yes = true } },
+      { field = "joint_pain_or_swelling", values = { Yes = true } },
     ]
 
 [[observation]]

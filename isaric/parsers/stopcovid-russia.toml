@@ -347,8 +347,8 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "myalgia_ceoccur_v2", ref = "Y/N" },
-      { field = "jointpain_ceoccur_v2", ref = "Y/N" },
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
     ]
 
 [[observation]]

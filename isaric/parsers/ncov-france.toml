@@ -448,11 +448,7 @@
   name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDate" }
-  
-  [observation.is_present]
-    combinedType = "any"
-    excludeWhen = "none"
-    fields = [ { field = "signes_clin___6", values = { 1 = true } }, ]
+  is_present = { field = "signes_clin___6", values = { 1 = true } }
 
 [[observation]]
   name = "oxygen_flow_volume_max"

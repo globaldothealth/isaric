@@ -592,13 +592,13 @@
   name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  
+
   [observation.is_present]
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "Myalgia", ref = "Y/N" },
-      { field = "Arthralgia", ref = "Y/N" },
+      { field = "Myalgia", values = { 1 = true } },
+      { field = "Arthralgia", values = { 1 = true } },
     ]
 
 [[observation]]

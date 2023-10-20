@@ -743,14 +743,14 @@
   name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  
+
   [observation.is_present]
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "muscle", ref = "Y/N" },
-      { field = "joint", ref = "Y/N" },
-      { field = "jt_ache", ref = "Y/N" },
+      { field = "muscle", values = { 1 = true } },
+      { field = "joint", values = { 1 = true } },
+      { field = "jt_ache", values = { 1 = true } },
     ]
 
 [[observation]]

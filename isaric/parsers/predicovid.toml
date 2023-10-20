@@ -555,8 +555,8 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "doul_musc_sup", values = { 1 = true, 2 = false, 0 = false } },
-      { field = "doul_musc_inf", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "doul_musc_sup", values = { 1 = true } },
+      { field = "doul_musc_inf", values = { 1 = true } },
     ]
 
 [[observation]]

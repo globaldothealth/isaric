@@ -547,23 +547,20 @@
 [[observation]]
   name = "musculoskeletal_pain"
   phase = "admission"
+  date = { field = "hostdat" }
+  duration_type = "block"
+
   [observation.start_date]
     combinedType = "min"
     excludeWhen = "none"
-    fields = [
-      { field = "mscl_ch_dtstrt" },
-      { field = "jnt_pn_dtstrt" },
-    ]
-
-  date = { field = "hostdat" }
-  duration_type = "block"
+    fields = [{ field = "mscl_ch_dtstrt" }, { field = "jnt_pn_dtstrt" }]
 
   [observation.is_present]
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
     ]
 
 [[observation]]

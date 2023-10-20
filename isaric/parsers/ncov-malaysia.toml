@@ -843,23 +843,19 @@
   name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDate" }
+  duration_type = "event"
 
   [observation.start_date]
     combinedType = "min"
     excludeWhen = "none"
-    fields = [
-      { field = "myalgia_date" },
-      { field = "arthralgia_date" },
-    ]
-  
-  duration_type = "event"
+    fields = [{ field = "myalgia_date" }, { field = "arthralgia_date" }]
 
   [observation.is_present]
     combinedType = "any"
     excludeWhen = "none"
-    fields = [ 
-      { field = "myalgia_hx", ref = "Y/N" },
-      { field = "arthralgia_hx", ref = "Y/N" },
+    fields = [
+      { field = "myalgia_hx", values = { 1 = true } },
+      { field = "arthralgia_hx", values = { 1 = true } },
     ]
 
 [[observation]]

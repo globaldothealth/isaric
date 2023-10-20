@@ -783,8 +783,8 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
     ]
 
 [[observation]]
@@ -795,8 +795,8 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "flw_joint_pain", values = { 1 = true, 0 = false } },
-      { field = "flw_muscle_pain", values = { 1 = true, 0 = false } },
+      { field = "flw_joint_pain", values = { 1 = true } },
+      { field = "flw_muscle_pain", values = { 1 = true } },
     ]
 
 [[observation]]
