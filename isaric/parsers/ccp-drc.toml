@@ -989,6 +989,40 @@
   is_present = { field = "myalagia_v2", description = "Muscle pain (Myalgia)", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "myalagia_date" },
+      { field = "jt_pain_date" },
+    ]
+
+  duration_type = "event"
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia", ref = "Y/N/NK" },
+      { field = "jt_pain", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { ref = "ss_datetime" }
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia_v2", ref = "Y/N/NK" },
+      { field = "jt_pain_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
   name = "other_symptom"
   phase = "admission"
   start_date = { field = "other_1_date" }

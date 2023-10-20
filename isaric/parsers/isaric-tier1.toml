@@ -1086,6 +1086,32 @@
     ]
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [ 7,
+      ] } },
+    ]
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
+
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_muscle_pain", ref = "Y/N", can_skip = true },
+      { field = "flw2_muscle_pain", ref = "Y/N", can_skip = true },
+      { field = "flw_joint_pain", ref = "Y/N", can_skip = true },
+      { field = "flw2_joint_pain", ref = "Y/N", can_skip = true },
+    ]
+
+[[observation]]
   name = "muscle_aches"
   start_date = { field = "flw_first_sym" }
   date = { field = "flw_first_sym", apply = { function = "endDate", params = [

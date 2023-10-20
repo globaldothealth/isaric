@@ -789,6 +789,40 @@
   is_present = { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "myalgia_cestdat_v2" },
+      { field = "jointpain_cestdat_v2" },
+    ]
+  
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { ref = "dailyDate" }
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_myalgia_ceoccur", ref = "Y/N/NK" },
+      { field = "daily_jointpain_ceoccur", ref = "Y/N/NK" },
+    ]
+
+[[observation]]
   name = "fatigue_malaise"
   phase = "admission"
   start_date = { field = "fatigue_cestdat_v2" }

@@ -740,6 +740,20 @@
   is_present = { field = "muscle", ref = "Y/N" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "muscle", ref = "Y/N" },
+      { field = "joint", ref = "Y/N" },
+      { field = "jt_ache", ref = "Y/N" },
+    ]
+
+[[observation]]
   name = "runny_nose"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"

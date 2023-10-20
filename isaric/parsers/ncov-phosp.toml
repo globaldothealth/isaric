@@ -579,6 +579,32 @@
   is_present = { field = "joint_pain_or_swelling", ref = "Y/N" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "crf1a_muscle_aches", ref = "Y/N" },
+      { field = "crf1a_join_pain", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "patient_sq_date", if = { patient_sq_date = { "!=" = "NA" } } }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "aching_in_your_muscles_pai", ref = "Y/N" },
+      { field = "joint_pain_or_swelling", ref = "Y/N" },
+    ]
+
+[[observation]]
   name = "conjunctivitis"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }

@@ -662,6 +662,19 @@
     values = { 1 = true, 2 = false }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true, 2 = false } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true, 2 = false } },
+    ]
+
+[[observation]]
   name = "oxygen_saturation_percent"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }

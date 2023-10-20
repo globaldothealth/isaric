@@ -674,6 +674,50 @@
   is_present = { field = "flw1_joint_pain_f420c7_d_90", description = "4y) Joint pain or swelling", values = { 1 = true, 0 = false } }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "q_3" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "q_37", description = "37) Myalgia / muscle aches", values = { 1 = true, 0 = false } },
+      { field = "q_38", description = "38) Joint pain / athraigia", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "q_2_tire_fllw", apply = { function = "startDate", params = [ 7,
+      ] } },
+    ]
+
+  [observation.date]
+    combinedType = "min"
+    fields = [
+      { field = "q_2_tire_fllw", source_date = "%Y-%m-%d" },
+      { field = "q_2_tire_fllw_d_90", source_date = "%Y-%m-%d" },
+    ]
+  
+  duration_type = "event"
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw1_muscle_pain_5ef4eb", description = "4x) Persistent muscle pain", values = { 1 = true, 0 = false } },
+      { field = "flw1_muscle_pain_5ef4eb_d_90", description = "4x) Persistent muscle pain", values = { 1 = true, 0 = false } },
+      { field = "flw1_joint_pain_f420c7", description = "4y) Joint pain or swelling", values = { 1 = true, 0 = false } },
+      { field = "flw1_joint_pain_f420c7_d_90", description = "4y) Joint pain or swelling", values = { 1 = true, 0 = false } },
+    ]
+
+
+[[observation]]
   name = "confusion"
   start_date = { field = "q_2_tire_fllw", apply = { function = "startDate", params = [
     7,

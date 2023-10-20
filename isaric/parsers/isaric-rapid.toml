@@ -1286,6 +1286,36 @@
     fields = [{ field = "daily_myalgia_ceoccur_v2", ref = "Y/N/NK" }]
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "flw_survey_date", apply = { function = "startDate", params = [ 7,
+      ] } },
+      { field = "flw2_survey_date", apply = { function = "startDate", params = [ 7,
+      ] } },
+    ]
+
+  duration_type = "event"
+
+  [observation.date]
+    combinedType = "min"
+    fields = [
+      { field = "flw_survey_date" },
+      { field = "flw2_survey_date" },
+    ] 
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_muscle_pain", values = { 1 = true, 0 = false } },
+      { field = "flw2_muscle_pain", values = { 1 = true, 0 = false } },
+      { field = "flw_joint_pain", values = { 1 = true, 0 = false } },
+      { field = "flw2_joint_pain", values = { 1 = true, 0 = false } },
+    ]
+
+[[observation]]
   name = "joint_pain"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }

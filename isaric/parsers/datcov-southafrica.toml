@@ -946,6 +946,44 @@
   for.n.range = [1, 5]
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_jointpain_ceoccur_2", values = { 1 = true, 0 = false } },
+      { field = "Admission Symptoms.MuscleAches", ref = "Y/N/NK" },
+      { field = "flw_myalgia_ceoccur_2", values = { 0 = false, 1 = true } },
+    ]
+
+# Q. how do we include the secondary / extra followups with "flw2_joint_pain_{n}"?
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_survey_date" },
+      { field = "flw2_survey_date_{n}" },
+      ]
+    
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_joint_pain", values = { 1 = true, 0 = false } },
+      { field = "flw_muscle_pain", values = { 0 = false, 1 = true } },
+      { field = "flw2_joint_pain_{n}", values = { 1 = true, 0 = false } },
+    ]
+    if.any = [{ flw_joint_pain = 1 }, { flw_joint_pain = 0 }]
+    if.any = [{ "flw2_joint_pain_{n}" = 1 }, { "flw2_joint_pain_{n}" = 0 }]
+    for.n.range = [1, 5]
+
+
+[[observation]]
   name = "inability_to_walk"
   phase = "followup"
   date = { field = "flw_survey_date" }

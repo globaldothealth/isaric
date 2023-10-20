@@ -768,6 +768,29 @@
   is_present = { field = "daily_myalgia_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", ref = "Y/N" },
+      { field = "jointpain_ceoccur_v2", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "daily_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [ { field = "daily_myalgia_ceoccur_v2", ref = "Y/N" }, ]
+
+[[observation]]
   name = "lymphadenopathy"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }

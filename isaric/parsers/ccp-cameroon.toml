@@ -992,6 +992,52 @@
   if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q20_signs_symptoms = {"!=" = ""}}]
   is_present = {field = "q20_signs_symptoms", description = "20) Muscle aches (Myalgia)", ref = "Y/N"}
 
+# Q. Does this look ok?
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    if.all = [{redcap_event_name = "recruitment_arm_1"}, {q20_signs_symptoms = {"!=" = ""}}]
+    if.all = [{redcap_event_name = "recruitment_arm_1"}, {q21_signs_symptoms = {"!=" = ""}}]
+    fields = [
+      { field = "q20_signs_symptoms", ref = "Y/N" },
+      { field = "q21_signs_symptoms", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q20_signs_symptoms = {"!=" = ""}}]
+    if.all = [{redcap_event_name = "week_2_d14_arm_1"}, {q21_signs_symptoms = {"!=" = ""}}]
+    fields = [
+      { field = "q20_signs_symptoms", ref = "Y/N" },
+      { field = "q21_signs_symptoms", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q20_signs_symptoms = {"!=" = ""}}]
+    if.all = [{redcap_event_name = {"=~" = 'm*\d_arm_1'}}, {q21_signs_symptoms = {"!=" = ""}}]
+    fields = [
+      { field = "q20_signs_symptoms", ref = "Y/N" },
+      { field = "q21_signs_symptoms", ref = "Y/N" },
+    ]
+
 [[observation]]
   name = "oxygen_saturation_percent"
   phase = "admission"
