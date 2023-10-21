@@ -130,9 +130,9 @@
   description = "Smoking:	"
 
   [subject.has_smoking.values]
-    3 = "yes"    # 3="Current smoker (>=1 cigarette per day)"
-    2 = "former" # 2="Stopped smoking but used to smoke regularly"
-    1 = "never"  # 1="Never smiked regulary"
+    3 = "current" # 3="Current smoker (>=1 cigarette per day)"
+    2 = "former"  # 2="Stopped smoking but used to smoke regularly"
+    1 = "never"   # 1="Never smiked regulary"
 
 [subject.has_asthma] # checkbox field
   field = "CPD_AST"
@@ -195,7 +195,7 @@
 [subject.has_comorbidity_other] # type - array
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "COTH_OTHER_SPEC" }, { field = "CMETAB_OTH_SPEC"}]
+  fields = [{ field = "COTH_OTHER_SPEC" }, { field = "CMETAB_OTH_SPEC" }]
 
 [subject.has_died]
   field = "STAT28"

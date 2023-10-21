@@ -141,7 +141,7 @@
   [subject.has_smoking]
     field = "smoking_mhyn"
     description = "Current smoking? (Yes/No/Unknown)"
-    values = { 1 = "yes" }
+    values = { 1 = "current" }
 
   [subject.has_asthma]
     field = "asthma_mhyn"

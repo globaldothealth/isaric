@@ -126,7 +126,7 @@
     combinedType = "firstNonNull"
     excludeWhen = "none"
     fields = [
-      { field = "social_history___1", values = { 1 = "yes" } },
+      { field = "social_history___1", values = { 1 = "current" } },
       { field = "social_history___2", values = { 1 = "former" } },
     ]
 

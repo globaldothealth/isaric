@@ -1100,8 +1100,10 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { fieldPattern = 'flw\d*_muscle_pain', values = { 1 = true }, can_skip = true },
-      { fieldPattern = 'flw\d*_joint_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw_muscle_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw2_muscle_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw_joint_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw2_joint_pain', values = { 1 = true }, can_skip = true },
     ]
 
 [[observation]]

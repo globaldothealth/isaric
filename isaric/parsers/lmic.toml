@@ -120,7 +120,7 @@
   [subject.has_smoking]
     field = "currentsmoking_mhyn"
     description = "Current Smoking"
-    values = { 1 = "yes" }
+    values = { 1 = "current" }
 
   [subject.has_tuberculosis]
     field = "tuberculosis_mhyn"
