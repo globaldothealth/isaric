@@ -465,7 +465,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = "yes", 2 = "never", 3 = "former" }
+  values = { 1 = "current", 2 = "never", 3 = "former" }
 
 [subject.has_asthma]
   field = "asthma_mhyn"
@@ -957,8 +957,8 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
     ]
 
 [[observation]]

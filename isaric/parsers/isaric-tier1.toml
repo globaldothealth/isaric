@@ -1078,11 +1078,32 @@
     14,
   ] } }
   duration_type = "event"
+  is_present = { field = "flw_first_14d___11", ref = "checkbox", can_skip = true }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_survey_date', apply = { function = "startDate", params = [
+        7,
+      ] } },
+    ]
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ fieldPattern = 'flw\d*_survey_date' }]
 
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "flw_first_14d___11", ref = "checkbox", can_skip = true },
+      { field = 'flw_muscle_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw2_muscle_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw_joint_pain', values = { 1 = true }, can_skip = true },
+      { field = 'flw2_joint_pain', values = { 1 = true }, can_skip = true },
     ]
 
 [[observation]]

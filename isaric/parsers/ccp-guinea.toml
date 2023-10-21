@@ -1004,6 +1004,44 @@
     fields = [{ field = "myalagia_v2_date" }, { field = "signs_symps_date" }]
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [{ field = "myalagia_date" }, { field = "jt_pain_date" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia", values = { 1 = true } },
+      { field = "jt_pain", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+
+  [observation.date]
+    combinedType = "min"
+    fields = [
+      { field = "myalagia_v2_date" },
+      { field = "jt_pain_v2_date" },
+      { field = "signs_symps_date" },
+    ]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia_v2", values = { 1 = true } },
+      { field = "jt_pain_v2", values = { 1 = true } },
+    ]
+
+[[observation]]
   name = "runny_nose"
   phase = "admission"
   is_present = { field = "rhinorrhea", values = { 1 = true, 0 = false } }

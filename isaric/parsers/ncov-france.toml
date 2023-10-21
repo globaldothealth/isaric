@@ -445,6 +445,12 @@
   is_present = { field = "signes_clin___6", values = { 1 = true } }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  is_present = { field = "signes_clin___6", values = { 1 = true } }
+
+[[observation]]
   name = "oxygen_flow_volume_max"
   phase = "admission"
   date = { ref = "admissionDate" }

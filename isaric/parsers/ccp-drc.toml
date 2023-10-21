@@ -226,7 +226,7 @@
   [subject.has_smoking]
     field = "smoke"
     description = "Smoking"
-    values = { 0 = "never", 1 = "yes", 2 = "former" }
+    values = { 0 = "never", 1 = "current", 2 = "former" }
 
   [subject.has_solid_organ_transplant]
     field = "organ_rec"
@@ -987,6 +987,37 @@
   phase = "study"
   date = { ref = "ss_datetime" }
   is_present = { field = "myalagia_v2", description = "Muscle pain (Myalgia)", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [{ field = "myalagia_date" }, { field = "jt_pain_date" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia", values = { 1 = true } },
+      { field = "jt_pain", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { ref = "ss_datetime" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia_v2", values = { 1 = true } },
+      { field = "jt_pain_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "other_symptom"

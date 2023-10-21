@@ -126,7 +126,7 @@
     combinedType = "firstNonNull"
     excludeWhen = "none"
     fields = [
-      { field = "social_history___1", values = { 1 = "yes" } },
+      { field = "social_history___1", values = { 1 = "current" } },
       { field = "social_history___2", values = { 1 = "former" } },
     ]
 
@@ -464,6 +464,12 @@
 
 [[observation]]
   name = "joint_pain"
+  date = { field = "ADMIT DATE" }
+  phase = "admission"
+  is_present = { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }
+
+[[observation]]
+  name = "musculoskeletal_pain"
   date = { field = "ADMIT DATE" }
   phase = "admission"
   is_present = { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }

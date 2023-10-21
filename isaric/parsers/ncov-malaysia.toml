@@ -252,7 +252,7 @@
 
 [subject.has_smoking]
   field = "smoke"
-  values = { 0 = "never", 1 = "yes", 2 = "former" }
+  values = { 0 = "never", 1 = "current", 2 = "former" }
 
 [subject.has_hypertension]
   field = "htn"
@@ -838,6 +838,25 @@
     field = "myalgia_hx"
     description = "Muscle ache (Myalgia)"
     ref = "Y/N"
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    excludeWhen = "none"
+    fields = [{ field = "myalgia_date" }, { field = "arthralgia_date" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_hx", values = { 1 = true } },
+      { field = "arthralgia_hx", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "oxygen_saturation_percent"

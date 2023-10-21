@@ -128,6 +128,19 @@
   is_present = { field = "ca_arthralgia", ref = "Y/N" }
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "ca_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "ca_myalgia", values = { 1 = true } },
+      { field = "ca_arthralgia", values = { 1 = true } },
+    ]
+
+[[observation]]
   name = "loss_of_smell_or_taste"
   phase = "followup"
   date = { field = "ca_date" }

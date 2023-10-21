@@ -188,8 +188,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "yes", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
-      { field = "flw_smok_before", values = { 1 = "former", 2 = "yes", 3 = "never" } },
+      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "current", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
+      { field = "flw_smok_before", values = { 1 = "former", 2 = "current", 3 = "never" } },
     ]
 
   [subject.has_asthma]
@@ -944,6 +944,44 @@
   is_present = { field = "flw2_joint_pain_{n}", values = { 1 = true, 0 = false } }
   if.any = [{ "flw2_joint_pain_{n}" = 1 }, { "flw2_joint_pain_{n}" = 0 }]
   for.n.range = [1, 5]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_jointpain_ceoccur_2", values = { 1 = true } },
+      { field = "Admission Symptoms.MuscleAches", values = { 1 = true } },
+      { field = "flw_myalgia_ceoccur_2", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  for.n.range = [1, 5]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_joint_pain", values = { 1 = true } },
+      { field = "flw_muscle_pain", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  for.n.range = [1, 5]
+
+  [observation.is_present]
+    field = "flw2_joint_pain_{n}"
+    values = { 1 = true }
 
 [[observation]]
   name = "inability_to_walk"

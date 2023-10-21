@@ -409,7 +409,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = "yes", 2 = "never" }
+  values = { 1 = "current", 2 = "never" }
   description = "Current smoking"
 
 [subject.has_asthma]
@@ -1273,17 +1273,47 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "myalgia_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
     ]
 
 [[observation]]
   name = "musculoskeletal_pain"
   phase = "study"
   date = { field = "daily_date" }
+  is_present = { field = "daily_myalgia_ceoccur_v2", values = { 1 = true } }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  date = { field = "flw_survey_date" }
+
   [observation.is_present]
     combinedType = "any"
-    fields = [{ field = "daily_myalgia_ceoccur_v2", ref = "Y/N/NK" }]
+    fields = [
+      { field = "flw_muscle_pain", values = { 1 = true } },
+      { field = "flw_joint_pain", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  start_date = { field = "flw2_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  date = { field = "flw2_survey_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw2_muscle_pain", values = { 1 = true } },
+      { field = "flw2_joint_pain", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "joint_pain"

@@ -104,8 +104,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "tabac", description = "Just before your diagnosis, did you smoke", values = { 1 = "yes", 2 = "yes" } },      #, 3 = "never"
-      { field = "tabac_two", description = "In the past, have you smoked?", values = { 1 = "yes", 2 = "yes", 3 = "never" } },
+      { field = "tabac", description = "Just before your diagnosis, did you smoke", values = { 1 = "current", 2 = "current" } },      #, 3 = "never"
+      { field = "tabac_two", description = "In the past, have you smoked?", values = { 1 = "current", 2 = "current", 3 = "never" } },
     ]
 
 
@@ -555,8 +555,8 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "doul_musc_sup", values = { 1 = true, 2 = false, 0 = false } },
-      { field = "doul_musc_inf", values = { 1 = true, 2 = false, 0 = false } },
+      { field = "doul_musc_sup", values = { 1 = true } },
+      { field = "doul_musc_inf", values = { 1 = true } },
     ]
 
 [[observation]]
