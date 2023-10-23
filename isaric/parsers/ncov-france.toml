@@ -299,6 +299,14 @@
     values = { 1 = true, 0 = false }
     description = "Prone position"
 
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      { field = "ecmo_ouinon", values = { 1 = true, 0 = false }, description = "ECMO" },
+      { field = "av_ouinon", description = "vasopressor amines", values = { 1 = true, 0 = false } },
+      { field = "ino_ouinon", description = "inotropic agents", values = { 1 = true, 0 = false } },
+    ]
+
   [visit.outcome]
     combinedType = "firstNonNull"
     fields = [
@@ -432,6 +440,12 @@
 
 [[observation]]
   name = "muscle_aches"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  is_present = { field = "signes_clin___6", values = { 1 = true } }
+
+[[observation]]
+  name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDate" }
   is_present = { field = "signes_clin___6", values = { 1 = true } }

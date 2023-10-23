@@ -105,6 +105,7 @@
           "Dexamethasone",
           "Fluticasone",
           "Hydrocortisone",
+          "Aminophylline",
           "Methylprednisolone",
           "Mometasone",
           "Prednisolone",
@@ -179,8 +180,11 @@
           "Anti-influenza antiviral",
           "Tocilizumab",
           "Anakinra",
-          "Favipravir",
+          "Favipiravir",
           "Atazanavir",
+          "Darunavir",
+          "Acyclovir/Ganiciclovir",
+          "Darunavir/Cobicistat",
           "Other"
         ]
       },
@@ -312,11 +316,6 @@
     "treatment_respiratory_support": {
       "type": "boolean",
       "description": "Respiratory support",
-      "category": "treatments"
-    },
-    "treatment_indication_anticoagulation": {
-      "type": "boolean",
-      "description": "Indication anticoagulation",
       "category": "treatments"
     },
     "treatment_cardiovascular_support": {

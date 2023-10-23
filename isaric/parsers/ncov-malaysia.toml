@@ -840,6 +840,25 @@
     ref = "Y/N"
 
 [[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    excludeWhen = "none"
+    fields = [{ field = "myalgia_date" }, { field = "arthralgia_date" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_hx", values = { 1 = true } },
+      { field = "arthralgia_hx", values = { 1 = true } },
+    ]
+
+[[observation]]
   name = "oxygen_saturation_percent"
   phase = "study"
   date = { field = "daily_assess_date" }

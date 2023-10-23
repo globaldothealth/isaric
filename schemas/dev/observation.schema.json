@@ -28,6 +28,25 @@
       }
     },
     {
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "name": {
+          "const": "acvpu"
+        },
+        "text": {
+          "enum": [
+            "Alert",
+            "Confused",
+            "Verbal",
+            "Pain",
+            "Unresponsive"
+          ]
+        }
+      }
+    },
+    {
       "$comment": "Oxygen flow volume is represented as a range which is not a native JSON Schema type",
       "required": [
         "text"
@@ -393,6 +412,7 @@
     },
     "phase": {
       "enum": [
+        "initial_illness",
         "pre-admission",
         "admission",
         "initial_illness",

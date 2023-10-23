@@ -320,9 +320,12 @@
   description = "Oxygen therepy"
   combinedType = "any"
   fields = [
-    { field = "overall_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
-    { field = "daily_oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
-    { field = "oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy on first day of admission?" },
+    { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
+    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true } },
+    { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = true, 3 = true, 4 = true, 5 = true } },
+    { fieldPattern = ".*invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
+    { fieldPattern = ".*noninvasive_proccur", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_prone_position]
@@ -480,13 +483,22 @@
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
   ]
 
+[visit.treatment_oxygen_mask_prongs]
+  combinedType = "any"
+  fields = [
+    { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = false, 3 = true, 4 = true, 5 = false } },
+    { field = "overall_oxygen_cmtype___1", values = { 1 = true } },
+    { field = "overall_oxygen_cmtype___3", values = { 1 = true } },
+    { field = "overall_oxygen_cmtype___4", values = { 1 = true } },
+  ]
+
 [visit.treatment_high_flow_nasal_cannula]
   description = "High flow nasal cannula"
   combinedType = "any"
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "overall_oxygen_cmtype___2"
-    values = { 0 = false, 1 = true }
+    values = { 1 = true }
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "daily_oxygen_cmtype"
@@ -754,6 +766,25 @@
   phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_myalgia_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_myalgia_ceoccur_v2", values = { 1 = true } }
 
 [[observation]]
   name = "lymphadenopathy"

@@ -143,6 +143,11 @@
       "description": "Ethnicity",
       "category": "demographics"
     },
+    "works_lab": {
+      "type": "boolean",
+      "description": "Works in laboratory (supertype)",
+      "category": "demographics"
+    },
     "works_microbiology_lab": {
       "type": "boolean",
       "description": "Works in microbiology lab",

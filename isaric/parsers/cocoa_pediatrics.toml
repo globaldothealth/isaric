@@ -332,14 +332,14 @@
     ref = "Y/N/NK"
 
 [[observation]]
-  name = "avpu"
+  name = "acvpu"
   phase = "admission"
   date = { field = "hostdat" }
 
   [observation.text]
     field = "avpu_vsorres"
     description = "AVPU"
-    values = { 1 = "Alert", 2 = "Verbal", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
+    values = { 1 = "Alert", 2 = "Confused", 3 = "Verbal", 4 = "Pain", 5 = "Unresponsive" }
 
 [[observation]]
   name = "bleeding_haemorrhage"
@@ -543,6 +543,25 @@
   date = { field = "hostdat" }
   duration_type = "block"
   is_present = { field = "myalgia_ceoccur_v2", description = "Muscle ache (Myalgia)", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { field = "hostdat" }
+  duration_type = "block"
+
+  [observation.start_date]
+    combinedType = "min"
+    excludeWhen = "none"
+    fields = [{ field = "mscl_ch_dtstrt" }, { field = "jnt_pn_dtstrt" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "oxygen_flow_volume_max"

@@ -452,7 +452,7 @@
 
 [[observation]]
   name = "cough"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDate" }
   duration_type = "event"
 
@@ -474,7 +474,7 @@
 
 [[observation]]
   name = "cough_dry"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "cough_cestdat_v2" }
   date = { ref = "admissionDate" }
   duration_type = "event"
@@ -482,7 +482,7 @@
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "coughsput_cestdat_v2" }
   date = { ref = "admissionDate" }
   duration_type = "event"
@@ -490,7 +490,7 @@
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "coughhb_cestdat_v2" }
   date = { ref = "admissionDate" }
   duration_type = "event"
@@ -787,6 +787,40 @@
   date = { ref = "admissionDate" }
   duration_type = "event"
   is_present = { field = "jointpain_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [
+      { field = "myalgia_cestdat_v2" },
+      { field = "jointpain_cestdat_v2" },
+    ]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { ref = "dailyDate" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_myalgia_ceoccur", values = { 1 = true } },
+      { field = "daily_jointpain_ceoccur", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "fatigue_malaise"

@@ -333,6 +333,7 @@
   fields = [
     { field = "daily_ecmo_prtrt", description = "ECMO?", ref = "Y/N" },
     { field = "daily_inotrope_cmyn", description = "Any vasopressor / inotropic support?", ref = "Y/N" },
+    { field = "daily_prperf", description = "Other cardiac intervention or procedure?", ref = "Y/N" },
   ]
 
 [visit.treatment_dialysis]
@@ -376,9 +377,13 @@
   ref = "Y/N"
 
 [visit.treatment_oxygen_therapy]
-  field = "daily_nasaloxy_cmtrt"
-  description = "High-flow nasal canula oxygen therapy?"
-  ref = "Y/N"
+  combinedType = "any"
+  fields = [
+    { field = "daily_nasaloxy_cmtrt", ref = "Y/N", description = "High-flow nasal canula oxygen therapy?" },
+    { field = "daily_noninvasive_prtrt", description = "Non-invasive ventilation (e.g. BIPAP, CPAP)?", ref = "Y/N" },
+    { field = "daily_invasive_prtrt", description = "Invasive ventilation?", ref = "Y/N" },
+    { field = "daily_ecmo_prtrt", description = "ECMO?", ref = "Y/N" },
+  ]
 
 [visit.treatment_prone_position]
   field = "daily_prone_cmtrt"
@@ -655,6 +660,19 @@
     field = "myalgia_ceoccur_v2"
     description = "Muscle ache (Myalgia)"
     values = { 1 = true, 2 = false }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "oxygen_saturation_percent"

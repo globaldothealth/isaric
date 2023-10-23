@@ -1,0 +1,290 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "isairc-followup-fr"
+  description = "French followup survey"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = [
+      "sex_at_birth",
+      "sex",
+      "ethnicity",
+      "age",
+      "date_of_birth",
+      "dob_year",
+      "enrolment_date",
+    ]
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ["country_iso3", "start_date", "outcome", "date_outcome"]
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "subjid", sensitive = true } }
+
+  [adtl.defs."Y/N".values]
+    1 = true
+    2 = false
+
+    # SUBJECT
+    # required fields - subject_id, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [subject.earliest_admission_date]
+    combinedType = "min"
+    fields = [{ field = "ca_admission_date" }, { field = "ca_ni_hospdate" }]
+
+  [subject.icu_admitted]
+    field = "ca_ni_icu"
+    ref = "Y/N"
+
+  [subject.has_died]
+    field = "ca_pat_alive"
+    values = { 1 = false, 2 = true }
+
+  [subject.date_death]
+    field = "ca_death_date"
+
+
+    # No visit table as data is followup only
+
+[visit]
+  [visit.subject_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.visit_id]
+    field = "subjid"
+    sensitive = true
+
+  [visit.outcome]
+    field = "ca_hospit"
+    values = { 1 = "hospitalised" }
+    if = { ca_same_hospit = 1 }
+
+  [visit.date_outcome]
+    field = "ca_date"
+    if.all = [{ ca_hospit = 1 }, { ca_same_hospit = 1 }]
+
+    # OBSERVATION
+
+
+[[observation]]
+  name = "glasgow_coma_score"
+  date = { field = "ca_date" }
+  phase = "followup"
+  value = { field = "ca_glasgow", ref = "Y/N" }
+
+[[observation]]
+  name = "cough"
+  date = { field = "ca_date" }
+  phase = "followup"
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "ca_cough", ref = "Y/N" },
+      { field = "ca_coughsputum", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_coughsputum", ref = "Y/N" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_fatigue", ref = "Y/N" }
+
+[[observation]]
+  name = "headache"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_headache", ref = "Y/N" }
+
+[[observation]]
+  name = "joint_pain"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_arthralgia", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "ca_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "ca_myalgia", values = { 1 = true } },
+      { field = "ca_arthralgia", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  phase = "followup"
+  date = { field = "ca_date" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "ca_anosmia", ref = "Y/N" },
+      { field = "ca_ageusia", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "loss_of_smell"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_anosmia", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_taste"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_ageusia", ref = "Y/N" }
+
+[[observation]]
+  name = "muscle_aches"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_myalgia", ref = "Y/N" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_dyspnea", ref = "Y/N" }
+
+[[observation]]
+  name = "wheezing"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_wheezing", ref = "Y/N" }
+
+[[observation]]
+  name = "lung_sounds"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_crackles", ref = "Y/N" }
+
+[[observation]]
+  name = "cyanosis"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_cyanosis", ref = "Y/N" }
+
+[[observation]]
+  name = "sore_throat"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_sorethroat", ref = "Y/N" }
+
+[[observation]]
+  name = "temperature_celsius"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_temp" }
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_diasto" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_systo" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_hr" }
+
+[[observation]]
+  name = "respiratory_rate"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_rr" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_o2" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "ca_ambientair", values = { 1 = "on room air" } },
+      { field = "ca_oxygentherapy", values = { 1 = "on oxygen therapy" } },
+    ]
+
+[[observation]]
+  name = "hepatomegaly"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_hepatomegaly", ref = "Y/N" }
+
+[[observation]]
+  name = "lymphadenopathy"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_adenopathy", ref = "Y/N" }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "followup"
+  date = { field = "ca_date" }
+  value = { field = "ca_hb_lborres", unit = "g/dL", source_unit = { field = "ca_hb_lborresu", values = { 1 = "g/L", 2 = "g/dL", 3 = "mg/dl" } } } #, 4 = "mmol/L"
+
+[[observation]]
+  name = "pao2_mmHg"
+  phase = "followup"
+  date = { field = "abg_date" }
+  value = { field = "abg_pao2", source_unit = { field = "abg_pao2_unit", values = { 1 = "mmHg", 2 = "kPa" } }, unit = "mmHg" }
+  context = ['arterial']
+
+[[observation]]
+  name = "pco2_mmHg"
+  phase = "followup"
+  date = { field = "abg_date" }
+  value = { field = "abg_paco2", source_unit = { field = "abg_paco2_unit", values = { 1 = "mmHg", 2 = "kPa" } }, unit = "mmHg" }
+  context = ['arterial']
+
+[[observation]]
+  name = "pH"
+  phase = "followup"
+  date = { field = "abg_date" }
+  value = { field = "abg_ph" }
+  context = ['arterial']
+
+[[observation]]
+  name = "runny_nose"
+  phase = "followup"
+  date = { field = "ca_date" }
+  is_present = { field = "ca_runnynose", ref = "Y/N" }

@@ -669,6 +669,7 @@
     { field = "overall_inotrop_cmtrt", description = "Inotropes/vasopressors?", values = { 1 = true, 2 = false } },
     { field = "vaso_or_inot", description = "Any vasopressor/inotropic support?", ref = "Y/N/NK" },
     { field = "overall_extracorp_prtrt", description = "Extracorporeal (ECMO) support?", values = { 1 = true, 2 = false } },
+    { field = "ecls", ref = "Y/N/NK" },
   ]
 
 [visit.treatment_dialysis]
@@ -677,9 +678,12 @@
   values = { 1 = true, 2 = false }
 
 [visit.treatment_ecmo]
-  field = "overall_extracorp_prtrt"
-  description = "Extracorporeal (ECMO) support?"
-  values = { 1 = true, 2 = false }
+  combinedType = "any"
+  fields = [
+    { field = "overall_extracorp_prtrt", values = { 1 = true, 2 = false } },
+    { field = "ecls", ref = "Y/N/NK" },
+  ]
+
 
 [visit.treatment_experimental_agent]
   field = "daily_exper_cmyn"
@@ -824,6 +828,16 @@
     description = "High-flow nasal canula oxygen therapy"
     ref = "Y/N/NK"
 
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "overall_extracorp_prtrt"
+    description = "Extracorporeal (ECMO) support?"
+    values = { 1 = true, 2 = false }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "ecls"
+    description = "Extracorporeal (ECMO) support?"
+    ref = "Y/N/NK"
+
 [visit.treatment_prone_position]
   combinedType = "any"
   excludeWhen = "none"
@@ -908,7 +922,7 @@
 
 [[observation]]
   name = "abdominal_pain"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "abd_pain_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -928,7 +942,7 @@
 
 [[observation]]
   name = "altered_consciousness_confusion"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "consciousness_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -936,7 +950,7 @@
 
 [[observation]]
   name = "avpu"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
 
   [observation.text]
@@ -957,7 +971,7 @@
 
 [[observation]]
   name = "bleeding_haemorrhage"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "bleeding_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -971,7 +985,7 @@
 
 [[observation]]
   name = "chest_pain"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "chest_pain_date" }
   duration_type = "event"
   date = { field = "add_date" }
@@ -991,7 +1005,7 @@
 
 [[observation]]
   name = "conjunctivitis"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "conjunc_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -999,7 +1013,7 @@
 
 [[observation]]
   name = "cough"
-  phase = "pre-admission"
+  phase = "admission"
   date = { field = "add_date" }
   duration_type = "event"
 
@@ -1022,7 +1036,7 @@
 
 [[observation]]
   name = "cough_dry"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "dry_cough_date" }
   date = { ref = "admissionDateHierarchy" }
   duration_type = "event"
@@ -1030,7 +1044,7 @@
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "wet_cough_date" }
   date = { ref = "admissionDateHierarchy" }
   duration_type = "event"
@@ -1038,7 +1052,7 @@
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "blood_cough_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1084,7 +1098,7 @@
 
 [[observation]]
   name = "diarrhoea"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "diarrhea_date" }
   date = { ref = "admissionDateHierarchy" }
   duration_type = "event"
@@ -1110,7 +1124,7 @@
 
 [[observation]]
   name = "ear_pain"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "ear_pain_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1124,7 +1138,7 @@
 
 [[observation]]
   name = "fatigue_malaise"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "fatigue_date" }
   date = { ref = "admissionDateHierarchy" }
   duration_type = "event"
@@ -1138,7 +1152,7 @@
 
 [[observation]]
   name = "headache"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "headache_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1152,7 +1166,7 @@
 
 [[observation]]
   name = "history_of_fever"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "fever_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1166,13 +1180,13 @@
 
 [[observation]]
   name = "inability_to_walk"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "adm66", description = "Inability to walk:", values = { 1 = true, 2 = false } }
 
 [[observation]]
   name = "joint_pain"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "jt_pain_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1186,7 +1200,7 @@
 
 [[observation]]
   name = "loss_of_smell_or_taste"
-  phase = "pre-admission"
+  phase = "admission"
   date = { field = "add_date" }
   duration_type = "event"
 
@@ -1215,7 +1229,7 @@
 
 [[observation]]
   name = "loss_of_smell"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "anosmia_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1229,7 +1243,7 @@
 
 [[observation]]
   name = "loss_of_taste"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "ageusia_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1243,7 +1257,7 @@
 
 [[observation]]
   name = "muscle_aches"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "myalagia_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1254,6 +1268,37 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "myalagia_v2", description = "Muscle aches (Myalgia)", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { field = "add_date" }
+  duration_type = "event"
+
+  [observation.start_date]
+    combinedType = "min"
+    fields = [{ field = "myalagia_date" }, { field = "jt_pain_date" }]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia", values = { 1 = true } },
+      { field = "jt_pain", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalagia_v2", values = { 1 = true } },
+      { field = "jt_pain_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "pneumonia"
@@ -1285,7 +1330,7 @@
 
 [[observation]]
   name = "other_symptom"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "other_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1293,7 +1338,7 @@
 
 [[observation]]
   name = "other_symptom"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "other_{n}_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1365,7 +1410,7 @@
 
 [[observation]]
   name = "runny_nose"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "rhinorrhea_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1379,7 +1424,7 @@
 
 [[observation]]
   name = "seizures"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "seizures_date_s_and_s" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1387,7 +1432,7 @@
 
 [[observation]]
   name = "shortness_of_breath"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "dyspnea_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1401,7 +1446,7 @@
 
 [[observation]]
   name = "skin_rash"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "skin_rash_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1415,7 +1460,7 @@
 
 [[observation]]
   name = "skin_ulcers"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "skin_ulcers_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1429,7 +1474,7 @@
 
 [[observation]]
   name = "sore_throat"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "sore_throat_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1488,7 +1533,7 @@
 
 [[observation]]
   name = "vomiting_nausea"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "nausea_date" }
   date = { field = "add_date" }
   duration_type = "event"
@@ -1496,7 +1541,7 @@
 
 [[observation]]
   name = "wheezing"
-  phase = "pre-admission"
+  phase = "admission"
   start_date = { field = "wheezing_date" }
   date = { field = "add_date" }
   duration_type = "event"

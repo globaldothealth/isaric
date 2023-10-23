@@ -1,0 +1,374 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "recover eu"
+  description = "recover EU consortium"
+  defaultDateFormat = "%m/%d/%Y"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+
+  [adtl.defs."Y/N".values]
+    1 = true
+    2 = false
+
+  [adtl.defs."checkbox".values]
+    1 = true
+
+    # SUBJECT
+    # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+
+  [subject.subject_id]
+    field = "subject"
+    sensitive = true
+
+  [subject.enrolment_date]
+    field = "incldt"
+    description = "inclusiondate"
+
+  [subject.earliest_admission_date]
+    field = "adm_dt"
+    description = "Date of hospital admission:"
+
+  [subject.age]
+    field = "DOB"
+    description = "Date of birth:"
+    apply = { function = "yearsElapsed", params = [
+      "$adm_dt",
+      2022,
+      "%m/%d/%Y",
+      "%m/%d/%Y",
+    ] }
+
+  [subject.date_of_birth]
+    field = "DOB"
+
+  [subject.dob_year]
+    field = "DOB"
+    apply = { function = "splitDate", params = ["year", 2022, "%m/%d/%Y"] }
+
+  [subject.dob_month]
+    field = "DOB"
+    apply = { function = "splitDate", params = ["month", 2022, "%m/%d/%Y"] }
+
+  [subject.dob_day]
+    field = "DOB"
+    apply = { function = "splitDate", params = ["day", 2022, "%m/%d/%Y"] }
+
+  [subject.sex_at_birth]
+    field = "sex"
+    description = "Gender at birth:"
+
+    [subject.sex_at_birth.values]
+      1 = "male"
+      2 = "female"
+
+[subject.ethnicity]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "etn_opt1", description = "Ethnicity/background: White/Caucasian", values = { 1 = "White" } },
+    { field = "etn_opt2", description = "Ethnicity/background: Black", values = { 1 = "Black" } },
+    { field = "etn_opt3", description = "Ethnicity/background: Asian", values = { 1 = "Asian" } },
+    { field = "etn_opt4", description = "Ethnicity/background: Other", values = { 1 = "Other" } },
+    { field = "etn_opt4_spec", description = "Ethnicity/background: Other, please specify:" },
+  ]
+
+[subject.pregnancy]
+  field = "pregn"
+  ref = "Y/N"
+
+[subject.has_tuberculosis]
+  field = "CPD_TBC"
+  description = "A. Chronic Pulmonary Disease: Tuberculosis"
+  ref = "checkbox"
+
+[subject.has_dementia]
+  field = "CNEURO_DEMENT"
+  description = "Chronic Neurologic Disease -  Dementia / Cognitive dysfunction"
+  ref = "checkbox"
+
+[subject.has_rheumatologic_disorder]
+  field = "COTH_RHEUM"
+  description = "Chronic Other Disease -  Rheumatologic/autoimmune disease"
+  ref = "checkbox"
+
+[subject.has_hiv]
+  field = "CIMMUN_HIV"
+  description = "D. Chronic Immunosuppression: HIV"
+  ref = "checkbox"
+
+[subject.has_hypertension]
+  field = "CARD_HYPER"
+  description = "B. Chronic Cardiovasculair Disease : Hypertension"
+  ref = "checkbox"
+
+[subject.has_malignant_neoplasm]
+  field = "CIMMUN_MALIGN"
+  description = "Chronic Immunosuppression - Any malignancy within 5 years"
+  ref = "checkbox"
+
+[subject.has_smoking]
+  field = "smoke"
+  description = "Smoking:	"
+
+  [subject.has_smoking.values]
+    3 = "current" # 3="Current smoker (>=1 cigarette per day)"
+    2 = "former"  # 2="Stopped smoking but used to smoke regularly"
+    1 = "never"   # 1="Never smiked regulary"
+
+[subject.has_asthma] # checkbox field
+  field = "CPD_AST"
+  description = "A. Chronic Pulmonary Disease: Asthma"
+  ref = "checkbox"
+
+[subject.has_chronic_cardiac_disease]
+  field = "chr_card"
+  description = "Chronic Cardiovascular Disease"
+  ref = "Y/N"
+
+[subject.has_chronic_kidney_disease]
+  field = "COTH_RENAL"
+  description = "Chronic Other Disease -  Chronic Renal disease"
+  ref = "checkbox"
+
+[subject.has_chronic_respiratory_disease]
+  field = "chr_pulm"
+  ref = "Y/N"
+
+[subject.has_diabetes] # checkbox fields
+  combinedType = "any"
+  fields = [
+    { field = "CMETAB_DB1", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 1", ref = "checkbox" },
+    { field = "CMETAB_DB2A", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (only oral medication)", ref = "checkbox" },
+    { field = "CMETAB_DB2B", description = "C. Chronic Metabolic/Endocrine Disease : Diabetes type 2, medicated (insulin dependent)", ref = "checkbox" },
+  ]
+
+[subject.diabetes_type]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "CMETAB_DB1", values = { 1 = "type-1" } },
+    { field = "CMETAB_DB2A", values = { 1 = "type-2" } },
+    { field = "CMETAB_DB2B", values = { 1 = "type-2" } },
+  ]
+
+[subject.has_liver_disease] # checkbox field
+  field = "COTH_LIVER"
+  description = "F. Chronic Other Disease : Chronic Liver disease"
+  ref = "checkbox"
+
+[subject.has_solid_organ_transplant] # checkbox field
+  field = "CIMMUN_ORG_TRANS"
+  description = "Chronic Immunosuppression - Solid organ transplant"
+  ref = "checkbox"
+
+[subject.has_immunosuppression]
+  field = "chr_immuno"
+  description = "Chronic Immunosuppression (due to disease)"
+  ref = "Y/N"
+
+[subject.has_asplenia]
+  field = "CIMMUN_ASPL"
+  ref = "checkbox"
+
+[subject.has_malnutrition]
+  field = "CMETAB_CACHEX"
+  ref = "checkbox"
+
+[subject.has_comorbidity_other] # type - array
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "COTH_OTHER_SPEC" }, { field = "CMETAB_OTH_SPEC" }]
+
+[subject.has_died]
+  field = "STAT28"
+  values = { 4 = true }
+
+[subject.date_death]
+  field = "STAT28_STAT4_DT"
+  description = "Date of death"
+
+[subject.icu_admitted]
+  field = "ICUadm_y"
+  description = "Did episode included ICU/High Care Unit admission?"
+  ref = "Y/N"
+
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  [visit.visit_id]
+    field = "subject"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "subject"
+    sensitive = true
+
+  [visit.country_iso3]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "site", apply = { function = "wordSubstituteSet", params = [
+        ["Rijeka", "HRV"],
+        ["Rostock", "DEU"],
+        [
+          "AMC", # is this the amsterdam medical centre?
+          "NLD",
+        ],
+      ] } },
+    ]
+
+  [visit.start_date]
+    field = "adm_dt"
+
+  [visit.icu_admission]
+    field = "ICUadm_y"
+    description = "Did episode included ICU/High Care Unit admission?"
+    ref = "Y/N"
+
+  [visit.icu_admission_dates]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "ICUadm_dt", description = "Admission date ICU/HCU:" }]
+
+  [visit.treatment_corticosteroid]
+    combinedType = "any"
+    fields = [
+      { field = "steroids_op1", description = "Steroids - Inhaled corticosteroids", ref = "checkbox" },
+      { field = "steroids_op2", description = "Steroids  - Oral low  dose steroids", ref = "checkbox" },
+      { field = "steroids_op2", description = "Steroids - Oral high  dose  steroids", ref = "checkbox" },
+      { field = "CORT", ref = "Y/N" },
+    ]
+
+  [visit.treatment_ace_inhibitors]
+    field = "medication_op1"
+    ref = "checkbox"
+
+  [visit.treatment_noninvasive_ventilation]
+    field = "NIMV"
+    ref = "Y/N"
+
+  [visit.treatment_invasive_ventilation]
+    field = "INTMV"
+    description = "Did participant receive any intubation and mechanical ventilation"
+    ref = "Y/N"
+
+  [visit.treatment_antivirals]
+    field = "AV"
+    ref = "Y/N"
+
+  [visit.treatment_antifungal_agent]
+    field = "AF"
+    ref = "Y/N"
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    fields = [
+      { field = "O2", description = "Did participant receive any supplemental O2?", ref = "Y/N" },
+      { field = "NIMV", description = "Did participant receive any non-invasive mechanical ventilation", values = { 2 = true, 3 = false } },
+      { field = "INTMV", description = "Did participant receive any intubation and mechanical ventilation" },
+      { field = "Prone_pos", description = "Prone position ventilation (any time)" },
+    ]
+
+  [visit.treatment_prone_position]
+    field = "Prone_pos"
+    ref = "Y/N"
+
+  [visit.treatment_antibiotics]
+    field = "AB"
+    ref = "Y/N"
+
+  [visit.outcome]
+    field = "STAT28"
+    values = { 1 = "discharged", 2 = "transfered", 3 = "hospitalised", 4 = "death" }
+
+  [visit.date_outcome]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "STAT28_STAT_DT" },
+      { field = "STAT28_STAT2_DT" },
+      { field = "STAT28_STAT4_DT" },
+    ]
+
+    # OBSERVATION
+    # required fields - phase, date, name
+
+[[observation]]
+  name = "diastolic_blood_pressure_mmHg"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  value = { field = "values_diast" }
+
+[[observation]]
+  name = "confusion"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  is_present = { field = "ment_conf", ref = "Y/N" }
+
+[[observation]]
+  name = "severe_dehydration"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  is_present = { field = "SHOCK", ref = "Y/N" }
+
+[[observation]]
+  name = "heart_rate_bpm"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  value = { field = "HRATE" }
+
+[[observation]]
+  name = "oxygen_saturation_percent"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  value = { field = "SpO2_perc" }
+  context.combinedType = "set"
+  context.excludeWhen = "none"
+  context.fields = [{ field = "SpO2_on" }]
+
+[[observation]]
+  name = "respiratory_rate"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  value = { field = "RESP_RATE" }
+
+[[observation]]
+  name = "systolic_blood_pressure_mmHg"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  value = { field = "values_syst" }
+
+[[observation]]
+  name = "temperature_celsius"
+  date = { field = "ASS_DT" }
+  phase = "admission"
+  value = { field = "tempX" }
+
+[[observation]]
+  name = "oxygen_o2hb"
+  date = { field = "adm_dt" }
+  phase = "admission"
+
+  [observation.value]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "Hemo1_val1", source_unit = "g/dL", unit = "g/dL" },
+      # { field = "Hemo1_val2", source_unit = { field = "Hemo1_un" }, unit = "g/dL" }, # contains mmol/L which we can't convert... need to fix that.
+    ]
