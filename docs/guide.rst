@@ -723,6 +723,14 @@ into the subtypes for the phase. For example:
          { field = "blood_cough", description = "Blood cough", ref = "Y/N/NK" },
        ]
 
+**loss_of_smell_or_taste**: Bool. General indicator for loss of smell or taste,
+and can also be used as a single indicator where both symptoms are combined in
+a dataset.
+Subtypes are:
+
++ *loss_of_smell*
++ *loss_of_taste*
+
 .. _other-fields-1:
 
 **loss_of_smell_or_taste**: Bool. Supertype for loss of smell or loss of taste,
@@ -847,7 +855,7 @@ record the maximum flow volume.
 **oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
 
-**pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
+**pao2_mmHg**: Value (25-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the
 default unit.
 
