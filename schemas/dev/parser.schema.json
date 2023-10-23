@@ -897,6 +897,7 @@
                 "enum": [
                   "pre-admission",
                   "admission",
+                  "initial_illness",
                   "study",
                   "followup"
                 ],

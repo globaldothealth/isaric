@@ -415,6 +415,7 @@
         "initial_illness",
         "pre-admission",
         "admission",
+        "initial_illness",
         "study",
         "followup"
       ],
