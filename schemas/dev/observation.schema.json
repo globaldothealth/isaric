@@ -161,7 +161,7 @@
           "const": "heart_rate_bpm"
         },
         "value": {
-          "type": "integer",
+          "type": "number",
           "minimum": 1,
           "maximum": 250
         }
@@ -207,7 +207,7 @@
         },
         "value": {
           "type": "number",
-          "minimum": 20,
+          "minimum": 21,
           "maximum": 100
         }
       }
@@ -237,7 +237,7 @@
         },
         "value": {
           "type": "number",
-          "minimum": 50,
+          "minimum": 25,
           "maximum": 150
         }
       }
@@ -442,8 +442,10 @@
     },
     "phase": {
       "enum": [
+        "initial_illness",
         "pre-admission",
         "admission",
+        "initial_illness",
         "study",
         "followup"
       ],

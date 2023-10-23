@@ -16,14 +16,11 @@
         "editor.insertSpaces": true,
         "editor.tabSize": 2
     },
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true,
-    "python.linting.flake8Args": [
+    "flake8.args": [
         "--max-line-length=88",
         "--extend-ignore=E203",
     ],
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
-    "python.formatting.provider": "black"
 }

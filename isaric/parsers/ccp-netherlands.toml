@@ -163,7 +163,7 @@
   field = "Smoking"
 
   [subject.has_smoking.values]
-    1 = "yes"
+    1 = "current"
     2 = "never"
     3 = "former"
 
@@ -590,6 +590,19 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "Myalgia", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "Myalgia", values = { 1 = true } },
+      { field = "Arthralgia", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "runny_nose"

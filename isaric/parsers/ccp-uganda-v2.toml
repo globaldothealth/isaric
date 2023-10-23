@@ -182,8 +182,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "smok", values = { 0 = "never", 1 = "yes", 2 = "former" } },
-      { field = "smoke", values = { 0 = "never", 1 = "yes", 2 = "former" } },
+      { field = "smok", values = { 0 = "never", 1 = "current", 2 = "former" } },
+      { field = "smoke", values = { 0 = "never", 1 = "current", 2 = "former" } },
     ]
 
   [subject.has_asthma]
@@ -739,6 +739,20 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "muscle", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "muscle", values = { 1 = true } },
+      { field = "joint", values = { 1 = true } },
+      { field = "jt_ache", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "runny_nose"

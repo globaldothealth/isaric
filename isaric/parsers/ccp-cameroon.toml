@@ -240,7 +240,7 @@
 [subject.has_smoking]
   field = "q18_co_morbidities"
   description = "18) Smoking / Tabagisme"
-  values = { 1 = "yes", 2 = "never", 3 = "former" }
+  values = { 1 = "current", 2 = "never", 3 = "former" }
 
 [subject.has_comorbidity_other]
   combinedType = "set"
@@ -1218,6 +1218,72 @@
     { q20_signs_symptoms = { "!=" = "" } },
   ]
   is_present = { field = "q20_signs_symptoms", description = "20) Muscle aches (Myalgia)", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionObsDate" }
+  if.all = [
+    { redcap_event_name = "recruitment_arm_1" },
+    { q20_signs_symptoms = { "!=" = "" } },
+    { q20_signs_symptoms = { "!=" = 2 } },
+    { q20_signs_symptoms = { "!=" = 3 } },
+    { q21_signs_symptoms = { "!=" = "" } },
+    { q21_signs_symptoms = { "!=" = 2 } },
+    { q21_signs_symptoms = { "!=" = 3 } },
+  ]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "q20_signs_symptoms", values = { 1 = true } },
+      { field = "q21_signs_symptoms", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [
+    { redcap_event_name = "week_2_d14_arm_1" },
+    { q20_signs_symptoms = { "!=" = "" } },
+    { q20_signs_symptoms = { "!=" = 2 } },
+    { q20_signs_symptoms = { "!=" = 3 } },
+    { q21_signs_symptoms = { "!=" = "" } },
+    { q21_signs_symptoms = { "!=" = 2 } },
+    { q21_signs_symptoms = { "!=" = 3 } },
+  ]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "q20_signs_symptoms", values = { 1 = true } },
+      { field = "q21_signs_symptoms", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "q0_signs_symptoms" }
+  if.all = [
+    { redcap_event_name = { "=~" = 'm*\d_arm_1' } },
+    { q20_signs_symptoms = { "!=" = "" } },
+    { q20_signs_symptoms = { "!=" = 2 } },
+    { q20_signs_symptoms = { "!=" = 3 } },
+    { q21_signs_symptoms = { "!=" = "" } },
+    { q21_signs_symptoms = { "!=" = 2 } },
+    { q21_signs_symptoms = { "!=" = 3 } },
+  ]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "q20_signs_symptoms", values = { 1 = true } },
+      { field = "q21_signs_symptoms", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "oxygen_saturation_percent"

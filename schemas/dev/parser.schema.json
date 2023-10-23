@@ -99,6 +99,10 @@
                   ]
                 }
               }
+            },
+            "can_skip": {
+              "const": "true",
+              "description": "Indicates to the parser whether the field can be skipped without throwing an error if missing in the data."
             }
           }
         }
@@ -895,6 +899,7 @@
                 "enum": [
                   "pre-admission",
                   "admission",
+                  "initial_illness",
                   "study",
                   "followup"
                 ],

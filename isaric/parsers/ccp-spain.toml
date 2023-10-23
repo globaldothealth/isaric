@@ -128,7 +128,7 @@
 
   [subject.has_smoking]
     field = "co_fumador"
-    values = { 1 = "yes", 0 = "never", 2 = "former" }
+    values = { 1 = "current", 0 = "never", 2 = "former" }
 
   [subject.has_asthma]
     field = "co_asma"
