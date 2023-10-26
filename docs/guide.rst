@@ -526,6 +526,12 @@ outcome records death)/death reported at followup.
 **icu_admitted**: Bool. Has the subject been admitted to ICU at any time
 since study enrolment?
 
+**vaccinated_covid19**: Bool. True when subject has received any dose of a
+COVID-19 vaccine
+
+**vaccinated_covid19_dates**: List. Dates when subject received a COVID-19
+vaccine.
+
 Visit
 -----
 
