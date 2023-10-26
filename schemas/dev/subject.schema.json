@@ -374,6 +374,21 @@
       "type": "boolean",
       "description": "Admitted to ICU",
       "category": "outcome"
+    },
+    "vaccinated_covid19": {
+      "type": "boolean",
+      "description": "Has received any dose of a COVID-19 vaccine",
+      "category": "vaccinations"
+    },
+    "vaccinated_covid19_dates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "date"
+      },
+      "uniqueItems": true,
+      "description": "Dates on which COVID-19 vaccinations were given",
+      "category": "vaccinations"
     }
   }
 }
