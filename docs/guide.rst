@@ -526,6 +526,9 @@ outcome records death)/death reported at followup.
 **icu_admitted**: Bool. Has the subject been admitted to ICU at any time
 since study enrolment?
 
+Vaccination data should only be recorded from admission and study phases,
+followup vaccination data is noisy and should be discarded.
+
 **vaccinated_covid19**: Bool. True when subject has received any dose of a
 COVID-19 vaccine
 
