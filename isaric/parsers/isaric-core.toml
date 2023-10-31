@@ -517,6 +517,10 @@
   description = "Employed a a healthcare worker?"
   ref = "Y/N/NK"
 
+[subject.works_lab]
+  field = "labwork_erterm"
+  values = { 1 = true }
+
 [subject.works_microbiology_lab]
   field = "labwork_erterm"
   description = "Employed in a microbiology laboratory?"
