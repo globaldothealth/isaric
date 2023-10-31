@@ -138,6 +138,16 @@
     field = "questionaire"        # added into merged data to distinguish between questionaires
     values = { month_12 = false }
 
+  [subject.vaccinated_covid19]
+    field = "covid_vaccine"
+    values = { 1 = true, 0 = false }
+
+  [subject.vaccinated_covid19_dates]
+    combinedType = "list"
+    fields = [
+      { field = "covax_dat" },
+    ]
+
     # VISIT
 
 [visit]

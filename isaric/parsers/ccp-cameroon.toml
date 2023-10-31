@@ -272,6 +272,18 @@
     { field = "q14_treatment_outcome", if = { q1_treatment_outcome = 5 } },
   ]
 
+[subject.vaccinated_covid19]
+  field = "q1_vaccination"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  fields = [
+    { field = "q5_vaccination" },
+    { field = "q6_vaccination" },
+    { field = "q7_vaccination" },
+  ]
+
 [visit]
   country_iso3 = "CMR"
 

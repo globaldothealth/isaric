@@ -210,6 +210,17 @@
   description = "Did episode included ICU/High Care Unit admission?"
   ref = "Y/N"
 
+[subject.vaccinated_covid19]
+  field = "VACC_REC"
+  ref = "Y/N"
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  fields = [
+    { field = "DOSE1_DT" },
+    { field = "DOSE2_DT" },
+  ]
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 

@@ -198,6 +198,18 @@
     ref = "Y/N"
     can_skip = true
 
+  [subject.vaccinated_covid19]
+    field = "flw_vacc_cov19_cmyn"
+    values = { 1 = true, 0 = false }
+
+  [subject.vaccinated_covid19_dates]
+    combinedType = "list"
+    fields = [
+      { field = "flw_vacc_cov19_1_cmdat" },
+      { field = "flw_vacc_cov19_2_cmdat" },
+      { field = "flw_vacc_cov19_3_cmdat" },
+    ]
+
     # VISIT
     # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 

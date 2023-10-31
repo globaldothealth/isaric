@@ -155,6 +155,11 @@
   field = "outcome_date"
   if = { outcome = 2 }
 
+[subject.vaccinated_covid19]
+  field = "vcard"
+  values = { 1 = true, 0 = false }
+
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
