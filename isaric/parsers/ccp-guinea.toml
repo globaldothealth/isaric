@@ -459,6 +459,11 @@
   description = "Employed as a health worker?"
   values = { 1 = true, 0 = false }
 
+[subject.works_lab]
+  field = "microb"
+  description = "Employee of a microbiology laboratory"
+  values = { 1 = true }
+
 [subject.works_microbiology_lab]
   field = "microb"
   description = "Employee of a microbiology laboratory"
