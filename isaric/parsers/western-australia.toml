@@ -90,7 +90,6 @@
       "%d/%m/%Y",
     ] }
 
-
   [subject.works_healthcare]
     field = "healthwork_erterm"
     description = "Healthcare Worker?"
