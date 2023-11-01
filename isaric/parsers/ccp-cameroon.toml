@@ -278,6 +278,7 @@
 
 [subject.vaccinated_covid19_dates]
   combinedType = "list"
+  excludeWhen = "none"
   fields = [
     { field = "q5_vaccination" },
     { field = "q6_vaccination" },

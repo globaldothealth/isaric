@@ -483,11 +483,12 @@
   ]
 
 [subject.vaccinated_covid19]
-    field = "vacc_cov19_cmyn"
-    values = { 1 = true, 0 = false }
+  field = "vacc_cov19_cmyn"
+  values = { 1 = true, 0 = false }
 
 [subject.vaccinated_covid19_dates]
   combinedType = "list"
+  excludeWhen = "none"
   fields = [
     { field = "vacc_cov19_1_cmdat" },
     { field = "vacc_cov19_2_cmdat" },

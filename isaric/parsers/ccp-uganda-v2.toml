@@ -249,9 +249,8 @@
 
   [subject.vaccinated_covid19_dates]
     combinedType = "list"
-    fields = [
-      { field = "vaccin_date" },
-    ]
+    excludeWhen = "none"
+    fields = [{ field = "vaccin_date" }]
 
     # VISIT
     # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"

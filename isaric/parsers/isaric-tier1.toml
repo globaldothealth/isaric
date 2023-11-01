@@ -199,15 +199,19 @@
     can_skip = true
 
   [subject.vaccinated_covid19]
-    field = "flw_vacc_cov19_cmyn"
-    values = { 1 = true, 0 = false }
+    combinedType = "firstNonNull"
+    fields = [
+      { fieldPattern = 'flw\d*_vacc_cov19_cmyn', values = { 1 = true, 0 = false } },
+    ]
+
 
   [subject.vaccinated_covid19_dates]
-    combinedType = "list"
+    combinedType = "set"
+    excludeWhen = "none"
     fields = [
-      { field = "flw_vacc_cov19_1_cmdat" },
-      { field = "flw_vacc_cov19_2_cmdat" },
-      { field = "flw_vacc_cov19_3_cmdat" },
+      { fieldPattern = 'flw\d*_vacc_cov19_1_cmdat' },
+      { fieldPattern = 'flw\d*_vacc_cov19_2_cmdat' },
+      { fieldPattern = 'flw\d*_vacc_cov19_3_cmdat', source_date = "%d/%m/%Y" },
     ]
 
     # VISIT

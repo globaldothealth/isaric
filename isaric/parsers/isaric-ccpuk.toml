@@ -344,15 +344,13 @@
   apply = { function = "isNotNull" }
 
 [subject.vaccinated_covid19]
-    field = "covid19_vaccine"
-    values = { 1 = true, 0 = false }
+  field = "covid19_vaccine"
+  values = { 1 = true, 0 = false }
 
 [subject.vaccinated_covid19_dates]
   combinedType = "list"
-  fields = [
-    { field = "covid19_vaccined" },
-    { field = "covid19_vaccine2d" },
-  ]
+  excludeWhen = "none"
+  fields = [{ field = "covid19_vaccined" }, { field = "covid19_vaccine2d" }]
 
   ## VISITS
 

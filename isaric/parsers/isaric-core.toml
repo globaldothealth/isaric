@@ -430,7 +430,7 @@
   description = "Smoking at least one cigarette, cigar, pipe or equivalent per day before the onset of the current illness."
 
   [subject.has_smoking.values]
-    1 = "yes"
+    1 = "current"
     2 = "never"
     3 = "former"
 
@@ -551,16 +551,18 @@
   ]
 
 [subject.vaccinated_covid19]
-    field = "vacc_cov19_cmyn"
-    values = { 1 = true, 0 = false }
+  field = "vacc_cov19_cmyn"
+  can_skip = true
+  values = { 1 = true, 0 = false }
 
 [subject.vaccinated_covid19_dates]
-  combinedType = "list"
+  combinedType = "set"
+  excludeWhen = "none"
   fields = [
-    { field = "vacc_cov19_1_cmdat" },
-    { field = "vacc_cov19_2_cmdat" },
-    { field = "vacc_cov19_3_cmdat" },
-    { field = "vacc_cov19_4_cmdat" },
+    { field = "vacc_cov19_1_cmdat", can_skip = true },
+    { field = "vacc_cov19_2_cmdat", can_skip = true },
+    { field = "vacc_cov19_3_cmdat", can_skip = true },
+    { field = "vacc_cov19_4_cmdat", can_skip = true },
   ]
 
 [visit]
@@ -749,6 +751,7 @@
 
   [[visit.treatment_corticosteroid_type.fields]]
     field = "corticost_cmtrt"
+    can_skip = true
     apply.function = "wordSubstituteSet"
     apply.params = [
       ["D[e,é][x,s]a?m[e,é]th?a[s,z]one?", "Dexamethasone"],
@@ -1449,14 +1452,14 @@
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "admission"
-  date = { field = "admissionDateHierarchy" }
+  date = { ref = "admissionDateHierarchy" }
   value = { field = "flw_walking_pre_c19", values = { 1 = 1, 2 = 2, 3 = 3, 4 = 4 } }
   context = ["Ability to walk or climb steps prior to COVID-19 illness"]
 
 [[observation]]
   name = "inability_to_walk_scale"
   phase = "admission"
-  date = { field = "admissionDateHierarchy" }
+  date = { ref = "admissionDateHierarchy" }
   value = { field = "flw_eq5d_mb_5l_uk_eng", values = { 1 = 1, 2 = 2, 3 = 2, 4 = 3, 5 = 4 } }
   context = ["Ability to walk prior to COVID-19 illness"]
 

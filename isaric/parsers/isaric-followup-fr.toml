@@ -60,18 +60,6 @@
   [subject.date_death]
     field = "ca_death_date"
 
-  [subject.vaccinated_covid19]
-    field = "flw_cov_vaccine"
-    values = { 1 = true, 0 = false }
-
-  [subject.vaccinated_covid19_dates]
-    combinedType = "list"
-    fields = [
-      { field = "flw_vacc_first_dose" },
-      { field = "flw_vacc_2nd_dose" },
-      { field = "flw_vacc_3rd_dose" },
-    ]
-
     # No visit table as data is followup only
 
 [visit]

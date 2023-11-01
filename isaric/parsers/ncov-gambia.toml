@@ -298,9 +298,8 @@
 
 [subject.vaccinated_covid19_dates]
   combinedType = "list"
-  fields = [
-    { field = "q_68a_i" },
-  ]
+  excludeWhen = "none"
+  fields = [{ field = "q_68a_i", source_date = "%Y-%m-%d" }]
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
