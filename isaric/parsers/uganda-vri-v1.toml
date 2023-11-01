@@ -87,7 +87,7 @@
     field = "sex"
     values = { 1 = "male", 0 = "female" }
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "occupation"
     values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
 

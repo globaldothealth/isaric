@@ -96,6 +96,9 @@
     { field = "ethnic_group#Unknown", values = { "1.0" = "Unknown" } },
   ]
 
+[subject.works_lab]
+  field = "microbiology_worker"
+  values = { 1 = true }
 
 [subject.works_microbiology_lab]
   field = "microbiology_worker"

@@ -69,6 +69,11 @@
       { field = "ethnic___10", values = { 1 = "Unknown" } },
     ]
 
+  [subject.works_lab]
+    field = "labwork_erterm"
+    values = { 1 = true }
+    description = "Employed in a microbiology laboratory?"
+
   [subject.works_microbiology_lab]
     field = "labwork_erterm"
     ref = "Y/N/NK"

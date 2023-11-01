@@ -114,9 +114,9 @@
     description = "7) Employed as a health care worker / Employé en tant que travailleur de la santé ?                                                                                                "
     ref = "Y/N"
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "q8_demographics"
-    description = "8) If health professional, specify / Si professionnel de santé"
+    description = "Laboratory professional"
     values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = true, 6 = false, 7 = false }
 
   [subject.has_asthma]

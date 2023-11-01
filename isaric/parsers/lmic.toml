@@ -145,7 +145,7 @@
     description = "Healthcare Worker?"
     ref = "Y/N/NK"
 
-  [subject.works_microbiology_lab] # This doesn't specify microB lab, but the syntax is the same as other isaric studies
+  [subject.works_lab]
     field = "labwork_erterm"
     description = "Laboratory Worker?"
     ref = "Y/N/NK"

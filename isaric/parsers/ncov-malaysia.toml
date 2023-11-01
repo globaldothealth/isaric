@@ -126,6 +126,11 @@
   description = "Employed as a Healthcare Worker?"
   ref = "Y/N"
 
+[subject.works_lab]
+  field = "lab_worker"
+  description = "Employed in a microbiology laboratory?"
+  values = { 1 = true }
+
 [subject.works_microbiology_lab]
   field = "lab_worker"
   description = "Employed in a microbiology laboratory?"

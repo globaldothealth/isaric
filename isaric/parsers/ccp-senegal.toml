@@ -244,8 +244,14 @@
   field = "healthwork_erterm"
   ref = "Y/N/NK"
 
+[subject.works_lab]
+  field = "labwork_erterm"
+  description = "employed in a biological analysis laboratory?"
+  values = { 1 = true }
+
 [subject.works_microbiology_lab]
   field = "labwork_erterm"
+  description = "employed in a biological analysis laboratory?"
   ref = "Y/N/NK"
 
 [subject.has_comorbidity_other]

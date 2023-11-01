@@ -284,10 +284,10 @@
       { field = "flw2_ethnicity_oth", description = "Other ethnicity" },
     ]
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "labwork_erterm"
     ref = "Y/N/NK"
-    description = "Employed in a microbiology laboratory?"
+    description = "laboratory worker"
 
   [subject.works_healthcare]
     field = "healthwork_erterm"
