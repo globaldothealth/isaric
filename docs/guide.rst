@@ -515,6 +515,13 @@ in the data as having an immunosuppression co-morbidity.
 
 **has_comorbidity_other**: Set. Any other comorbidity - free text field.
 
+**works_lab**: Bool. Does the subject work in a laboratory setting? Supertype,
+includes *works_microbiology_lab* as subtype.
+
+**works_microbiology_lab**: Bool.
+
+**works_healthcare**: Bool.
+
 **has_died**: Bool. Has the subject died since being enrolled in the
 study? Can take data from both hospitalisation and follow-up surveys,
 and includes non-COVID related deaths where specified (as in many
