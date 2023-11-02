@@ -1659,8 +1659,8 @@
   duration_type = "event"
   text = { field = "flw2_other_symp" }
 
-[[observation]] # PL: look at this one
-  name = "oxygen_flow_volume_max"
+[[observation]]
+  name = "oxygen_flow_rate"
   phase = "study"
   start_date = { ref = "admissionDateHierarchy" }
   date = { field = "dsstdtc" }
@@ -1969,3 +1969,10 @@
   phase = "study"
   date = { field = "daily_dsstdat" }
   value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_fio2c_lborres" }
+  context = ["Maximum value over 24hrs"]

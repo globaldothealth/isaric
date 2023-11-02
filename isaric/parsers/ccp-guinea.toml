@@ -1398,7 +1398,7 @@
   ] }
 
 [[observation]]
-  name = "fio2_Lmin"
+  name = "oxygen_flow_rate"
   phase = "admission"
   date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
   value = { field = "any_supplemental_oxygen_value", if.any = [

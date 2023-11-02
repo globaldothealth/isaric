@@ -351,7 +351,7 @@
       { field = "mx_antiviral_type___4", values = { 1 = "Interferon beta" } },
       { field = "mx_antiviral_type___5", values = { 1 = "Neuraminidase inhibitor" } },
       { field = "mx_antiviral_type___6", values = { 1 = "Ritonavir" } },
-      { field = "mx_antiviral_type___7", values = { 1 = "Favipravir" } },
+      { field = "mx_antiviral_type___7", values = { 1 = "Favipiravir" } },
       { field = "mx_antiviral_type___8", values = { 1 = "Atazanavir" } },
       { field = "type_antiviral_dc___1", values = { 1 = "Ribavirin" } },
       { field = "type_antiviral_dc___2", values = { 1 = "Lopinavir/Ritonavir" } },
@@ -359,7 +359,7 @@
       { field = "type_antiviral_dc___4", values = { 1 = "Interferon beta" } },
       { field = "type_antiviral_dc___5", values = { 1 = "Neuraminidase inhibitor" } },
       { field = "type_antiviral_dc___6", values = { 1 = "Ritonavir" } },
-      { field = "type_antiviral_dc___7", values = { 1 = "Favipravir" } },
+      { field = "type_antiviral_dc___7", values = { 1 = "Favipiravir" } },
       { field = "type_antiviral_dc___8", values = { 1 = "Atazanavir" } },
     ]
 
@@ -1113,13 +1113,6 @@
     field = "t_sx"
     unit = "°C"
 
-    # Not very useful without fluid input, disabling
-    # [[observation]] # THIS NEEDS DISCUSSION
-    #   name = "total_fluid_output_ml"
-    #   phase = "study"
-    #   date = { field = "daily_assess_date" }
-    #   value = { field = "mx_fluid_out" }
-
 [[observation]]
   name = "vomiting_nausea"
   phase = "admission"
@@ -1144,7 +1137,7 @@
     ref = "Y/N"
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   date = { field = "daily_assess_date" }
   phase = "admission"
   if.all = [
@@ -1152,11 +1145,20 @@
     { oxy_flow = { "!=" = "" } },
     { oxy_flow = { "!=" = "9999" } },
   ]
-  text = { field = "oxy_flow", values = { 1 = "1-5 l/min", 2 = "6-10 l/min", 3 = "11-15 l/min", 4 = ">15 l/min" } }
-  context = ['Maximum over 24hr period']
+  text = { field = "oxy_flow", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "oxy_flow", apply = { function = "textIfNotNull", params = [
+        'Maximum rate over 24hr period',
+      ] } },
+      { field = "oxy_interface", values = { 1 = "Nasal prongs", 2 = "HFNC", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask", 6 = "Invasive ventilation" } },
+    ]
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   date = { field = "daily_assess_date" }
   phase = "study"
   if.all = [
@@ -1165,7 +1167,16 @@
     { oxy_flow = { "!=" = "9999" } },
   ]
   text = { field = "oxy_flow", values = { 1 = "1-5 l/min", 2 = "6-10 l/min", 3 = "11-15 l/min", 4 = ">15 l/min" } }
-  context = ['Maximum over 24hr period']
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "oxy_flow", apply = { function = "textIfNotNull", params = [
+        'Maximum rate over 24hr period',
+      ] } },
+      { field = "oxy_interface", values = { 1 = "Nasal prongs", 2 = "HFNC", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask", 6 = "Invasive ventilation" } },
+    ]
 
 [[observation]]
   name = "heart_sounds"

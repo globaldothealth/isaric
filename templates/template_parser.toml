@@ -1016,7 +1016,7 @@
   # if = {  = { "!=" = } }
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   date = ""
   phase = ""
   is_present = { field = "", ref = "Y/N/NK" }

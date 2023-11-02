@@ -884,37 +884,34 @@
 
 [[observation]]
   phase = "study"
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   date.field = "outcome_date"
 
   [observation.text] # This is a multi-select, but we're only recording the MAX value
     combinedType = "firstNonNull"
     fields = [
-      { field = "overall_oxygen_cmdose___4", values = { 1 = ">15 L/min", 0 = "None", "" = "None" } },   # Stop-gap until if parsing improves
-      { field = "overall_oxygen_cmdose___3", values = { 1 = "11-15 L/min", 0 = "None", "" = "None" } },
-      { field = "overall_oxygen_cmdose___2", values = { 1 = "6-10 L/min", 0 = "None", "" = "None" } },
-      { field = "overall_oxygen_cmdose___1", values = { 1 = "1-5 L/min", 0 = "None", "" = "None" } },
+      { field = "overall_oxygen_cmdose___4", values = { 1 = ">15 L/min" } },
+      { field = "overall_oxygen_cmdose___3", values = { 1 = "11-15 L/min" } },
+      { field = "overall_oxygen_cmdose___2", values = { 1 = "6-10 L/min" } },
+      { field = "overall_oxygen_cmdose___1", values = { 1 = "1-5 L/min" } },
     ]
 
   [observation.context]
-    combinedType = 'set'
-    excludeWhen = "none"
+    combinedType = "set"
+    excludeWhen = "false-like"
     fields = [
-      { field = "daily_oxygen_cmtype_1", values = { 1 = "Nasal prongs", 2 = "HF nasal cannula", 3 = "Mask", 4 = "Mask with reservoir", 5 = "CPAP/NIV mask" } },
-    ]
-
-  [observation.if] # need to improve the auto-if for this,
-    any = [
-      { overall_oxygen_cmdose___4 = { "!=" = "" } },
-      { overall_oxygen_cmdose___3 = { "!=" = "" } },
-      { overall_oxygen_cmdose___2 = { "!=" = "" } },
-      { overall_oxygen_cmdose___1 = { "!=" = "" } },
+      { field = "overall_oxygen_cmoccur", values = { 1 = "Maximum rate during hospital stay" } },
+      { field = "overall_oxygen_cmtype___5", values = { 1 = "CPAP/NIV mask" } },
+      { field = "overall_oxygen_cmtype___4", values = { 1 = "Mask with reservoir" } },
+      { field = "overall_oxygen_cmtype___3", values = { 1 = "Mask" } },
+      { field = "overall_oxygen_cmtype___2", values = { 1 = "HF nasal cannula" } },
+      { field = "overall_oxygen_cmtype___1", values = { 1 = "Nasal prongs" } },
     ]
 
 [[observation]]
-  phase = "study"
-  name = "oxygen_flow_volume_max"
-  date.field = "o2_date"
+  phase = "admission"
+  name = "oxygen_flow_rate"
+  date = { ref = "admissionDateHierarchy" }
   text = { field = "daily_oxygen_cmdose_1", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
 
   [observation.context]

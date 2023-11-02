@@ -1156,7 +1156,7 @@
   value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
-  name = "fio2_Lmin"
+  name = "oxygen_flow_rate"
   phase = "study"
   date = { ref = "dailyDateHierarchy" }
   value = { field = "daily_fio2c_lborres" }
@@ -1178,6 +1178,13 @@
       ] } },
       { field = "daily_ecmo_prtype", values = { 1 = "VV ECMO", 2 = "AV ECMO", 3 = "Central ECMO" } },
     ]
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  text = { field = "oxygen_cmdose", values = { 1 = "<2 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min", 6 = "2-5 L/min" } }
+  context = ['Maximum dose over entire visit']
 
 [[observation]]
   name = "pao2_mmHg"
@@ -1235,12 +1242,6 @@
   date = { field = "daily_dsstdat" }
   value = { field = "sas_vsorres", apply = { function = "getFloat" } }
   # if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
-
-[[observation]]
-  name = "oxygen_flow_volume_max"
-  phase = "study"
-  date = { field = "daily_dsstdat" }
-  text = { field = "oxygen_cmdose", values = { 1 = "<2 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min", 6 = "2-5 L/min" } }
 
 [[observation]]
   name = "altered_consciousness_confusion"

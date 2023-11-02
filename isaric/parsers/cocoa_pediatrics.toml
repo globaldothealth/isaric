@@ -564,12 +564,12 @@
     ]
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   phase = "study"
   start_date = { field = "hostdat" }
   date = { field = "dsstdtc" }
   duration_type = "event"
-  context = ["over entire visit"]
+  context = ["Maximum flow rate over entire visit"]
 
   [observation.value]
     field = "xygn_thrpintfc_mask_v3"

@@ -791,7 +791,7 @@
                   "other_symptom",
                   "acvpu",
                   "avpu",
-                  "oxygen_flow_volume_max"
+                  "oxygen_flow_rate"
                 ]
               }
             }
@@ -815,9 +815,8 @@
                   "mid_upper_arm_circumference_cm",
                   "oxygen_o2hb",
                   "oxygen_saturation_percent",
-                  "oxygen_flow_volume_max",
+                  "oxygen_flow_rate",
                   "fio2_percent",
-                  "fio2_Lmin",
                   "pao2_mmHg",
                   "pco2_mmHg",
                   "pH",

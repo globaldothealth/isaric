@@ -1071,7 +1071,7 @@
   value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
-  name = "fio2_Lmin"
+  name = "oxygen_flow_rate"
   phase = "study"
   date = { field = "daily_dsstdat", description = "Date of assessment" }
   value = { field = "daily_fio2c_lborres" }
