@@ -142,6 +142,10 @@
     field = "covid_vaccine"
     values = { 1 = true, 0 = false }
 
+  [subject.vaccinated_covid19_dates]
+    field = "covax_dat"
+    context = ["Date of last dose"]
+
     # VISIT
 
 [visit]

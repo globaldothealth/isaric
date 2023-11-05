@@ -257,6 +257,18 @@
   field = "crf2a_reason_not_done"
   values = { Language = false, Declined = false, Died = true, Other = false }
 
+[subject.vaccinated_covid19]
+    field = "psq_vac_first_yn"
+    values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "psq_vac_first_date" },
+    { field = "psq_vac_sec_date" },
+  ]
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
