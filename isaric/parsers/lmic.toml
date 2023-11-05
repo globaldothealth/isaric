@@ -181,7 +181,9 @@
     values = { 1 = true, 0 = false }
 
   [subject.vaccinated_covid19_dates]
-    field = "dose_date"
+    combinedType = "list"
+    excludeWhen = "none"
+    fields = [{ "dose_date" }]
     context = ["Date of the most recent dose"]
 
 
