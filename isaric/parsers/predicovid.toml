@@ -146,7 +146,7 @@
     combinedType = "list"
     excludeWhen = "none"
     fields = [{ field = "covax_dat" }]
-    context = ["Date of last dose"]
+    # context = ["Date of last dose"]
 
     # VISIT
 

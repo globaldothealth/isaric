@@ -60,6 +60,7 @@
   [subject.date_death]
     field = "ca_death_date"
 
+
     # No visit table as data is followup only
 
 [visit]

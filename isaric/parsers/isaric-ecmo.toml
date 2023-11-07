@@ -563,7 +563,7 @@
     { field = "vacc_cov19_3_cmdat" },
     { field = "vacc_cov19_cmdat" },
   ]
-  context = ["Date of most recent dose"]
+  # context = ["Date of most recent dose"]
 
 [visit]
   country_iso3 = { field = "country", ref = "countryMap" }
