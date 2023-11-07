@@ -176,6 +176,17 @@
       description = "Intensive Care Unit admission"
       ref = "Y/N/NK"
 
+[subject.vaccinated_covid19]
+  field = "c19_vacc"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "dose_date" }]
+  # context = ["Date of the most recent dose"]
+
+
 [visit]
   country_iso3 = "MWI"
 

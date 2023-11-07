@@ -525,6 +525,14 @@
         "icu_admitted": {
           "description": "Admitted to ICU",
           "$ref": "#/definitions/mapping"
+        },
+        "vaccinated_covid19": {
+          "description": "Received a COVID19 vaccination",
+          "$ref": "#/definitions/mapping"
+        },
+        "vaccinated_covid19_dates": {
+          "description": "Date(s) of covid vaccination",
+          "$ref": "#/definitions/mapping"
         }
       }
     },

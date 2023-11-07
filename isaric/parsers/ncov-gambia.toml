@@ -292,6 +292,16 @@
     ] }, # followup field at day 90
   ]
 
+[subject.vaccinated_covid19]
+  field = "q_68"
+  ref = "Y/N"
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "q_68a_i", source_date = "%Y-%m-%d" }]
+  # context = ["Date of last dose"]
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
