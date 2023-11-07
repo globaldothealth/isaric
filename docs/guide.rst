@@ -540,7 +540,9 @@ followup vaccination data is noisy and should be discarded.
 COVID-19 vaccine
 
 **vaccinated_covid19_dates**: List. Dates when subject received a COVID-19
-vaccine.
+vaccine. Dates are not necessarily inclusive of all doses; a single date will
+most often be the date of the most recent dose, but a single date does not preclude
+a subject from having recieved multiple doses.
 
 Visit
 -----
