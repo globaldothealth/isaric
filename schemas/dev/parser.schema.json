@@ -648,18 +648,6 @@
           "description": "Anticoagulation",
           "$ref": "#/definitions/mapping"
         },
-        "treatment_experimental_agent": {
-          "description": "Experimental agent",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_experimental_agent_type": {
-          "description": "Type of experimental agent used",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_experimental_agent_type_other": {
-          "description": "Type of experimental agent used - Other agents",
-          "$ref": "#/definitions/mapping"
-        },
         "treatment_inhaled_nitric_oxide": {
           "description": "Inhaled nitric oxide",
           "$ref": "#/definitions/mapping"

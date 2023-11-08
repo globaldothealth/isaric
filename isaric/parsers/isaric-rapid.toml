@@ -821,15 +821,11 @@
   description = "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
   fields = [
     { field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } },
-    { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
     { field = "exper_cmoth" },
     # overall_*, daily_*, *
     { fieldPattern = ".*exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
     { fieldPattern = ".*exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
     { fieldPattern = ".*exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { fieldPattern = ".*exper_cmtype___7", values = { 1 = "Other" } },
     { fieldPattern = ".*exper_cmoth" },
   ]
   # include others? most are in 'other please specify' for specific categories e.g. corticosteroid.
@@ -838,7 +834,7 @@
   description = "Oxygen therepy"
   combinedType = "any"
   fields = [
-    { fieldPattern = "*.oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
+    { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "ccm_a_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
     { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true }, description = "Oxygen therapy? (interface)" },

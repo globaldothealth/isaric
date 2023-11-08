@@ -409,7 +409,6 @@
   fields = [
     # { field = "q8_onset", description = "8) If so, what did you consume? - Other / Si oui ,qu'avez vous consommé d'autres ?", ref = "Y/N" },
     # { field = "q9_hcare_practice", description = "9) If yes (please specify)  / Si oui, préciser" },
-    { field = "q15_medication", description = "15) ELIXIR COVID and or ADSK COVID (Medication of Mgr Kleda)  / ELIXIR COVID et ou ADSAK COVID (Médicaments de MGR KLEDA)", ref = "Y/N" },
     { field = "q20_medication", description = "20) If YES, please provide  dose / Si OUI, veuillez indiquer la dose" },
     { field = "q21_treatment", description = "21) OTHER intervention or procedure (please specify)", if = { all = [
       { q21_treatment = { "!=" = "no" } },

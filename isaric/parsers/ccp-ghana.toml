@@ -768,16 +768,12 @@
     { field = "other_meds", description = "Other Medication" },
     { field = "other_meds_3", description = "Other Medication" },
     { field = "other_meds_2", description = "Other Medication" },
-    { field = "daily_exper_cmyn", description = "Experimental agent?", ref = "Y/N/NK" },
     { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
     { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
     { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
     { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
     { field = "disx251s", values = { 3 = "Tocilizumab" } },
     { field = "daily_exper_cmoth" },
-    # { field = "premeds_other_meds1", description = "Other Medications (1)" }, - preadmission medications
-    # { field = "premeds_other_meds2", description = "Other Medications (2)" },
   ]
 
 [visit.treatment_oxygen_therapy]

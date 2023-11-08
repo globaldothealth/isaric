@@ -379,16 +379,7 @@
     { field = "antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic on the first day of admission?" },
   ]
 
-[visit.treatment_experimental_agent]
-  description = "Experimental treatments"
-  combinedType = "any"
-  fields = [
-    { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
-  ]
-
-[visit.treatment_experimental_agent_type]
+[visit.treatment_other]
   description = "Experimental treatments used"
   combinedType = "set"
   excludeWhen = "none"

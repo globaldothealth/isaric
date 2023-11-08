@@ -382,21 +382,6 @@
     description = ""
     ref = "Y/N/NK"
 
-  [visit.treatment_experimental_agent]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
-  [visit.treatment_experimental_agent_type]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
-  [visit.treatment_experimental_agent_type_other]
-    field = ""
-    description = ""
-    ref = "Y/N/NK"
-
   [visit.treatment_inhaled_nitric_oxide]
     field = ""
     description = ""
