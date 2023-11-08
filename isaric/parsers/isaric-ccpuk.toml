@@ -13,6 +13,9 @@
     1 = true
     2 = false
 
+  [adtl.defs.checkbox.values]
+    1 = true
+
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
@@ -445,7 +448,7 @@
 
   [visit.treatment_antimalarial]
     field = "antiviral_cmtrt___7"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [visit.treatment_antimalarial_type]
     combinedType = "set"

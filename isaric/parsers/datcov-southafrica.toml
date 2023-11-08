@@ -22,6 +22,9 @@
     1 = true
     0 = false
 
+  [adtl.defs.checkbox.values]
+    1 = true
+
 [adtl.defs.subjectId]
   combinedType = "firstNonNull"
   fields = [{ field = "PatientId" }, { field = "NICDCaseID" }]
@@ -135,35 +138,35 @@
   [subject.has_chronic_hematologic_disease]
     field = "flw_ongoing_chronic_list___12"
     description = "Diagnosed, ongoing condition before COVID-19 diagnosis: Blood disorder"
-    ref = "Y/N/NK"
+    ref = "checkbox"
 
   [subject.has_asplenia]
     field = "flw_ongoing_chronic_list___10"
-    ref = "Y/N/NK"
+    ref = "checkbox"
     description = "Asplenia"
 
   [subject.has_tuberculosis]
     combinedType = "any"
     fields = [
       { field = "Tuberculosis Active", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
-      { field = "flw_ongoing_chronic_list___20", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___20", ref = "checkbox" },
     ]
 
   [subject.has_dementia]
     field = "flw_ongoing_chronic_list___15"
-    ref = "Y/N/NK"
+    ref = "checkbox"
     description = "Dementia"
 
   [subject.has_rheumatologic_disorder]
     field = "flw_ongoing_chronic_list___13"
-    ref = "Y/N/NK"
+    ref = "checkbox"
     description = "Rhemumatologic disorder"
 
   [subject.has_hiv]
     combinedType = "any"
     fields = [
       { field = "HIV Positive", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'Yes', nan]}
-      { field = "flw_ongoing_chronic_list___16", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___16", ref = "checkbox" },
     ]
 
   [subject.has_obesity]
@@ -175,14 +178,14 @@
     combinedType = "any"
     fields = [
       { field = "Hypertension", values = { 'Yes' = true, 'No' = false } },
-      { field = "flw_ongoing_chronic_list___2", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___2", ref = "checkbox" },
     ]
 
   [subject.has_malignant_neoplasm]
     combinedType = "any"
     fields = [
       { field = "Malignancy", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'UNKNOWN', 'Yes', nan]
-      { field = "flw_ongoing_chronic_list___11", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___11", ref = "checkbox" },
     ]
 
   [subject.has_smoking]
@@ -196,30 +199,30 @@
     combinedType = "any"
     fields = [
       { field = "Asthma", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
-      { field = "flw_ongoing_chronic_list___3", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___3", ref = "checkbox" },
     ]
 
   [subject.has_chronic_cardiac_disease]
     combinedType = "any"
     fields = [
       { field = "Cardiac Disease", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'UNKNOWN', 'Yes', nan]
-      { field = "flw_ongoing_chronic_list___1", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___1", ref = "checkbox" },
     ]
 
   [subject.has_chronic_kidney_disease]
     combinedType = "any"
     fields = [
       { field = "Chronic Renal Failure", values = { 'Yes' = true, 'No' = false } }, # values = ['No', 'Unknown', 'UNKNOWN', 'Yes', nan] }
-      { field = "flw_ongoing_chronic_list___8", ref = "Y/N/NK" },
+      { field = "flw_ongoing_chronic_list___8", ref = "checkbox" },
     ]
 
   [subject.has_diabetes]
     combinedType = "any"
     fields = [
-      { field = "Diabetes", values = { 'Yes' = true, 'No' = false } },                                  # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
-      { field = "flw_ongoing_chronic_list___5", ref = "Y/N/NK", description = "Diabetes Type 1" },
-      { field = "flw_ongoing_chronic_list___6", ref = "Y/N/NK", description = "Diabetes Type 2" },
-      { field = "flw_ongoing_chronic_list___7", ref = "Y/N/NK", description = "Diabetes Gestational" },
+      { field = "Diabetes", values = { 'Yes' = true, 'No' = false } },                                    # values = ['No', 'Unknown', 'Yes', 'UNKNOWN', nan]
+      { field = "flw_ongoing_chronic_list___5", ref = "checkbox", description = "Diabetes Type 1" },
+      { field = "flw_ongoing_chronic_list___6", ref = "checkbox", description = "Diabetes Type 2" },
+      { field = "flw_ongoing_chronic_list___7", ref = "checkbox", description = "Diabetes Gestational" },
     ]
     # can we assume diabetes as a disease was there before COVID? and so the followup data applies here?
 
@@ -233,13 +236,8 @@
 
   [subject.has_liver_disease]
     field = "flw_ongoing_chronic_list___9"
-    ref = "Y/N/NK"
+    ref = "checkbox"
     description = "Liver disease"
-
-    # [subject.has_hiv_viral_suppression]
-    #   field = "HIV Viral Suppression"
-    #   values = { 'Yes' = true, 'No' = false }
-    #   # values = [nan, 'No', 'Unknown', 'Yes']
 
   [subject.has_tuberculosis_past]
     field = "Tuberculosis Past"

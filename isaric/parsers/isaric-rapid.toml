@@ -627,14 +627,14 @@
     { field = "overall_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
     { field = "daily_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
-    { fieldPattern = ".*exper_cmtype___1", values = { 1 = true } },
-    { fieldPattern = ".*exper_cmtype___2", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___1", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___2", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___3", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___4", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___5", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___6", values = { 1 = true } },
+    { fieldPattern = ".*exper_cmtype___1", ref = "checkbox" },
+    { fieldPattern = ".*exper_cmtype___2", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___1", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___2", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___3", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___4", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___5", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___6", ref = "checkbox" },
   ]
 
 [visit.treatment_antimalarial_type]
@@ -659,7 +659,7 @@
     { field = "overall_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "daily_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
-    { fieldPattern = ".*exper_cmtype___3", values = { 1 = true } },
+    { fieldPattern = ".*exper_cmtype___3", ref = "checkbox" },
   ]
 
 [visit.treatment_antiviral_type]
@@ -866,7 +866,7 @@
     { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therepy?" },
     { field = "ccm_a_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
-    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
+    { fieldPattern = "overall_oxygen_cmtype.*", ref = "checkbox", description = "Oxygen therapy? (interface)" },
     { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
     { fieldPattern = ".*invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
     { field = "ccm_b_invasive_prtrt", ref = "Y/N/NK", description = "Invasive ventilation?" },
@@ -896,7 +896,7 @@
   excludeWhen = "none"
   fields = [
     { field = "ccm_b_hhfnc_prtrt", ref = "Y/N/NK", description = "Humidified high flow nasal cannula (HHFNC)?" },
-    { field = "overall_oxygen_cmtype___2", values = { 1 = true }, description = "Oxygen therapy? (interface)" },
+    { field = "overall_oxygen_cmtype___2", ref = "checkbox", description = "Oxygen therapy? (interface)" },
     { field = "daily_oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
     { field = "oxygen_cmtype", values = { 2 = true }, description = "Oxygen therapy? (interface)" },
   ]
@@ -904,9 +904,9 @@
 [visit.treatment_oxygen_mask_prongs]
   combinedType = "any"
   fields = [
-    { field = "overall_oxygen_cmtype___1", values = { 1 = true }, description = "Nasal prongs" },
-    { field = "overall_oxygen_cmtype___3", values = { 1 = true }, description = "Mask" },
-    { field = "overall_oxygen_cmtype___4", values = { 1 = true }, description = "Mask with reservoir" },
+    { field = "overall_oxygen_cmtype___1", ref = "checkbox", description = "Nasal prongs" },
+    { field = "overall_oxygen_cmtype___3", ref = "checkbox", description = "Mask" },
+    { field = "overall_oxygen_cmtype___4", ref = "checkbox", description = "Mask with reservoir" },
     { field = "oxygen_cmtype", values = { 1 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
     { field = "daily_oxygen_cmtype", values = { 1 = true, 3 = true, 4 = true }, description = "Oxygen therapy? (interface)" },
   ]

@@ -26,6 +26,9 @@
     1 = true
     0 = false
 
+  [adtl.defs.checkbox.values]
+    1 = true
+
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
@@ -593,7 +596,7 @@
     combinedType = "any"
     fields = [
       { field = "cof", ref = "Y/N" },
-      { field = "sick_symp___2", values = { 1 = true, 0 = false } },
+      { field = "sick_symp___2", ref = "checkbox" },
     ]
 
 [[observation]]
@@ -635,7 +638,7 @@
   ] } }
   duration_type = "event"
   phase = "admission"
-  is_present = { field = "sick_symp___3", values = { 1 = true, 0 = false } }
+  is_present = { field = "sick_symp___3", ref = "checkbox" }
 
 [[observation]]
   name = "diarrhoea"
@@ -669,7 +672,7 @@
   date = { field = "onset_date" }
   duration_type = "event"
   phase = "admission"
-  is_present = { field = "sick_symp___1", values = { 1 = true } }
+  is_present = { field = "sick_symp___1", ref = "checkbox" }
 
 [[observation]]
   name = "history_of_fever"

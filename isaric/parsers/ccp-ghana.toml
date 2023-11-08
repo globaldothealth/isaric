@@ -33,6 +33,7 @@
       common = { visit_id = { field = "record_id", sensitive = true } }
 
 [adtl.defs]
+  checkbox = { values = { 1 = true } }
   "Y/N/NK" = { values = { 0 = false, 1 = true } }
   uid = { field = "record_id", sensitive = true }
 
@@ -620,8 +621,8 @@
   excludeWhen = "none"
   fields = [
     { field = "daily_antimal_cmyn", description = "Antimalarial agent?", ref = "Y/N/NK" },
-    { field = "daily_exper_cmtype___1", values = { 1 = true } },
-    { field = "daily_exper_cmtype___2", values = { 1 = true } },
+    { field = "daily_exper_cmtype___1", ref = "checkbox" },
+    { field = "daily_exper_cmtype___2", ref = "checkbox" },
   ]
 
 [visit.treatment_antimalarial_type]
@@ -715,7 +716,7 @@
   excludeWhen = "none"
   fields = [
     { field = "can_oxy_ther", description = "High-flow nasal canula oxygen therapy", ref = "Y/N/NK" },
-    { field = "overall_oxygen_cmtype___2", description = "Oxygen therapy interface: HF nasal cannula", ref = "Y/N/NK" },
+    { field = "overall_oxygen_cmtype___2", description = "Oxygen therapy interface: HF nasal cannula", ref = "checkbox" },
     { field = "daily_oxygen_cmtype_1", description = "Oxygen therapy interface: HF nasal cannula", ref = "Y/N/NK" },
   ]
 
@@ -799,27 +800,27 @@
   [[visit.treatment_oxygen_therapy.fields]]
     field = "overall_oxygen_cmtype___1"
     description = "Oxygen therapy?"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "overall_oxygen_cmtype___2"
     description = "Oxygen therapy?"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "overall_oxygen_cmtype___3"
     description = "Oxygen therapy?"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "overall_oxygen_cmtype___4"
     description = "Oxygen therapy?"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "overall_oxygen_cmtype___5"
     description = "Oxygen therapy?"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "daily_oxygen_cmtype_1"
