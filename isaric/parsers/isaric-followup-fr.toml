@@ -72,6 +72,11 @@
     field = "subjid"
     sensitive = true
 
+  [visit.treatment_oxygen_therapy]
+    field = "fio2_pao2"
+    if = { fio2_pao2 = { ">" = 21 } }
+    apply = { function = "isNotNull" }
+
   [visit.outcome]
     field = "ca_hospit"
     values = { 1 = "hospitalised" }

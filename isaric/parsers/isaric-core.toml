@@ -880,6 +880,23 @@
     description = "Mechanical Ventilation?"
     values = { 1 = true, 2 = true, 3 = true, 4 = true }
 
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_fio2_lborres"
+    if.all = [
+      { daily_fio2_lborres = { ">" = 0.21 } },
+      { daily_fio2_lborres = { "<=" = 1 } },
+    ]
+    apply = { function = "isNotNull" }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_fio2b_lborres"
+    if = { daily_fio2_lborres = { ">" = 21 } }
+    apply = { function = "isNotNull" }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_fio2c_lborres"
+    apply = { function = "isNotNull" }
+
 [visit.treatment_oxygen_mask_prongs]
   field = "oxygen_cminterface"
   values = { 1 = false, 2 = true, 3 = true, 4 = false }

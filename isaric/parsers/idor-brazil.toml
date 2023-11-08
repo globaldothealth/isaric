@@ -594,6 +594,7 @@
     { field = "noninvasive_proccur", ref = "Y/N/NK" },
     { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
     { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    { field = "daily_fio2_lborres", if = { daily_fio2_lborres = { ">" = 0.21 } }, apply = { function = "isNotNull" } },
   ]
 
 [visit.treatment_cardiovascular_support]

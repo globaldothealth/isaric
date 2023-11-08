@@ -327,6 +327,11 @@
       { field = "non_inv_vent", values = { 1 = true, 0 = false } },
       { field = "overall_extracorp_prtrt", values = { 1 = true, 0 = false } },
       { field = "ecls", ref = "Y/N" },
+      { field = "fi02", if.all = [
+        { fi02 = { ">" = 21 } },
+        { fi02 = { "!=" = 999 } },
+      ], apply = { function = "isNotNull" } },
+      { field = "ttl_oxy", if = { ttl_oxy = { "!=" = 999 } }, apply = { function = "isNotNull" } },
     ]
 
   [visit.treatment_prone_position]
@@ -953,7 +958,7 @@
   name = "oxygen_flow_rate"
   date = { ref = "admissionDateHierarchy" }
   phase = "study"
-  value = { field = "ttl_oxy" }
+  value = { field = "ttl_oxy", description = "how many litres of oxygen?" }
   if.all = [{ ttl_oxy = { "!=" = "" } }, { ttl_oxy = { "!=" = 999 } }]
 
 [[observation]]

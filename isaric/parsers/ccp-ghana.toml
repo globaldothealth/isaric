@@ -841,6 +841,11 @@
     description = "Extracorporeal (ECMO) support?"
     ref = "Y/N/NK"
 
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "fi02"
+    if.any = [{fi02  = {">" = 21}}, {fi02 = 1}]
+    apply = {function = "isNotNull"}
+
 [visit.treatment_prone_position]
   combinedType = "any"
   excludeWhen = "none"

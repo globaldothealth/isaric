@@ -286,6 +286,8 @@
     fields = [
       { field = "oxygen_prtrt_v3", description = "Oxygen therapy?", ref = "Y/N/NK" },
       { field = "noninvasive_prtrt_v3", description = "Non-invasive ventilation ? (e.g. BIPAP, CPAP)", ref = "Y/N/NK" },
+      { field = "xygn_thrpintfc_trt_v3", values = { 1 = true, 2 = true } },
+      { field = "xygn_thrpintfc_mask_v3", apply = { function = "isNotNull" } },
     ]
 
   [visit.treatment_oxygen_mask_prongs]

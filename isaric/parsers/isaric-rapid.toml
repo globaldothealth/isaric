@@ -873,6 +873,12 @@
     { fieldPattern = ".*noninvasive_proccur", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
     { field = "ccm_b_noninvasive_prtrt", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
     { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
+    { field = "ccm_a_fio2_lborres", if.all = [
+      { ccm_a_fio2_lborres = { ">" = 0.21 } },
+      { ccm_a_fio2_lborres = { "<=" = 1 } },
+    ], apply = { function = "isNotNull" } },
+    { field = "ccm_a_fio2b_lborres", if = { daily_fio2b_lborres = { ">" = 21 } }, apply = { function = "isNotNull" } },
+    { field = "ccm_a_fio2c_lborres", apply = { function = "isNotNull" } },
   ]
 
 [visit.treatment_prone_position]

@@ -662,6 +662,9 @@
     { field = "non_inv_vent", ref = "Y/N" },
     { field = "inv_vent", ref = "Y/N" },
     { field = "ecls", ref = "Y/N" },
+    { field = "fio2", if = { fio2 = {">"= 21}}, apply = {function = "isNotNull"}},
+    { field = "any_supplemental_oxygen_value", if = { fio2_0_21_1_0_unit = 2 }, apply = {function = "isNotNull"} },
+    { field = "any_supplemental_oxygen_value", if.all = [{ fio2_0_21_1_0_unit = 1 }, { any_supplemental_oxygen_value = { ">" = 21}}], apply = {function = "isNotNull"} }
   ]
 
 [visit.treatment_prone_position]
@@ -1396,7 +1399,7 @@
   phase = "admission"
   date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
   value = { field = "any_supplemental_oxygen_value", apply = { function = "Percentage" }, if.any = [
-    { fio2_0_21_1_0_unit = 1 },
+    { fio2_0_21_1_0_unit = 1 }, # percentage
     { any_supplemental_oxygen_value = { "!=" = "" } },
   ] }
 
@@ -1405,7 +1408,7 @@
   phase = "admission"
   date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
   value = { field = "any_supplemental_oxygen_value", if.any = [
-    { fio2_0_21_1_0_unit = 2 },
+    { fio2_0_21_1_0_unit = 2 }, # L/min
     { any_supplemental_oxygen_value = { "!=" = "" } },
   ] }
   [observation.context]

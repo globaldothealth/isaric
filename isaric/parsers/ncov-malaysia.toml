@@ -472,6 +472,9 @@
       { field = "prone_dc", ref = "Y/N", description = "Prone Ventilation?" },
       { description = "Oxygen interface - HFNC", field = "oxy_interface", values = { 1 = false, 2 = true, 3 = false, 4 = false, 5 = false, 6 = false } },
       { field = "type_oxy_dc", values = { 1 = false, 2 = true, 7777 = false } },
+      { field = "daily_fio2_data", if = { daily_fio2_data = { ">" = 0.21 } }, apply = { function = "isNotNull" } },
+      { field = "fio_prone", if = { fio_prone = { ">" = 0.21 } }, apply = { function = "isNotNull" } },
+      { field = "oxy_flow", apply = { function = "isNotNull" } },
     ]
 
   [visit.treatment_prone_position]
