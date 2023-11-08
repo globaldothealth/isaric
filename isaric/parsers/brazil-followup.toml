@@ -211,6 +211,16 @@
   description = "Admission to an Intensive Care Unit (ICU / CTI)"
   ref = "Y/N"
 
+[subject.vaccinated_covid19]
+  field = "flw_cov_vacc"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "flw_vacc_last_dose" }]
+  # context = ["Date of most recent dose"]
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 

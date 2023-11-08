@@ -3,6 +3,13 @@
 [adtl]
   name = "isaric-rapid"
   description = "ISARIC RAPID study"
+  experimental_agents = [
+    'Chloroquine',
+    'Hydroxychloroquine',
+    'Remdesivir',
+    'IL6/IL1 inhibitors',
+    'Convalescent plasma',
+  ]
 
   [adtl.defs."Y/N/NK".values]
     1 = true
@@ -482,6 +489,20 @@
     { field = "icu_hoterm", description = "first day of admission", values = { 1 = true, 2 = false } },
   ]
 
+[subject.vaccinated_covid19]
+  field = "vacc_cov19_cmyn"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [
+    { field = "vacc_cov19_1_cmdat" },
+    { field = "vacc_cov19_2_cmdat" },
+    { field = "vacc_cov19_3_cmdat" },
+    { field = "vacc_cov19_4_cmdat" },
+  ]
+
   ## VISIT
 
 [visit]
@@ -601,10 +622,34 @@
 [visit.treatment_antimalarial]
   description = "Antimalarial"
   combinedType = "any"
+  excludeWhen = "none"
   fields = [
     { field = "overall_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
     { field = "daily_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
     { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
+    { fieldPattern = ".*exper_cmtype___1", values = { 1 = true } },
+    { fieldPattern = ".*exper_cmtype___2", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___1", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___2", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___3", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___4", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___5", values = { 1 = true } },
+    { fieldPattern = ".*antimal_cmtype___6", values = { 1 = true } },
+  ]
+
+[visit.treatment_antimalarial_type]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { fieldPattern = ".*exper_cmtype___1", values = { 1 = "Chloroquine" } },
+    { fieldPattern = ".*exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
+    { fieldPattern = ".*antimal_cmtype___1", values = { 1 = "Chloroquine" } },
+    { fieldPattern = ".*antimal_cmtype___2", values = { 1 = "Primaquine" } },
+    { fieldPattern = ".*antimal_cmtype___3", values = { 1 = "Quinine/Mefloquine" } },
+    { fieldPattern = ".*antimal_cmtype___4", values = { 1 = "Artemisinin-based Combination Therapy" } },
+    { fieldPattern = ".*antimal_cmtype___5", values = { 1 = "Atovaquone with Proguanil" } },
+    { fieldPattern = ".*antimal_cmtype___6", values = { 1 = "Other" } },
+    { fieldPattern = ".*antimal_cmoth" },
   ]
 
 [visit.treatment_antivirals]
@@ -614,6 +659,7 @@
     { field = "overall_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "daily_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
     { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
+    { fieldPattern = ".*exper_cmtype___3", values = { 1 = true } },
   ]
 
 [visit.treatment_antiviral_type]
@@ -621,24 +667,13 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "overall_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "overall_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
-    { field = "overall_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
-    { field = "overall_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
-    { field = "overall_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
-    { field = "overall_antiviral_cmtrt___6", values = { 1 = "Other" } },
-    { field = "daily_antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "daily_antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
-    { field = "daily_antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
-    { field = "daily_antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
-    { field = "daily_antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
-    { field = "daily_antiviral_cmtrt___6", values = { 1 = "Other" } },
-    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
-    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
-    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
-    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
-    { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { fieldPattern = ".*antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+    { fieldPattern = ".*antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
+    { fieldPattern = ".*antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+    { fieldPattern = ".*antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+    { fieldPattern = ".*antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+    { fieldPattern = ".*antiviral_cmtrt___6", values = { 1 = "Other" } },
+    { fieldPattern = ".*exper_cmtype___3", values = { 1 = "Remdesivir" } },
   ]
 
 [visit.treatment_antiviral_type_other]
@@ -650,7 +685,6 @@
     { field = "overall_antiviral_cmoth" },
     { field = "daily_antiviral_cmoth" },
   ]
-
 
 [visit.treatment_neuromuscular_blocking_agents]
   field = "ccm_a_neuro_cmtrt"
@@ -684,21 +718,11 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
-    { field = "overall_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
-    { field = "overall_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
-    { field = "overall_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
-    { field = "overall_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
-    { field = "overall_corticost_cmtrt___5", values = { 1 = "Other" } },
-    { field = "daily_corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
-    { field = "daily_corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
-    { field = "daily_corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
-    { field = "daily_corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
-    { field = "daily_corticost_cmtrt___5", values = { 1 = "Other" } },
-    { field = "corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
-    { field = "corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
-    { field = "corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
-    { field = "corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
-    { field = "corticost_cmtrt___5", values = { 1 = "Other" } },
+    { fieldPattern = ".*corticost_cmtrt___1", values = { 1 = "Dexamethasone" } },
+    { fieldPattern = ".*corticost_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+    { fieldPattern = ".*corticost_cmtrt___3", values = { 1 = "Prednisolone" } },
+    { fieldPattern = ".*corticost_cmtrt___4", values = { 1 = "Methylprednisolone" } },
+    { fieldPattern = ".*corticost_cmtrt___5", values = { 1 = "Other" } },
   ]
 
 [visit.treatment_corticosteroid_type_other]
@@ -747,52 +771,6 @@
     field = "extracorp_prtrt"
     ref = "Y/N/NK"
     description = "Extracorporeal (ECMO) support on the first day of admission?"
-
-[visit.treatment_experimental_agent]
-  description = "Experimental treatments"
-  combinedType = "any"
-  fields = [
-    { field = "overall_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "daily_exper_cmyn", ref = "Y/N/NK", description = "Experimental agent?" },
-    { field = "exper_cmyn", ref = "Y/N/NK", description = "Experimental agent on the first day of admission?" },
-  ]
-
-[visit.treatment_experimental_agent_type]
-  description = "Experimental treatments used"
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "overall_exper_cmtype___1", values = { 1 = "Chloroquine" } },
-    { field = "overall_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
-    { field = "overall_exper_cmtype___3", values = { 1 = "Remdesivir" } },
-    { field = "overall_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
-    { field = "overall_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
-    { field = "overall_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { field = "overall_exper_cmtype___7", values = { 1 = "Other" } },
-    { field = "daily_exper_cmtype___1", values = { 1 = "Chloroquine" } },
-    { field = "daily_exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
-    { field = "daily_exper_cmtype___3", values = { 1 = "Remdesivir" } },
-    { field = "daily_exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
-    { field = "daily_exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
-    { field = "daily_exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { field = "daily_exper_cmtype___7", values = { 1 = "Other" } },
-    { field = "exper_cmtype___1", values = { 1 = "Chloroquine" } },
-    { field = "exper_cmtype___2", values = { 1 = "Hydroxychloroquine" } },
-    { field = "exper_cmtype___3", values = { 1 = "Remdesivir" } },
-    { field = "exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
-    { field = "exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
-    { field = "exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
-    { field = "exper_cmtype___7", values = { 1 = "Other" } },
-  ]
-
-[visit.treatment_experimental_agent_type_other]
-  combinedType = "set"
-  description = "Experimental agent = other - free text field"
-  fields = [
-    { field = "overall_exper_cmoth" },
-    { field = "daily_exper_cmoth" },
-    { field = "exper_cmoth" },
-  ]
 
 [visit.treatment_inotropes_vasopressors]
   description = "Inotropes/vasopressors"
@@ -869,8 +847,16 @@
 [visit.treatment_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } }]
   description = "Other intervention or procedure not already recorded in this form or in the RAPID Module 2 form?"
+  fields = [
+    { field = "ccm_a_other_prtrt", if = { ccm_a_oth_prperf = 1 } },
+    { field = "exper_cmoth" },
+    # overall_*, daily_*, *
+    { fieldPattern = ".*exper_cmtype___4", values = { 1 = "IL6 inhibitor" } },
+    { fieldPattern = ".*exper_cmtype___5", values = { 1 = "IL1 inhibitor" } },
+    { fieldPattern = ".*exper_cmtype___6", values = { 1 = "Convalescent plasma" } },
+    { fieldPattern = ".*exper_cmoth" },
+  ]
   # include others? most are in 'other please specify' for specific categories e.g. corticosteroid.
 
 [visit.treatment_oxygen_therapy]

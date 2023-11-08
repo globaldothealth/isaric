@@ -525,6 +525,14 @@
         "icu_admitted": {
           "description": "Admitted to ICU",
           "$ref": "#/definitions/mapping"
+        },
+        "vaccinated_covid19": {
+          "description": "Received a COVID19 vaccination",
+          "$ref": "#/definitions/mapping"
+        },
+        "vaccinated_covid19_dates": {
+          "description": "Date(s) of covid vaccination",
+          "$ref": "#/definitions/mapping"
         }
       }
     },
@@ -654,18 +662,6 @@
         },
         "treatment_anticoagulation": {
           "description": "Anticoagulation",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_experimental_agent": {
-          "description": "Experimental agent",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_experimental_agent_type": {
-          "description": "Type of experimental agent used",
-          "$ref": "#/definitions/mapping"
-        },
-        "treatment_experimental_agent_type_other": {
-          "description": "Type of experimental agent used - Other agents",
           "$ref": "#/definitions/mapping"
         },
         "treatment_inhaled_nitric_oxide": {

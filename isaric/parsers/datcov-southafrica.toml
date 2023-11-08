@@ -291,6 +291,19 @@
       { field = "flw_icu", description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?", values = { 0 = false, 1 = true } },
     ]
 
+  [subject.vaccinated_covid19]
+    field = "Vaccinated"
+    values = { 1 = true, 0 = false }
+
+  [subject.vaccinated_covid19_dates]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "First Dose Date" },
+      { field = "Second Dose Date" },
+      { field = "Booster Dose Date" },
+    ]
+
 [visit]
   country_iso3 = "ZAF"
 

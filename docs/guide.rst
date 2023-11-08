@@ -540,7 +540,9 @@ followup vaccination data is noisy and should be discarded.
 COVID-19 vaccine
 
 **vaccinated_covid19_dates**: List. Dates when subject received a COVID-19
-vaccine.
+vaccine. Dates are not necessarily inclusive of all doses; a single date will
+most often be the date of the most recent dose, but a single date does not preclude
+a subject from having recieved multiple doses.
 
 Visit
 -----
@@ -585,7 +587,7 @@ General drug types
 ~~~~~~~~~~~~~~~~~~
 
 The general drug categories *antiviral*, *antibiotic*, *corticosteroid*,
-*experimental_agent*, *antimalarial* and *delirium* all have a set of three
+*antimalarial* and *delirium* all have a set of three
 hierarchical attributes, e.g. for antivirals:
 
 + **treatment_antiviral**: Bool. If antivirals have been administered during the visit
@@ -675,7 +677,8 @@ delirium?
 monoclonal antibodies?
 
 **treatment_other**: Set. Any other treatments, or treatments recorded
-as free text fields, should be recorded here.
+as free text fields, should be recorded here. Can include drugs described
+as 'experimental agents'; trial drugs will be recorded in study metadata.
 
 **treatment_pacing**: Bool. Did the subject receive heart pacing during
 the visit?

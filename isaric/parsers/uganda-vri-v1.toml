@@ -155,6 +155,7 @@
   field = "outcome_date"
   if = { outcome = 2 }
 
+
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
 
@@ -193,6 +194,7 @@
 
   [visit.treatment_antibiotics_type]
     combinedType = "set"
+    excludeWhen = "none"
     fields = [
       { field = "daily_antibiotic_type___1", values = { 1 = "Ceftriaxone" } },
       { field = "daily_antibiotic_type___2", values = { 1 = "Metronidazole" } },
@@ -208,8 +210,14 @@
     ]
 
   [visit.treatment_antimalarial]
-    field = "daily_antimal"
-    ref = "Y/N"
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "daily_antimal", ref = "Y/N" },
+      { field = "daily_antimal_typ___1", values = { 1 = true } },
+      { field = "daily_antimal_typ___2", values = { 1 = true } },
+      { field = "daily_antimal_typ___3", values = { 1 = true } },
+    ]
 
   [visit.treatment_cardiovascular_support]
     combinedType = "any"

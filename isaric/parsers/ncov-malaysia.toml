@@ -486,6 +486,10 @@
     fields = [
       { field = "mx_antimalarial", ref = "Y/N" },
       { field = "antimalarial_dc", ref = "Y/N" },
+      { field = "mx_antimalarial_type___1", values = { 1 = true } },
+      { field = "mx_antimalarial_type___2", values = { 1 = true } },
+      { field = "type_antimalarial_dc___1", values = { 1 = true } },
+      { field = "type_antimalarial_dc___2", values = { 1 = true } },
     ]
 
   [visit.treatment_antimalarial_type]

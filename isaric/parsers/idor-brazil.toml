@@ -3,6 +3,7 @@
 [adtl]
   name = "idor-brazil"
   description = "CVTDWXD COVID-19 patient data IDOR_Brazil September2020"
+  experimental_agents = ["testing"]
 
   [adtl.tables.subject]
     kind = "groupBy"
@@ -489,7 +490,7 @@
     ],
     [
       "Beclometasona",
-      "Beclometasone",
+      "Beclomethasone",
     ],
     [
       "Cortisonal",
@@ -505,11 +506,11 @@
     ],
     [
       "Symbicort",
-      "Budenoside",
+      "Budesonide",
     ],
     [
       "Pulmicort",
-      "Budenoside",
+      "Budesonide",
     ],
   ]
 
