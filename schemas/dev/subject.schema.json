@@ -143,6 +143,11 @@
       "description": "Ethnicity",
       "category": "demographics"
     },
+    "works_lab": {
+      "type": "boolean",
+      "description": "Works in laboratory (supertype)",
+      "category": "demographics"
+    },
     "works_microbiology_lab": {
       "type": "boolean",
       "description": "Works in microbiology lab",
@@ -263,9 +268,10 @@
     },
     "has_smoking": {
       "enum": [
-        "yes",
+        "current",
         "former",
-        "never"
+        "never",
+        "no"
       ],
       "description": "History of smoking",
       "category": "comorbidities"
@@ -368,6 +374,21 @@
       "type": "boolean",
       "description": "Admitted to ICU",
       "category": "outcome"
+    },
+    "vaccinated_covid19": {
+      "type": "boolean",
+      "description": "Has received any dose of a COVID-19 vaccine",
+      "category": "vaccinations"
+    },
+    "vaccinated_covid19_dates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "date"
+      },
+      "uniqueItems": true,
+      "description": "Dates on which COVID-19 vaccinations were given",
+      "category": "vaccinations"
     }
   }
 }

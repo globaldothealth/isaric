@@ -122,10 +122,10 @@
     ]
     description = "Is the patient a healthcare worker?"
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "healthwork_type"
     values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false, 6 = false, 7 = false, 8 = false, 9 = false, 10 = false }
-    description = "Is the patient a healthcare worker?"
+    description = "laboratory worker"
 
   [subject.pregnancy] # pregnancy fields not in the data?
     field = "PregnancyStatus"
@@ -188,8 +188,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "yes", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
-      { field = "flw_smok_before", values = { 1 = "former", 2 = "yes", 3 = "never" } },
+      { field = "Smoking", values = { "Never smoked" = "never", "Current smoker" = "current", "Former smoker" = "former" } }, # this is a text field; values = ['Unknown', 'Never smoked', 'Current smoker', 'Former smoker']
+      { field = "flw_smok_before", values = { 1 = "former", 2 = "current", 3 = "never" } },
     ]
 
   [subject.has_asthma]
@@ -289,6 +289,19 @@
       { field = "Ever ICU", values = { 0 = false, 1 = true } },
       { field = "Intervention during hospitalisation.IcuAdmission", ref = "Y/N/NK" },                                                                        # values in data = ['0', 'Unknown', '1']
       { field = "flw_icu", description = "If ever admitted to hospital, were you admitted to intensive care (ICU/ITU)?", values = { 0 = false, 1 = true } },
+    ]
+
+  [subject.vaccinated_covid19]
+    field = "Vaccinated"
+    values = { 1 = true, 0 = false }
+
+  [subject.vaccinated_covid19_dates]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "First Dose Date" },
+      { field = "Second Dose Date" },
+      { field = "Booster Dose Date" },
     ]
 
 [visit]
@@ -572,7 +585,7 @@
 
 [[observation]]
   name = "cough"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
 
   [observation.is_present]
@@ -585,19 +598,19 @@
 
 [[observation]]
   name = "cough_dry"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_cough_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
 [[observation]]
   name = "cough_with_sputum_production"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_coughsput_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
 [[observation]]
   name = "cough_with_haemoptysis"
-  phase = "pre-admission"
+  phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "flw_coughhb_ceoccur_2", values = { 0 = false, 1 = true } } # values = ['0', '1', '3']
 
@@ -944,6 +957,44 @@
   is_present = { field = "flw2_joint_pain_{n}", values = { 1 = true, 0 = false } }
   if.any = [{ "flw2_joint_pain_{n}" = 1 }, { "flw2_joint_pain_{n}" = 0 }]
   for.n.range = [1, 5]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_jointpain_ceoccur_2", values = { 1 = true } },
+      { field = "Admission Symptoms.MuscleAches", values = { 1 = true } },
+      { field = "flw_myalgia_ceoccur_2", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "flw_survey_date" }
+  for.n.range = [1, 5]
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_joint_pain", values = { 1 = true } },
+      { field = "flw_muscle_pain", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "followup"
+  date = { field = "flw2_survey_date_{n}" }
+  for.n.range = [1, 5]
+
+  [observation.is_present]
+    field = "flw2_joint_pain_{n}"
+    values = { 1 = true }
 
 [[observation]]
   name = "inability_to_walk"

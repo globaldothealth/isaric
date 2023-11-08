@@ -149,7 +149,7 @@
   [subject.has_smoking]
     field = "currentsmoking_mhyn"
     description = "Current Smoking"
-    values = { 1 = "yes" }
+    values = { 1 = "current" }
 
   [subject.has_tuberculosis]
     field = "tuberculosis_mhyn"
@@ -174,7 +174,7 @@
     description = "Healthcare Worker?"
     ref = "Y/N/NK"
 
-  [subject.works_microbiology_lab] # This doesn't specify microB lab, but the syntax is the same as other isaric studies
+  [subject.works_lab]
     field = "labwork_erterm"
     description = "Laboratory Worker?"
     ref = "Y/N/NK"
@@ -204,6 +204,17 @@
       field = "icu_trt_v2"
       description = "Intensive Care Unit admission"
       ref = "Y/N/NK"
+
+[subject.vaccinated_covid19]
+  field = "c19_vacc"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "dose_date" }]
+  # context = ["Date of the most recent dose"]
+
 
 [visit]
   country_iso3 = "MWI"
@@ -620,6 +631,19 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "myalgia_ceoccur_v2", description = "Muscle ache (Myalgia)", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "oxygen_saturation_percent"

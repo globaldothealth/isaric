@@ -20,17 +20,21 @@
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
-    { field = "icu_hostdat", description = "ICU admission relates to admission date" },
     { field = "hostdat", description = "Admission date at this facility" },
-    { field = "dsstdat", description = "Date of enrolment" },
     { field = "cestdat", description = "Onset date of first/earliest symptom" },
+    { field = "dsstdat", description = "Date of enrolment" },
   ]
 
-[adtl.defs.dailyDateHierarchy]
+[adtl.defs.dischargeDateHierarchy]
   combinedType = "firstNonNull"
   fields = [
-    { field = "daily_dsstdat", description = "DATE OF ASSESSMENT" },
-    { field = "daily_lbdat", description = "Date of assessment" },
+    { field = "f_datedeath", if.all = [
+      { f_deathsite = { "!=" = 3 } },
+      { f_deathsite = { "!=" = 9 } },
+      { f_deathsite = { "!=" = "" } },
+    ] },
+    { field = "f_datehosp" },
+    { field = "dsstdtc" },
   ]
 
 [adtl.defs.countryMap.values]
@@ -248,7 +252,9 @@
 
   [subject.subject_id]
     field = "subjid"
+    ref = "relsub"
     sensitive = true
+    ignoreMissingKey = true
     description = "Participant Identification Number (PIN) specify CPMS Site code (hyphen) four to six digit number patient number e.g. Y0401-0001."
 
   [subject.enrolment_date]
@@ -256,10 +262,10 @@
     description = "Date of Enrolment"
 
   [subject.earliest_admission_date]
-    combinedType = "min"
-    fields = [{ ref = "admissionDateHierarchy" }]
+    combinedType = "firstNonNull"
+    fields = [{ field = "hostdat" }, { field = "cestdat" }]
 
-  [subject.ethnicity] # TODO: need to add ethnic other field
+  [subject.ethnicity]
     description = "Ethnic groups"
     combinedType = "list"
     excludeWhen = "none"
@@ -273,6 +279,11 @@
       { field = "ethnic___7", values = { 1 = "White" } },
       { field = "ethnic___8", values = { 1 = "Aboriginal_First_Nations" } },
     ]
+
+  [subject.works_lab]
+    field = "labwork_erterm"
+    values = { 1 = true }
+    description = "Employed in a microbiology laboratory?"
 
   [subject.works_microbiology_lab]
     field = "labwork_erterm"
@@ -454,7 +465,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = "yes", 2 = "never", 3 = "former" }
+  values = { 1 = "current", 2 = "never", 3 = "former" }
 
 [subject.has_asthma]
   field = "asthma_mhyn"
@@ -474,7 +485,11 @@
   ref = "Y/N/NK"
   description = "Chronic kidney disease"
 
-[subject.has_diabetes] # NEED TO CHECK THIS!
+[subject.has_chronic_respiratory_disease]
+  field = "chronicpul_mhyn"
+  ref = "Y/N/NK"
+
+[subject.has_diabetes]
   combinedType = "firstNonNull"
   fields = [
     { field = "diabetiscomp_mhyn", ref = "Y/N/NK", description = "Diabetes with complications" },
@@ -504,11 +519,30 @@
   ref = "Y/N/NK"
   description = "Other immunosuppressant agents (not oral steroids)"
 
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "otherrisktext", if.all = [
+      { otherrisktext = { "!=" = 1 } },
+      { otherrisktext = { "!=" = 0 } },
+      { otherrisktext = { "!=" = 61 } },
+      { otherrisktext = { "!=" = 88 } },
+    ] },
+  ]
+
+[subject.has_died]
+  combinedType = "any"
+  fields = [
+    { field = "f_datedeath", apply = { function = "isNotNull" } },
+    { field = "dsterm", values = { 1 = false, 2 = false, 3 = false, 4 = true, 5 = false } },
+  ]
+
 [subject.date_death]
   combinedType = "firstNonNull"
   fields = [
-    { field = "f_datedeath", description = "Date of death", if = { dsterm = 4 } },
-    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 1 } },
+    { field = "f_datedeath", description = "Date of death" },
+    { field = "dsstdtc", description = "Outcome date", if = { dsterm = 4 } },
   ]
 
 [subject.icu_admitted]
@@ -516,20 +550,33 @@
   description = "Admitted to ICU?"
   apply = { function = "isNotNull" }
 
+[subject.vaccinated_covid19]
+  field = "vacc_cov19_cmyn"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [
+    { field = "vacc_cov19_1_cmdat" },
+    { field = "vacc_cov19_2_cmdat" },
+    { field = "vacc_cov19_3_cmdat" },
+    { field = "vacc_cov19_cmdat" },
+  ]
+  # context = ["Date of most recent dose"]
+
 [visit]
   country_iso3 = { field = "country", ref = "countryMap" }
 
-  [visit.subject_id] # This is the same as the subject_id!
+  [visit.subject_id]
+    field = "subjid"
+    ref = "relsub"
+    sensitive = true
+    ignoreMissingKey = true
+
+  [visit.visit_id]
     field = "subjid"
     sensitive = true
-
-  [visit.visit_id] # This is the same as the subject_id!
-    field = "subjid"
-    sensitive = true
-
-  [visit.date_outcome]
-    field = "dsstdtc"
-    description = "Outcome date"
 
   [visit.start_date]
     combinedType = "firstNonNull"
@@ -537,40 +584,59 @@
       { field = "hostdat", description = "Admission date at this facility" },
       { field = "cestdat", description = "Onset date of first/earliest symptom" },
       { field = "dsstdat", description = "Date of enrolment" },
-      # { field = "daily_dsstdat", description = "Date of assessment" },
-      # { field = "hostdat_transfer", description = "Admission date at transfer facility" },
+    ]
+
+  [visit.date_outcome]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "f_datedeath", if.all = [
+        { f_deathsite = { "!=" = 3 } },
+        { f_deathsite = { "!=" = 9 } },
+        { f_deathsite = { "!=" = "" } },
+      ] },
+      { field = "f_datehosp" },
+      { field = "dsstdtc" },
     ]
 
   [visit.outcome]
-    field = "dsterm"
-    description = "Outcome"
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "f_datedeath", apply = { function = "textIfNotNull", params = [
+        "death",
+      ] }, if.all = [
+        { f_deathsite = { "!=" = 3 } },
+        { f_deathsite = { "!=" = 9 } },
+        { f_deathsite = { "!=" = "" } },
+      ] },
+      { field = "dsterm", values = { 1 = "discharged", 2 = "hospitalised", 3 = "transferred", 4 = "death", 5 = "palliative discharge" } },
+      { field = "f_datehosp", apply = { function = "textIfNotNull", params = [
+        "discharged",
+      ] } },
+    ]
 
-    [visit.outcome.values]
-      1 = "discharged"
-      2 = "hospitalised"
-      3 = "transferred"
-      4 = "death"
-      5 = "palliative discharge"
+  [visit.pathogen_test_date]
+    field = "mbdat"
+    description = "Pathogen testing sample collection date"
+    if.any = [{ resp_mbtestcd = 1 }, { blpcr_othlab_mbtestcd = 1 }]
 
-[visit.pathogen_test_date]
-  field = "mbdat"
-  description = "Pathogen testing sample collection date"
-  if.any = [{ resp_mbtestcd = 1 }, { blpcr_othlab_mbtestcd = 1 }]
+  [visit.icu_admission]
+    description = "ICU Admission"
+    combinedType = "any"
+    fields = [
+      { field = "Date Of ICU Admission  (Treatment) 6.1 Date of ICU admission [dischargeoutcome_arm_1][icu_hostdat]", apply = { function = "isNotNull" } },
+      { field = "icu_hostdat", description = "Date of ICU admission", apply = { function = "isNotNull" } },
+      { field = "icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency Unit admission?" },
+      { field = "daily_hoterm", ref = "Y/N/NK", description = "Admitted to intensive care, intensive therapy, intermediate care or high dependency unit?" },
+    ]
 
-[visit.icu_admission]
-  description = "ICU Admission"
-  combinedType = "any"
-  fields = [
-    { field = "icu_hostdat", description = "Date of ICU admission", apply = { function = "isNotNull" } },
-    { field = "icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency Unit admission?" },
-    { field = "daily_hoterm", ref = "Y/N/NK", description = "Admitted to intensive care, intensive therapy, intermediate care or high dependency unit?" },
-  ]
-
-[visit.icu_admission_dates]
-  description = "ICU admission date"
-  combinedType = "list"
-  excludeWhen = "none"
-  fields = [{ field = "icu_hostdat" }]
+  [visit.icu_admission_dates]
+    description = "ICU admission date"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "Date Of ICU Admission  (Treatment) 6.1 Date of ICU admission [dischargeoutcome_arm_1][icu_hostdat]" },
+      { field = "icu_hostdat", if = { "Date Of ICU Admission  (Treatment) 6.1 Date of ICU admission [dischargeoutcome_arm_1][icu_hostdat]" = "" } },
+    ]
 
 [visit.transfer_from_other_facility]
   field = "hooccur"
@@ -597,6 +663,11 @@
     { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" } },
     { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
   ]
+  
+[visit.treatment_antiviral_type_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "antiviral_cmtype" }]
 
 [visit.treatment_antimalarial]
   field = "antiviral_cmtrt___8"
@@ -613,162 +684,162 @@
   field = "daily_neuro_cmtrt"
   ref = "Y/N/NK"
 
-[visit.treatment_antibiotics]
-  description = "Antibiotics?"
-  field = "antibiotic_cmyn"
-  ref = "Y/N/NK"
+  [visit.treatment_antibiotics]
+    description = "Antibiotics?"
+    field = "antibiotic_cmyn"
+    ref = "Y/N/NK"
 
-[visit.treatment_antibiotics_type]
-  combinedType = "set"
-  excludeWhen = 'false-like'
-  fields = [
-    { field = "antibiotic_cmtrt_1" },
-    { field = "antibiotic_cmtrt_2" },
-    { field = "antibiotic_cmtrt_3" },
-    { field = "antibiotic_cmtrt_4" },
-    { field = "antibiotic_cmtrt_5" },
-    { field = "antibiotic_cmtrt_6" },
-    { field = "antibiotic_cmtrt_7" },
-    { field = "antibiotic_cmtrt_8" },
-    { field = "antibiotic_cmtrt_9" },
-  ]
+  [visit.treatment_antibiotics_type]
+    combinedType = "set"
+    excludeWhen = 'false-like'
+    fields = [
+      { field = "antibiotic_cmtrt_1" },
+      { field = "antibiotic_cmtrt_2" },
+      { field = "antibiotic_cmtrt_3" },
+      { field = "antibiotic_cmtrt_4" },
+      { field = "antibiotic_cmtrt_5" },
+      { field = "antibiotic_cmtrt_6" },
+      { field = "antibiotic_cmtrt_7" },
+      { field = "antibiotic_cmtrt_8" },
+      { field = "antibiotic_cmtrt_9" },
+    ]
 
-[visit.treatment_antifungal_agent]
-  description = "Antifungal agent?"
-  field = "antiviral_cmyn"
-  ref = "Y/N/NK"
+  [visit.treatment_antifungal_agent]
+    description = "Antifungal agent?"
+    field = "antiviral_cmyn"
+    ref = "Y/N/NK"
 
-[visit.treatment_other]
-  description = "Other treatments administered for COVID-19 including experimental or compassionate use?"
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "othertx_cmtrt_1" },
-    { field = "othertx_cmtrt_2" },
-    { field = "othertx_cmtrt_3" },
-  ]
+  [visit.treatment_other]
+    description = "Other treatments administered for COVID-19 including experimental or compassionate use?"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "othertx_cmtrt_1" },
+      { field = "othertx_cmtrt_2" },
+      { field = "othertx_cmtrt_3" },
+    ]
 
-  # other free text?
+    # other free text?
 
-[visit.treatment_dialysis]
-  description = "Renal replacement therapy (RRT) or dialysis"
-  combinedType = "any"
-  fields = [
-    { field = "rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy" },
-    { field = "daily_rrt_cmtrt", ref = "Y/N/NK", description = "Dialysis / Hemofiltration?" },
-  ]
+  [visit.treatment_dialysis]
+    description = "Renal replacement therapy (RRT) or dialysis"
+    combinedType = "any"
+    fields = [
+      { field = "rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy" },
+      { field = "daily_rrt_cmtrt", ref = "Y/N/NK", description = "Dialysis / Hemofiltration?" },
+    ]
 
-[visit.treatment_inotropes_vasopressors]
-  description = "Inotropes/vasopressors?"
-  combinedType = "any"
-  fields = [
-    { field = "inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
-    { field = "daily_inotrope_cmyn", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_inotropes_vasopressors]
+    description = "Inotropes/vasopressors?"
+    combinedType = "any"
+    fields = [
+      { field = "inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+      { field = "daily_inotrope_cmyn", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_corticosteroid]
-  description = "Corticosteroid?"
-  field = "corticost_cmyn"
-  ref = "Y/N/NK"
+  [visit.treatment_corticosteroid]
+    description = "Corticosteroid?"
+    field = "corticost_cmyn"
+    ref = "Y/N/NK"
 
-[visit.treatment_corticosteroid_type]
-  description = "Other corticosteroid?"
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "dexameth_cmyn", values = { 1 = "Dexamethasone" } },
-    { field = "steroid_other_cmtrt___1", values = { 1 = "Prednisolone" } },
-    { field = "steroid_other_cmtrt___2", values = { 1 = "Hydrocortisone" } },
-    { field = "steroid_other_cmtrt___3", values = { 1 = "Methylprednisolone" } },
-    { field = "steroid_other_cmtrt___4", values = { 1 = "Other" } },
-  ]
+  [visit.treatment_corticosteroid_type]
+    description = "Other corticosteroid?"
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "dexameth_cmyn", values = { 1 = "Dexamethasone" } },
+      { field = "steroid_other_cmtrt___1", values = { 1 = "Prednisolone" } },
+      { field = "steroid_other_cmtrt___2", values = { 1 = "Hydrocortisone" } },
+      { field = "steroid_other_cmtrt___3", values = { 1 = "Methylprednisolone" } },
+      { field = "steroid_other_cmtrt___4", values = { 1 = "Other" } },
+    ]
 
-[visit.treatment_corticosteroid_type_other]
-  description = "Type of corticosteroid used - other, free text"
-  combinedType = "set"
-  excludeWhen = "false-like"
-  fields = [{ field = "corticost_cmtrt" }]
+  [visit.treatment_corticosteroid_type_other]
+    description = "Type of corticosteroid used - other, free text"
+    combinedType = "set"
+    excludeWhen = "false-like"
+    fields = [{ field = "corticost_cmtrt" }]
 
-[visit.treatment_cardiovascular_support]
-  combinedType = "any"
-  fields = [
-    { field = "extracorp_prtrt", ref = "Y/N/NK" },
-    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
-    { field = "inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
-    { field = "daily_inotrope_cmyn", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_cardiovascular_support]
+    combinedType = "any"
+    fields = [
+      { field = "extracorp_prtrt", ref = "Y/N/NK" },
+      { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+      { field = "inotrop_cmtrt", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+      { field = "daily_inotrope_cmyn", description = "Inotropes/vasopressors?", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_anticoagulation]
-  description = "Anticoagulation?"
-  combinedType = "any"
-  fields = [
-    { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
-    { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_anticoagulation]
+    description = "Anticoagulation?"
+    combinedType = "any"
+    fields = [
+      { field = "anticoag_cmyn", description = "Anticoagulation?", ref = "Y/N/NK" },
+      { field = "heparint_cmyn", description = "Heparin?", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_prone_position]
-  description = "Ventilation in prone position?"
-  combinedType = "any"
-  fields = [
-    { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
-    { field = "daily_prone_cmtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_prone_position]
+    description = "Ventilation in prone position?"
+    combinedType = "any"
+    fields = [
+      { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+      { field = "daily_prone_cmtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+    ]
 
 
-[visit.treatment_ecmo]
-  description = "Extracorporeal (ECMO) support"
-  combinedType = "any"
-  fields = [
-    { field = "extracorp_prtrt", ref = "Y/N/NK" },
-    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_ecmo]
+    description = "Extracorporeal (ECMO) support"
+    combinedType = "any"
+    fields = [
+      { field = "extracorp_prtrt", ref = "Y/N/NK" },
+      { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_noninvasive_ventilation]
-  combinedType = "any"
-  fields = [
-    { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
-    { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
-  ]
+  [visit.treatment_noninvasive_ventilation]
+    combinedType = "any"
+    fields = [
+      { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+      { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+    ]
 
-[visit.treatment_high_flow_nasal_cannula]
-  combinedType = "any"
-  fields = [
-    { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
-    { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_high_flow_nasal_cannula]
+    combinedType = "any"
+    fields = [
+      { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
+      { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+    ]
 
-[visit.treatment_invasive_ventilation]
-  combinedType = "any"
-  description = "Invasive ventilation"
-  fields = [
-    { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
-    { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
-  ]
+  [visit.treatment_invasive_ventilation]
+    combinedType = "any"
+    description = "Invasive ventilation"
+    fields = [
+      { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+      { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+    ]
 
-[visit.treatment_oxygen_therapy]
-  combinedType = "any"
-  description = "Oxygen therapy"
-  fields = [
-    { field = "oxygen_cmoccur", values = { 1 = true, 2 = false }, description = "Any oxygen therapy?" },
-    { field = "daily_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
-    { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
-    { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
-    { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
-    { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
-    { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
-    { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
-    { field = "extracorp_prtrt", ref = "Y/N/NK" },
-    { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
-    # { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
-    { field = "daily_prone_cmtype", description = "Prone while on invasive ventilation", values = { 1 = true } },
-  ]
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    description = "Oxygen therapy"
+    fields = [
+      { field = "oxygen_cmoccur", values = { 1 = true, 2 = false }, description = "Any oxygen therapy?" },
+      { field = "daily_fi02_lbyn", ref = "Y/N/NK", description = "Any supplemental oxygen?" },
+      { field = "invasive_proccur", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+      { field = "daily_invasive_prtrt", values = { 1 = true, 2 = false }, description = "Invasive ventilation?" },
+      { field = "nasal_highflow_proccur", ref = "Y/N/NK" },
+      { field = "daily_nasaloxy_cmtrt", ref = "Y/N/NK" },
+      { field = "noninvasive_proccur", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+      { field = "daily_noninvasive_prtrt", values = { 1 = true, 2 = false }, description = "Noninvasive ventilation?" },
+      { field = "extracorp_prtrt", ref = "Y/N/NK" },
+      { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+      # { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
+      { field = "daily_prone_cmtype", description = "Prone while on invasive ventilation", values = { 1 = true } },
+    ]
 
-[visit.treatment_inhaled_nitric_oxide]
-  combinedType = "any"
-  fields = [
-    { field = "inhalednit_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
-    { field = "daily_nitritc_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
-  ]
+  [visit.treatment_inhaled_nitric_oxide]
+    combinedType = "any"
+    fields = [
+      { field = "inhalednit_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
+      { field = "daily_nitritc_cmtrt", description = "Inhaled Nitric Oxide?", ref = "Y/N/NK" },
+    ]
 
 
 [[observation]]
@@ -800,12 +871,7 @@
   name = "cough_dry"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  [observation.is_present]
-    combinedType = "any"
-    fields = [
-      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
-      { field = "cough_ceoccur_v2_2", values = { 1 = true, 2 = false, 3 = false, 0 = false } },
-    ]
+  is_present = { field = "cough_ceoccur_v2_2", values = { 1 = true, 2 = false, 3 = false, 0 = false } }
 
 [[observation]]
   name = "cough_with_sputum_production"
@@ -831,7 +897,7 @@
 
 [[observation]]
   name = "avpu"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   phase = "study"
   text = { field = "avpu_vsorres", values = { 1 = "Alert", 2 = "Verbal", 3 = "Pain", 4 = "Unresponsive" } }
 
@@ -849,20 +915,14 @@
 
 [[observation]]
   name = "oxygen_saturation_percent"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_oxy_vsorres" }
 
 [[observation]]
   name = "glasgow_coma_score"
   phase = "study"
-  date = { ref = "admissionDateHierarchy" }
-  value = { field = "daily_gcs_vsorres" }
-
-[[observation]]
-  name = "glasgow_coma_score"
-  phase = "study"
-  date = { ref = "admissionDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_gcs_vsorres" }
   #description = "Glasgow Coma Score (GCS/15)"
 
@@ -913,6 +973,18 @@
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "chestpain_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "joint_pain"
@@ -975,18 +1047,6 @@
   is_present = { field = "fever_ceoccur_v2", ref = "Y/N/NK" }
 
 [[observation]]
-  name = "cough_with_haemoptysis"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughhb_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
-  name = "cough_with_sputum_production"
-  phase = "admission"
-  date = { ref = "admissionDateHierarchy" }
-  is_present = { field = "coughsput_ceoccur_v2", ref = "Y/N/NK" }
-
-[[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
@@ -996,7 +1056,7 @@
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "diastolic_vsorres" }
   # if = { diastolic_vsyn = 1 }
 
@@ -1008,8 +1068,8 @@
 
 [[observation]]
   name = "heart_rate_bpm"
-  phase = "admission"
-  date = { ref = "dailyDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_hr_vsorres" }
 
 [[observation]]
@@ -1020,8 +1080,8 @@
 
 [[observation]]
   name = "respiratory_rate"
-  phase = "admission"
-  date = { ref = "dailyDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_rr_vsorres" }
 
 [[observation]]
@@ -1032,8 +1092,8 @@
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"
-  phase = "admission"
-  date = { ref = "dailyDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_dsstdat" }
   value = { field = "systolic_vsorres" }
 
 [[observation]]
@@ -1062,8 +1122,8 @@
 
 [[observation]]
   name = "sternal_capillary_refill_time_greater_2s"
-  phase = "admission"
-  date = { ref = "dailyDateHierarchy" }
+  phase = "study"
+  date = { field = "daily_dsstdat" }
   is_present = { field = "daily_stercap_vsorres", values = { 1 = true, 0 = false } }
 
 [[observation]]
@@ -1096,13 +1156,6 @@
   date = { ref = "admissionDateHierarchy" }
   is_present = { field = "inablewalk_ceoccur_v2", ref = "Y/N/NK" }
 
-  # [[observation]] # this isn't present in the data file
-  #   name = "clinical_frailty_score"
-  #   phase = "admission"
-  #   date = { ref = "admissionDateHierarchy" } # this is in the critical_care_module
-  #   value = { field = "ccm_b_cfs_rsorres" }
-  #   if = { ccm_b_cfs_rsyn = 1 }
-
 [[observation]]
   name = "temperature_celsius"
   phase = "admission"
@@ -1112,14 +1165,21 @@
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_temp_vsorres", unit = "°C", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
 
 [[observation]]
   name = "pao2_mmHg"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_pao2_lborres", apply = { function = "getFloat" }, unit = "mmHg", source_unit = { field = "daily_pao2_lborresu", values = { 1 = "kPa", 2 = "mmHg" }, description = "PaO2 unit" } }
+  if.all = [
+    { daily_pao2_lborres = { "!=" = "" } },
+    { daily_pao2_lborres = { "!=" = -95 } },
+    { daily_pao2_lborres = { "!=" = -96 } },
+    { daily_pao2_lborres = { "!=" = -97 } },
+    { daily_pao2_lborres = { "!=" = -99 } },
+  ]
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
@@ -1128,41 +1188,47 @@
     ]
 
 [[observation]]
+  name = "pco2_mmHg"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_pco2_lborres", apply = { function = "getFloat" }, unit = "mmHg", source_unit = { field = "daily_pco2_lborresu", values = { 1 = "kPa", 2 = "mmHg" } } }
+
+[[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_meanart_vsorres" }
 
 [[observation]]
   name = "pH"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_ph_lborres" }
 
 [[observation]]
   name = "base_excess"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "daily_baseex_lborres", apply = { function = "getFloat" } }
 
 [[observation]]
   name = "richmond_agitation-sedation_scale"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "rass_vsorres", apply = { function = "getFloat" } }
   # if.any = [{ rass_vsyn = 1 }, { rass_sas_vsyn = 1 }]
 
 [[observation]]
   name = "riker_sedation-agitation_scale"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   value = { field = "sas_vsorres", apply = { function = "getFloat" } }
   # if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
 
 [[observation]]
   name = "oxygen_flow_volume_max"
   phase = "study"
-  date = { ref = "dailyDateHierarchy" }
+  date = { field = "daily_dsstdat" }
   text = { field = "oxygen_cmdose", values = { 1 = "<2 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min", 6 = "2-5 L/min" } }
 
 [[observation]]
@@ -1188,7 +1254,7 @@
   phase = "study"
   is_present = { field = "viralpneu_ceterm", ref = "Y/N/NK" }
   start_date = { ref = "admissionDateHierarchy" }
-  date = { field = "dsstdtc" }
+  date = { ref = "dischargeDateHierarchy" }
   duration_type = "event"
   context = ['viral']
 
@@ -1197,7 +1263,7 @@
   phase = "study"
   is_present = { field = "bactpneu_ceterm", ref = "Y/N/NK" }
   start_date = { ref = "admissionDateHierarchy" }
-  date = { field = "dsstdtc" }
+  date = { ref = "dischargeDateHierarchy" }
   duration_type = "event"
   context = ['bacterial']
 
@@ -1206,6 +1272,30 @@
   phase = "study"
   is_present = { field = "cryptogenic_ceterm", ref = "Y/N/NK" }
   start_date = { ref = "admissionDateHierarchy" }
-  date = { field = "dsstdtc" }
+  date = { ref = "dischargeDateHierarchy" }
   duration_type = "event"
   context = ['cryptogenic organizing pneumonia (POC)']
+
+[[observation]]
+  name = "oxygen_o2hb"
+  phase = "study"
+  date = { field = "daily_lbdat" }
+  value = { field = "daily_hb_lborres", apply = { function = "getFloat" }, unit = "g/dL", source_unit = { field = "daily_hb_lborresu", values = { 1 = "g/L", 2 = "g/dL", 3 = "mg/dL" } } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  text = { field = "other_cetermy_v2" }
+  if.all = [
+    { other_cetermy_v2 = { "!=" = 1 } },
+    { other_cetermy_v2 = { "!=" = 0 } },
+  ]
+
+[[observation]]
+  name = "seizures"
+  phase = "study"
+  start_date = { ref = "admissionDateHierarchy" }
+  date = { ref = "dischargeDateHierarchy" }
+  duration_type = "event"
+  is_present = { field = "seizure_ceterm", ref = "Y/N/NK" }

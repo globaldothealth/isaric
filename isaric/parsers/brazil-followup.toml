@@ -1,0 +1,828 @@
+#:schema ../../schemas/dev/parser.schema.json
+
+[adtl]
+  name = "brazil-followup"
+  description = "Brazil ISARIC followup survey"
+
+  [adtl.tables.subject]
+    kind = "groupBy"
+    groupBy = "subject_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/subject.schema.json"
+    optional-fields = []
+
+  [adtl.tables.visit]
+    kind = "groupBy"
+    groupBy = "visit_id"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/visit.schema.json"
+    optional-fields = ["start_date", "outcome", "date_outcome"]
+
+  [adtl.tables.observation]
+    kind = "oneToMany"
+    aggregation = "lastNotNull"
+    schema = "../../schemas/dev/observation.schema.json"
+    common = { visit_id = { field = "flw_subjid", sensitive = true } }
+
+  [adtl.defs."Y/N".values]
+    1 = true
+    0 = false
+
+  [adtl.defs."checkbox".values]
+    1 = true
+
+  [adtl.defs.inabilityWalkToday.values]
+    1 = 1 # "No difficulty"
+    2 = 2 # "Some difficulty"
+    3 = 3 # "Lots of difficulty"
+    4 = 4 # "Unable to walk"
+
+  [adtl.defs.inabilityWalk.values]
+    1 = 1 # "No difficulty"
+    2 = 2 # "Some difficulty"
+    3 = 2 # "Some difficulty"
+    4 = 3 # "Lots of difficulty"
+    5 = 4 # "Unable to walk"
+
+[adtl.defs."admissionDateHierarchy"]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "flw_first_admit" },
+    { field = "flw_first_sym" },
+    { field = "flw_survey_date" },
+  ]
+
+  # SUBJECT
+  # required fields - subject_id, country_iso3, admission_date, age, sex_at_birth, ethnicity, pathogen
+
+[subject]
+  pathogen = "COVID-19"
+  has_died = false
+
+  [subject.subject_id]
+    field = "flw_subjid"
+    sensitive = true
+
+  [subject.enrolment_date]
+    field = "flw_survey_date"
+    description = "Data em que está respondendo esta pesquisa (DD/MM/YYYY):"
+
+  [subject.earliest_admission_date]
+    ref = "admissionDateHierarchy"
+
+    # [subject.age] - NOTE: the year has mapped values, won't work like this
+    #   field = "flw_year_of_birth"
+    #   apply = { function = "yearsElapsed", params = [
+    #     "$flw_survey_date",
+    #     2022,
+    #     "%d/%m/%Y",
+    #     "%d/%m/%Y",
+    #   ] }
+
+    # [subject.date_of_birth] - neither will this
+
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "flw_year_of_birth", values = { 1 = "1915", 2 = "1916", 3 = "1917", 4 = "1918", 5 = "1919", 6 = "1920", 7 = "1921", 8 = "1922", 9 = "1923", 10 = "1924", 11 = "1925", 12 = "1926", 13 = "1927", 14 = "1928", 15 = "1929", 16 = "1930", 17 = "1931", 18 = "1932", 19 = "1933", 20 = "1934", 21 = "1935", 22 = "1936", 23 = "1937", 24 = "1938", 25 = "1939", 26 = "1940", 27 = "1941", 28 = "1942", 29 = "1943", 30 = "1944", 31 = "1945", 32 = "1946", 33 = "1947", 34 = "1948", 35 = "1949", 36 = "1950", 37 = "1951", 38 = "1952", 39 = "1953", 40 = "1954", 41 = "1955", 42 = "1956", 43 = "1957", 44 = "1958", 45 = "1959", 46 = "1960", 47 = "1961", 48 = "1962", 49 = "1963", 50 = "1964", 51 = "1965", 52 = "1966", 53 = "1967", 54 = "1968", 55 = "1969", 56 = "1970", 57 = "1971", 58 = "1972", 59 = "1973", 60 = "1974", 61 = "1975", 62 = "1976", 63 = "1977", 64 = "1978", 65 = "1979", 66 = "1980", 67 = "1981", 68 = "1982", 69 = "1983", 70 = "1984", 71 = "1985", 72 = "1986", 73 = "1987", 74 = "1988", 75 = "1989", 76 = "1990", 77 = "1991", 78 = "1992", 79 = "1993", 80 = "1994", 81 = "1995", 82 = "1996", 83 = "1997", 84 = "1998", 85 = "1999", 86 = "2000", 87 = "2001", 88 = "2002", 89 = "2003", 90 = "2004", 91 = "2005", 92 = "2006", 93 = "2007", 94 = "2008", 95 = "2009", 96 = "2010", 97 = "2011", 98 = "2012", 99 = "2013", 100 = "2014", 101 = "2015", 102 = "2016", 103 = "2017", 104 = "2018", 105 = "2019", 106 = "2020" } },
+    ]
+
+  [subject.dob_month]
+    field = "flw_month_birth"
+
+  [subject.dob_day]
+    field = "flw_day_birth"
+
+  [subject.sex_at_birth]
+    field = "flw_sex_at_birth_new"
+    description = "Sexo de nascimento:"
+
+    [subject.sex_at_birth.values]
+      1 = "male"
+      2 = "female"
+
+[subject.ethnicity]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "flw_ethnicity___1", values = { 1 = "White" } },
+    { field = "flw_ethnicity___2", values = { 1 = "Arab" } },
+    { field = "flw_ethnicity___3", values = { 1 = "Black" } },
+    { field = "flw_ethnicity___4", values = { 1 = "East Asian" } },
+    { field = "flw_ethnicity___5", values = { 1 = "South Asian" } },
+    { field = "flw_ethnicity___6", values = { 1 = "West Asian" } },
+    { field = "flw_ethnicity___7", values = { 1 = "Latin American" } },
+    { field = "flw_ethnicity_oth" },
+  ]
+
+[subject.pregnancy]
+  field = "flw_prg"
+  ref = "Y/N"
+  if = { flw_sex_at_birth_new = 2 }
+
+[subject.pregnancy_gestational_age_weeks]
+  field = "flw_preg_gest"
+
+[subject.has_chronic_hematologic_disease]
+  field = "flw_spc_ongoing___12"
+  ref = "checkbox"
+
+[subject.has_asplenia]
+  field = "flw_spc_ongoing___10"
+  ref = "checkbox"
+
+[subject.has_tuberculosis]
+  field = "flw_spc_ongoing___17"
+  ref = "checkbox"
+
+[subject.has_dementia]
+  field = "flw_spc_ongoing___15"
+  ref = "checkbox"
+
+[subject.has_chronic_respiratory_disease]
+  field = "flw_spc_ongoing___4"
+  ref = "checkbox"
+
+[subject.has_rheumatologic_disorder]
+  field = "flw_spc_ongoing___13"
+  ref = "checkbox"
+
+[subject.has_hiv]
+  field = "flw_spc_ongoing___16"
+  ref = "checkbox"
+
+[subject.has_hypertension]
+  field = "flw_spc_ongoing___2"
+  ref = "checkbox"
+
+[subject.has_malignant_neoplasm]
+  field = "flw_spc_ongoing___11"
+  ref = "checkbox"
+
+[subject.has_smoking]
+  field = "flw_smoking"
+
+  [subject.has_smoking.values]
+    1 = "current" # "I do this more often"
+    # 2 = "yes" # "I do it less often"
+    3 = "current" # "no difference"
+    4 = "no"      # "I Didn't Do This Before COVID-19"
+
+[subject.has_asthma]
+  field = "flw_spc_ongoing___3"
+  ref = "checkbox"
+
+[subject.has_chronic_cardiac_disease]
+  field = "flw_spc_ongoing___1"
+  ref = "checkbox"
+
+[subject.has_chronic_kidney_disease]
+  field = "flw_spc_ongoing___8"
+  ref = "checkbox"
+
+[subject.has_diabetes]
+  combinedType = "any"
+  fields = [
+    { field = "flw_spc_ongoing___5", ref = "checkbox" },
+    { field = "flw_spc_ongoing___6", ref = "checkbox" },
+    { field = "flw_spc_ongoing___7", ref = "checkbox" },
+  ]
+
+[subject.diabetes_type]
+  combinedType = "firstNonNull"
+  fields = [
+    { field = "flw_spc_ongoing___5", values = { 1 = "type-1" } },
+    { field = "flw_spc_ongoing___6", values = { 1 = "type-2" } },
+    { field = "flw_spc_ongoing___7", values = { 1 = "gestational" } },
+  ]
+
+[subject.has_liver_disease]
+  field = "flw_spc_ongoing___9"
+  ref = "checkbox"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [{ field = "flw_chron_other" }]
+
+[subject.icu_admitted]
+  field = "flw_hosp_icu_new"
+  description = "Admission to an Intensive Care Unit (ICU / CTI)"
+  ref = "Y/N"
+
+[subject.vaccinated_covid19]
+  field = "flw_cov_vacc"
+  values = { 1 = true, 0 = false }
+
+[subject.vaccinated_covid19_dates]
+  combinedType = "list"
+  excludeWhen = "none"
+  fields = [{ field = "flw_vacc_last_dose" }]
+  # context = ["Date of most recent dose"]
+
+  # VISIT
+  # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
+
+[visit]
+  country_iso3 = "BRA"
+
+  [visit.visit_id]
+    field = "flw_subjid"
+    sensitive = true
+
+  [visit.subject_id]
+    field = "flw_subjid"
+    sensitive = true
+
+  [visit.start_date]
+    field = "flw_first_admit"
+
+  [visit.pathogen_test_date] # is this correct?
+    combinedType = "firstNonNull"
+    fields = [{ field = "flw_date_test" }, { field = "flw_date2_test" }]
+
+  [visit.icu_admission]
+    field = "flw_hosp_icu_new"
+    description = "Admission to an Intensive Care Unit (ICU / CTI)"
+    ref = "Y/N"
+
+    # [visit.treatment_corticosteroid]
+    #   field = "flw_ster1"
+    #   ref = "Y/N"
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_corticosteroid_type_other]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [{ field = "flw_oth_ster" }]
+    #   if = { flw_treat_acute = '1' }
+
+  [visit.treatment_oxygen_therapy]
+    combinedType = "any"
+    fields = [
+      { field = "flw_hosp_oxy_new", ref = "Y/N" },
+      { field = "flw_hosp_inva_new", ref = "Y/N" },
+    ]
+
+  [visit.treatment_invasive_ventilation]
+    field = "flw_hosp_inva_new"
+    ref = "Y/N"
+
+    # [visit.treatment_antivirals]
+    #   field = "flw_antiv"
+    #   ref = "Y/N"
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_antiviral_type]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [
+    #     { field = "flw_antiv_agents___1", values = { 1 = "Lopinavir / Ritonavir" } },
+    #     { field = "flw_antiv_agents___2", values = { 1 = "Darunavir" } },
+    #     { field = "flw_antiv_agents___3", values = { 1 = "Remdesivir" } },
+    #     { field = "flw_antiv_agents___4", values = { 1 = "Favipiravir" } },
+    #     { field = "flw_antiv_agents___5", values = { 1 = "Aciclovir / Ganciclovir" } },
+    #     { field = "flw_antiv_agents___6", values = { 1 = "Oseltamivir" } },
+    #     { field = "flw_antiv_agents___7", values = { 1 = "Other" } },
+    #   ]
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_antiviral_type_other]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [{ field = "flw_antiv_other" }]
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_antibiotics]
+    #   field = "flw_antib"
+    #   ref = "Y/N"
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_antibiotics_type]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [{ field = "flw_antiv_ag_3" }]
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_corticosteroid_type]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [
+    #     { field = "flw_wh_ster___1", values = { 1 = "Dexamethasone" } },
+    #     { field = "flw_wh_ster___2", values = { 1 = "Hydrocortisone" } },
+    #     { field = "flw_wh_ster___3", values = { 1 = "Prednisolone" } },
+    #     { field = "flw_wh_ster___4", values = { 1 = "Methylprednisolone" } },
+    #     { field = "flw_wh_ster___5", values = { 1 = "Other" } },
+    #   ]
+    #   if = { flw_treat_acute = '1' }
+
+    # [visit.treatment_other]
+    #   combinedType = "set"
+    #   excludeWhen = "none"
+    #   fields = [{ field = "flw_med_other_name" }]
+    #   if = { flw_treat_acute = '1' }
+
+  [visit.date_outcome]
+    field = "flw_first_disch"
+    description = "What date were you discharged from hospital for the first time?"
+
+  [visit.outcome]
+    field = "flw_first_disch"
+    apply = { function = "textIfNotNull", params = ["discharged"] }
+
+    # OBSERVATION
+    # required fields - phase, date, name
+
+[[observation]]
+  name = "abdominal_pain"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___12", ref = "checkbox" }
+
+[[observation]]
+  name = "abdominal_pain"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_stomach_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "confusion"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___15", ref = "checkbox" }
+
+[[observation]]
+  name = "confusion"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_confusion", ref = "Y/N" }
+
+[[observation]]
+  name = "bleeding_haemorrhage"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_bleeding", ref = "Y/N" }
+
+[[observation]]
+  name = "chest_pain"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___6", ref = "checkbox" }
+
+[[observation]]
+  name = "chest_pain"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_chest_pains", ref = "Y/N" }
+
+[[observation]]
+  name = "cough"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___2", ref = "checkbox" }
+
+[[observation]]
+  name = "cough"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw1_pers_cough", ref = "Y/N" },
+      { field = "flw1_pers_cough_dr", description = "Dry cough", ref = "Y/N" },
+      { field = "flw1_pers_cough_ph", description = "Wet cough", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "cough_dry"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_pers_cough_dr", ref = "Y/N" }
+
+[[observation]]
+  name = "cough_with_sputum_production"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_pers_cough_ph", ref = "Y/N" }
+
+[[observation]]
+  name = "diarrhoea"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___14", ref = "checkbox" }
+
+[[observation]]
+  name = "diarrhoea"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_diarrhoea", ref = "Y/N" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___4", ref = "checkbox" }
+
+[[observation]]
+  name = "fatigue_malaise"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_fatigue_new", ref = "Y/N" }
+
+[[observation]]
+  name = "headache"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___10", ref = "checkbox" }
+
+[[observation]]
+  name = "headache"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_headache", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___1", ref = "checkbox" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  date = { field = "flw_survey_date" }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 1 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 2 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    28,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 3 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    30,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 4 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "history_of_fever"
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    90,
+  ] } }
+  date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    60,
+  ] } }
+  duration_type = "event"
+  phase = "followup"
+  if = { flw_last_fever = 5 }
+  is_present = { field = "flw_fever", ref = "Y/N" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = { field = "flw_survey_date" }
+  phase = "followup"
+  value = { field = "flw_walking_today", ref = "inabilityWalkToday" }
+
+[[observation]]
+  name = "inability_to_walk_scale"
+  date = { field = "flw_survey_date" }
+  phase = "followup"
+  value = { field = "flw_eq5d_mb_5l_uk_eng_2", ref = "inabilityWalk" }
+
+[[observation]]
+  name = "joint_pain"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_joint_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_smell"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___7", ref = "checkbox" }
+
+[[observation]]
+  name = "loss_of_smell"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_loss_smell", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_taste"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___8", ref = "checkbox" }
+
+[[observation]]
+  name = "loss_of_taste"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_loss_taste", ref = "Y/N" }
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_first_14d___7", ref = "checkbox" },
+      { field = "flw_first_14d___8", ref = "checkbox" },
+    ]
+
+[[observation]]
+  name = "loss_of_smell_or_taste"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw_loss_taste", ref = "Y/N" },
+      { field = "flw_loss_smell", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw1_muscle_pain", ref = "Y/N" },
+      { field = "flw1_joint_pain", ref = "Y/N" },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [{ field = "flw_first_14d___11", ref = "checkbox" }]
+
+[[observation]]
+  name = "muscle_aches"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___11", ref = "checkbox" }
+
+[[observation]]
+  name = "muscle_aches"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_muscle_pain", ref = "Y/N" }
+
+[[observation]]
+  name = "seizures"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_seizures", ref = "Y/N" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___3", ref = "checkbox" }
+
+[[observation]]
+  name = "shortness_of_breath"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_short_breath", ref = "Y/N" }
+
+[[observation]]
+  name = "skin_rash"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw_skin_rash", ref = "Y/N" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___13", ref = "checkbox" }
+
+[[observation]]
+  name = "vomiting_nausea"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_feeling_sick", ref = "Y/N" }
+
+[[observation]]
+  name = "other_symptom"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  text = { field = "flw_other_sym" }
+
+[[observation]]
+  name = "other_symptom"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  text = { field = "flw_new_symptoms" }
+
+[[observation]]
+  name = "anorexia"
+  date = { field = "flw_survey_date" }
+  start_date = { field = "flw_survey_date", apply = { function = "startDate", params = [
+    7,
+  ] } }
+  phase = "followup"
+  duration_type = "event"
+  is_present = { field = "flw1_weight_loss", ref = "Y/N" }
+
+[[observation]]
+  name = "runny_nose"
+  start_date = { field = "flw_first_sym" }
+  date = { field = "flw_first_sym", apply = { function = "endDate", params = [
+    14,
+  ] } }
+  duration_type = "event"
+  phase = "initial_illness"
+  is_present = { field = "flw_first_14d___9", ref = "checkbox" }

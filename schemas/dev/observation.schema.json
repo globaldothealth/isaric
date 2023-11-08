@@ -161,7 +161,7 @@
           "const": "heart_rate_bpm"
         },
         "value": {
-          "type": "integer",
+          "type": "number",
           "minimum": 1,
           "maximum": 250
         }
@@ -203,11 +203,26 @@
       ],
       "properties": {
         "name": {
+          "const": "fio2_percent"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 21,
+          "maximum": 100
+        }
+      }
+    },
+    {
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "name": {
           "const": "pao2_mmHg"
         },
         "value": {
           "type": "number",
-          "minimum": 50,
+          "minimum": 25,
           "maximum": 150
         }
       }
@@ -412,8 +427,10 @@
     },
     "phase": {
       "enum": [
+        "initial_illness",
         "pre-admission",
         "admission",
+        "initial_illness",
         "study",
         "followup"
       ],

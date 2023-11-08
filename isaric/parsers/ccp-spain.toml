@@ -62,9 +62,9 @@
       { field = "raza", values = { 1 = "White", 2 = "Black", 3 = "Hispanic", 4 = "Asian", 5 = "Arab", 6 = "Other" } },
     ]
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "infhospi"
-    description = "Employed in a microbiology laboratory?"
+    description = "laboratory staff"
     values = { 2 = true }
 
   [subject.works_healthcare]
@@ -128,7 +128,7 @@
 
   [subject.has_smoking]
     field = "co_fumador"
-    values = { 1 = "yes", 0 = "never", 2 = "former" }
+    values = { 1 = "current", 0 = "never", 2 = "former" }
 
   [subject.has_asthma]
     field = "co_asma"

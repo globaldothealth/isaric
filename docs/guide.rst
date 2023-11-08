@@ -146,6 +146,11 @@ symptoms/observations recorded at admission may refer to the day of
 admission, or a time-period leading up to the day of hospital admission
 - use the ``start_date`` variable in this case.
 
+**initial_illness**: Specifically for subjects who were not admitted to
+hospital. Records symptoms from the first 14 days of the initial illness
+episode, which would normally be assigned to `admission` for subjects
+admitted to a study site.
+
 **study**: Data collected during a single hospital visit. Can refer to a
 single event within the visit period, or something present throughout
 the time spent in hospital.
@@ -510,6 +515,13 @@ in the data as having an immunosuppression co-morbidity.
 
 **has_comorbidity_other**: Set. Any other comorbidity - free text field.
 
+**works_lab**: Bool. Does the subject work in a laboratory setting? Supertype,
+includes *works_microbiology_lab* as subtype.
+
+**works_microbiology_lab**: Bool.
+
+**works_healthcare**: Bool.
+
 **has_died**: Bool. Has the subject died since being enrolled in the
 study? Can take data from both hospitalisation and follow-up surveys,
 and includes non-COVID related deaths where specified (as in many
@@ -520,6 +532,17 @@ outcome records death)/death reported at followup.
 
 **icu_admitted**: Bool. Has the subject been admitted to ICU at any time
 since study enrolment?
+
+Vaccination data should only be recorded from admission and study phases,
+followup vaccination data is noisy and should be discarded.
+
+**vaccinated_covid19**: Bool. True when subject has received any dose of a
+COVID-19 vaccine
+
+**vaccinated_covid19_dates**: List. Dates when subject received a COVID-19
+vaccine. Dates are not necessarily inclusive of all doses; a single date will
+most often be the date of the most recent dose, but a single date does not preclude
+a subject from having recieved multiple doses.
 
 Visit
 -----
@@ -719,6 +742,14 @@ into the subtypes for the phase. For example:
          { field = "blood_cough", description = "Blood cough", ref = "Y/N/NK" },
        ]
 
+**loss_of_smell_or_taste**: Bool. General indicator for loss of smell or taste,
+and can also be used as a single indicator where both symptoms are combined in
+a dataset.
+Subtypes are:
+
++ *loss_of_smell*
++ *loss_of_taste*
+
 .. _other-fields-1:
 
 **loss_of_smell_or_taste**: Bool. Supertype for loss of smell or loss of taste,
@@ -824,7 +855,7 @@ instead contains a boolean Y/N response, use inability_to_walk_ instead.
 
 **lower_chest_wall_indrawing**: Bool.
 
-**lung_sounds**: Bool. Unused.
+**lung_sounds**: Bool.
 
 **lymphadenopathy**: Bool. Combines adenopathy and lymphadenopathy.
 
@@ -843,7 +874,7 @@ record the maximum flow volume.
 **oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
 
-**pao2_mmHg**: Value (50-150). Use context to record whether this is an arterial,
+**pao2_mmHg**: Value (25-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the
 default unit.
 

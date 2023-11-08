@@ -11,16 +11,21 @@ import pandas as pd
 import argparse
 import os
 
+
 def get_observation_fields(schema: dict) -> list:
     try:
         return list(schema["properties"]["name"]["enum"])
     except KeyError:  # try oneOf
-        return sum([
-            obs["properties"]["name"]["enum"]
-            if "enum" in obs["properties"]["name"]
-            else [obs["properties"]["name"]["const"]]
-            for obs in schema["oneOf"]
-        ], [])
+        return sum(
+            [
+                obs["properties"]["name"]["enum"]
+                if "enum" in obs["properties"]["name"]
+                else [obs["properties"]["name"]["const"]]
+                for obs in schema["oneOf"]
+            ],
+            [],
+        )
+
 
 def check_table(table: str, schema: dict, parser: dict) -> dict:
     """
@@ -33,6 +38,9 @@ def check_table(table: str, schema: dict, parser: dict) -> dict:
     except AttributeError:  # observation table
         schema_fields = set(get_observation_fields(schema))
         parser_fields = set(item["name"] for item in parser[table])
+    except KeyError:  # missing table
+        schema_fields = set(schema["properties"].keys())
+        parser_fields = set([])  # no fields in the parser
 
     mismatch = schema_fields - parser_fields
     additional_fields = parser_fields - schema_fields
@@ -106,7 +114,7 @@ def missing_fields(parser_file: str, df: pd.DataFrame, schemas: tuple) -> pd.Dat
         {
             "subject": len(subject["properties"]),
             "visit": len(visit["properties"]),
-            "observation": len(get_observation_fields(observation))
+            "observation": len(get_observation_fields(observation)),
         },
         additional_fields,
     )

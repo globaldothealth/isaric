@@ -131,7 +131,7 @@
 
 [subject.has_smoking]
   field = "smoking_mhyn"
-  values = { 1 = "yes", 2 = "never", 3 = "former" }
+  values = { 1 = "current", 2 = "never", 3 = "former" }
 
 [subject.has_asthma]
   field = "asthma_mhyn"
@@ -337,6 +337,19 @@
   date.ref = "admissionDate"
   phase = "admission"
   is_present = { field = "jointpain_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "diarrhoea"

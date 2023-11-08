@@ -111,8 +111,9 @@
     description = "Gender"
     values = { 0 = "female", 1 = "male" }
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "occupation"
+    description = "Lab worker"
     values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
 
   [subject.works_healthcare]
@@ -181,8 +182,8 @@
   [subject.has_smoking]
     combinedType = "firstNonNull"
     fields = [
-      { field = "smok", values = { 0 = "never", 1 = "yes", 2 = "former" } },
-      { field = "smoke", values = { 0 = "never", 1 = "yes", 2 = "former" } },
+      { field = "smok", values = { 0 = "never", 1 = "current", 2 = "former" } },
+      { field = "smoke", values = { 0 = "never", 1 = "current", 2 = "former" } },
     ]
 
   [subject.has_asthma]
@@ -242,6 +243,15 @@
       { field = "overall_icu_hostdat", apply = { function = "isNotNull" } },
       { field = "icu_date", apply = { function = "isNotNull" } },
     ]
+
+  [subject.vaccinated_covid19]
+    field = "vaccin_covid"
+    values = { 1 = true, 0 = false }
+
+  [subject.vaccinated_covid19_dates]
+    combinedType = "list"
+    excludeWhen = "none"
+    fields = [{ field = "vaccin_date" }]
 
     # VISIT
     # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"
@@ -738,6 +748,20 @@
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
   is_present = { field = "muscle", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "muscle", values = { 1 = true } },
+      { field = "joint", values = { 1 = true } },
+      { field = "jt_ache", values = { 1 = true } },
+    ]
 
 [[observation]]
   name = "runny_nose"

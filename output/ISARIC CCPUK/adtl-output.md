@@ -4,7 +4,7 @@
 |---------------|-------|-------|----------------|
 |subject        |31619  |36754  |86.028732% |
 |visit          |30810  |36754  |83.827611% |
-|observation    |1251023        |1259896        |99.295736% |
+|observation    |1414376        |1427543        |99.077646% |
 
 ## subject
 
@@ -24,6 +24,6 @@
 
 ## observation
 
-* 6538: data must be valid exactly by one definition (0 matches found)
-* 2260: data must contain ['phase', 'date', 'name'] properties
-* 75: data.date cannot be validated by any definition
+* 10814: data must be valid exactly by one definition (0 matches found)
+* 2279: data must contain ['phase', 'date', 'name'] properties
+* 74: data.date cannot be validated by any definition

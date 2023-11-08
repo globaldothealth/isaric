@@ -87,7 +87,7 @@
     field = "sex"
     values = { 1 = "male", 0 = "female" }
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "occupation"
     values = { 1 = false, 2 = false, 3 = false, 4 = false, 5 = false, 6 = true, 7 = false, 8 = false, 9 = false, 10 = false, 11 = false, 12 = false }
 
@@ -107,7 +107,7 @@
     field = "smok"
 
     [subject.has_smoking.values]
-      1 = "yes"
+      1 = "current"
       2 = "former"
       0 = "never"
 
@@ -154,6 +154,7 @@
 [subject.date_death]
   field = "outcome_date"
   if = { outcome = 2 }
+
 
   # VISIT
   # required fields - "visit_id", "subject_id", "country_iso3", "start_date", "outcome", "date_outcome"

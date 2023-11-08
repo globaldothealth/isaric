@@ -90,13 +90,12 @@
       "%d/%m/%Y",
     ] }
 
-
   [subject.works_healthcare]
     field = "healthwork_erterm"
     description = "Healthcare Worker?"
     ref = "Y/N/NK"
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "labwork_erterm"
     description = "Laboratory worker?"
     ref = "Y/N/NK"
@@ -141,7 +140,7 @@
   [subject.has_smoking]
     field = "smoking_mhyn"
     description = "Current smoking? (Yes/No/Unknown)"
-    values = { 1 = "yes" }
+    values = { 1 = "current" }
 
   [subject.has_asthma]
     field = "asthma_mhyn"
@@ -751,6 +750,25 @@
   phase = "study"
   date = { field = "daily_date" }
   is_present = { field = "daily_myalgia_ceoccur_v2", ref = "Y/N" }
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+
+  [observation.is_present]
+    combinedType = "any"
+    excludeWhen = "none"
+    fields = [
+      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
+      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+    ]
+
+[[observation]]
+  name = "musculoskeletal_pain"
+  phase = "study"
+  date = { field = "daily_date" }
+  is_present = { field = "daily_myalgia_ceoccur_v2", values = { 1 = true } }
 
 [[observation]]
   name = "lymphadenopathy"
