@@ -111,6 +111,7 @@
           "Prednisolone",
           "Prednisone",
           "Salmeterol",
+          "Beclomethasone",
           "Other"
         ]
       },
@@ -169,7 +170,6 @@
           "Ritonavir",
           "Interferon alpha",
           "Interferon beta",
-          "Chloroquine/Hydroxychloroquine",
           "Oseltamivir (Tamiflu)",
           "Zanamivir",
           "Casirivimab/Imdevimab",
@@ -212,34 +212,6 @@
     "treatment_anticoagulation": {
       "type": "boolean",
       "description": "Anticoagulation",
-      "category": "treatments"
-    },
-    "treatment_experimental_agent": {
-      "type": "boolean",
-      "description": "Experimental agent",
-      "category": "treatments"
-    },
-    "treatment_experimental_agent_type": {
-      "type": "array",
-      "items": {
-        "enum": [
-          "Chloroquine",
-          "Hydroxychloroquine",
-          "Remdesivir",
-          "IL1 inhibitor",
-          "IL6 inhibitor",
-          "Convalescent plasma",
-          "Other"
-        ]
-      },
-      "uniqueItems": true,
-      "description": "Experimental agent name",
-      "category": "treatments"
-    },
-    "treatment_experimental_agent_type_other": {
-      "type": "array",
-      "uniqueItems": true,
-      "description": "Experimental agent name - other agents",
       "category": "treatments"
     },
     "treatment_inhaled_nitric_oxide": {

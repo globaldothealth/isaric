@@ -365,11 +365,6 @@
     { field = "q16_treatment", description = "16) Inotropes - vasopressors / 	Inotropes -vasopresseurrs?", ref = "Y/N" },
   ]
 
-[visit.treatment_experimental_agent]
-  field = "q15_medication"
-  description = "15) ELIXIR COVID and or ADSK COVID (Medication of Mgr Kleda)  / ELIXIR COVID et ou ADSAK COVID (Médicaments de MGR KLEDA) "
-  ref = "Y/N"
-
 [visit.treatment_dialysis]
   field = "q15_treatment"
   description = "15) Renal replacement therapy (RRT) or dialysis / 	Thérapie de substitution rénale (TRS) ou dialyse ?"
@@ -441,6 +436,7 @@
     { field = "q8_health_care" },
     { field = "q10_health_care" },
   ]
+
 
 [visit.outcome] # Q: Should we distinguish between not admitted (discharged before treatment) and discharged?
   # Q1_outcome and q1_treatment_outcome are present on different rows, so using "set" to get both (and therefore have 'discharged' vs ['hospitalised', 'discharged']) won't work.

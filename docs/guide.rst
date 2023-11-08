@@ -587,7 +587,7 @@ General drug types
 ~~~~~~~~~~~~~~~~~~
 
 The general drug categories *antiviral*, *antibiotic*, *corticosteroid*,
-*experimental_agent*, *antimalarial* and *delirium* all have a set of three
+*antimalarial* and *delirium* all have a set of three
 hierarchical attributes, e.g. for antivirals:
 
 + **treatment_antiviral**: Bool. If antivirals have been administered during the visit
@@ -677,7 +677,8 @@ delirium?
 monoclonal antibodies?
 
 **treatment_other**: Set. Any other treatments, or treatments recorded
-as free text fields, should be recorded here.
+as free text fields, should be recorded here. Can include drugs described
+as 'experimental agents'; trial drugs will be recorded in study metadata.
 
 **treatment_pacing**: Bool. Did the subject receive heart pacing during
 the visit?

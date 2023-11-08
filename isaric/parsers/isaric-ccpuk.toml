@@ -375,6 +375,7 @@
 
   [visit.visit_id]
     field = "subjid"
+    sensitive = true
 
   [visit.start_date]
     combinedType = "firstNonNull"
@@ -442,6 +443,17 @@
     field = "antifung_cmyn"
     ref = "Y/N/NK"
 
+  [visit.treatment_antimalarial]
+    field = "antiviral_cmtrt___7"
+    values = { 1 = true }
+
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "antiviral_cmtrt___7", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
+    ]
+
   [visit.treatment_antivirals]
     description = "Antiviral agent?"
     field = "antiviral_cmyn"
@@ -457,7 +469,6 @@
       { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
       { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
       { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
-      { field = "antiviral_cmtrt___7", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
       { field = "antiviral_cmtrt___8", values = { 1 = "Remdesivir" } },
       { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
       { field = "antiviral_cmtrt___10", values = { 1 = "Oseltamivir (Tamiflu)" } },

@@ -1,7 +1,7 @@
 #:schema ../../schemas/dev/parser.schema.json
 
 [adtl]
-  name = "isaric-LMIC"
+  name = "LMIC"
   description = "LMIC"
 
   [adtl.tables.subject]
@@ -49,8 +49,37 @@
       ] } },
     ]
 
-    #   [subject.date_of_birth]
-    #     field = "dateofbirth"
+  [subject.date_of_birth]
+    field = "dateofbirth"
+    source_date = "%Y-%m-%d"
+
+  [subject.dob_year]
+    combinedType = "firstNonNull"
+    fields = [
+      { field = "dateofbirth", apply = { function = "splitDate", params = [
+        "year",
+        2022,
+        "%Y-%m-%d",
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 2 }, apply = { function = "startYear", params = [
+        [
+          "$hostdat",
+          "$cestdat",
+          "$dsstdat",
+        ],
+        2022,
+      ] } },
+      { field = "age_estimateyears", if = { age_estimateyearsu = 1 }, apply = { function = "startYear", params = [
+        [
+          "$hostdat",
+          "$cestdat",
+          "$dsstdat",
+        ],
+        2022,
+        "%Y-%m-%d",
+        "months",
+      ] } },
+    ]
 
   [subject.earliest_admission_date]
     ref = "admissionDateHierarchy"
@@ -84,7 +113,7 @@
 
   [subject.has_comorbidity_other]
     combinedType = "set"
-    excludeWhen = "none"
+    excludeWhen = "false-like"
     fields = [{ field = "otherrisktext" }]
 
   [subject.has_diabetes]
@@ -404,12 +433,6 @@
     field = "extracorp_trt_v2"
     description = "Extracorporeal (ECMO) support?"
     ref = "Y/N/NK"
-
-[visit.treatment_experimental_agent]
-  combinedType = "any"
-  fields = [
-    { field = "exprmntl_cmyn_v2", description = "Experimental agent?", ref = "Y/N/NK" },
-  ]
 
 [visit.treatment_inotropes_vasopressors]
   combinedType = "any"

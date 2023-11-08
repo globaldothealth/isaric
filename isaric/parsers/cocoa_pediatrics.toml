@@ -269,11 +269,6 @@
     description = "Renal replacement therapy (RRT) or dialysis?"
     ref = "Y/N/NK"
 
-  [visit.treatment_experimental_agent]
-    field = "exprmntl_cmyn_v2"
-    description = "Experimental agent?"
-    ref = "Y/N/NK"
-
   [visit.treatment_inotropes_vasopressors]
     field = "inotrop_prtrt_v3"
     description = "Inotropes / vasopressors?"
