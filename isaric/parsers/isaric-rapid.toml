@@ -3,6 +3,13 @@
 [adtl]
   name = "isaric-rapid"
   description = "ISARIC RAPID study"
+  experimental_agents = [
+    'Chloroquine',
+    'Hydroxychloroquine',
+    'Remdesivir',
+    'IL6/IL1 inhibitors',
+    'Convalescent plasma',
+  ]
 
   [adtl.defs."Y/N/NK".values]
     1 = true

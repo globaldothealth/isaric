@@ -4,6 +4,13 @@
   name = "western-australia"
   description = "Western Australian Covid-19 Research Response"
   defaultDateFormat = "%d/%m/%Y"
+  experimental_agents = [
+    'Chloroquine',
+    'Hydroxychloroquine',
+    'Remdesivir',
+    'IL6/IL1 inhibitors',
+    'Convalescent plasma',
+  ]
 
   [adtl.tables.subject]
     kind = "groupBy"

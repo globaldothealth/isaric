@@ -4,6 +4,14 @@
   name = "ccp-ghana"
   description = "COVID-19 CCP Patient Data - ALERRT Ghana"
   defaultDateFormat = "%d/%m/%Y"
+  experimental_agents = [
+    'Chloroquine',
+    'Hydroxychloroquine',
+    'Remdesivir',
+    'IL6/IL1 inhibitors',
+    'Convalescent plasma',
+    'Tocilizumab',
+  ]
 
   [adtl.tables]
 

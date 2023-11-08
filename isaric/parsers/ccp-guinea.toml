@@ -4,6 +4,13 @@
   name = "ccp-guinea"
   description = "ccp-guinea"
   defaultDateFormat = "%d/%m/%Y"
+  experimental_agents = [
+    'Chloroquine',
+    'Hydroxychloroquine',
+    'Remdesivir',
+    'IL6/IL1 inhibitors',
+    'Convalescent plasma',
+  ]
 
   [adtl.tables.subject]
     kind = "groupBy"

@@ -4,6 +4,7 @@
   name = "ccp-senegal"
   description = "CCP Senegal"
   defaultDateFormat = "%d/%m/%Y"
+  experimental_agents = ['Hydroxychloroquine']
 
   [adtl.tables.subject]
     kind = "groupBy"
