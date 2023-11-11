@@ -571,7 +571,7 @@
 [visit.outcome]
   field = "outcome"
   description = "Outcome"
-  values = { 1 = "discharged", 2 = "recovered", 3 = "transferred", 4 = "death", 5 = "discharged", 6 = "palliative discharge" }
+  values = { 1 = "discharged", 2 = "discharged", 3 = "transferred", 4 = "death", 5 = "discharged", 6 = "palliative discharge" }
 
 [visit.pathogen_test_date]
   field = "path_date"

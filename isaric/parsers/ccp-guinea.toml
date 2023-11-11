@@ -495,7 +495,7 @@
 
   [visit.outcome.values]
     1 = "discharged"
-    2 = "recovered"
+    2 = "discharged"
     3 = "transferred"
     4 = "death"
     5 = "discharged"           # released with home care
