@@ -311,6 +311,7 @@
       { field = "patient_interventions#Extra_corporeal_life_support_ECLS", values = { 1 = true, 0 = false } },
       { field = "Extracorporeal_support", ref = "Y/N" },
       { field = "fio2_1", if = { fio2_1 = { ">" = 21 } }, apply = { function = "isNotNull" } },
+      { field = "signssymp_L_oxygen", apply = { function = "isNotNull" } },
     ]
 
   [visit.treatment_prone_position]

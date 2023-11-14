@@ -566,11 +566,11 @@
   start_date = { field = "hostdat" }
   date = { field = "dsstdtc" }
   duration_type = "event"
-  context = ["Maximum flow rate over entire visit"]
+  context = ["Maximum flow rate over entire visit", "Nasal prongs/mask"]
 
   [observation.value]
     field = "xygn_thrpintfc_mask_v3"
-    description = "If NP or Mask selected what wa the maximum flow rate recorded in L/min"
+    description = "If NP or Mask selected what was the maximum flow rate recorded in L/min"
 
 [[observation]]
   name = "oxygen_saturation_percent"

@@ -475,7 +475,7 @@
     fields = [
       { field = "a_o2_on", description = "O2 flow (L/min), nasal O2" },
       { field = "a_of_o2", description = "O2 flow (L/min), HFNC" },
-      { field = "a_vni_ti", description = "Inspiratory trigger (L/min)" },
+      # { field = "a_vni_ti", description = "Inspiratory trigger (L/min)" },
       { field = "a_vm_di", description = "Inspiratory flow (L/min)" },
     ]
 

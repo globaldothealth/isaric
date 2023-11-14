@@ -1192,24 +1192,6 @@
   date = { ref = "dailyDateHierarchy" }
   value = { field = "daily_fio2c_lborres" }
 
-  [observation.context]
-    combinedType = "set"
-    excludeWhen = "none"
-    fields = [
-      { field = "daily_nasaloxy_cmtrt", values = { 1 = "HFNC" } },
-      { field = "daily_noninvasive_prtrt", values = { 1 = "non-invasive" }, if = { "any" = [
-        { daily_noninvasive_prtype = "" },
-        { daily_noninvasive_prtype = 4 },
-      ] } },
-      { field = "daily_noninvasive_prtype", values = { 1 = "BiPAP", 2 = "CPAP", 3 = "Other non-invasive" } },
-      { field = "daily_invasive_prtrt", values = { 1 = "invasive mechanical" } },
-      { field = "daily_ecmo_prtrt", values = { 1 = "ECMO" }, if = { "any" = [
-        { daily_ecmo_prtype = "" },
-        { daily_ecmo_prtype = 4 },
-      ] } },
-      { field = "daily_ecmo_prtype", values = { 1 = "VV ECMO", 2 = "AV ECMO", 3 = "Central ECMO" } },
-    ]
-
 [[observation]]
   name = "oxygen_flow_rate"
   phase = "study"

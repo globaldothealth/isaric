@@ -662,9 +662,13 @@
     { field = "non_inv_vent", ref = "Y/N" },
     { field = "inv_vent", ref = "Y/N" },
     { field = "ecls", ref = "Y/N" },
-    { field = "fio2", if = { fio2 = {">"= 21}}, apply = {function = "isNotNull"}},
-    { field = "any_supplemental_oxygen_value", if = { fio2_0_21_1_0_unit = 2 }, apply = {function = "isNotNull"} },
-    { field = "any_supplemental_oxygen_value", if.all = [{ fio2_0_21_1_0_unit = 1 }, { any_supplemental_oxygen_value = { ">" = 21}}], apply = {function = "isNotNull"} }
+    { field = "fio2", if = { fio2 = { ">" = 21 } }, apply = { function = "isNotNull" } },
+    { field = "any_supplemental_oxygen_value", if = { fio2_0_21_1_0_unit = 2 }, apply = { function = "isNotNull" } },
+    { field = "any_supplemental_oxygen_value", if.all = [
+      { fio2_0_21_1_0_unit = 1 },
+      { any_supplemental_oxygen_value = { ">" = 21 } },
+    ], apply = { function = "isNotNull" } },
+    { field = "daily_oxygen_cmdose_1", values = { 1 = true, 2 = true, 3 = true, 4 = true } },
   ]
 
 [visit.treatment_prone_position]
@@ -1399,7 +1403,7 @@
   phase = "admission"
   date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
   value = { field = "any_supplemental_oxygen_value", apply = { function = "Percentage" }, if.any = [
-    { fio2_0_21_1_0_unit = 1 }, # percentage
+    { fio2_0_21_1_0_unit = 1 },                        # percentage
     { any_supplemental_oxygen_value = { "!=" = "" } },
   ] }
 
@@ -1407,16 +1411,22 @@
   name = "oxygen_flow_rate"
   phase = "admission"
   date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
-  value = { field = "any_supplemental_oxygen_value", if.any = [
-    { fio2_0_21_1_0_unit = 2 }, # L/min
-    { any_supplemental_oxygen_value = { "!=" = "" } },
-  ] }
+  text = { field = "daily_oxygen_cmdose_1", values = { 1 = "1-5", 2 = "6-10", 3 = "11-15", 4 = ">15" } }
   [observation.context]
     combinedType = "set"
     excludeWhen = "none"
     fields = [
       { field = "daily_oxygen_cmtype_1", values = { 1 = "nasal cannula", 2 = "HFNC", 3 = "mask", 4 = "mask with reservoir", 5 = "CPAP/NIV mask", 6 = "Unknown" } },
     ]
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "admission"
+  date = { field = "constantes_date_t", source_date = "%d/%m/%Y %H:%M" }
+  value = { field = "any_supplemental_oxygen_value", if.any = [
+    { fio2_0_21_1_0_unit = 2 },                        # L/min
+    { any_supplemental_oxygen_value = { "!=" = "" } },
+  ] }
 
 [[observation]]
   name = "fio2_percent"

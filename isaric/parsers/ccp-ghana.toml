@@ -843,8 +843,8 @@
 
   [[visit.treatment_oxygen_therapy.fields]]
     field = "fi02"
-    if.any = [{fi02  = {">" = 21}}, {fi02 = 1}]
-    apply = {function = "isNotNull"}
+    if.any = [{ fi02 = { ">" = 21 } }, { fi02 = 1 }]
+    apply = { function = "isNotNull" }
 
 [visit.treatment_prone_position]
   combinedType = "any"
@@ -887,30 +887,32 @@
   #   context = ["high-flow nasal cannula"]
 
 [[observation]]
-  phase = "study"
   name = "oxygen_flow_rate"
+  phase = "study"
   date.field = "outcome_date"
+  text = { field = "overall_oxygen_cmdose___1", values = { 1 = "1-5 L/min" } }
+  context = ["Maximum rate during hospital stay"]
 
-  [observation.text] # This is a multi-select, but we're only recording the MAX value
-    combinedType = "firstNonNull"
-    fields = [
-      { field = "overall_oxygen_cmdose___4", values = { 1 = ">15 L/min" } },
-      { field = "overall_oxygen_cmdose___3", values = { 1 = "11-15 L/min" } },
-      { field = "overall_oxygen_cmdose___2", values = { 1 = "6-10 L/min" } },
-      { field = "overall_oxygen_cmdose___1", values = { 1 = "1-5 L/min" } },
-    ]
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date.field = "outcome_date"
+  text = { field = "overall_oxygen_cmdose___2", values = { 1 = "6-10 L/min" } }
+  context = ["Maximum rate during hospital stay"]
 
-  [observation.context]
-    combinedType = "set"
-    excludeWhen = "false-like"
-    fields = [
-      { field = "overall_oxygen_cmoccur", values = { 1 = "Maximum rate during hospital stay" } },
-      { field = "overall_oxygen_cmtype___5", values = { 1 = "CPAP/NIV mask" } },
-      { field = "overall_oxygen_cmtype___4", values = { 1 = "Mask with reservoir" } },
-      { field = "overall_oxygen_cmtype___3", values = { 1 = "Mask" } },
-      { field = "overall_oxygen_cmtype___2", values = { 1 = "HF nasal cannula" } },
-      { field = "overall_oxygen_cmtype___1", values = { 1 = "Nasal prongs" } },
-    ]
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date.field = "outcome_date"
+  text = { field = "overall_oxygen_cmdose___3", values = { 1 = "11-15 L/min" } }
+  context = ["Maximum rate during hospital stay"]
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date.field = "outcome_date"
+  text = { field = "overall_oxygen_cmdose___4", values = { 1 = ">15 L/min" } }
+  context = ["Maximum rate during hospital stay"]
 
 [[observation]]
   phase = "admission"
