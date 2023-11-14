@@ -656,15 +656,16 @@
     5 = 4 # You are unable to walk about?
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   phase = "study"
   duration_type = "block"
   date.field = "dsstdtc"
   start_date.ref = "admissionDate"
   text.field = "oxygen_cmdose"
+  context = ["Maximum value"]
 
   [observation.text.values]
-    1 = "< 2 L/min"
+    1 = "<2 L/min"
     6 = "2-5 L/min"
     2 = "6-10 L/min"
     3 = "11-15 L/min"

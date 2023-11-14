@@ -594,6 +594,7 @@
     { field = "noninvasive_proccur", ref = "Y/N/NK" },
     { field = "daily_noninvasive_prtrt", ref = "Y/N/NK" },
     { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
+    { field = "daily_fio2_lborres", if = { daily_fio2_lborres = { ">" = 0.21 } }, apply = { function = "isNotNull" } },
   ]
 
 [visit.treatment_cardiovascular_support]
@@ -921,6 +922,12 @@
   phase = "admission"
   date = { ref = "admissionDate" }
   is_present = { field = "skinulcers_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "fio2_percent"
+  phase.ref = "phaseFromRedcapEvent"
+  date = { ref = "dailyDate" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"

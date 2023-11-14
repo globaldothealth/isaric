@@ -72,6 +72,11 @@
     field = "subjid"
     sensitive = true
 
+  [visit.treatment_oxygen_therapy]
+    field = "fio2_pao2"
+    if = { fio2_pao2 = { ">" = 21 } }
+    apply = { function = "isNotNull" }
+
   [visit.outcome]
     field = "ca_hospit"
     values = { 1 = "hospitalised" }
@@ -261,6 +266,12 @@
   phase = "followup"
   date = { field = "ca_date" }
   value = { field = "ca_hb_lborres", unit = "g/dL", source_unit = { field = "ca_hb_lborresu", values = { 1 = "g/L", 2 = "g/dL", 3 = "mg/dl" } } } #, 4 = "mmol/L"
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "followup"
+  date = { field = "abg_date" }
+  value = { field = "fio2_pao2", unit = "%" }
 
 [[observation]]
   name = "pao2_mmHg"

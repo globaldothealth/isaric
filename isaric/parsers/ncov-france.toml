@@ -466,14 +466,35 @@
   is_present = { field = "signes_clin___6", values = { 1 = true } }
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   phase = "admission"
   date = { ref = "admissionDate" }
+
   [observation.value]
-    combinedType = "max"
+    combinedType = "firstNonNull"
     fields = [
       { field = "a_o2_on", description = "O2 flow (L/min), nasal O2" },
       { field = "a_of_o2", description = "O2 flow (L/min), HFNC" },
+      # { field = "a_vni_ti", description = "Inspiratory trigger (L/min)" },
+      { field = "a_vm_di", description = "Inspiratory flow (L/min)" },
+    ]
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "a_o2_on", apply = { function = "textIfNotNull", params = [
+        "Nasal O2",
+      ] } },
+      { field = "a_of_o2", apply = { function = "textIfNotNull", params = [
+        "HFNC",
+      ] } },
+      { field = "a_vni_ti", apply = { function = "textIfNotNull", params = [
+        "Non-invasive ventilation",
+      ] } },
+      { field = "a_vm_di", apply = { function = "textIfNotNull", params = [
+        "Mechanical ventilation",
+      ] } },
     ]
 
 [[observation]]
@@ -493,6 +514,27 @@
   phase = "admission"
   date = { ref = "admissionDate" }
   value = { field = "ph_dose", description = "pH" }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "a_of_fio2", apply = { function = "Percentage" } }
+  context = ['nasal oxygen']
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "a_vni_fio2", apply = { function = "Percentage" } }
+  context = ['non-invasive ventilation']
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  value = { field = "a_vm_fio2", apply = { function = "Percentage" } }
+  context = ['mechanical ventilation']
 
 [[observation]]
   name = "pao2_mmHg"

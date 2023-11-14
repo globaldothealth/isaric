@@ -310,6 +310,8 @@
       { field = "patient_interventions#Highflow_nasal_canula_oxygen_therapy", values = { 1 = true, 0 = false } },
       { field = "patient_interventions#Extra_corporeal_life_support_ECLS", values = { 1 = true, 0 = false } },
       { field = "Extracorporeal_support", ref = "Y/N" },
+      { field = "fio2_1", if = { fio2_1 = { ">" = 21 } }, apply = { function = "isNotNull" } },
+      { field = "signssymp_L_oxygen", apply = { function = "isNotNull" } },
     ]
 
   [visit.treatment_prone_position]
@@ -708,6 +710,16 @@
     fields = [
       { field = "oxygen_saturation_on", values = { 1 = "room air", 2 = "on oxygen" } },
     ]
+
+[[observation]]
+  name = "fio2_percent"
+  date = { field = "assessment_dt" }
+  phase = "study"
+  value = { field = "fio2_1" }
+  if.all = [
+    { report_name_custom = { "=~" = "Daily case record form" } },
+    { fio2_1 = { "!=" = "" } },
+  ]
 
 [[observation]]
   name = "pao2_mmHg"

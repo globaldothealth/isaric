@@ -388,6 +388,10 @@
     { field = "daily_noninvasive_prtrt", description = "Non-invasive ventilation (e.g. BIPAP, CPAP)?", ref = "Y/N" },
     { field = "daily_invasive_prtrt", description = "Invasive ventilation?", ref = "Y/N" },
     { field = "daily_ecmo_prtrt", description = "ECMO?", ref = "Y/N" },
+    { field = "daily_fio2_lborres", if.all = [
+      { daily_fio2_lborres = { ">" = 0.21 } },
+      { daily_fio2_lborres = { "<=" = 1 } },
+    ], apply = { function = "isNotNull" } },
   ]
 
 [visit.treatment_prone_position]
@@ -701,6 +705,12 @@
   [observation.value]
     field = "daily_ph_lborres"
     description = "pH Document from same ABG with the worst P:F ratio"
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
 
 [[observation]]
   name = "pao2_mmHg"
