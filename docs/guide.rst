@@ -868,11 +868,15 @@ fields describing symptoms, here.
 
 **oxygen_o2hb**: Value (g/dL). Heamoglobin level, lab test.
 
-**oxygen_flow_volume_max**: Value. If the subject received O2 therapy,
-record the maximum flow volume.
+**oxygen_flow_rate**: Value (L/min). Flow rate of oxygen administered.
+Where possible, record the method of oxygen therapy being used, and whether
+this is a maximum or point value. Sometimes recorded in data as FiO2 (L/min).
 
 **oxygen_saturation_percent**: Value (20-100). Use context to note whether
 observation was made on room air, on while on oxygen.
+
+**fio2_percent**: Value (21-100): Fraction of inspired oxygen (concentration
+of oxygen in supplied gas mixture).
 
 **pao2_mmHg**: Value (25-150). Use context to record whether this is an arterial,
 venous or capillary measurement if data is provided. Use mmHg as the

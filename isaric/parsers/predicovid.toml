@@ -77,7 +77,7 @@
       { field = "other_ethnic" },
     ]
 
-  [subject.works_microbiology_lab]
+  [subject.works_lab]
     field = "labwork_erterm"
     ref = "Y/N/NK"
 

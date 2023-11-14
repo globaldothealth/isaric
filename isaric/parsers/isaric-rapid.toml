@@ -873,6 +873,12 @@
     { fieldPattern = ".*noninvasive_proccur", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
     { field = "ccm_b_noninvasive_prtrt", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
     { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
+    { field = "ccm_a_fio2_lborres", if.all = [
+      { ccm_a_fio2_lborres = { ">" = 0.21 } },
+      { ccm_a_fio2_lborres = { "<=" = 1 } },
+    ], apply = { function = "isNotNull" } },
+    { field = "ccm_a_fio2b_lborres", if = { daily_fio2b_lborres = { ">" = 21 } }, apply = { function = "isNotNull" } },
+    { field = "ccm_a_fio2c_lborres", apply = { function = "isNotNull" } },
   ]
 
 [visit.treatment_prone_position]
@@ -1816,6 +1822,24 @@
   context = ['Most abnormal reading']
 
 [[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "ccm_a_dat" }
+  value = { field = "ccm_a_fio2b_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { field = "ccm_a_dat" }
+  value = { field = "ccm_a_fio2_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date = { field = "ccm_a_dat" }
+  value = { field = "ccm_a_fio2c_lborres" }
+
+[[observation]]
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "ccm_a_dat" }
@@ -1853,11 +1877,10 @@
   value = { field = "ccm_a_baseex_lborres" }
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
   text = { field = "oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
-  if.all = [{ oxygen_cmoccur = 1 }, { oxygen_cmdose = { "!=" = 5 } }]
 
   [observation.context]
     combinedType = "set"
@@ -1867,14 +1890,10 @@
     ]
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   phase = "study"
   date = { field = "daily_date" }
   text = { field = "daily_oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
-  if.all = [
-    { daily_oxygen_cmoccur = 1 },
-    { daily_oxygen_cmdose = { "!=" = 5 } },
-  ]
 
   [observation.context]
     combinedType = "set"
@@ -1884,12 +1903,12 @@
     ]
 
 [[observation]]
-  name = "oxygen_flow_volume_max"
+  name = "oxygen_flow_rate"
   phase = "study"
   startdate = { ref = "admissionDateHierarchy" }
   date = { field = "dsstdtc" }
   duration_type = "event"
-  # text = { field = "overall_oxygen_cmdose", values = { 1 = "1-5 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min" } }
+  context = ["Maxiumum dose over entire visit"]
 
   [observation.text]
     combinedType = "firstNonNull"

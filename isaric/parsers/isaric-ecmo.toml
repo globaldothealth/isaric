@@ -638,51 +638,51 @@
       { field = "icu_hostdat", if = { "Date Of ICU Admission  (Treatment) 6.1 Date of ICU admission [dischargeoutcome_arm_1][icu_hostdat]" = "" } },
     ]
 
-[visit.transfer_from_other_facility]
-  field = "hooccur"
-  values = { 1 = true, 2 = true, 3 = false }
+  [visit.transfer_from_other_facility]
+    field = "hooccur"
+    values = { 1 = true, 2 = true, 3 = false }
 
-[visit.treatment_antivirals]
-  field = "antiviral_cmyn"
-  ref = "Y/N/NK"
-  description = "Antiviral agent?"
+  [visit.treatment_antivirals]
+    field = "antiviral_cmyn"
+    ref = "Y/N/NK"
+    description = "Antiviral agent?"
 
-[visit.treatment_antiviral_type]
-  combinedType = "set"
-  description = "Antiviral ot COVID-19 targeted agent"
-  excludeWhen = 'none'
-  fields = [
-    { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
-    { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
-    { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
-    { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
-    { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
-    { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
-    { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" } },
-    { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
-    { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" } },
-    { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
-  ]
-  
-[visit.treatment_antiviral_type_other]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [{ field = "antiviral_cmtype" }]
+  [visit.treatment_antiviral_type]
+    combinedType = "set"
+    description = "Antiviral ot COVID-19 targeted agent"
+    excludeWhen = 'none'
+    fields = [
+      { field = "antiviral_cmtrt___1", values = { 1 = "Ribavirin" } },
+      { field = "antiviral_cmtrt___2", values = { 1 = "Lopinavir/Ritonavir" } },
+      { field = "antiviral_cmtrt___3", values = { 1 = "Interferon alpha" } },
+      { field = "antiviral_cmtrt___4", values = { 1 = "Interferon beta" } },
+      { field = "antiviral_cmtrt___5", values = { 1 = "Neuraminidase inhibitor" } },
+      { field = "antiviral_cmtrt___6", values = { 1 = "Other" } },
+      { field = "antiviral_cmtrt___7", values = { 1 = "Remdesivir" } },
+      { field = "antiviral_cmtrt___9", values = { 1 = "IL6 inhibitor" } },
+      { field = "antiviral_cmtrt___10", values = { 1 = "Convalescent plasma" } },
+      { field = "antiviral_cmtrt___11", values = { 1 = "Anti-influenza antiviral" } },
+    ]
 
-[visit.treatment_antimalarial]
-  field = "antiviral_cmtrt___8"
-  values = { 1 = true }
+  [visit.treatment_antiviral_type_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "antiviral_cmtype" }]
 
-[visit.treatment_antimalarial_type]
-  combinedType = "set"
-  excludeWhen = "none"
-  fields = [
-    { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
-  ]
+  [visit.treatment_antimalarial]
+    field = "antiviral_cmtrt___8"
+    values = { 1 = true }
 
-[visit.treatment_neuromuscular_blocking_agents]
-  field = "daily_neuro_cmtrt"
-  ref = "Y/N/NK"
+  [visit.treatment_antimalarial_type]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "antiviral_cmtrt___8", values = { 1 = "Chloroquine/Hydroxychloroquine" } },
+    ]
+
+  [visit.treatment_neuromuscular_blocking_agents]
+    field = "daily_neuro_cmtrt"
+    ref = "Y/N/NK"
 
   [visit.treatment_antibiotics]
     description = "Antibiotics?"
@@ -832,6 +832,12 @@
       { field = "daily_ecmo_prtrt", ref = "Y/N/NK" },
       # { field = "pronevent_prtrt", description = "Ventilation in prone position?", ref = "Y/N/NK" },
       { field = "daily_prone_cmtype", description = "Prone while on invasive ventilation", values = { 1 = true } },
+      { field = "daily_fio2_lborres", if.all = [
+        { daily_fio2_lborres = { ">" = 0.21 } },
+        { daily_fio2_lborres = { "<=" = 1 } },
+      ], apply = { function = "isNotNull" } },
+      { field = "daily_fio2b_lborres", if = { daily_fio2b_lborres = { ">" = 21 } }, apply = { function = "isNotNull" } },
+      { field = "daily_fio2c_lborres", apply = { function = "isNotNull" } },
     ]
 
   [visit.treatment_inhaled_nitric_oxide]
@@ -1169,6 +1175,31 @@
   value = { field = "daily_temp_vsorres", unit = "°C", source_unit = { field = "daily_temp_vsorresu", values = { 1 = "°C", 2 = "°F" } } }
 
 [[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
+  value = { field = "daily_fio2b_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "fio2_percent"
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
+  value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date = { ref = "dailyDateHierarchy" }
+  value = { field = "daily_fio2c_lborres" }
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  text = { field = "oxygen_cmdose", values = { 1 = "<2 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min", 6 = "2-5 L/min" } }
+  context = ['Maximum dose over entire visit']
+
+[[observation]]
   name = "pao2_mmHg"
   phase = "study"
   date = { field = "daily_dsstdat" }
@@ -1224,12 +1255,6 @@
   date = { field = "daily_dsstdat" }
   value = { field = "sas_vsorres", apply = { function = "getFloat" } }
   # if.any = [{ sas_vsyn = 1 }, { rass_sas_vsyn = 4 }]
-
-[[observation]]
-  name = "oxygen_flow_volume_max"
-  phase = "study"
-  date = { field = "daily_dsstdat" }
-  text = { field = "oxygen_cmdose", values = { 1 = "<2 L/min", 2 = "6-10 L/min", 3 = "11-15 L/min", 4 = ">15 L/min", 6 = "2-5 L/min" } }
 
 [[observation]]
   name = "altered_consciousness_confusion"

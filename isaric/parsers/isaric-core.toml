@@ -517,6 +517,10 @@
   description = "Employed a a healthcare worker?"
   ref = "Y/N/NK"
 
+[subject.works_lab]
+  field = "labwork_erterm"
+  values = { 1 = true }
+
 [subject.works_microbiology_lab]
   field = "labwork_erterm"
   description = "Employed in a microbiology laboratory?"
@@ -875,6 +879,23 @@
     field = "ccm_b_mechvent_prtrt"
     description = "Mechanical Ventilation?"
     values = { 1 = true, 2 = true, 3 = true, 4 = true }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_fio2_lborres"
+    if.all = [
+      { daily_fio2_lborres = { ">" = 0.21 } },
+      { daily_fio2_lborres = { "<=" = 1 } },
+    ]
+    apply = { function = "isNotNull" }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_fio2b_lborres"
+    if = { daily_fio2_lborres = { ">" = 21 } }
+    apply = { function = "isNotNull" }
+
+  [[visit.treatment_oxygen_therapy.fields]]
+    field = "daily_fio2c_lborres"
+    apply = { function = "isNotNull" }
 
 [visit.treatment_oxygen_mask_prongs]
   field = "oxygen_cminterface"
@@ -1671,8 +1692,8 @@
   duration_type = "event"
   text = { field = "flw2_other_symp" }
 
-[[observation]] # PL: look at this one
-  name = "oxygen_flow_volume_max"
+[[observation]]
+  name = "oxygen_flow_rate"
   phase = "study"
   start_date = { ref = "admissionDateHierarchy" }
   date = { field = "dsstdtc" }
@@ -1981,3 +2002,10 @@
   phase = "study"
   date = { field = "daily_dsstdat" }
   value = { field = "daily_fio2_lborres", apply = { function = "Percentage" } }
+
+[[observation]]
+  name = "oxygen_flow_rate"
+  phase = "study"
+  date = { field = "daily_dsstdat" }
+  value = { field = "daily_fio2c_lborres" }
+  context = ["Maximum value over 24hrs"]

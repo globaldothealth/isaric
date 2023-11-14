@@ -53,7 +53,7 @@
       ],
       "properties": {
         "name": {
-          "const": "oxygen_flow_volume_max"
+          "const": "oxygen_flow_rate"
         }
       }
     },
@@ -64,7 +64,7 @@
       ],
       "properties": {
         "name": {
-          "const": "oxygen_flow_volume_max"
+          "const": "oxygen_flow_rate"
         }
       }
     },
@@ -430,7 +430,6 @@
         "initial_illness",
         "pre-admission",
         "admission",
-        "initial_illness",
         "study",
         "followup"
       ],
