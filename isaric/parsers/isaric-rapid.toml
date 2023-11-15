@@ -877,7 +877,7 @@
       { ccm_a_fio2_lborres = { ">" = 0.21 } },
       { ccm_a_fio2_lborres = { "<=" = 1 } },
     ], apply = { function = "isNotNull" } },
-    { field = "ccm_a_fio2b_lborres", if = { daily_fio2b_lborres = { ">" = 21 } }, apply = { function = "isNotNull" } },
+    { field = "ccm_a_fio2b_lborres", if = { ccm_a_fio2b_lborres = { ">" = 21 } }, apply = { function = "isNotNull" } },
     { field = "ccm_a_fio2c_lborres", apply = { function = "isNotNull" } },
   ]
 
@@ -1812,13 +1812,13 @@
   name = "temperature_celsius"
   phase = "admission"
   date = { ref = "admissionDateHierarchy" }
-  value = { field = "temp_vsorres" }        # there is no source unit field, but a mix of celsius and farenheit in the data.
+  value = { field = "temp_vsorres_new" }
 
 [[observation]]
   name = "temperature_celsius"
   phase = "study"
   date = { field = "daily_date" }
-  value = { field = "daily_temp_vsorres" } # there is no source unit field
+  value = { field = "daily_temp_vsorres_new" }
   context = ['Most abnormal reading']
 
 [[observation]]
