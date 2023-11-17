@@ -125,6 +125,11 @@
     description = "Chronic kidney disease"
     ref = "Y/N/NK"
 
+  [subject.has_chronic_respiratory_disease]
+    field = "chronicpul_mhyn"
+    description = "Chronic pulmonary disease"
+    ref = "Y/N/NK"
+
   [subject.has_dementia]
     field = "dementia_mhyn"
     description = "Dementia"
@@ -258,7 +263,10 @@
 [subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "otherrisktext", if.other_mhyn = 1 }]
+  fields = [
+    { field = "otherrisktext" },
+    { field = "chronicneu_mhyn", values = { 1 = "Chronic neurological disorder" } },
+  ]
 
   # visit
 
@@ -460,6 +468,20 @@
   value = { field = "daily_gcs_vsorres" }
 
 [[observation]]
+  name = "history_of_fever"
+  date = { ref = "admissionDate" }
+  phase = "admission"
+  start_date = { field = "fever_cestdat_v2" }
+  duration_type = "event"
+  is_present = { field = "fever_ceoccur_v2", ref = "Y/N/NK" }
+
+[[observation]]
+  name = "history_of_fever"
+  date = { field = "daily_vsdat" }
+  phase = "study"
+  is_present = { field = "daily_fever", ref = "Y/N/NK" }
+
+[[observation]]
   name = "cough"
   phase = "admission"
   date = { ref = "admissionDate" }
@@ -625,10 +647,73 @@
 
 [[observation]]
   name = "other_symptom"
+  date = { ref = "admissionDate" }
+  phase = "admission"
+  text = { field = "othersympt_text_v2" }
+
+[[observation]]
+  name = "other_symptom"
   date = { ref = "dailyDate" }
   phase = "study"
   text = { field = "daily_othersympt_text" }
-  if = { daily_othersympt_ceoccur = 1 }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "dig_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  text = { field = "dig_ceoccur_v2", values = { 1 = "Digestive disorder" } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  text = { field = "daily_dig_ceoccur", values = { 1 = "Digestive disorder" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDate" }
+  text = { field = "anxious_ceoccur_v2", values = { 1 = "Anxiety" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "asthenia_cestdat_v2" }
+  date = { ref = "admissionDate" }
+  duration_type = "event"
+  text = { field = "asthenia_ceoccur_v2", values = { 1 = "Asthenia" } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  text = { field = "daily_anxious_ceoccur", values = { 1 = "Anxiety" } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  text = { field = "daily_constipation_ceoccur", values = { 1 = "Constipation" } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  text = { field = "daily_dizziness_ceoccur", values = { 1 = "Dizziness" } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  text = { field = "daily_cardio_ceoccur", values = { 1 = "Heart rhythm issues" } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "dailyDate" }
+  phase = "study"
+  text = { field = "daily_neuro_ceoccur", values = { 1 = "Neurological disorder" } }
 
 [[observation]]
   name = "temperature_celsius"

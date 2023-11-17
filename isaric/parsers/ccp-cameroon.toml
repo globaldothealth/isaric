@@ -169,6 +169,11 @@
     description = "4) Chronic kidney disease / Maladie rénale chronique"
     ref = "Y/N"
 
+  [subject.has_chronic_respiratory_disease]
+    field = "q2_co_morbidities"
+    ref = "Y/N"
+    description = "Chronic pulmonary disease"
+
   [subject.has_dementia]
     field = "q16_co_morbidities"
     description = "16) Dementia / Démence"
@@ -246,6 +251,7 @@
   combinedType = "set"
   excludeWhen = "none"
   fields = [
+    { field = "q7_co_morbidities", values = { 1 = "Chronic neurological disorder" } },
     { field = "q20_co_morbidities", description = "20) Other relevant risk factor  / Autre facteur de risque pertinent" },
   ]
 
@@ -551,6 +557,11 @@
     field = "q37_signs_symptoms"
     description = "37) Bleeding (Haemorrhage) /Saignement (Haemorragie)"
     ref = "Y/N"
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "q38_signs_symptoms" }]
 
 [[observation]]
   name = "bleeding_haemorrhage"

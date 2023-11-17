@@ -349,6 +349,11 @@
         7 = "White"
         8 = "Aboriginal_First_Nations"
 
+[subject.has_asplenia]
+  field = "asplenia"
+  ref = "Y/N"
+  description = "splenectomized"
+
 [subject.has_asthma]
   field = "asthma"
   description = "Asthma (diagnosed by a physician)"
@@ -368,6 +373,16 @@
   field = "ckd"
   description = "Chronic kidney disease"
   ref = "Y/N"
+
+[subject.has_chronic_respiratory_disease]
+  field = "copd"
+  ref = "Y/N"
+  description = "Chronic lung disease (not asthma)"
+
+[subject.has_rheumatologic_disorder]
+  field = "rheuma"
+  ref = "Y/N"
+  description = "Rheumatological disorder/disease"
 
 [subject.has_dementia]
   field = "dement"
@@ -429,6 +444,16 @@
   field = "tuberculosis"
   description = "Tuberculosis"
   ref = "Y/N"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "neuro_imp", values = { 1 = "Chronic neurological impairment/disease" } },
+    { field = "scd", values = { 1 = "Sickle cell disease" } },
+    { field = "malaria_1", values = { 1 = "Malaria" } },
+    { field = "other_risk_specify" },
+  ]
 
 [subject.icu_admitted]
   field = "on_admn"
@@ -1525,3 +1550,54 @@
   [observation.date]
     combinedType = "firstNonNull"
     fields = [{ field = "skin_ulcers_v2_date" }, { field = "signs_symps_date" }]
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "spch_lss_date" }
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+  text = { field = "spch_lss", values = { 1 = "Loss of speech/movement" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  text = { field = "spch_lss_v2", values = { 1 = "Loss of speech/movement" } }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "spch_lss_v2_date" }, { field = "signs_symps_date" }]
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "lmpth_adpth_date" }
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+  text = { field = "lmpth_adpth", values = { 1 = "Edema" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  text = { field = "lmpth_adpth_v2", values = { 1 = "Edema" } }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "lmpth_adpth_v2_date" }, { field = "signs_symps_date" }]
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "palpitations_date" }
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+  text = { field = "palpitations", values = { 1 = "Palpitations" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "study"
+  text = { field = "palpitation_v2", values = { 1 = "Palpitations" } }
+
+  [observation.date]
+    combinedType = "firstNonNull"
+    fields = [{ field = "palpitation_v2_date" }, { field = "signs_symps_date" }]

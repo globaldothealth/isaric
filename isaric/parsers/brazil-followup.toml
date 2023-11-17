@@ -204,7 +204,12 @@
 [subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "flw_chron_other" }]
+  fields = [
+    { field = "flw_chron_other" },
+    { field = "flw_spc_ongoing___14", values = { 1 = "Neurological condition" } },
+    { field = "flw_spc_ongoing___18", values = { 1 = "Depression" } },
+    { field = "flw_spc_ongoing___19", values = { 1 = "Anxiety" } },
+  ]
 
 [subject.icu_admitted]
   field = "flw_hosp_icu_new"
@@ -383,6 +388,11 @@
   phase = "followup"
   duration_type = "event"
   is_present = { field = "flw_bleeding", ref = "Y/N" }
+
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [{ field = "flw_bleeding_site" }]
 
 [[observation]]
   name = "chest_pain"
@@ -767,6 +777,19 @@
   duration_type = "event"
   is_present = { field = "flw_skin_rash", ref = "Y/N" }
 
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_rash_bod___1", values = { 1 = "Face" } },
+      { field = "flw_rash_bod___2", values = { 1 = "Trunk" } },
+      { field = "flw_rash_bod___3", values = { 1 = "Arms" } },
+      { field = "flw_rash_bod___4", values = { 1 = "Legs" } },
+      { field = "flw_rash_bod___5", values = { 1 = "Buttocks" } },
+      { field = "flw_rash_bod___6", values = { 1 = "Toes" } },
+      { field = "flw_rash_bod___7", values = { 1 = "Fingers" } },
+    ]
+
 [[observation]]
   name = "vomiting_nausea"
   start_date = { field = "flw_first_sym" }
@@ -795,7 +818,15 @@
   ] } }
   duration_type = "event"
   phase = "initial_illness"
-  text = { field = "flw_other_sym" }
+
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_other_sym" },
+      { field = "flw_first_14d___5", values = { 1 = "Pain when breathing" } },
+      { field = "flw_first_14d___17", values = { 1 = "no symptoms" } },
+    ]
 
 [[observation]]
   name = "other_symptom"
@@ -805,7 +836,35 @@
   ] } }
   phase = "followup"
   duration_type = "event"
-  text = { field = "flw_new_symptoms" }
+
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw_new_symptoms" },
+      { field = "flw_pain_breathing", values = { 1 = "Pain when breathing" } },
+      { field = "flw1_palpitations", values = { 1 = "Palpitations" } },
+      { field = "flw1_loss_of_app", values = { 1 = "Loss of appetite" } },
+      { field = "flw1_constipation", values = { 1 = "Constipation" } },
+      { field = "flw1_problems_urine", values = { 1 = "Problems urinating" } },
+      { field = "flw1_erectile", values = { 1 = "Erectile dysfunction" } },
+      { field = "flw_menst", values = { 1 = "Changes in menstruation" } },
+      { field = "flw_swollen_ankle", values = { 1 = "Swollen ankles" } },
+      { field = "flw1_balance", values = { 1 = "Problems with balance" } },
+      { field = "flw1_weakness", values = { 1 = "Muscle weakness" } },
+      { field = "flw1_fully_move", values = { 1 = "Difficulty moving/fully controlling movement" } },
+      { field = "flw1_can_t_feel", values = { 1 = "Can't feel one side of face/body" } },
+      { field = "flw1_tingling", values = { 1 = "Tingling" } },
+      { field = "flw1_dizziness", values = { 1 = "Dizziness" } },
+      { field = "flw1_fainting", values = { 1 = "Fainting" } },
+      { field = "flw1_tremor", values = { 1 = "Tremor" } },
+      { field = "flw1_swallowing", values = { 1 = "Problems swallowing or chewing" } },
+      { field = "flw1_double_vision", values = { 1 = "Double vision" } },
+      { field = "flw1_speaking", values = { 1 = "Speech or communication issues" } },
+      { field = "flw1_ringing_ears", values = { 1 = "Ringing ears" } },
+      { field = "flw_sleep", values = { 1 = "Problems sleeping" } },
+      { field = "flw1_lumps", values = { 1 = "Lumps or rashes on toes" } },
+    ]
 
 [[observation]]
   name = "anorexia"

@@ -171,6 +171,11 @@
     description = "Chronic kidney disease"
     ref = "Y/N/NK"
 
+  [subject.has_chronic_respiratory_disease]
+    field = "copd"
+    ref = "Y/N/NK"
+    description = "Chronic pulmonary disease (not asthma)"
+
   [subject.has_dementia]
     field = "dement"
     description = "Dementia"
@@ -242,6 +247,9 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
+      { field = "neuro_imp_spe", values = { 1 = "Chronic neurological disorder" } },
+      { field = "scd", values = { 1 = "Sickle cell disorder" } },
+      { field = "malaria_2", values = { 1 = "Malaria" } },
       { field = "risks_fac1" },
       { field = "risks_fac2" },
       { field = "risks_fac3" },
@@ -1023,6 +1031,22 @@
       { field = "myalagia_v2", values = { 1 = true } },
       { field = "jt_pain_v2", values = { 1 = true } },
     ]
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "spch_lss_date" }
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+  text = { field = "spch_lss", values = { 1 = "Speech/movement loss" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "palp_adpth_date" }
+  date = { ref = "admissionDateHierarchy" }
+  duration_type = "event"
+  text = { field = "palp_adpth", values = { 1 = "Palpitations" } }
 
 [[observation]]
   name = "other_symptom"

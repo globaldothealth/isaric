@@ -372,6 +372,11 @@
     description = "Chronic kidney disease"
     ref = "Y/N/NK"
 
+  [subject.has_chronic_respiratory_disease]
+    field = "copd"
+    description = "Chronic pulmonary disease (not asthma)"
+    ref = "Y/N/NK"
+
   [subject.has_dementia]
     field = "dement"
     description = "Dementia"
@@ -456,6 +461,19 @@
   field = "organ_rec"
   description = "Organ or bone marrow recipient"
   ref = "Y/N/NK"
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "neuro_imp", values = { 1 = "Chronic neurological impairment/disease" } },
+    { field = "scd", values = { 1 = "Sickle cell disease" } },
+    { field = "other_risks", if.all = [
+      { other_risks = { "!=" = "None" } },
+      { other_risks = { "!=" = "Nil" } },
+      { other_risks = { "!=" = "NIL" } },
+    ] },
+  ]
 
 [subject.icu_admitted]
   combinedType = "any"
@@ -1613,3 +1631,31 @@
   #   phase = 'admission'
   #   date = { ref = 'admissionDateHierarchy' }
   #   value = { field = "hr_iso", description = 'pulse' } #min=35, max=200
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "spch_lss_date" }
+  date = { field = "add_date" }
+  duration_type = "event"
+  text = { field = "spch_lss", values = { 1 = "Loss of speech/movement" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  text = { field = "spch_lss_v2", values = { 1 = "Loss of speech/movement" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  start_date = { field = "lmpth_adpth_date" }
+  date = { field = "add_date" }
+  duration_type = "event"
+  text = { field = "lmpth_adpth", values = { 1 = "Edema" } }
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { ref = "admissionDateHierarchy" }
+  text = { field = "lmpth_adpth_v2", values = { 1 = "Edema" } }
