@@ -3,9 +3,9 @@
 import pandas as pd
 
 def convert_temperature_units(value):
-    if value <= 50:
+    if value <= 90:
         return value
-    elif value > 50:
+    elif value > 90:
         return (value - 32) * 5/9
 
 # import data
