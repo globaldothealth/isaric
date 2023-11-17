@@ -531,7 +531,7 @@
   field = "dsterm"
 
   [visit.outcome.values] # check correspondence of these values
-    1 = "recovered"            # discharged alive
+    1 = "discharged"            # discharged alive
     2 = "hospitalised"
     3 = "transferred"
     4 = "death"
