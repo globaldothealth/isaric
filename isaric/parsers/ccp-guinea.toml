@@ -32,6 +32,7 @@
 
 [adtl.defs]
   "Y/N" = { values = { 1 = true, 2 = false } }
+  checkbox = { values = { 1 = true } }
 
   [adtl.defs.admissionDateHierarchy]
     combinedType = "firstNonNull"
@@ -552,8 +553,8 @@
   excludeWhen = "none"
   fields = [
     { field = "daily_antimal_cmyn", description = "Antimalarials?", values = { 1 = true, 0 = false } },
-    { field = "daily_exper_cmtype___1", values = { 1 = true } },
-    { field = "daily_exper_cmtype___2", values = { 1 = true } },
+    { field = "daily_exper_cmtype___1", ref = "checkbox" },
+    { field = "daily_exper_cmtype___2", ref = "checkbox" },
   ]
 
 [visit.treatment_antimalarial_type]

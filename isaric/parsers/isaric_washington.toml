@@ -24,6 +24,7 @@
 
 [adtl.defs]
   "Y/N" = { values = { 0 = false, 1 = true } }
+  checkbox = { values = { 1 = true } }
 
   [adtl.defs.countryMap.values]
     1 = "USA"
@@ -97,30 +98,30 @@
 
   [subject.has_tuberculosis]
     field = "any_other_pos___4"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_dementia]
     field = "comorbidities___34"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_obesity]
     field = "comorbidities___30"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_hiv]
     combinedType = "any"
     fields = [
-      { field = "comorbidities___22", values = { 1 = true } },
-      { field = "any_other_pos___1", values = { 1 = true } },
+      { field = "comorbidities___22", ref = "checkbox" },
+      { field = "any_other_pos___1", ref = "checkbox" },
     ]
 
   [subject.has_hypertension]
     field = "comorbidities___3"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_malignant_neoplasm]
     field = "comorbidities___20"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_smoking]
     combinedType = "firstNonNull"
@@ -132,40 +133,40 @@
 
   [subject.has_asthma]
     field = "comorbidities___8"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_chronic_kidney_disease]
     field = "comorbidities___10"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_chronic_cardiac_disease]
     combinedType = "any"
     fields = [
-      { field = "comorbidities___2", values = { 1 = true }, description = "Coronary artery disease" },
-      { field = "comorbidities___4", values = { 1 = true }, description = "Cardiac arrhythmia" },
-      { field = "comorbidities___5", values = { 1 = true }, description = "Congestive heart failure" },
-      { field = "comorbidities___6", values = { 1 = true }, description = "Valvular heart disease" },
+      { field = "comorbidities___2", ref = "checkbox", description = "Coronary artery disease" },
+      { field = "comorbidities___4", ref = "checkbox", description = "Cardiac arrhythmia" },
+      { field = "comorbidities___5", ref = "checkbox", description = "Congestive heart failure" },
+      { field = "comorbidities___6", ref = "checkbox", description = "Valvular heart disease" },
     ]
 
   [subject.has_chronic_respiratory_disease]
     combinedType = "any"
     fields = [
-      { field = "comorbidities___7", values = { 1 = true } },
-      { field = "comorbidities___9", values = { 1 = true } },
+      { field = "comorbidities___7", ref = "checkbox" },
+      { field = "comorbidities___9", ref = "checkbox" },
     ]
 
   [subject.has_chronic_hematologic_disease]
     field = "comorbidities___19"
-    values = { 1 = true }
+    ref = "checkbox"
     description = "hematologic malignancy"
 
   [subject.has_rheumatologic_disorder]
     field = "comorbidities___25"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_diabetes]
     field = "comorbidities___12"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.diabetes_type]
     combinedType = "firstNonNull"
@@ -178,27 +179,27 @@
   [subject.has_liver_disease]
     combinedType = "any"
     fields = [
-      { field = "comorbidities___14", values = { 1 = true } },
-      { field = "comorbidities___15", values = { 1 = true }, description = "Hep B" },
-      { field = "comorbidities___16", values = { 1 = true }, description = "Hep C" },
+      { field = "comorbidities___14", ref = "checkbox" },
+      { field = "comorbidities___15", ref = "checkbox", description = "Hep B" },
+      { field = "comorbidities___16", ref = "checkbox", description = "Hep C" },
     ]
 
 
   [subject.has_malnutrition]
     field = "comorbidities___29"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_solid_organ_transplant]
     field = "comorbidities___21"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_hiv_art]
     field = "pre_hospital_medication___3"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_immunosuppression]
     field = "comorbidities___22"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [subject.has_comorbidity_other]
     combinedType = "set"
@@ -220,8 +221,8 @@
   [subject.icu_admitted]
     combinedType = "any"
     fields = [
-      { field = "admitted_to_icu", values = { 1 = true } },
-      { field = "is_patient_admitted_to_icu", values = { 1 = true } },
+      { field = "admitted_to_icu", ref = "checkbox" },
+      { field = "is_patient_admitted_to_icu", ref = "checkbox" },
     ]
 
 
@@ -247,8 +248,8 @@
   [visit.icu_admission]
     combinedType = "any"
     fields = [
-      { field = "admitted_to_icu", values = { 1 = true } },
-      { field = "is_patient_admitted_to_icu", values = { 1 = true } },
+      { field = "admitted_to_icu", ref = "checkbox" },
+      { field = "is_patient_admitted_to_icu", ref = "checkbox" },
     ]
 
   [visit.icu_admission_dates]
@@ -266,95 +267,95 @@
 
   [visit.treatment_inotropes_vasopressors]
     field = "icu_level_care___3"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [visit.treatment_ecmo]
     combinedType = "any"
     fields = [
-      { field = "treatment_events___5", values = { 1 = true } },
-      { field = "oxygenation_methods_2___6", values = { 1 = true } },
+      { field = "treatment_events___5", ref = "checkbox" },
+      { field = "oxygenation_methods_2___6", ref = "checkbox" },
     ]
 
   [visit.treatment_oxygen_therapy]
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "oxygenation_methods_2___1", values = { 1 = true }, description = "invasive" },
-      { field = "oxygenation_methods_2___2", values = { 1 = true }, description = "non-invasive" },
-      { field = "oxygenation_methods_2___3", values = { 1 = true }, description = "HFNC" },
-      { field = "oxygenation_methods_2___4", values = { 1 = true }, description = "face mask" },
-      { field = "oxygenation_methods_2___6", values = { 1 = true }, description = "ecmo" },
-      { field = "oxygenation_methods_2___7", values = { 1 = true }, description = "nasal cannula" },
-      { field = "icu_level_care___1", values = { 1 = true }, description = "HFNC" },
-      { field = "icu_level_care___4", values = { 1 = true }, description = "mechanical ventilation" },
-      { field = "icu_level_care___5", values = { 1 = true }, description = "non-invasive +ve pressure ventilation" },
-      { field = "icu_level_care___8", values = { 1 = true }, description = "prone ventilation" },
-      { field = "treatment_events___1", values = { 1 = true }, description = "prone ventilation" },
-      { field = "treatment_events___5", values = { 1 = true }, description = "extracorporeal support (ecmo)" },
+      { field = "oxygenation_methods_2___1", ref = "checkbox", description = "invasive" },
+      { field = "oxygenation_methods_2___2", ref = "checkbox", description = "non-invasive" },
+      { field = "oxygenation_methods_2___3", ref = "checkbox", description = "HFNC" },
+      { field = "oxygenation_methods_2___4", ref = "checkbox", description = "face mask" },
+      { field = "oxygenation_methods_2___6", ref = "checkbox", description = "ecmo" },
+      { field = "oxygenation_methods_2___7", ref = "checkbox", description = "nasal cannula" },
+      { field = "icu_level_care___1", ref = "checkbox", description = "HFNC" },
+      { field = "icu_level_care___4", ref = "checkbox", description = "mechanical ventilation" },
+      { field = "icu_level_care___5", ref = "checkbox", description = "non-invasive +ve pressure ventilation" },
+      { field = "icu_level_care___8", ref = "checkbox", description = "prone ventilation" },
+      { field = "treatment_events___1", ref = "checkbox", description = "prone ventilation" },
+      { field = "treatment_events___5", ref = "checkbox", description = "extracorporeal support (ecmo)" },
     ]
 
   [visit.treatment_oxygen_mask_prongs]
     combinedType = "any"
     fields = [
-      { field = "oxygenation_methods_2___4", values = { 1 = true }, description = "face mask" },
-      { field = "oxygenation_methods_2___7", values = { 1 = true }, description = "nasal cannula" },
+      { field = "oxygenation_methods_2___4", ref = "checkbox", description = "face mask" },
+      { field = "oxygenation_methods_2___7", ref = "checkbox", description = "nasal cannula" },
     ]
 
   [visit.treatment_prone_position]
     combinedType = "any"
     fields = [
-      { field = "treatment_events___1", values = { 1 = true } },
-      { field = "oxygenation_methods_2___5", values = { 1 = true }, description = "proning" },
-      { field = "icu_level_care___8", values = { 1 = true }, description = "prone ventilation" },
-      { field = "icu_level_care___11", values = { 1 = true }, description = "self-proning not on ventilator" },
+      { field = "treatment_events___1", ref = "checkbox" },
+      { field = "oxygenation_methods_2___5", ref = "checkbox", description = "proning" },
+      { field = "icu_level_care___8", ref = "checkbox", description = "prone ventilation" },
+      { field = "icu_level_care___11", ref = "checkbox", description = "self-proning not on ventilator" },
     ]
 
 
   [visit.treatment_invasive_ventilation]
     combinedType = "any"
     fields = [
-      { field = "icu_level_care___4", values = { 1 = true } },
-      { field = "oxygenation_methods_2___1", values = { 1 = true } },
+      { field = "icu_level_care___4", ref = "checkbox" },
+      { field = "oxygenation_methods_2___1", ref = "checkbox" },
     ]
 
   [visit.treatment_inhaled_nitric_oxide]
     combinedType = "any"
     fields = [
-      { field = "treatment_events___2", values = { 1 = true } },
-      { field = "icu_level_care___9", values = { 1 = true } },
+      { field = "treatment_events___2", ref = "checkbox" },
+      { field = "icu_level_care___9", ref = "checkbox" },
     ]
 
   [visit.treatment_noninvasive_ventilation]
     combinedType = "any"
     fields = [
-      { field = "icu_level_care___5", values = { 1 = true } },
-      { field = "oxygenation_methods_2___2", values = { 1 = true } },
+      { field = "icu_level_care___5", ref = "checkbox" },
+      { field = "oxygenation_methods_2___2", ref = "checkbox" },
     ]
 
   [visit.treatment_high_flow_nasal_cannula]
     combinedType = "any"
     fields = [
-      { field = "icu_level_care___1", values = { 1 = true } },
-      { field = "oxygenation_methods_2___3", values = { 1 = true } },
+      { field = "icu_level_care___1", ref = "checkbox" },
+      { field = "oxygenation_methods_2___3", ref = "checkbox" },
     ]
 
   [visit.treatment_neuromuscular_blocking_agents]
     combinedType = "any"
-    fields = [{ field = "icu_level_care___7", values = { 1 = true } }]
+    fields = [{ field = "icu_level_care___7", ref = "checkbox" }]
 
   [visit.treatment_dialysis]
     combinedType = "any"
     fields = [
       { field = "crrt_duration", apply = { function = "isNotNull" } },
-      { field = "icu_level_care___2", values = { 1 = true } },
+      { field = "icu_level_care___2", ref = "checkbox" },
     ]
 
   [visit.treatment_cardiovascular_support]
     combinedType = "any"
     fields = [
-      { field = "treatment_events___5", values = { 1 = true } },
-      { field = "oxygenation_methods_2___6", values = { 1 = true } },
-      { field = "icu_level_care___3", values = { 1 = true } },
+      { field = "treatment_events___5", ref = "checkbox" },
+      { field = "oxygenation_methods_2___6", ref = "checkbox" },
+      { field = "icu_level_care___3", ref = "checkbox" },
     ]
 
   [visit.outcome]
@@ -371,31 +372,31 @@
   name = "abdominal_pain"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___1", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___1", ref = "checkbox" }
 
 [[observation]]
   name = "confusion"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___8", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___8", ref = "checkbox" }
 
 [[observation]]
   name = "anorexia"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___3", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___3", ref = "checkbox" }
 
 [[observation]]
   name = "chest_pain"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___6", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___6", ref = "checkbox" }
 
 [[observation]]
   name = "conjunctivitis"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___9", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___9", ref = "checkbox" }
 
 [[observation]]
   name = "cough"
@@ -405,46 +406,46 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "signs_and_symptoms_at_hosp___10", values = { 1 = true } },
-      { field = "signs_and_symptoms_at_hosp___11", values = { 1 = true } },
-      { field = "signs_and_symptoms_at_hosp___17", values = { 1 = true } },
+      { field = "signs_and_symptoms_at_hosp___10", ref = "checkbox" },
+      { field = "signs_and_symptoms_at_hosp___11", ref = "checkbox" },
+      { field = "signs_and_symptoms_at_hosp___17", ref = "checkbox" },
     ]
 
 [[observation]]
   name = "cough_dry"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___10", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___10", ref = "checkbox" }
 
 [[observation]]
   name = "cough_with_sputum_production"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___11", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___11", ref = "checkbox" }
 
 [[observation]]
   name = "cough_with_haemoptysis"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___17", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___17", ref = "checkbox" }
 
 [[observation]]
   name = "diarrhoea"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___12", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___12", ref = "checkbox" }
 
 [[observation]]
   name = "fatigue_malaise"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___18", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___18", ref = "checkbox" }
 
 [[observation]]
   name = "headache"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___16", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___16", ref = "checkbox" }
 
 [[observation]]
   name = "hepatomegaly"
@@ -454,37 +455,37 @@
   ] } }
   duration_type = "event"
   phase = "study"
-  is_present = { field = "complications___19", values = { 1 = true } }
+  is_present = { field = "complications___19", ref = "checkbox" }
 
 [[observation]]
   name = "history_of_fever"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___15", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___15", ref = "checkbox" }
 
 [[observation]]
   name = "joint_pain"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___5", ref = "checkbox" }
 
 [[observation]]
   name = "musculoskeletal_pain"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___5", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___5", ref = "checkbox" }
 
 [[observation]]
   name = "loss_of_smell"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___4", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___4", ref = "checkbox" }
 
 [[observation]]
   name = "loss_of_taste"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___2", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___2", ref = "checkbox" }
 
 [[observation]]
   name = "loss_of_smell_or_taste"
@@ -494,51 +495,51 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "signs_and_symptoms_at_hosp___4", values = { 1 = true } },
-      { field = "signs_and_symptoms_at_hosp___2", values = { 1 = true } },
+      { field = "signs_and_symptoms_at_hosp___4", ref = "checkbox" },
+      { field = "signs_and_symptoms_at_hosp___2", ref = "checkbox" },
     ]
 
 [[observation]]
   name = "lymphadenopathy"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___27", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___27", ref = "checkbox" }
 
 [[observation]]
   name = "seizures"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___23", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___23", ref = "checkbox" }
 
 [[observation]]
   name = "shortness_of_breath"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___14", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___14", ref = "checkbox" }
 
 [[observation]]
   name = "skin_rash"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___26", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___26", ref = "checkbox" }
 
 [[observation]]
   name = "sore_throat"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___25", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___25", ref = "checkbox" }
 
 [[observation]]
   name = "vomiting_nausea"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___21", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___21", ref = "checkbox" }
 
 [[observation]]
   name = "runny_nose"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  is_present = { field = "signs_and_symptoms_at_hosp___20", values = { 1 = true } }
+  is_present = { field = "signs_and_symptoms_at_hosp___20", ref = "checkbox" }
 
 [[observation]]
   name = "other_symptom"
@@ -554,7 +555,7 @@
   ] } }
   duration_type = "event"
   phase = "study"
-  is_present = { field = "complications___5", values = { 1 = true } }
+  is_present = { field = "complications___5", ref = "checkbox" }
   context = ['bacterial']
 
 [[observation]]
@@ -565,5 +566,5 @@
   ] } }
   duration_type = "event"
   phase = "study"
-  is_present = { field = "complications___14", values = { 1 = true } }
+  is_present = { field = "complications___14", ref = "checkbox" }
   context = ['COP']

@@ -207,8 +207,8 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "ttt_ass_type___1", values = { 1 = true } },
-      { field = "ttt_ass_type___2", values = { 1 = true } },
+      { field = "ttt_ass_type___1", ref = "checkbox" },
+      { field = "ttt_ass_type___2", ref = "checkbox" },
     ]
 
   [visit.treatment_antimalarial_type]
@@ -343,20 +343,20 @@
   name = "abdominal_pain"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___2", values = { 1 = true } }
+  is_present = { field = "signes_clin___2", ref = "checkbox" }
   context = ["diarrhoea/abdominal pain"]
 
 [[observation]]
   name = "confusion"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___7", values = { 1 = true } }
+  is_present = { field = "signes_clin___7", ref = "checkbox" }
 
 [[observation]]
   name = "cough"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___1", values = { 1 = true } }
+  is_present = { field = "signes_clin___1", ref = "checkbox" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
@@ -368,20 +368,20 @@
   name = "diarrhoea"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___2", values = { 1 = true } }
+  is_present = { field = "signes_clin___2", ref = "checkbox" }
   context = ["diarrhoea/abdominal pain"]
 
 [[observation]]
   name = "headache"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___4", values = { 1 = true } }
+  is_present = { field = "signes_clin___4", ref = "checkbox" }
 
 [[observation]]
   name = "history_of_fever"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___5", values = { 1 = true } }
+  is_present = { field = "signes_clin___5", ref = "checkbox" }
 
 [[observation]]
   name = "glasgow_coma_score"
@@ -437,7 +437,7 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "signes_clin___8", values = { 1 = true } },
+      { field = "signes_clin___8", ref = "checkbox" },
       # { field = "signes_clin___9", values = { 1 = true } },
     ]
 
@@ -445,7 +445,7 @@
   name = "loss_of_smell"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___8", values = { 1 = true } }
+  is_present = { field = "signes_clin___8", ref = "checkbox" }
 
 [[observation]]
   name = "mean_arterial_blood_pressure_mmHg"
@@ -457,13 +457,13 @@
   name = "muscle_aches"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___6", values = { 1 = true } }
+  is_present = { field = "signes_clin___6", ref = "checkbox" }
 
 [[observation]]
   name = "musculoskeletal_pain"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___6", values = { 1 = true } }
+  is_present = { field = "signes_clin___6", ref = "checkbox" }
 
 [[observation]]
   name = "oxygen_flow_rate"
@@ -554,14 +554,14 @@
   start_date = { ref = "admissionDate" }
   date = { field = "shosp_d", source_date = "%Y-%m-%d" }
   duration_type = "event"
-  is_present = { field = "compl_type___1", values = { 1 = true }, description = "VAP" }
+  is_present = { field = "compl_type___1", ref = "checkbox", description = "VAP" }
   context = ["Ventilator associated pneumonia"]
 
 [[observation]]
   name = "shortness_of_breath"
   phase = "admission"
   date = { ref = "admissionDate" }
-  is_present = { field = "signes_clin___9", values = { 1 = true } }
+  is_present = { field = "signes_clin___9", ref = "checkbox" }
 
 [[observation]]
   name = "systolic_blood_pressure_mmHg"

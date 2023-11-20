@@ -31,14 +31,12 @@
     aggregation = "lastNotNull"
     schema = "../../schemas/dev/observation.schema.json"
 
-  [adtl.defs."Y/N/NK".values]
-    1 = true
-    2 = false
-    3 = false
-
   [adtl.defs."Y/N".values] # use in observations where NK shouldn't be mapped
     1 = true
     2 = false
+
+  [adtl.defs.checkbox.values]
+    1 = true
 
 [adtl.defs.admissionDateHierarchy]
   combinedType = "firstNonNull"
@@ -100,12 +98,12 @@
   [subject.works_healthcare]
     field = "healthwork_erterm"
     description = "Healthcare Worker?"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.works_lab]
     field = "labwork_erterm"
     description = "Laboratory worker?"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.pregnancy]
     field = "pregyn_rptestcd"
@@ -119,12 +117,12 @@
   [subject.has_asplenia]
     field = "asplenia_mhyn"
     description = "Asplenia"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_tuberculosis]
     field = "tb_mhyn"
     description = "Tuberculosis"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_hiv]
     combinedType = "any"
@@ -137,12 +135,12 @@
   [subject.has_hypertension]
     field = "hypertension_mhyn"
     description = "Hypertension"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_malignant_neoplasm]
     field = "malignantneo_mhyn"
     description = "Malignant neoplasm"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_smoking]
     field = "smoking_mhyn"
@@ -152,27 +150,27 @@
   [subject.has_asthma]
     field = "asthma_mhyn"
     description = "Asthma"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_chronic_cardiac_disease]
     field = "chroniccard_mhyn"
     description = "Chronic cardiac disease"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_chronic_kidney_disease]
     field = "renal_mhyn"
     description = "Chronic kidney disease"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_diabetes]
     field = "diabetes_mhyn"
     description = "Diabetes"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_liver_disease]
     field = "liver_mhyn"
     description = "Chronic liver disease"
-    ref = "Y/N/NK"
+    ref = "Y/N"
 
   [subject.has_malnutrition]
     field = "malnutrition_vsorres"
@@ -198,10 +196,10 @@
     description = "ICU or High Dependency admission"
     combinedType = "any"
     fields = [
-      { field = "overall_icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency admission?" },
+      { field = "overall_icu_hoterm", ref = "Y/N", description = "ICU or High Dependency admission?" },
       { field = "overall_icu_hoyn", values = { 1 = true, 2 = false }, description = "Still in ICU at outcome?" },
-      { field = "daily_icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency admission?" },
-      { field = "icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency admission on the first day of admission?" },
+      { field = "daily_icu_hoterm", ref = "Y/N", description = "ICU or High Dependency admission?" },
+      { field = "icu_hoterm", ref = "Y/N", description = "ICU or High Dependency admission on the first day of admission?" },
     ]
 
 [visit]
@@ -235,10 +233,10 @@
     description = "ICU or High Dependency admission"
     combinedType = "any"
     fields = [
-      { field = "overall_icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency admission?" },
+      { field = "overall_icu_hoterm", ref = "Y/N", description = "ICU or High Dependency admission?" },
       { field = "overall_icu_hoyn", values = { 1 = true, 2 = false }, description = "Still in ICU at outcome?" },
-      { field = "daily_icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency admission?" },
-      { field = "icu_hoterm", ref = "Y/N/NK", description = "ICU or High Dependency admission on the first day of admission?" },
+      { field = "daily_icu_hoterm", ref = "Y/N", description = "ICU or High Dependency admission?" },
+      { field = "icu_hoterm", ref = "Y/N", description = "ICU or High Dependency admission on the first day of admission?" },
     ]
 
   [visit.icu_admission_dates]
@@ -252,17 +250,17 @@
     description = "Dialysis"
     combinedType = "any"
     fields = [
-      { field = "overall_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
-      { field = "daily_rrt_prtrt", ref = "Y/N/NK", description = "Renal replacement therapy (RRT) or dialysis?" },
+      { field = "overall_rrt_prtrt", ref = "Y/N", description = "Renal replacement therapy (RRT) or dialysis?" },
+      { field = "daily_rrt_prtrt", ref = "Y/N", description = "Renal replacement therapy (RRT) or dialysis?" },
     ]
 
   [visit.treatment_inotropes_vasopressors]
     description = "Inotropes/vasopressors"
     combinedType = "any"
     fields = [
-      { field = "overall_inotrop_cmtrt", ref = "Y/N/NK", description = "Inotropes/vasopressors?" },
-      { field = "daily_inotrop_cmtrt", ref = "Y/N/NK", description = "Inotropes/vasopressors?" },
-      { field = "inotrop_cmtrt", ref = "Y/N/NK", description = "Inotropes/vasopressors on the first day of admission?" },
+      { field = "overall_inotrop_cmtrt", ref = "Y/N", description = "Inotropes/vasopressors?" },
+      { field = "daily_inotrop_cmtrt", ref = "Y/N", description = "Inotropes/vasopressors?" },
+      { field = "inotrop_cmtrt", ref = "Y/N", description = "Inotropes/vasopressors on the first day of admission?" },
     ]
 
   [visit.treatment_ecmo]
@@ -271,33 +269,33 @@
 
     [[visit.treatment_ecmo.fields]]
       field = "overall_extracorp_prtrt"
-      ref = "Y/N/NK"
+      ref = "Y/N"
       description = "Extracorporeal (ECMO) support?"
 
     [[visit.treatment_ecmo.fields]]
       field = "daily_extracorp_prtrt"
-      ref = "Y/N/NK"
+      ref = "Y/N"
       description = "Extracorporeal (ECMO) support?"
 
     [[visit.treatment_ecmo.fields]]
       field = "extracorp_prtrt"
-      ref = "Y/N/NK"
+      ref = "Y/N"
       description = "Extracorporeal (ECMO) support on the first day of admission?"
 
 [visit.treatment_cardiovascular_support]
   combinedType = "any"
   fields = [
-    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
-    { fieldPattern = "inotrop_cmtrt", ref = "Y/N/NK" },
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N" },
+    { fieldPattern = "inotrop_cmtrt", ref = "Y/N" },
   ]
 
 [visit.treatment_corticosteroid]
   description = "Corticosteroid"
   combinedType = "any"
   fields = [
-    { field = "overall_corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid?" },
-    { field = "daily_corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid?" },
-    { field = "corticost_cmyn", ref = "Y/N/NK", description = "Corticosteroid on the first day of admission?" },
+    { field = "overall_corticost_cmyn", ref = "Y/N", description = "Corticosteroid?" },
+    { field = "daily_corticost_cmyn", ref = "Y/N", description = "Corticosteroid?" },
+    { field = "corticost_cmyn", ref = "Y/N", description = "Corticosteroid on the first day of admission?" },
   ]
 
 [visit.treatment_corticosteroid_type]
@@ -316,49 +314,49 @@
   description = "Oxygen therepy"
   combinedType = "any"
   fields = [
-    { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N/NK", description = "Oxygen therapy?" },
-    { fieldPattern = "overall_oxygen_cmtype.*", values = { 1 = true } },
+    { fieldPattern = ".*oxygen_cmoccur", ref = "Y/N", description = "Oxygen therapy?" },
+    { fieldPattern = "overall_oxygen_cmtype.*", ref = "checkbox" },
     { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = true, 3 = true, 4 = true, 5 = true } },
-    { fieldPattern = ".*invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
-    { fieldPattern = ".*noninvasive_proccur", ref = "Y/N/NK", description = "Non-invasive ventilation?" },
-    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N/NK" },
+    { fieldPattern = ".*invasive_proccur", ref = "Y/N", description = "Invasive ventilation?" },
+    { fieldPattern = ".*noninvasive_proccur", ref = "Y/N", description = "Non-invasive ventilation?" },
+    { fieldPattern = ".*extracorp_prtrt", ref = "Y/N" },
   ]
 
 [visit.treatment_prone_position]
   description = "Prone Positioning"
   combinedType = "any"
   fields = [
-    { field = "overall_prone_prtrt", ref = "Y/N/NK", description = "Prone positioning?" },
-    { field = "daily_prone_prtrt", ref = "Y/N/NK", description = "Prone positioning?" },
-    { field = "prone_prtrt", ref = "Y/N/NK", description = "Prone position on first day of admission?" },
+    { field = "overall_prone_prtrt", ref = "Y/N", description = "Prone positioning?" },
+    { field = "daily_prone_prtrt", ref = "Y/N", description = "Prone positioning?" },
+    { field = "prone_prtrt", ref = "Y/N", description = "Prone position on first day of admission?" },
   ]
 
 [visit.treatment_invasive_ventilation]
   description = "Invasive ventilation"
   combinedType = "any"
   fields = [
-    { field = "overall_invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
-    { field = "daily_invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
-    { field = "invasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation on first day of admission?" },
+    { field = "overall_invasive_proccur", ref = "Y/N", description = "Invasive ventilation?" },
+    { field = "daily_invasive_proccur", ref = "Y/N", description = "Invasive ventilation?" },
+    { field = "invasive_proccur", ref = "Y/N", description = "Invasive ventilation on first day of admission?" },
   ]
 
 [visit.treatment_antifungal_agent]
   description = "Antifungal"
   combinedType = "any"
   fields = [
-    { field = "overall_antifung_cmyn", ref = "Y/N/NK", description = "Antifungal agent?" },
-    { field = "daily_antifung_cmyn", ref = "Y/N/NK", description = "Antifungal agent?" },
-    { field = "antifung_cmyn", ref = "Y/N/NK", description = "Antifungal agent on the first day of admission?" },
+    { field = "overall_antifung_cmyn", ref = "Y/N", description = "Antifungal agent?" },
+    { field = "daily_antifung_cmyn", ref = "Y/N", description = "Antifungal agent?" },
+    { field = "antifung_cmyn", ref = "Y/N", description = "Antifungal agent on the first day of admission?" },
   ]
 
 [visit.treatment_antivirals]
   description = "Antiviral"
   combinedType = "any"
   fields = [
-    { field = "overall_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
-    { field = "daily_antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent?" },
-    { field = "antiviral_cmyn", ref = "Y/N/NK", description = "Antiviral agent on the first day of admission?" },
-    { fieldPattern = ".*exper_cmtype___3", values = { 1 = true } },
+    { field = "overall_antiviral_cmyn", ref = "Y/N", description = "Antiviral agent?" },
+    { field = "daily_antiviral_cmyn", ref = "Y/N", description = "Antiviral agent?" },
+    { field = "antiviral_cmyn", ref = "Y/N", description = "Antiviral agent on the first day of admission?" },
+    { fieldPattern = ".*exper_cmtype___3", ref = "checkbox" },
   ]
 
 
@@ -380,9 +378,9 @@
   description = "Antibiotics"
   combinedType = "any"
   fields = [
-    { field = "overall_antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic?" },
-    { field = "daily_antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic?" },
-    { field = "antibiotic_cmyn", ref = "Y/N/NK", description = "Antibiotic on the first day of admission?" },
+    { field = "overall_antibiotic_cmyn", ref = "Y/N", description = "Antibiotic?" },
+    { field = "daily_antibiotic_cmyn", ref = "Y/N", description = "Antibiotic?" },
+    { field = "antibiotic_cmyn", ref = "Y/N", description = "Antibiotic on the first day of admission?" },
   ]
 
 [visit.treatment_other]
@@ -408,9 +406,9 @@
   description = "Noninvasive ventilation"
   combinedType = "any"
   fields = [
-    { field = "overall_noninvasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
-    { field = "daily_noninvasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation?" },
-    { field = "noninvasive_proccur", ref = "Y/N/NK", description = "Invasive ventilation on first day of admission?" },
+    { field = "overall_noninvasive_proccur", ref = "Y/N", description = "Invasive ventilation?" },
+    { field = "daily_noninvasive_proccur", ref = "Y/N", description = "Invasive ventilation?" },
+    { field = "noninvasive_proccur", ref = "Y/N", description = "Invasive ventilation on first day of admission?" },
   ]
 
 [visit.treatment_ace_inhibitors]
@@ -419,12 +417,12 @@
 
   [[visit.treatment_ace_inhibitors.fields]]
     field = "daily_ace_cmoccur"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Angiotension converting enzyme inhibitors (ACE inhibitors)?"
 
   [[visit.treatment_ace_inhibitors.fields]]
     field = "ace_cmoccur"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Angiotensin converting enzyme inhibitors (ACE) on the first day of admission?"
 
 [visit.treatment_arb]
@@ -433,12 +431,12 @@
 
   [[visit.treatment_arb.fields]]
     field = "daily_arb_cmoccur"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Angiotensin II receptor blockers (ARBs)?"
 
   [[visit.treatment_arb.fields]]
     field = "arb_cmoccur"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Angiotensin II receptor blockers (ARBs) on the first day of admission?"
 
 
@@ -446,17 +444,17 @@
   description = "Antimalarial"
   combinedType = "any"
   fields = [
-    { field = "overall_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
-    { field = "daily_antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent?" },
-    { field = "antimal_cmyn", ref = "Y/N/NK", description = "Antimalarial agent on the first day of admission?" },
-    { fieldPattern = ".*exper_cmtype___1", values = { 1 = true } },
-    { fieldPattern = ".*exper_cmtype___2", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___1", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___2", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___3", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___4", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___5", values = { 1 = true } },
-    { fieldPattern = ".*antimal_cmtype___6", values = { 1 = true } },
+    { field = "overall_antimal_cmyn", ref = "Y/N", description = "Antimalarial agent?" },
+    { field = "daily_antimal_cmyn", ref = "Y/N", description = "Antimalarial agent?" },
+    { field = "antimal_cmyn", ref = "Y/N", description = "Antimalarial agent on the first day of admission?" },
+    { fieldPattern = ".*exper_cmtype___1", ref = "checkbox" },
+    { fieldPattern = ".*exper_cmtype___2", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___1", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___2", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___3", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___4", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___5", ref = "checkbox" },
+    { fieldPattern = ".*antimal_cmtype___6", ref = "checkbox" },
   ]
 
 [visit.treatment_antimalarial_type]
@@ -478,9 +476,9 @@
   combinedType = "any"
   fields = [
     { fieldPattern = ".*oxygen_cmtype", values = { 1 = true, 2 = false, 3 = true, 4 = true, 5 = false } },
-    { field = "overall_oxygen_cmtype___1", values = { 1 = true } },
-    { field = "overall_oxygen_cmtype___3", values = { 1 = true } },
-    { field = "overall_oxygen_cmtype___4", values = { 1 = true } },
+    { field = "overall_oxygen_cmtype___1", ref = "checkbox" },
+    { field = "overall_oxygen_cmtype___3", ref = "checkbox" },
+    { field = "overall_oxygen_cmtype___4", ref = "checkbox" },
   ]
 
 [visit.treatment_high_flow_nasal_cannula]
@@ -489,7 +487,7 @@
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "overall_oxygen_cmtype___2"
-    values = { 1 = true }
+    ref = "checkbox"
 
   [[visit.treatment_high_flow_nasal_cannula.fields]]
     field = "daily_oxygen_cmtype"
@@ -505,26 +503,26 @@
 
   [[visit.treatment_nsaid.fields]]
     field = "overall_nsaid_cmyn"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Non-steroidal anti-inflammatory (NSAID)?"
 
   [[visit.treatment_nsaid.fields]]
     field = "daily_nsaid_cmoccur"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Non-steroidal anti-inflammatory (NSAID)?"
 
   [[visit.treatment_nsaid.fields]]
     field = "nsaid_cmoccur"
-    ref = "Y/N/NK"
+    ref = "Y/N"
     description = "Non-steroidal anti-inflammatory (NSAID) on first day of admission?"
 
 [visit.treatment_intravenous_fluids]
   description = "IV fluids"
   combinedType = "any"
   fields = [
-    { field = "overall_iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids?" },
-    { field = "daily_iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids?" },
-    { field = "iv_fluids_cmyn", ref = "Y/N/NK", description = "Intraveonous fluids on the first day of admission?" },
+    { field = "overall_iv_fluids_cmyn", ref = "Y/N", description = "Intraveonous fluids?" },
+    { field = "daily_iv_fluids_cmyn", ref = "Y/N", description = "Intraveonous fluids?" },
+    { field = "iv_fluids_cmyn", ref = "Y/N", description = "Intraveonous fluids on the first day of admission?" },
   ]
 
 [visit.outcome]
@@ -559,7 +557,7 @@
   name = "bleeding_haemorrhage"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "bleed_ceoccur_v2", ref = "Y/N/NK" }
+  is_present = { field = "bleed_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
   name = "cough"
@@ -568,7 +566,7 @@
   [observation.is_present]
     combinedType = "any"
     fields = [
-      { field = "cough_ceoccur_v2", ref = "Y/N/NK" },
+      { field = "cough_ceoccur_v2", ref = "Y/N" },
       { field = "coughsput_ceoccur_v2", ref = "Y/N" },
       { field = "coughhb_ceoccur_v2", ref = "Y/N" },
     ]
@@ -577,7 +575,7 @@
   name = "cough_dry"
   date = { ref = "admissionDateHierarchy" }
   phase = "admission"
-  is_present = { field = "cough_ceoccur_v2", ref = "Y/N/NK" }
+  is_present = { field = "cough_ceoccur_v2", ref = "Y/N" }
 
 [[observation]]
   name = "cough_with_sputum_production"

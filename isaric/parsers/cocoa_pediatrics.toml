@@ -24,6 +24,7 @@
 
 [adtl.defs]
   "Y/N/NK" = { values = { 0 = false, 1 = true } }
+  checkbox = { values = { 1 = true } }
 
   [adtl.defs.admissionDateHierarchy]
     combinedType = "firstNonNull"
@@ -376,7 +377,7 @@
   name = "cough"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___2", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___2", ref = "checkbox" }
 
 [[observation]]
   name = "cough_dry"
@@ -414,7 +415,7 @@
   name = "diarrhoea"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___10", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___10", ref = "checkbox" }
 
 [[observation]]
   name = "diastolic_blood_pressure_mmHg"
@@ -440,7 +441,7 @@
   name = "hepatomegaly"
   phase = "admission"
   date = { field = "hostdat" }
-  is_present = { field = "cardiac_failure___4", values = { 1 = true } }
+  is_present = { field = "cardiac_failure___4", ref = "checkbox" }
 
 [[observation]]
   name = "history_of_fever"
@@ -454,7 +455,7 @@
   name = "history_of_fever"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___1", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___1", ref = "checkbox" }
 
 [[observation]]
   name = "fatigue_malaise"
@@ -480,7 +481,7 @@
   name = "feeding_intolerance_pediatrics"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___11", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___11", ref = "checkbox" }
 
 [[observation]]
   name = "inability_to_walk"
@@ -556,8 +557,8 @@
     combinedType = "any"
     excludeWhen = "none"
     fields = [
-      { field = "myalgia_ceoccur_v2", values = { 1 = true } },
-      { field = "jointpain_ceoccur_v2", values = { 1 = true } },
+      { field = "myalgia_ceoccur_v2", ref = "checkbox" },
+      { field = "jointpain_ceoccur_v2", ref = "checkbox" },
     ]
 
 [[observation]]
@@ -660,7 +661,7 @@
   name = "shortness_of_breath"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___3", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___3", ref = "checkbox" }
 
 [[observation]]
   name = "skin_rash"
@@ -674,7 +675,7 @@
   name = "skin_rash"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___5", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___5", ref = "checkbox" }
 
 [[observation]]
   name = "skin_ulcers"
@@ -740,7 +741,7 @@
   name = "vomiting_nausea"
   phase = "followup"
   date = { field = "date" }
-  is_present = { field = "ongoing_symptoms___9", values = { 1 = true } }
+  is_present = { field = "ongoing_symptoms___9", ref = "checkbox" }
 
 [[observation]]
   name = "blantyre_coma_score"
