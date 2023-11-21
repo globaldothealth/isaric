@@ -8,9 +8,9 @@ import plotly.express as px
 
 SHOW_LIMIT = 5  # do not display counts below this
 
-SIDEBAR_TEXT = f"""## About
+SIDEBAR_TEXT = f"""# ISARIC Inventory
 
-ISARIC Inventory shows aggregate statistics from a dataset collection curated by the
+Aggregate statistics from a dataset collection curated by the
 [ISARIC](https://isaric.org) consortium.
 
 For privacy reasons, we only show the number of patients when there are >{SHOW_LIMIT} cases.
@@ -63,7 +63,9 @@ else:
 
 country_metrics = df.Country_ISO3.value_counts().reset_index()
 country_metrics = country_metrics[country_metrics["count"] > SHOW_LIMIT]
-st.metric("Patients", country_metrics["count"].sum())
+c1, c2 = st.columns(2)
+c1.metric("Patients", country_metrics["count"].sum())
+c2.metric("Countries", len(country_metrics))
 
 fig = px.choropleth(country_metrics, locations="Country_ISO3", color="count")
 st.plotly_chart(fig)
