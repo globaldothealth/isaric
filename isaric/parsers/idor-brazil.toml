@@ -281,7 +281,18 @@
 [subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "otherrisktext", if.other_mhyn = 1 }]
+  fields = [
+    { field = "other_mhyn" },
+    { field = "otherrisktext" },
+    { field = "chronicneu_mhyn", values = { 1 = "Chronic neurological disorder" } },
+    { field = "qual_transp", values = { 1="Renal transplant", 2="Cardiac transplant"}},
+    { field = "out_transp"}
+    { field = "insuf_card", values = { 1 = "Cardiac insufficiency"} },
+    { field = "d_coron", values = { 1 = "Coronary disease"}},
+    { field = "arrtim", values = { 1 = "Cardiac arrhythmia"}}
+    { field = "d_orovalvar", values = { 1 = "Heart valve disease"}}
+    { field = "cardiop_cong", values = { 1 = "Congenital heart disease"}}
+    ]
 
   # visit
 

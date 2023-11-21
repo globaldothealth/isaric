@@ -159,6 +159,17 @@
     values = { 1 = true, 0 = false }
     description = "Ex-preterm infant?"
 
+  [subject.has_comorbidity_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      {field = "spcfy_chrncrd_myhn", values = { 1 = "Rheumatic heart disease", 2="Congenital cardiac disease"} },
+      { field = "specify_chronic_cardiac"},
+      { field = "spcfy_chrncneu_myhn", values = { 1 = "Cerebral palsy", 2="Epilepsy", 3="Chronic neurological disorder"} },
+      { field = "spcfy_malignant" },
+      { field = "otherrisktext" }
+    ]
+
   [subject.has_died]
     field = "dsterm"
     description = "Outcome:"
@@ -658,6 +669,12 @@
 
 [[observation]]
   name = "shortness_of_breath"
+  phase = "admission"
+  date = { field = "hostdat" }
+  is_present = { field = "chst_signs", values = {6 = true} }
+
+[[observation]]
+  name = "shortness_of_breath"
   phase = "followup"
   date = { field = "date" }
   is_present = { field = "ongoing_symptoms___3", values = { 1 = true } }
@@ -747,3 +764,22 @@
   phase = "admission"
   date = { field = "hostdat" }
   value = { field = "bcs_vsorres" }
+
+[[observation]]
+  name = "lung_sounds"
+  phase = "admission"
+  date = { field = "hostdat" }
+  is_present = { field = "chst_signs", values = {1=true, 2=true, 3=true, 4=true, 5=true}}
+  context = {field = "chst_signs", values = {1="Bilateral wheeze and decreased A/E", 2="Bilateral wheeze and crackles", 3="Bilateral crepitations", 4="Unilateral crepitations", 5="Dull to percussion, suggest pleural effusion"}}
+
+[[observation]]
+  name = "other_symptom"
+  phase = "admission"
+  date = { field = "hostdat" }
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      {field = "hrt_mrmr_ceoccur_v2", values = {1="Heart murmur"}}
+      { field = "cardiac_failure", values = { 1="Crepitation", 2="Raised JVP", 3="Oedema", 4="Hepatomegaly"}}
+    ]

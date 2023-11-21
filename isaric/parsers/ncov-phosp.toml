@@ -118,8 +118,13 @@
   if = { crf1a_gestational_weeks = { "!=" = "NA" } }
 
 [subject.has_chronic_hematologic_disease]
-  field = "crf1a_com_mh_other_yn"
-  values = { Yes = true, No = false }
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    {field = "crf1a_com_mh_other_yn", values = { Yes = true, No = false }},
+    { field = "crf1a_com_mh_leuk_yn", values = { Yes = true, No = false }}
+  ]
+
 
 [subject.has_tuberculosis]
   field = "crf1a_com_id_mt"
@@ -151,8 +156,13 @@
   ]
 
 [subject.has_malignant_neoplasm]
-  field = "crf1a_com_mh_stm"
-  values = { Metastatic = true, Localised = true, No = false }
+  combinedType = "any"
+  excludeWhen = "none"
+  fields = [
+    {field = "crf1a_com_mh_stm", values = { Metastatic = true, Localised = true, No = false }},
+    {field = "crf1a_com_mh_lymp_yn", values = { Yes = true, No = false }}
+  ]
+
 
 [subject.has_asthma]
   field = "crf1a_com_res_ast"
@@ -236,10 +246,18 @@
     { field = "crf1a_com_other", if = { crf1a_com_other = { "!=" = "NA" } } },
     { field = "crf2a_pre_con_other_detail", if = { crf2a_pre_con_other_detail = { "!=" = "NA" } } },
     { field = "crf1a_com_card_other", if = { crf1a_com_card_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_neupsy_da", if = { crf1a_com_neupsy_da = { "!=" = "NA" } }, values = { 1 = "Depression/Anxiety"} },
+    { field = "crf1a_com_neupsy_chron", if = { crf1a_com_neupsy_chron = { "!=" = "NA" } }, values = { 1 = "Chronic fatigue/Fibromyalgia/Chronic pain"} },
+    { field = "crf1a_com_neupsy_pam", if = { crf1a_com_neupsy_pam = { "!=" = "NA" } }, values = { 1 = "Previous treatment with antidepressants"} },
     { field = "crf1a_com_neupsy_other", if = { crf1a_com_neupsy_other = { "!=" = "NA" } } },
     { field = "crf1a_com_res_other", if = { crf1a_com_res_other = { "!=" = "NA" } } },
     { field = "crf1a_com_rheu_other", if = { crf1a_com_rheu_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_gast_pud", if = { crf1a_com_gast_pud = { "!=" = "NA" } }, values = { 1 = "Peptic ulcers"} },
+    { field = "crf1a_com_gast_gord", if = { crf1a_com_gast_gord = { "!=" = "NA" } }, values = { 1 = "GERD"} },
+    { field = "crf1a_com_gast_ibs", if = { crf1a_com_gast_ibs = { "!=" = "NA" } }, values = { 1 = "Irritable bowel syndrome"} },
     { field = "crf1a_com_gast_other", if = { crf1a_com_gast_other = { "!=" = "NA" } } },
+    { field = "crf1a_com_mer_hypot", if = { crf1a_com_mer_hypot = { "!=" = "NA" } }, values =  {1 = "Hypothyroidism"} },
+    { field = "crf1a_com_mer_hypert", if = { crf1a_com_mer_hypert = { "!=" = "NA" } }, values =  {1 = "Hyperthyroidism"} },
     { field = "crf1a_com_mer_other", if = { crf1a_com_mer_other = { "!=" = "NA" } } },
     { field = "crf1a_com_mh_other", if = { crf1a_com_mh_other = { "!=" = "NA" } } },
   ]

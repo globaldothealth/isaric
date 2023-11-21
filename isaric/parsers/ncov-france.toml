@@ -130,6 +130,16 @@
     field = "comorb7"
     values = { 1 = true, 0 = false }
 
+  [subject.has_comorbidity_other]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      {field = "comorb3", values = { 1 = "Neurovascular disease" } },
+      {field = "comorb4", values = { 1 = "Hemiplagia/Paraplegia" } },
+      {field = "comorb8", values = { 1 = "Peptic ulcer" } },
+      {field = "comorb15", values = { 1 = "Autoimmune disease" } }
+    ]
+
   [subject.has_died]
     combinedType = "any"
     fields = [

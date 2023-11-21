@@ -199,6 +199,11 @@
   description = "Chronic kidney disease"
   ref = "Y/N"
 
+[subject.has_chronic_respiratory_disease]
+  field = "c_pulm"
+  description = "Chronic pulmonary disease (not asthma)"
+  ref = "Y/N"
+
 [subject.has_dementia]
   field = "dementia"
   description = "Dementia"
@@ -266,7 +271,7 @@
 [subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "o_risk_text", ref = "Y/N" }]
+  fields = [{ field = "o_risk_text", ref = "Y/N" }, { field = "c_neuro", values = { 1 = "Chronic neurological disorder"}}]
 
 [subject.icu_admitted]
   field = "type_icu"

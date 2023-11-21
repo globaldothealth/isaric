@@ -114,7 +114,7 @@
   [subject.has_comorbidity_other]
     combinedType = "set"
     excludeWhen = "false-like"
-    fields = [{ field = "otherrisktext" }]
+    fields = [{ field = "otherrisktext" }, {field = "chronicneu_mhyn", values = { 1 = "Chronic neurological disorder"}}]
 
   [subject.has_diabetes]
     field = "diabetiscomp_mhyn"

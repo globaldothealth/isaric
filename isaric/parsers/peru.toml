@@ -97,6 +97,15 @@
   description = "Kidney disease?"
   ref = "Y/N"
 
+[subject.has_chronic_respiratory_disease]
+  field = "neumo"
+  if.not = {co_nefro = 3} # Asthma
+  ref = "Y/N"
+
+[subject.has_asthma]
+  field = "co_neumo"
+  values = { 3 = true}
+
 [subject.has_liver_disease]
   field = "hepato"
   description = "Hepatic comorbidity?"
@@ -106,6 +115,24 @@
   field = "inmuno"
   description = "Has inmumosuppressive comorbidity?"
   ref = "Y/N"
+
+[subject.has_diabetes]
+  field = "co_endocrino"
+  values = {1=true}
+
+[subject.diabetes_type]
+  field = "co_endocrino"
+  values = {1="type-1"}
+
+[subject.has_comorbidity_other]
+  combinedType = "set"
+  excludeWhen = "none"
+  fields = [
+    { field = "co_neuro", values = {1="Epilepsy", 2="Infant cerebral palsy", 3="Myelomeningocele", 4="Spina bifida", 5="Muscular dystrophy"} },
+    { field = "endocrino", values = {1 = "Endocrinological comorbidity"}, if.not = {co_endocrino = 1} },
+    { field = "transplant", values = { 1="Allogeic transplant", 2="Haploidentical transplant", 3="Kidney transplant", 4="Liver transplant"}},
+    { field = "otra2"}
+  ]
 
 [subject.has_died] # type - boolean
   field = "est_final"
@@ -284,3 +311,18 @@
   date = { field = "fecha_de_ingreso_al_insnsb" }
   phase = "admission"
   is_present = { field = "inyeccion_conjuntival", values = { Si = true, No = false } }
+
+[[observation]]
+  name = "other_symptom"
+  date = { field = "fecha_de_ingreso_al_insnsb" }
+  phase = "admission"
+
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "otra1" },
+      { field = "roncantes", values = { 1 = "Snoring" } },
+      { field = "exudado_faringeo", values = { 1 = "Pharyngeal exudate" } },
+      { field = "lengua_aframbuesada", values = { Si = "Raspberry tongue" } }
+    ]

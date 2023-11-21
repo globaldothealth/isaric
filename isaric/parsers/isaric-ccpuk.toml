@@ -286,9 +286,11 @@
   ref = "Y/N/NK"
 
 [subject.has_diabetes]
-  field = "diabetes_mhyn"
-  ref = "Y/N/NK"
-  description = "Diabetes without complications"
+  combinedType = "any"
+  fields = [
+    {field = "diabetes_mhyn", ref = "Y/N/NK", description = "Diabetes without complications"},
+    {field = "diabetescom_mhyn", ref = "Y/N/NK", description = "Diabetes with complications"},
+  ]
 
 [subject.diabetes_type]
   field = "diabetes_type_mhyn"
@@ -325,6 +327,7 @@
   excludeWhen = "none"
   fields = [
     { field = "otherrisktext", description = "Other relevant risk factor" },
+    { field = "chronicneu_mhyn", values = { 1 = "Chronic neurological disorder"}}
   ]
 
 [subject.has_died]

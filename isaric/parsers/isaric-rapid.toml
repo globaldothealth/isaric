@@ -461,7 +461,7 @@
 [subject.has_comorbidity_other]
   combinedType = "set"
   excludeWhen = "none"
-  fields = [{ field = "otherrisktext" }]
+  fields = [{ field = "otherrisktext" }, {field = "chronicneu_mhyn", values = { 1 = "Chronic neurological disorder"}}]
 
 [subject.has_died]
   combinedType = "any"

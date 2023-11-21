@@ -173,11 +173,13 @@
     ref = "Y/N"
 
   [subject.has_malignant_neoplasm]
-    combinedType = "any"
-    fields = [
-      { field = "neopla", ref = "Y/N" },
-      { field = "hem_dse", ref = "Y/N" },
-    ]
+    field = "neopla"
+    ref = "Y/N"
+
+  [subject.has_chronic_hematologic_disease]
+    field = "hem_dse"
+    description = "chronic hematological disease"
+    ref = "Y/N"
 
   [subject.has_smoking]
     combinedType = "firstNonNull"
@@ -196,6 +198,10 @@
 
   [subject.has_chronic_cardiac_disease]
     field = "heart_dse"
+    ref = "Y/N"
+
+  [subject.has_chronic_respiratory_disease]
+    field = "lung_dse"
     ref = "Y/N"
 
   [subject.has_diabetes]
@@ -229,7 +235,13 @@
   [subject.has_comorbidity_other]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "oth_risk_spec" }]
+    fields = [
+      { field = "oth_risk_spec" },
+      { field = "neuro_imp_spec" },
+      { field = "neopla_spec" },
+      { field = "hem_dse_spec" },
+      { field = "stroke", values = { 1 = "History of stroke"} }
+    ]
 
   [subject.date_death]
     field = "outcome_date"
@@ -981,3 +993,31 @@
       { field = "other_1_v2" },
       { field = "other_2_v2" },
     ]
+
+[[observation]]
+  name = "other_symptom"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      {field = "sweat", values = { 1= "Night sweats"}},
+      {field = "lethargic", values = { 1= "Lethargic/unconsious"}},
+      { field = "nasal", value = {1="Nasal flaring"}},
+      { field = "nailbed", value = { 1 = "Nailbed pallor"}},
+      { field = "yellow", values = { 1= "Jaundice"}},
+      { field = "palp", values = { 1 = "Palpitations"} },
+      { field = "pass_out", values = { 1 = "Syncope/passing out"} },
+      { field = "urine_pain", values = {1 = "Pain on urination"} },
+      { field = "grunt", values = { 1 = "Grunting respiration"} },
+      { field = "glands", values = { 1 = "Swollen glands"} },
+      { field = "loss", values = { 1 = "Loss of speech/movement"} },
+      { field = "oedema", values = { 1 = "Oedema"}}
+    ]
+
+[[observation]]
+  name = "seizures"
+  date = { ref = "admissionDateHierarchy" }
+  phase = "admission"
+  is_present = { field = "seizure", ref = "Y/N"}

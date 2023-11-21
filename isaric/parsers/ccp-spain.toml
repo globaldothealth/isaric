@@ -164,7 +164,9 @@
     combinedType = "set"
     excludeWhen = "none"
     fields = [
-      { field = "co_otros2", if = { co_otros = 1 }, description = "Any other comorbidity" },
+      { field = "co_otros2", description = "Any other comorbidity" },
+      { field = "co_neuro", values = { 1= "Chronic neurological disease"}},
+      { field = "co_inflam", values = { 1= "Chronic inflammatory disease"}}
     ]
 
   [subject.has_liver_disease]
@@ -540,3 +542,9 @@
   date = { field = "fchadminsion" }
   phase = "admission"
   is_present = { field = "ss_malest", ref = "Y/N/NK" } # this field onlz captured malaise, not fatigue
+
+[[observation]]
+  name = "other_symptom"
+  date = { field = "fchadminsion" }
+  phase = "admission"
+  text = { field = "ss_trs", values = { 1 = "Upper respiratory tract symptoms"} }

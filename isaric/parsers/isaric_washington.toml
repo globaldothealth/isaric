@@ -135,24 +135,23 @@
     values = { 1 = true }
 
   [subject.has_chronic_kidney_disease]
-    field = "comorbidities___10"
-    values = { 1 = true }
+    combinedType = "any"
+    fields = [
+      {field = "comorbidities___10", values = { 1 = true }, description = "Chronic kidney disease"},
+      {field = "comorbidities___11", values = { 1 = true }, description = "Chronic dialysis"},
+    ]
+
 
   [subject.has_chronic_cardiac_disease]
     combinedType = "any"
     fields = [
       { field = "comorbidities___2", values = { 1 = true }, description = "Coronary artery disease" },
-      { field = "comorbidities___4", values = { 1 = true }, description = "Cardiac arrhythmia" },
-      { field = "comorbidities___5", values = { 1 = true }, description = "Congestive heart failure" },
       { field = "comorbidities___6", values = { 1 = true }, description = "Valvular heart disease" },
     ]
 
   [subject.has_chronic_respiratory_disease]
-    combinedType = "any"
-    fields = [
-      { field = "comorbidities___7", values = { 1 = true } },
-      { field = "comorbidities___9", values = { 1 = true } },
-    ]
+    field = "comorbidities___7",
+    values = { 1 = true }
 
   [subject.has_chronic_hematologic_disease]
     field = "comorbidities___19"
@@ -203,7 +202,26 @@
   [subject.has_comorbidity_other]
     combinedType = "set"
     excludeWhen = "none"
-    fields = [{ field = "comorbidites_other" }]
+    fields = [
+      { field = "comorbidities___4", values = { 1 = "Cardiac arrhythmia" } },
+      { field = "comorbidities___5", values = { 1 = "Congestive heart failure" } },
+      { field = "comorbidities___9", values = { 1 = "Pulmonary circulation disorder" } },
+      { field = "comorbidities___13", values = { 1 = "Hyperthyroidism" } },
+      { field = "comorbidities___17", values = { 1 = "Peptic Ulcer (no bleeding)" } },
+      { field = "comorbidities___18", values = { 1 = "Solid tumor without metastasis" } },
+      { field = "comorbidities___23", values = { 1 = "Stroke, or other neurological disorder" } },
+      { field = "comorbidities___24", values = { 1 = "Paralysis" } },
+      { field = "comorbidities___26", values = { 1 = "Blood loss anemia" } },
+      { field = "comorbidities___27", values = { 1 = "Iron deficiency anemia" } },
+      { field = "comorbidities___28", values = { 1 = "Coagulopathy" } },
+      { field = "comorbidities___31", values = { 1 = "Substance use disorder" } },
+      { field = "comorbidities___32", values = { 1 = "Depression" } },
+      { field = "comorbidities___33", values = { 1 = "Psychosis" } },
+      { field = "comorbidities___35", values = { 1 = "Obstructive sleep apnoea" } },
+      { field = "comorbidities___36", values = { 1 = "Venous thromboembolism" } },
+      { field = "comorbidities___37", values = { 1 = "Dyslipidema/hyperlipidemia" } },
+      { field = "comorbidites_other" }
+      ]
 
   [subject.has_died]
     combinedType = "any"
@@ -544,7 +562,18 @@
   name = "other_symptom"
   date = { field = "ADMIT DATE" }
   phase = "admission"
-  text = { field = "signs_symptoms_others" }
+
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "signs_and_symptoms_at_hosp___7", values = { 1 = "Chills/Rigors" }},
+      { field = "signs_and_symptoms_at_hosp___13", values = { 1 = "Dizziness/Lightheadednes" }},
+      { field = "signs_and_symptoms_at_hosp___19", values = { 1 = "Fatigue/ Myalgia" }},
+      { field = "signs_and_symptoms_at_hosp___22", values = { 1 = "Night sweats" }},
+      { field = "signs_and_symptoms_at_hosp___24", values = { 1 = "Sneezing" }},
+      { field = "signs_symptoms_others" }
+    ]
 
 [[observation]]
   name = "pneumonia"

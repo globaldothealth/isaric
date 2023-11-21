@@ -255,6 +255,14 @@
   fields = [
     { field = "q_28a", description = "28a) Specify other" },
     { field = "flw_chron_other" },
+    { field = "q_15", values = { 1 = "Previous stroke" } },
+    { field = "q_16", values = { 1 = "Previous DVT/PE" } },
+    { field = "q_18", values = { 1 = "Sickle cell disease" } },
+    { field = "q_25", values = { 1 = "Epilepsy" } },
+    { field = "q_49", description = "describe rash"},
+    { field = "flw_spc_ongoing___14", values = { 1 = "Chronic neurological condition" } },
+    { field = "flw_spc_ongoing___18", values = { 1 = "Depression" } },
+    { field = "flw_spc_ongoing___19", values = { 1 = "Anxiety" } },
   ]
 
 [subject.has_chronic_hematologic_disease]
@@ -943,6 +951,19 @@
   phase = "followup"
   is_present = { field = "flw_skin_rash_f929e7", description = "4a_p) Skin rash", values = { 1 = true, 0 = false } }
 
+  [observation.context]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      {field = "flw_rash_bod_282c6a___1", values = { 1 = "Face" } },
+      {field = "flw_rash_bod_282c6a___2", values = { 1 = "Trunk" } },
+      {field = "flw_rash_bod_282c6a___3", values = { 1 = "Arms" } },
+      {field = "flw_rash_bod_282c6a___4", values = { 1 = "Legs" } },
+      {field = "flw_rash_bod_282c6a___5", values = { 1 = "Buttocks" } },
+      {field = "flw_rash_bod_282c6a___6", values = { 1 = "Toes" } },
+      {field = "flw_rash_bod_282c6a___7", values = { 1 = "Fingers" } },
+    ]
+
 [[observation]]
   name = "skin_rash"
   start_date = { field = "q_2_tire_fllw_d_90", apply = { function = "startDate", params = [
@@ -1001,7 +1022,14 @@
   name = "other_symptom"
   date = { field = "q_3" }
   phase = "study"
-  text = { field = "q_50a", description = "50a) Other symptom" }
+
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "q_32", values = { 1 = "Nasal congestion" } },
+      { field = "q_50a", description = "50a) Other symptom" }
+    ]
 
 [[observation]]
   name = "other_symptom"
@@ -1011,7 +1039,33 @@
   date = { field = "q_2_tire_fllw", source_date = "%Y-%m-%d" }
   duration_type = "event"
   phase = "followup"
-  text = { field = "flw_new_symptoms_319393", description = "4a_u) Any other NEW symptoms?" }
+
+  [observation.text]
+    combinedType = "set"
+    excludeWhen = "none"
+    fields = [
+      { field = "flw1_pain_on_breath_915a04", values = { 1 = "Pain when breathing" } },
+      { field = "flw1_palpitations_11157b", values = { 1 = "Palpitations" } },
+      { field = "flw1_constipation_6845e0", values = { 1 = "Constipation" } },
+      { field = "flw1_problems_urine_d7c13d", values = { 1 = "Problems passing urine" } },
+      { field = "flw1_erectile_56e3e8", values = { 1 = "Erectile dysfunction" } },
+      { field = "flw1_menstruation_620fcd", values = { 1 = "Changes in menstruation" } },
+      { field = "flw1_ankles_f9e372", values = { 1 = "Swollen ankles" } },
+      { field = "flw1_balance_e8c5a6", values = { 1 = "Balance issues" } },
+      { field = "flw1_weakness_d098b0", values = { 1 = "Muscle weakness" } },
+      { field = "flw1_fully_move_56efb7", values = { 1 = "Can't fully move/control movement" } },
+      { field = "flw1_can_t_feel_5d2d16", values = { 1 = "Can't feel one side of face/body" } },
+      { field = "flw1_tingling_619dbc", values = { 1 = "Tingling" } },
+      { field = "flw1_dizziness_b3d741", values = { 1 = "Dizziness/light headedness" } },
+      { field = "flw1_fainting_2d17b1", values = { 1 = "Fainting/blackouts" } },
+      { field = "flw1_tremor_945a43", values = { 1 = "Tremor/shakiness" } },
+      { field = "flw1_swallowing_e38a55", values = { 1 = "Problems swallowing/chewing" } },
+      { field = "flw1_double_vision_e5abd7", values = { 1 = "Double vision" } },
+      { field = "flw1_speaking_59d409", values = { 1 = "Problems speaking or communicating" } },
+      { field = "flw1_ringing_ears_f23818", values = { 1 = "Ringing in ears" } },
+      { field = "flw1_sleeping_326􀀂e", values = { 1 = "Problems sleeping" } },
+      { field = "flw_new_symptoms_319393", description = "4a_u) Any other NEW symptoms?" }
+    ]
 
 [[observation]]
   name = "other_symptom"
@@ -1095,7 +1149,13 @@
   date = { field = "q_2_tire_fllw", source_date = "%Y-%m-%d" }
   duration_type = "event"
   phase = "followup"
-  is_present = { field = "flw1_weight_loss_dfedc4", values = { 1 = true, 0 = false } }
+
+  [observation.is_present]
+    combinedType = "any"
+    fields = [
+      { field = "flw1_weight_loss_dfedc4", values = { 1 = true, 0 = false } },
+      { field = "flw1_loss_of_app_72e09e", values = { 1 = true, 0 = false } }
+    ]
 
 [[observation]]
   name = "anorexia"

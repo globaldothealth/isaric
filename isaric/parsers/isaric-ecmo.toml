@@ -529,6 +529,7 @@
       { otherrisktext = { "!=" = 61 } },
       { otherrisktext = { "!=" = 88 } },
     ] },
+    { field = "chronicneu_mhyn", values = { 1 = "Chronic neurological disorder"}}
   ]
 
 [subject.has_died]
