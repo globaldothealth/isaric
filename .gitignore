@@ -2,6 +2,9 @@
 *.csv
 *.xlsx
 
+# except those storing codes
+!fhir/codes/*.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -143,10 +146,14 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+isaric-venv
 
 # Spyder project settings
 .spyderproject
 .spyproject
+
+# VScode project settings
+.vscode
 
 # Rope project settings
 .ropeproject
