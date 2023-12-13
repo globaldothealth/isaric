@@ -9,7 +9,7 @@ Pulse Rate,78564009,Heart rate measured at systemic artery (observable entity),,
 Mean Arterial Pressure,1285244000,Mean arterial pressure (observable entity),,
 Height,1153637007,Body height (observable entity),,
 Weight,248345008,Body weight (observable entity),,
-Estimated Weight,,,,
+Estimated Weight,,,,could use Estimated (qualifier value) 414135002 somehow along with Body weight code and/or loinc 8335-2 Body weight Estimated
 Estimated Height,1162418000,Estimated body height (observable entity),,
 Body Mass Index,162859006,Body mass index (observable entity),,
 Birth Weight,47340003,Birth weight finding (finding),,
