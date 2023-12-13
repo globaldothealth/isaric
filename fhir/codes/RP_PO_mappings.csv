@@ -1,3 +1,9 @@
-﻿name,code_snomed,nname_snomed,code_icd10,name_icd10
-Estimated gestational age,444135009,Estimated fetal gestational age at delivery,,
-Live birth,281050002,Live birth,,
+﻿name,code_snomed,nname_snomed,code_icd10,name_icd10,code_loinc,name_loinc
+Estimated gestational age,57036006,Fetal gestational age (observable entity),,,,
+Pregnancy outcome,3950001,Birth (finding)
+Live birth,281050002,Livebirth (finding),,,,
+Still birth,237364002,Stillbirth (finding),,,,
+Pregnancy status,,,,,82810-3,Pregnancy status
+Pregnant,77386006,Pregnant (finding),,,LA15173-0,Pregnant
+Not pregnant,60001007,Not pregnant (finding),,,LA26683-5,Not pregnant
+Pregnancy status unknown,261665006,Unknown (qualifier value),,,LA4489-6,Unknown
