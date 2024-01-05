@@ -6,6 +6,12 @@
       "our_url_here"
     ]
   },
+  "extension":[
+    {
+      "url": "our-timing-extension",
+      "valueText": "on admission"
+    }
+  ],
   "status" : "final",
   "category" : [
     {
@@ -107,6 +113,12 @@
       "our_url_here"
     ]
   },
+  "extension":[
+    {
+      "url": "our-timing-extension",
+      "valueText": "during visit"
+    }
+  ],
   "status" : "final",
   "category" : [
     {
@@ -150,6 +162,12 @@
       "our_url_here"
     ]
   },
+  "extension":[
+    {
+      "url": "our-timing-extension",
+      "valueText": "during visit"
+    }
+  ],
   "status" : "final",
   "category" : [
     {
