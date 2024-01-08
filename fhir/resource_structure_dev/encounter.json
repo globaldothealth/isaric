@@ -1,0 +1,52 @@
+{
+  "resourceType" : "Encounter",
+  "id" : "encounter_example_hospital_admission_for_covid",
+  "meta" : {
+    "profile" : [
+      "our_url_here"
+    ]
+  },
+  "extension" : [
+    {
+      "url" : "our-research-study-url",
+      "valueReference": {"reference": "ResearchStudy/<example-research-study>"}
+    }
+  ],
+  "subject": {"reference": "Patient/<id>"},
+  "status": "completed",
+  "class" : [{
+    "coding" : [{
+      "system" : "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+      "code" : "IMP",
+      "display" : "inpatient encounter"
+    }]
+  }],
+  "actualPeriod": {"start": "2022-07-10", "end": "2022-07-22"},
+  "reason": [{
+    "value" : [{
+      "concept" : {
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "840539006",
+          "display" : "COVID-19"
+        }]
+      }
+    }]
+  }],
+  "admission": {
+    "admitSource":{
+      "coding" : [{
+        "system" : "http://snomed.info/sct",
+        "code" : "50849002",
+        "display" : "Emergency room admission"
+      }]
+    },
+    "dischargeDisposition":{
+      "coding" : [{
+        "system" : "http://snomed.info/sct",
+        "code" : "306689006",
+        "display" : "Discharge to home"
+      }]
+    }
+  }
+}
