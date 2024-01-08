@@ -48,5 +48,6 @@
         "display" : "Discharge to home"
       }]
     }
-  }
+  },
+  "location" : {"reference": "Location/<id>"}
 }
