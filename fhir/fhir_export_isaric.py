@@ -9,6 +9,8 @@ import uuid
 from dataclasses import dataclass
 from typing import Optional, Literal, Any
 
+from drug_name_codes import corticosteroid_snomed, antiviral_snomed
+
 
 @dataclass
 class Patient:
@@ -17,6 +19,7 @@ class Patient:
     birthDate: Optional[str] = None
     deceasedBoolean: Optional[bool] = None
     deceasedDateTime: Optional[str] = None
+    # outcome here?
 
     def to_json(self) -> dict[str, Any]:
         out = {
@@ -75,13 +78,101 @@ class Condition:
 
 
 @dataclass
+class Medication:
+    subject: str
+    visit: str
+    is_present: bool
+    snomed_code: int
+    text: str
+    datetime: Optional[str] = None
+    period: Optional[tuple(str, str)] = None
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "resourceType": "MedicationStatement",
+            "id": str(uuid.uuid4()),
+            "status": "recorded",
+            "medication": {  # not sure about this structure
+                "concept": {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": str(self.snomed_code),
+                            "display": self.text,
+                        }  # could put LOINC code here too
+                    ],
+                },
+            },
+            "adherence": {
+                "code": {
+                    "coding": {
+                        "system": "http://hl7.org/fhir/CodeSystem/medication-statement-adherence",
+                        "code": "taking" if self.is_present else "not-taking",
+                    }
+                }
+            },
+            "subject": {"reference": f"Patient/{self.subject}"},
+            "encounter": {"reference": f"Encounter/{self.visit}"},
+            "effectiveTimeDate": self.datetime,
+            "effectivePeriod": {"start": self.period[0], "end": self.period[1]}
+            if self.period
+            else None,
+        }
+
+
+@dataclass
+class Procedure:
+    subject: str
+    visit: str
+    is_present: bool
+    snomed_code: int
+    text: str
+    datetime: Optional[str] = None
+    period: Optional[tuple(str, str)] = None
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            # "resourceType": "Procedure",
+            # "id": str(uuid.uuid4()),
+            # "status": "recorded",
+            # "medication": {
+            #     "concept": {
+            #         "coding": [
+            #             {
+            #                 "system": "http://snomed.info/sct",
+            #                 "code": str(self.snomed_code),
+            #                 "display": self.text,
+            #             }  # could put LOINC code here too
+            #         ],
+            #     },
+            # },
+            # "adherence": {
+            #     "code": {
+            #         "coding": {
+            #             "system": "http://hl7.org/fhir/CodeSystem/medication-statement-adherence",
+            #             "code": "taking" if self.is_present else "not-taking",
+            #         }
+            #     }
+            # },
+            # "subject": {"reference": f"Patient/{self.subject}"},
+            # "encounter": {
+            #     "reference": f"Patient/{self.visit}"
+            # },  # Should this be stored in Patient?
+            # "effectiveTimeDate": self.datetime,
+            # "effectivePeriod": {"start": self.period[0], "end": self.period[1]}
+            # if self.period
+            # else None,
+        }
+
+
+@dataclass
 class Observation:
     category: Literal[
         "social-history",
         "vital-signs",
         "imaging",
         "laboratory",
-        "procedure",
+        # "procedure",
         "survey",
         "exam",
         "therapy",
@@ -98,12 +189,12 @@ class Observation:
 
 
 SUBJECT_SNOMED = [
-    ("has_chronic_hematologic_disease", 414022008),
+    ("has_chronic_hematologic_disease", 398983000),
     ("has_asplenia", 707147002),
     ("has_tuberculosis", 427099000),
     ("has_dementia", 52448006),
     ("has_obesity", 414916001),
-    ("has_rheumatologic_disorder", 363059001),
+    ("has_rheumatologic_disorder", 363059001),  # ?
     ("has_hiv", 86406008),
     ("has_hypertension", 38341003),
     ("has_malignant_neoplasm", 363346000),
@@ -120,6 +211,55 @@ SUBJECT_SNOMED = [
     ("has_solid_organ_transplant", 161663000),
     ("has_tuberculosis_past", 161414005),
     ("has_immunosuppression", 234532001),
+]
+
+VISIT_MEDS_SNOMED = [
+    ("treatment_corticosteroid", 788751009),
+    ("treatment_corticosteroid_type", corticosteroid_snomed),
+    ("treatment_antifungal_agent", 373219008),
+    ("treatment_antifungal_agent_type",),
+    ("treatment_antivirals", 372701006),
+    ("treatment_antiviral_type", antiviral_snomed),
+    ("treatment_antibiotics", 346325008),
+    ("treatment_antibiotics_type",),
+    ("treatment_anticoagulation", 372862008),
+    ("treatment_inhaled_nitric_oxide", 6710000),
+    ("treatment_ace_inhibitors", 372733002),
+    ("treatment_arb", 372913009),
+    ("treatment_antimalarial", 373287002),
+    ("treatment_antimalarial_type",),
+    ("treatment_immunosuppressant", 372823004),
+    ("treatment_intravenous_fluids", 118431008),
+    ("treatment_nsaid", 713443004),
+    ("treatment_neuromuscular_blocking_agents", 373295003),
+    # ("treatment_offlabel",),
+    ("treatment_colchine", 73133000),  # ?
+    ("treatment_immunoglobulins",),
+    ("treatment_delirium",),
+    ("treatment_delirium_type",),
+    ("treatment_monoclonal_antibody", 49616005),
+    # ("treatment_other",),
+]
+
+VISIT_PROC_SNOMED = [
+    ("treatment_dialysis", 265764009),
+    ("treatment_ecmo", 233573008),
+    ("treatment_oxygen_therapy", 57485005),
+    (
+        "treatment_oxygen_mask_prongs",
+        371907003,
+    ),  # oxygen administration by nasal cannula
+    ("treatment_prone_position", 1240000),
+    ("treatment_invasive_ventilation", 1258985005),
+    ("treatment_noninvasive_ventilation", 428311008),
+    (
+        "treatment_high_flow_nasal_cannula",
+        426854004,
+    ),  # equipment rather than treatment - 1259025002 is heated/humidified HFNC
+    ("treatment_cpr", 89666000),
+    ("treatment_respiratory_support",),
+    ("treatment_cardiovascular_support",),
+    ("treatment_pacing", 18590009),
 ]
 
 SUBJECT_INDICATOR_SNOMED_CODES = dict(SUBJECT_SNOMED)
