@@ -1,0 +1,111 @@
+{
+  "resourceType" : "ResearchStudy",
+  "id" : "example-study-ccpuk",
+  "url" : "",
+  "name" : "CCPUK",
+  "title" : "ISARIC/WHO Clinical Characterisation Protocol UK",
+  "label" : [{
+    "type": {
+      "text": "Study Code"
+    },
+    "value": "CVCCPUK"
+  }],
+  "status" : "active",
+  "primaryPurposeType" : {
+    "coding" : [{
+      "system" : "http://terminology.hl7.org/CodeSystem/research-study-prim-purp-type",
+      "code" : "diagnostic",
+      "display" : "Diagnostic"
+    }]
+  },
+  "phase" : {
+    "coding" : [{
+      "system" : "http://terminology.hl7.org/CodeSystem/research-study-phase",
+      "code" : "phase-1",
+      "display" : "Phase 1"
+    }]
+  },
+  "condition" : [{
+    "value" : [{
+      "concept" : {
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "840539006",
+          "display" : "COVID-19"
+        }]
+      }
+    }]
+  }],
+  "keyword" : [{
+    "text" : "COVID, Sars-Cov-2"
+  }],
+  "descriptionSummary" : "",
+  "description" : "",
+  "site" : [{"reference" : "Location/<hospital-id>"}],
+  "region": {
+    "coding" : [{
+      "system" : "http://hl7.org/fhir/ValueSet/jurisdiction",
+      "code" : "GB",
+      "display" : "United Kingdom of Great Britain and Northern Ireland"
+    }]
+  },
+  "associatedParty" : [{
+    "name" : "University of Oxford",
+    "role" : {
+      "coding" : [{
+        "system" : "http://hl7.org/fhir/research-study-party-role",
+        "code" : "sponsor",
+        "display" : "Sponsor"
+      }]
+    }
+  },
+  {
+    "name" : "Wellcome Trust",
+    "role" : {
+      "coding" : [{
+        "system" : "http://hl7.org/fhir/research-study-party-role",
+        "code" : "funding-source",
+        "display" : "Funding Source"
+      }]
+    }
+  }],
+  "progressStatus" : [{
+    "state" : {
+      "coding" : [{
+        "system" : "http://hl7.org/fhir/research-study-status",
+        "code" : "recruiting",
+        "display" : "Recruiting"
+      }]
+    }
+  },
+  {
+    "state" : {
+      "coding" : [{
+        "system" : "http://hl7.org/fhir/research-study-status",
+        "code" : "overall-study",
+        "display" : "Overall Study"
+      }]
+    },
+    "actual" : false,
+    "period" : {
+      "start" : "2022-12-06",
+      "end" : "2023-06"
+    }
+  }],
+  "recruitment" : {
+    "eligibility" : {
+      "reference" : "url",
+      "type" : "EvidenceVariable",
+      "identifier" : {
+        "type" : {
+          "text" : ""
+        },
+        "system" : "",
+        "value" : "",
+        "assigner" : {
+          "display" : ""
+        }
+      }
+    }
+  }
+}
