@@ -1,0 +1,4 @@
+﻿name,FHIR Resource,code_snomed,label_snomed
+Arterial blood,,4635002,
+Capillary blood,,31675002,
+Venous blood,,53130003,
