@@ -1,37 +1,37 @@
 {
-  "resourceType" : "Procedure",
-  "id" : "example_procedure_dialysis",
-  "meta" : {
-    "profile" : [
+  "resourceType": "Procedure",
+  "id": "example_procedure_dialysis",
+  "meta": {
+    "profile": [
       "our_url_here"
     ]
   },
-  "status" : "completed",
+  "status": "completed",
   "category": {
-    "coding":  [
-        {
-            "system": "http://snomed.info/sct",
-            "code": "277132007",
-            "display": "Therapeutic procedure (procedure)"
-        }
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "277132007",
+        "display": "Therapeutic procedure (procedure)"
+      }
     ]
   },
   "code": {
-    "coding":  [
-        {
-            "system": "http://snomed.info/sct",
-            "code": "108241001",
-            "display": "Dialysis procedure (procedure)"
-        }
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "108241001",
+        "display": "Dialysis procedure (procedure)"
+      }
     ],
     "text": "Dialysis"
   },
-  "subject" : {
-    "reference" : "Patient/<id>"
+  "subject": {
+    "reference": "Patient/<id>"
   },
   "encounter": {
     "reference": "Encounter/<id>",
     "display": "encounter_name"
   },
-  "occurenceDateTime" : "2018-03-07"
+  "occurenceDateTime": "2018-03-07"
 }
