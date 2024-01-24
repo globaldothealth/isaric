@@ -96,7 +96,7 @@
   },
   "site": [
     {
-      "reference": "Location/<hospital-id>"
+      "reference": "Organization/<hospital-id>"
     }
   ],
   "region": {
