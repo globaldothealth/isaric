@@ -30,8 +30,7 @@
     "reference": "Patient/<id>"
   },
   "encounter": {
-    "reference": "Encounter/<id>",
-    "display": "encounter_name"
+    "reference": "Encounter/<id>"
   },
   "occurenceDateTime": "2018-03-07"
 }

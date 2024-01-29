@@ -18,7 +18,8 @@
       "coding": [
         {
           "system": "http://hl7.org/fhir/ValueSet/research-subject-state",
-          "code": "on-study"
+          "code": "on-study",
+          "display": "On study"
         }
       ],
       "text": "On study"
