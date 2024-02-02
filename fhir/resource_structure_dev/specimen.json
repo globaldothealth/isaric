@@ -1,0 +1,33 @@
+{
+  "resourceType": "Specimen",
+  "id": "example-specimen",
+  "meta": {
+    "profile": [
+      "our_url_here"
+    ]
+  },
+  "type": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "257261003",
+        "display": "Swab (specimen)"
+      }
+    ]
+  },
+  "subject": {
+    "reference": "Patient/<usubjid>"
+  },
+  "collection": {
+    "collectedDateTime": "2020-04-07T14:00:00Z",
+    "bodySite": {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "49928004",
+          "display": "Structure of anterior portion of neck (body structure)"
+        }
+      ]
+    }
+  }
+}
