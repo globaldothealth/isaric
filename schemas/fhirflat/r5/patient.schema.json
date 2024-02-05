@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "FHIR Patient",
+  "required": [
+    "id",
+    "gender"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "gender": {
+      "enum": [
+        "male",
+        "female",
+        "other",
+        "unknown"
+      ]
+    },
+    "birthDate": {
+      "type": "string"
+    },
+    "deceasedBoolean": {
+      "type": "boolean"
+    },
+    "deceasedDateTime": {
+      "type": "string"
+    },
+    "maritalStatus": {
+      "enum": [
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/A",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/D",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/I",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/L",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/M",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/C",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/P",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/T",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/U",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/S",
+        "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus/W",
+        "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+      ]
+    },
+    "multipleBirthBoolean": {
+      "type": "boolean"
+    },
+    "multipleBirthInteger": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "generalPractitioner": {
+      "type": "string"
+    },
+    "managingOrganization": {
+      "type": "string"
+    }
+  }
+}
