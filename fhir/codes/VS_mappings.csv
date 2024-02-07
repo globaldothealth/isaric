@@ -1,0 +1,16 @@
+﻿name,code_snomed,nname_snomed,code_icd10,name_icd10
+Temperature,386725007,Body temperature (observable entity),,
+Heart Rate,364075005,Heart rate (observable entity),,
+Respiratory Rate,86290005,Respiratory rate (observable entity),,
+Systolic Blood Pressure,271649006,Systolic blood pressure (observable entity),,
+Diastolic Blood Pressure,271650006,Diastolic blood pressure (observable entity),,
+Oxygen Saturation,104847001,Oxygen saturation measurement (procedure),,
+Pulse Rate,78564009,Heart rate measured at systemic artery (observable entity),,
+Mean Arterial Pressure,1285244000,Mean arterial pressure (observable entity),,
+Height,1153637007,Body height (observable entity),,
+Weight,248345008,Body weight (observable entity),,
+Estimated Weight,,,,could use Estimated (qualifier value) 414135002 somehow along with Body weight code and/or loinc 8335-2 Body weight Estimated
+Estimated Height,1162418000,Estimated body height (observable entity),,
+Body Mass Index,162859006,Body mass index (observable entity),,
+Birth Weight,47340003,Birth weight finding (finding),,
+Capillary Refill Time,15527001,"Capillary filling, function (observable entity)",,

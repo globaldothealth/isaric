@@ -1,0 +1,126 @@
+SDTM variable,Term,FHIR,code_snomed,label_snomed,comment
+STUDYID,,,,,
+DOMAIN,,not mapped,,,
+USUBJID,,"subject
+identifier",,,
+HOSEQ,,not mapped,,,
+HOREFID,,,,,identifies previous admissions for covid-19
+HOTERM,Consultation for reason related to COVID-19,"class = AMB (ambulatory)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",,,relates to follow-up only
+HOTERM,,serviceType = 397 (Outpatients) http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Visited a doctor due to COVID-19,"class = AMB (ambulatory)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",,,relates to follow-up only
+HOTERM,,serviceType = 324 (Doctors) http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Visited a Healthcare Centre Due to COVID-19,"class = AMB (ambulatory)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",,,relates to follow-up only
+HOTERM,,serviceType = 397 (Outpatients) http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Admission to Hospital Due to COVID-19,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",32485007,Hospital admission (procedure),
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Hospital Admission,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",32485007,Hospital admission (procedure),relates only to previous admissions for covid-19 9130008 Previous (qualifier value) could be added somewhere
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,,reason.use = AD (Admitting Diagnosis) http://hl7.org/fhir/encounter-reason-use,,,
+HOTERM,,diagnosis.condition,840539006,Disease caused by severe acute respiratory syndrome coronavirus 2 (disorder),
+HOTERM,HOSPITALIZATION,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",32485007,Hospital admission (procedure),
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Hospitalization Due to COVID-19,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode
+serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type
+reason.use = AD (Admitting Diagnosis) http://hl7.org/fhir/encounter-reason-use",32485007,Hospital admission (procedure),relates to follow-up only
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,,reason.use = AD (Admitting Diagnosis) http://hl7.org/fhir/encounter-reason-use,,,
+HOTERM,,diagnosis.condition,840539006,Disease caused by severe acute respiratory syndrome coronavirus 2 (disorder),
+HOTERM,Hospitalization due to new COVID-19 infection,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",32485007,Hospital admission (procedure),relates to follow-up only
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,,reason.use = AD (Admitting Diagnosis) http://hl7.org/fhir/encounter-reason-use,,,
+HOTERM,,diagnosis.condition,840539006,Disease caused by severe acute respiratory syndrome coronavirus 2 (disorder),
+HOTERM,Hospitalization with COVID-19 or Diagnosed with COVID19 during a hospital stay,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",32485007,Hospital admission (procedure),
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Hospitalization With COVID-19 or Diagnosed With COVID-19 During a Hospital Stay,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",32485007,Hospital admission (procedure),relates to follow-up only
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Re-Admission to Hospital or Health Facility,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",417005,Hospital re-admission (procedure),"not sure whether admission.ReAdmission = R (Re-admission indicator) makes sense to use here
+http://terminology.hl7.org/CodeSystem/v2-0092"
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Re-admitted to hospital or health facility,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",417005,Hospital re-admission (procedure),"not sure whether admission.ReAdmission = R (Re-admission indicator) makes sense to use here
+http://terminology.hl7.org/CodeSystem/v2-0092"
+HOTERM,,serviceType = 557 Inpatients http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Transfer to another healthcare facility,,19712007,"Patient transfer, to another health care facility",
+HOTERM,Transfer to other facility,,19712007,"Patient transfer, to another health care facility",
+HOTERM,Transfer to the Health District,,19712007,"Patient transfer, to another health care facility",
+HOTERM,TRANSFERRED TO OTHER FACILITY,,19712007,"Patient transfer, to another health care facility",
+HOTERM,Admission to Intensive Care (ICU/ITU),"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",305351004,Admission to intensive care unit,"additional snomed mapping to class or type
+Pediatric Intensive Care Medicine code 198 also available for those studies where we know were pediatric focussed"
+HOTERM,,serviceType = 174 Intensive Care Medicine http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Admitted to intensive care (ICU/ITU),"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",305351004,Admission to intensive care unit,additional snomed mapping to class or type
+HOTERM,,serviceType = 174 Intensive Care Medicine http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,ICU OR HIGH DEPENDENCY UNIT,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",305351004,Admission to intensive care unit,additional snomed mapping to class or type
+HOTERM,,serviceType = 174 Intensive Care Medicine http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,ICU or High Dependency Unit admission,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",305351004,Admission to intensive care unit,additional snomed mapping to class or type
+HOTERM,,serviceType = 174 Intensive Care Medicine http://hl7.org/fhir/ValueSet/service-type,,,
+HOTERM,Current admission to ICU/ITU/IMC/HDU,"class = IMP (inpatient encounter)
+http://terminology.hl7.org/CodeSystem/v3-ActCode",305351004,Admission to intensive care unit,additional snomed mapping to class or type
+HOTERM,,serviceType = 174 Intensive Care Medicine http://hl7.org/fhir/ValueSet/service-type,,,
+HODECOD,,"not mapped, HOTERM used for more granularity",,,
+HOCAT,,"not mapped, only identifies previous admissions, HOREFID can be used as has an order number included",,,
+HOPRESP,,not mapped,,,
+HOOCCUR,Y,status,373066001,Yes (qualifier value),FHIR terminology from http://hl7.org/fhir/encounter-status; in-progress | discharged | completed | unknown could be used. Cancelled (failed) and discontinued (abandoned) exist for possibilities for 'N' responses but don't really make sense with our data
+,N,status,373067005,No (qualifier value) ,
+,U,status,261665006,Unknown (qualifier value),
+,NA,status,385432009,Not applicable (qualifier value),
+HOSTAT,,HOSTAT = not done can be dropped,,,
+HOREASND,,"relates to HOSTAT, rows dropped",,,
+VISITNUM,,,,,"how to distinguish multiple events with no dates e.g. CVLYDZL patient with 15 rows of Hospitalisation collected as visit days 1-15 each indicating Y
+can give a duration from the known data but don't know when pt was discharged and have no dates for actualPeriod"
+VISIT,,,,,
+VISITDY,,,,,
+HOPATT,,,,,number of occurrences of consultations with GP number of readmissions (follow up only incl freestanding)
+HODTC,,,,,
+HOSTDTC,,actualPeriod,,,no dates for any previous admissions
+HOENDTC,,actualPeriod,,,
+HODY,,"not mapped, dates used",,,
+HOSTDY,,"not mapped, dates used",,,
+HOENDY,,"not mapped, dates used",,,
+HODUR,,actualPeriod,,,can be used to calculate actualPeriod if one of HOSTDTC or HOENDTC is not provided but HODUR is present
+HOTPT,,,,,identifies data collected during follow up
+HOTPTREF,,,,,identifies data collected during follow up
+HOSTRF,,"not mapped, previous admissions",,,
+HOEVINTX,,,,,how to represent different time periods from data capture?
+HOCDSTDY,,,,,
+HODISOUT,"HOME, SELF CARE","dischargeDisposition = home (Home)
+http://terminology.hl7.org/CodeSystem/discharge-disposition",,,
+HODISOUT,EXPIRED IN A MEDICAL FACILITY,"dischargeDisposition = exp (Expired)
+http://terminology.hl7.org/CodeSystem/discharge-disposition",,,
+HODISOUT,SHORT TERM GENERAL HOSPITAL,"dischargeDisposition = other-hcf (Other healthcare facility)
+http://terminology.hl7.org/CodeSystem/discharge-disposition",,,
+HODISOUT,HOSPICE - MEDICAL FACILITY,"dischargeDisposition = hosp (Hospice)
+http://terminology.hl7.org/CodeSystem/discharge-disposition",,,
+HODISOUT,INSTITUTION NOT DEFINED,"dischargeDisposition = other-hcf (Other healthcare facility)
+http://terminology.hl7.org/CodeSystem/discharge-disposition",,,
+HODISOUT,LEFT AGAINST MEDICAL ADVICE OR DISCONTINUED CARE,"dischargeDisposition = aadvice (Left against advice)
+http://terminology.hl7.org/CodeSystem/discharge-disposition",,,
+HODISOUT,UNKNOWN,,261665006,Unknown (qualifier value),
+SELFCARE,BETTER THAN BEFORE ILLNESS,"Observation.category = social-history
+effectiveDateTime = HODTC",284773001,Ability to perform personal care activity (observable entity),
+SELFCARE,,Observation.valueCodeableConcept,442387004,Increased relative to previous (qualifier value) ,
+SELFCARE,WORSE THAN BEFORE ILLNESS ,"Observation.category = social-history
+effectiveDateTime = HODTC",284773001,Ability to perform personal care activity (observable entity),
+SELFCARE,,Observation.valueCodeableConcept,442474009,Decreased relative to previous (qualifier value) ,
+SELFCARE,SAME AS BEFORE ILLNESS,"Observation.category = social-history
+effectiveDateTime = HODTC",284773001,Ability to perform personal care activity (observable entity),
+SELFCARE,,Observation.valueCodeableConcept,385630006,Maintained (qualifier value),
+SELFCARE,UNKNOWN,"Observation.category = social-history
+effectiveDateTime = HODTC",284773001,Ability to perform personal care activity (observable entity),
+SELFCARE,,Observation.valueCodeableConcept,261665006,Unknown (qualifier value),
+HOINDC,,diagnosis.condition,,,"not well completed, majority relate to ICU admission
+can be COVID-19 for all previous admissions"
