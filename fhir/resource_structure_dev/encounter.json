@@ -1,0 +1,129 @@
+{
+  "resourceType": "Encounter",
+  "id": "encounter_example_hospital_admission_for_covid",
+  "meta": {
+    "profile": [
+      "our_url_here"
+    ]
+  },
+  "extension": [
+    {
+      "url": "our-research-study-url",
+      "valueReference": {
+        "reference": "ResearchStudy/<example-research-study>"
+      }
+    }
+  ],
+  "status": "completed",
+  "class": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        }
+      ]
+    }
+  ],
+  "type": [
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "270427003",
+          "display": "Patient-initiated encounter"
+        }
+      ]
+    }
+  ],
+  "subject": {
+    "reference": "Patient/<id>"
+  },
+  "partOf": {
+    "reference": "Encounter/<ID for general admission if this is ICU-specific>"
+  },
+  "actualPeriod": {
+    "start": "2022-07-10",
+    "end": "2022-07-22"
+  },
+  "length": {
+    "value": 12,
+    "unit": "day",
+    "system": "http://unitsofmeasure.org",
+    "code": "d"
+  },
+  "diagnosis": [
+    {
+      "condition": [
+        {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "840539006",
+              "display": "COVID-19"
+            }
+          ]
+        }
+      ],
+      "use": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+              "code": "AD",
+              "display": "Admission diagnosis"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "condition": [
+        {
+          "concept": {
+            "text": "The patient is treated for a tumor"
+          }
+        }
+      ],
+      "use": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+              "code": "CC",
+              "display": "Chief complaint"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "admission": {
+    "preAdmissionidentifier": "",
+    "admitSource": {
+      "coding": {
+        "system": "http://snomed.info/sct",
+        "code": "50849002",
+        "display": "Emergency room admission"
+      }
+    },
+    "reAdmission": {
+      "coding": {
+        "system": "http://terminology.hl7.org/CodeSystem/v2-0092",
+        "code": "R",
+        "display": "Re-admission"
+      }
+    },
+    "dischargeDisposition": {
+      "coding": {
+        "system": "http://snomed.info/sct",
+        "code": "306689006",
+        "display": "Discharge to home"
+      }
+    }
+  },
+  "location": {
+    "reference": "Location/<id>"
+  }
+}

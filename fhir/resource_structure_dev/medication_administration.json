@@ -1,0 +1,40 @@
+{
+  "resourceType": "MedicationAdministration",
+  "id": "example",
+  "meta": {
+    "profile": [
+      "our_url_here"
+    ]
+  },
+  "status": "not-taken",
+  "medicationCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "392327001",
+        "display": "Azithromycin-containing product in oral dose form"
+      }
+    ],
+    "text": "Azithromycin"
+  },
+  "subject": {
+    "reference": "Patient/<id>",
+    "display": "Eve Everywoman"
+  },
+  "encounter": {
+    "reference": "Encounter/<id>",
+    "display": "encounter_name"
+  },
+  "effectiveDateTime": "2018-03-07",
+  "dosage": {
+    "route": {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "26643006",
+          "display": "Oral route"
+        }
+      ]
+    }
+  }
+}

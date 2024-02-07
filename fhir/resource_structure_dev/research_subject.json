@@ -1,0 +1,31 @@
+{
+  "resourceType": "ResearchSubject",
+  "id": "example_research_subject",
+  "meta": {
+    "profile": [
+      "our_url_here"
+    ]
+  },
+  "status": "active",
+  "study": {
+    "reference": "ResearchStudy/<id>"
+  },
+  "subject": {
+    "reference": "Patient/<id>"
+  },
+  "progress": {
+    "subjectState": {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/ValueSet/research-subject-state",
+          "code": "on-study",
+          "display": "On study"
+        }
+      ],
+      "text": "On study"
+    }
+  },
+  "period": {
+    "start": "<enrolment date>"
+  }
+}
