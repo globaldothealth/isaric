@@ -1,4 +1,13 @@
+![Project frozen](https://img.shields.io/badge/status-frozen-blue.png) ![Project unmaintained](https://img.shields.io/badge/project-unmaintained-red.svg)
+
 # ISARIC Clinical Data Model
+
+> [!WARNING]
+> This repository is **no longer maintained**. Development has moved to the
+> **ISARIC 3.0 Pipeline** repository at
+> https://github.com/globaldothealth/isaric-pipeline. The pipeline repository
+> will standardise information in FHIR format, instead of bespoke schemas
+> such as the one in this repository.
 
 [![parsers](https://github.com/globaldothealth/isaric/actions/workflows/parsers.yml/badge.svg)](https://github.com/globaldothealth/isaric/actions/workflows/parsers.yml)
 
